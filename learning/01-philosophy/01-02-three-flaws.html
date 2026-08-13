@@ -569,7 +569,7 @@
 <script>
 // 保存静态面包屑（initNav 会重建它，这里恢复本页专属层级）
 const __crumbHTML = document.getElementById('page-breadcrumb').innerHTML;
-initNav();
+
 document.getElementById('page-breadcrumb').innerHTML = __crumbHTML;
 
 const PHASE = 'phil';
