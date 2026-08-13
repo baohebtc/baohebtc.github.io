@@ -84,24 +84,28 @@ python3 -m http.server 8080
 # 浏览器打开 http://localhost:8080
 ```
 
-### 方式二：GitHub Pages（免费、永久）
+### 方式二：GitHub Pages（免费、永久、完全开源）
 
-需把**整个文件夹**推送到仓库（不是单个文件）：
+本仓库已在本机完成 `git init` 并提交了全部内容（含 `LICENSE` 与 `.nojekyll`）。
+你只需要在 GitHub 网页建好空仓库后，连接远程并推送即可：
 
 ```bash
 cd ~/Desktop/宝盒知识库/比特币学习地图/
-git init
-git add .
-git commit -m "🎉 Bitcoin Learning Map v1.0"
-git branch -M main
+git branch -M main                      # 把默认分支统一为 main（GitHub Pages 推荐）
 git remote add origin https://github.com/你的用户名/bitcoin-learning-map.git
 git push -u origin main
 ```
 
-然后在仓库 **Settings → Pages** 选择 `main` 分支根目录，等待约 2 分钟上线：
+> 第一次 `git push` 会弹窗让你登录 GitHub 并授权；用 GitHub 账号密码通常不行，
+> 请使用 **Personal Access Token (PAT)** 当作密码（下文「实操步骤」会教你怎么生成）。
+
+然后在仓库 **Settings → Pages → Build and deployment** 选 `main` 分支、`/ (root)` 目录，
+点击 Save，等待约 1–2 分钟上线：
 `https://你的用户名.github.io/bitcoin-learning-map`
 
-> 已内置 `.gitignore`，会自动排除 `node_modules/`、`.DS_Store` 等无关文件。
+> - 已内置 `.gitignore`，自动排除 `node_modules/`、`.DS_Store` 等无关文件。
+> - 已内置 `.nojekyll`，关闭 GitHub 的 Jekyll 处理，确保纯静态文件原样托管。
+> - 想用自定义域名（如 btc.example.com）也在这里填，但需要该域名的 DNS 管理权。
 
 ### 方式三：CloudStudio / 任意静态托管
 
@@ -113,6 +117,23 @@ git push -u origin main
 
 ---
 
+## 🤝 如何一起贡献（开源协作）
+
+本站以 MIT 许可证完全开源，欢迎任何人学习、复用、纠错、补充。最常见的协作方式：
+
+1. **提 Issue**：在仓库 `Issues` 里反馈错别字、事实错误、想补充的内容。
+2. **提 PR（Pull Request）**：
+   - 点仓库右上角 **Fork** 把仓库复制到你自己的账号；
+   - 在你的副本里修改（可本地 `git clone` 后用任意编辑器）；
+   - `git commit` + `git push` 到你自己的 Fork；
+   - 回原仓库点 **Contribute → Open pull request** 把改动发回来。
+3. **翻译**：双语机制已就绪（`nav.js` 的 `I18N_MAP`），欢迎补充更多语言或润色英文。
+
+新手友好提示：第一次 PR 可以从「修正一处错别字」开始，流程跑通就懂了。
+
+---
+
 ## 📄 许可证
 
-本学习网站为教育目的创作，内容开放使用。
+本项目以 **MIT License** 开源 —— 详见仓库根目录 [`LICENSE`](LICENSE) 文件。
+你可以自由地阅读、复制、修改、再发布本站的代码与内容，只需在副本中保留版权声明与许可声明。
