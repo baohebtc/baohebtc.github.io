@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交易所与托管 | 比特币学习地图</title>
+  <meta name="description" content="中心化交易所(CEX)vs去中心化交易所(DEX)vs自托管：KYC合规、资产管理风险、FTX暴雷案例、如何安全提币。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 交易所对比表 ---- */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 16px 0;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .compare-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .compare-table td {
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .compare-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .compare-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .compare-table .tag-yes { color: #10B981; font-weight: 700; }
+    .compare-table .tag-no { color: #EF4444; font-weight: 700; }
+    .compare-table .tag-mid { color: #EAB308; font-weight: 700; }
+
+    /* ---- 托管类型对比 ---- */
+    .custody-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .custody-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      transition: all var(--transition);
+    }
+    .custody-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .custody-card .cc-icon {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+    .custody-card .cc-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .custody-card .cc-risk {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .custody-card .cc-risk.high { background: rgba(239,68,68,0.1); color: #EF4444; }
+    .custody-card .cc-risk.mid { background: rgba(234,179,8,0.1); color: #EAB308; }
+    .custody-card .cc-risk.low { background: rgba(16,185,129,0.1); color: #10B981; }
+    .custody-card .cc-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-top: 6px;
+    }
+    .custody-card .cc-example {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-family: var(--font-mono);
+    }
+
+    /* ---- 提币流程 ---- */
+    .withdraw-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 16px 0;
+      counter-reset: step;
+    }
+    .withdraw-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: all var(--transition);
+    }
+    .withdraw-step:hover {
+      border-color: var(--orange);
+    }
+    .withdraw-step .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(247,147,26,0.12);
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .withdraw-step .step-content {
+      flex: 1;
+    }
+    .withdraw-step .step-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .withdraw-step .step-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .withdraw-step .step-warn {
+      font-size: 0.72rem;
+      color: #EF4444;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* ---- 风险卡片 ---- */
+    .risk-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .risk-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      border-left: 3px solid #EF4444;
+    }
+    .risk-card .risk-icon {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+    .risk-card .risk-title {
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+    }
+    .risk-card .risk-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ---- 案例框 ---- */
+    .case-box {
+      background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02));
+      border: 1px solid rgba(239,68,68,0.2);
+      border-left: 4px solid #EF4444;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .case-box .case-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #EF4444;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .case-box .case-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+    .case-box .case-body {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .case-box .case-body p { margin-bottom: 6px; }
+
+    /* ---- 知识图谱 ---- */
+    .knowledge-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 16px 0;
+    }
+    .kf-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+    .kf-item .kf-icon { font-size: 1.1rem; }
+    .kf-item .kf-text { flex: 1; }
+    .kf-item .kf-tag {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+    .kf-item .kf-tag.pro { background: rgba(16,185,129,0.1); color: #10B981; }
+    .kf-item .kf-tag.con { background: rgba(239,68,68,0.1); color: #EF4444; }
+    .kf-item .kf-arrow {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0 4px;
+    }
+
+    /* ---- KYC 级别表 ---- */
+    .kyc-levels {
+      margin: 14px 0;
+    }
+    .kyc-level {
+      display: flex;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      align-items: flex-start;
+    }
+    .kyc-level:last-child { border-bottom: none; }
+    .kyc-level .level-badge {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .kyc-level .level-0 { background: rgba(239,68,68,0.1); color: #EF4444; }
+    .kyc-level .level-1 { background: rgba(234,179,8,0.1); color: #EAB308; }
+    .kyc-level .level-2 { background: rgba(59,130,246,0.1); color: #3B82F6; }
+    .kyc-level .level-3 { background: rgba(16,185,129,0.1); color: #10B981; }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .custody-cards, .risk-cards { grid-template-columns: 1fr; }
+      .compare-table { font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html">生态篇</a>
+        <span>›</span>
+        <span>交易所与托管</span>
+      </div>
+
+      <h1>🏦 交易所与托管</h1>
+      <p class="page-subtitle">交易所是比特币进入现实世界的"海关"——但把币存在交易所，和把钱包放在别人口袋里，本质上是同一件事。认识托管风险，是每个比特币持有者的必修课。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：入门–进阶</span>
+        <span class="page-tag">📑 生态篇 3/7</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>生态篇进度</span>
+          <span>3 / 7 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 43%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#cex">中心化交易所 (CEX)</a>
+          <a href="#custody-types">三类托管方式</a>
+          <a href="#kyc">KYC 与合规</a>
+          <a href="#not-your-keys">不是你的私钥</a>
+          <a href="#withdraw">如何安全提币</a>
+          <a href="#cases">风险案例</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 引言 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p><strong>交易所 = 比特币世界的"海关"</strong>。你要把"外面的"法币（人民币、美元）换成比特币，必须经过这个关卡；而你想把比特币换成法币，也得经过它。</p>
+            <p style="margin-top:8px;">但"海关"也是一间仓库——你把货（比特币）寄存在这里，理论上可以随时取回。但如果仓库着火（交易所破产）、仓库主监守自盗（FTX），或者仓库被查封（监管介入），你的货可能就没了。</p>
+            <p style="margin-top:8px;">所以，<strong>知道什么时候该"过海关"、什么时候该"把货提回家"</strong>，是比特币持有者最重要的判断力。</p>
+          </div>
+
+          <!-- ============ 一、中心化交易所 ============ -->
+          <section id="cex">
+            <h2>一、中心化交易所 (CEX)：比特币世界的超级商场</h2>
+
+            <h3>1.1 什么是中心化交易所？</h3>
+            <p><strong>CEX</strong> = Centralized Exchange（中心化交易所）。它本质上是一家<strong>持有用户资产的互联网公司</strong>——你把比特币（或钱）存进去，交易所给你一个数据库里的"余额数字"。</p>
+            <p>这类交易所具备以下特征：</p>
+            <ul>
+              <li>替你保管私钥（你的币实际上在交易所的钱包里）</li>
+              <li>提供订单簿撮合（有人买、有人卖，交易所帮你配对）</li>
+              <li>支持法币充值/提现（用人民币、美元直接买币）</li>
+              <li>需要注册账户（KYC 实名认证）</li>
+            </ul>
+
+            <h3>1.2 主流中心化交易所</h3>
+            <div class="custody-cards">
+              <div class="custody-card">
+                <div class="cc-icon">🟡</div>
+                <div class="cc-title">Binance（币安）</div>
+                <span class="cc-risk high">高交易量</span>
+                <p class="cc-desc">全球最大加密货币交易所，日均交易量超 200 亿美元（2024 年数据）。提供现货、合约、杠杆、理财等全方位服务，但监管压力持续。</p>
+                <p class="cc-example">binance.com</p>
+              </div>
+              <div class="custody-card">
+                <div class="cc-icon">🔵</div>
+                <div class="cc-title">Coinbase</div>
+                <span class="cc-risk mid">合规优先</span>
+                <p class="cc-desc">美国最大合规加密货币交易所，2021 年 NASDAQ 上市（NASDAQ: COIN）。SEC/FBI 等监管机构的主要对话窗口，安全标准最高，但费率较高。</p>
+                <p class="cc-example">coinbase.com</p>
+              </div>
+              <div class="custody-card">
+                <div class="cc-icon">🟢</div>
+                <div class="cc-title">OKX（欧易）</div>
+                <span class="cc-risk mid">全球布局</span>
+                <p class="cc-desc">总部马耳他，全球化程度高。提供现货、合约、Web3 钱包等服务。港交所上市的 OKG 持有香港 VASP 牌照。</p>
+                <p class="cc-example">okx.com</p>
+              </div>
+              <div class="custody-card">
+                <div class="cc-icon">🟠</div>
+                <div class="cc-title">Gate.io（芝麻开门）</div>
+                <span class="cc-risk mid">品类丰富</span>
+                <p class="cc-desc">上线币种超过 1,800 种（2024 年），以"首发上线"（IEO）闻名。相对小众但用户粘性高。监管透明度相对较低。</p>
+                <p class="cc-example">gate.io</p>
+              </div>
+            </div>
+
+            <h3>1.3 DEX vs CEX vs 自托管：三者对比</h3>
+            <p>三种入场方式，各有适用场景：</p>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>维度</th>
+                  <th>CEX（币安/Coinbase）</th>
+                  <th>DEX（Uniswap 等）</th>
+                  <th>自托管钱包</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>私钥</td>
+                  <td class="tag-no">交易所持有</td>
+                  <td class="tag-mid">用户持有（钱包连接）</td>
+                  <td class="tag-yes">完全自己控制</td>
+                </tr>
+                <tr>
+                  <td>匿名性</td>
+                  <td class="tag-no">强制 KYC</td>
+                  <td class="tag-yes">无需 KYC</td>
+                  <td class="tag-yes">完全匿名</td>
+                </tr>
+                <tr>
+                  <td>交易速度</td>
+                  <td class="tag-yes">毫秒级撮合</td>
+                  <td class="tag-mid">取决于链上确认</td>
+                  <td class="tag-mid">取决于网络</td>
+                </tr>
+                <tr>
+                  <td>流动性</td>
+                  <td class="tag-yes">极高</td>
+                  <td class="tag-mid">主流币种充足</td>
+                  <td class="tag-no">无交易功能</td>
+                </tr>
+                <tr>
+                  <td>法币入口</td>
+                  <td class="tag-yes">直接支持</td>
+                  <td class="tag-no">不支持</td>
+                  <td class="tag-no">不支持</td>
+                </tr>
+                <tr>
+                  <td>资产安全风险</td>
+                  <td class="tag-mid">交易所风险（黑客/破产）</td>
+                  <td class="tag-mid">智能合约风险</td>
+                  <td class="tag-mid">自身安全意识</td>
+                </tr>
+                <tr>
+                  <td>适用场景</td>
+                  <td>新手入门 / 大额交易</td>
+                  <td>DeFi / 无 KYC 交易</td>
+                  <td>长期持有 / 大额存储</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- ============ 二、三类托管方式 ============ -->
+          <section id="custody-types">
+            <h2>二、三类托管方式：谁在保管你的比特币？</h2>
+
+            <h3>2.1 全托管（Full Custody）——交易所</h3>
+            <div class="story-box blue">
+              <span class="story-label">🔐 全托管 = "我把钥匙交给物业"</span>
+              <p>你把比特币充值到交易所，交易所将所有用户的币<strong>集中存放在几个热钱包</strong>里（通常是冷热分离的多签钱包）。你看到的"余额"只是一个数据库数字。</p>
+              <p style="margin-top:6px;"><strong>优势：</strong>操作简单、有客服、有法币通道。<br>
+              <strong>风险：</strong>交易所破产/被黑/被监管，你的币可能被冻结或损失。</p>
+            </div>
+
+            <h3>2.2 半托管 / 托管型钱包</h3>
+            <p>部分平台（如某些 DeFi 理财、借贷协议）采用"托管+用户共同签名"模式：</p>
+            <ul>
+              <li>用户持有私钥，但协议设定每日提现上限或冷却期</li>
+              <li>降低"单点被黑"风险，但增加操作复杂度</li>
+              <li>典型案例：Coinbase Custody、BitGo</li>
+            </ul>
+
+            <h3>2.3 自托管（Self-Custody）——完全掌控</h3>
+            <div class="highlight-box">
+              <span class="label">🧠 自托管 = "把钥匙放在自己口袋里"</span>
+              <div class="text">
+                <p><strong>自托管</strong>意味着：你的私钥（助记词）只有你自己知道，任何人、任何机构都无法访问或冻结你的比特币。</p>
+                <p>这是比特币"去中心化"理念的核心体现——<strong>真正的所有权</strong>只存在于自托管状态下。</p>
+                <p>代价是：丢失助记词 = 永久失去比特币；被盗窃 = 不可逆。</p>
+              </div>
+            </div>
+
+            <div class="knowledge-flow">
+              <div class="kf-item">
+                <span class="kf-icon">🔴</span>
+                <span class="kf-text">把比特币存在交易所（买完不动）</span>
+                <span class="kf-tag con">交易风险</span>
+              </div>
+              <div class="kf-item" style="justify-content:center;opacity:0.5;">
+                <span class="kf-arrow">↓ 风险 +1</span>
+              </div>
+              <div class="kf-item">
+                <span class="kf-icon">🟡</span>
+                <span class="kf-text">提到交易所的热钱包（随时可交易）</span>
+                <span class="kf-tag con">黑客风险</span>
+              </div>
+              <div class="kf-item" style="justify-content:center;opacity:0.5;">
+                <span class="kf-arrow">↓ 风险 -1</span>
+              </div>
+              <div class="kf-item">
+                <span class="kf-icon">🟢</span>
+                <span class="kf-text">提到自托管硬件钱包（完全掌控）</span>
+                <span class="kf-tag pro">自我负责</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、KYC 与合规 ============ -->
+          <section id="kyc">
+            <h2>三、KYC 与合规：比特币的"实名制"</h2>
+
+            <h3>3.1 什么是 KYC？</h3>
+            <p><strong>KYC</strong> = Know Your Customer（了解你的客户）。交易所必须验证用户身份，以符合<strong>反洗钱（AML）</strong>和<strong>打击恐怖主义融资（CTF）</strong>法规。</p>
+            <p>在中国大陆，由于禁止中心化加密货币交易（2021 年 9 月"九二四"禁令），KYC 主要是境外交易所对全球用户的合规要求。</p>
+
+            <h3>3.2 KYC 典型级别</h3>
+            <div class="kyc-levels">
+              <div class="kyc-level">
+                <span class="level-badge level-0">Lv.0</span>
+                <div>
+                  <strong>无验证</strong>（仅浏览/小额交易）：无需注册，无交易限制，但功能和额度受限。
+                </div>
+              </div>
+              <div class="kyc-level">
+                <span class="level-badge level-1">Lv.1</span>
+                <div>
+                  <strong>手机号 + 邮箱验证</strong>：每日提现限额约 2 BTC，支持基础交易。
+                </div>
+              </div>
+              <div class="kyc-level">
+                <span class="level-badge level-2">Lv.2</span>
+                <div>
+                  <strong>身份证 + 人脸识别</strong>：大多数交易所的"标准 KYC"，提现限额大幅提升（50 BTC+/日），支持 C2C 交易。
+                </div>
+              </div>
+              <div class="kyc-level">
+                <span class="level-badge level-3">Lv.3</span>
+                <div>
+                  <strong>增强尽调（EDD）</strong>：大额用户、机构账户，需要地址证明、资金来源说明，监管报告义务。
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">⚖️ KYC 的双面性</span>
+              <div class="text">
+                <p><strong>支持者观点：</strong>KYC 是传统金融系统防止洗钱的必要手段，有助于比特币获得监管认可、进入主流市场。</p>
+                <p><strong>批评者观点：</strong>KYC 让比特币失去了"抗审查"的核心价值——任何链上关联的 KYC 地址，都可能成为政府追踪和冻结的工具。</p>
+                <p>两种观点都有其合理性。关键在于：<strong>理解 KYC 的边界在哪里，并知道如何保护自己的隐私</strong>。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、不是你的私钥 ============ -->
+          <section id="not-your-keys">
+            <h2>四、"不是你的私钥，就不是你的币"：深层含义</h2>
+
+            <div class="story-box orange">
+              <span class="story-label">💡 核心警句</span>
+              <p><strong>"Not your keys, not your coins."</strong></p>
+              <p style="margin-top:8px;">这句话在比特币社区流传极广，但大多数人只理解了字面意思，没有理解它的深层含义：</p>
+            </div>
+
+            <h3>4.1 字面含义</h3>
+            <p>你没有私钥，意味着你无法<strong>独立控制</strong>这笔比特币——必须通过交易所授权才能转账、提现。</p>
+
+            <h3>4.2 深层含义 1：法律风险</h3>
+            <p>存放在交易所的比特币，在法律上属于<strong>交易所的负债</strong>——你是债权人，交易所是债务人。</p>
+            <ul>
+              <li>交易所破产 → 你作为"无担保债权人"排在最后，通常只能按比例分配剩余资产（FTX 债权人平均回收率约 15%）</li>
+              <li>交易所被监管查封 → 资产可能被强制冻结</li>
+              <li>交易所被法院要求配合 → 可能强制执行用户账户</li>
+            </ul>
+
+            <h3>4.3 深层含义 2：运营风险</h3>
+            <div class="risk-cards">
+              <div class="risk-card">
+                <div class="risk-icon">🔥</div>
+                <div class="risk-title">交易所破产</div>
+                <div class="risk-desc">FTX 2022 年 11 月破产，用户资金被挪用于姐妹公司 Alameda Research。</div>
+              </div>
+              <div class="risk-card">
+                <div class="risk-icon">💀</div>
+                <div class="risk-title">交易所被黑</div>
+                <div class="risk-desc">Mt.Gox 2014 年被黑 85 万 BTC（当时约 4.6 亿美元），至今仍是史上最大加密盗窃案。</div>
+              </div>
+              <div class="risk-card">
+                <div class="risk-icon">📋</div>
+                <div class="risk-title">监管冻结</div>
+                <div class="risk-desc">2023 年多家交易所因监管要求，冻结了部分用户资产。</div>
+              </div>
+              <div class="risk-card">
+                <div class="risk-icon">🤝</div>
+                <div class="risk-title">对手方违约</div>
+                <div class="risk-desc">借贷协议、清算所、清算基金等对手方违约，导致用户资产损失。</div>
+              </div>
+            </div>
+
+            <h3>4.4 什么时候值得"托管"，什么时候该"提回家"？</h3>
+            <div class="highlight-box">
+              <span class="label">🧠 实用决策框架</span>
+              <div class="text">
+                <p><strong>适合"存交易所"的情况：</strong></p>
+                <ul>
+                  <li>刚入场，需要用法币买币（必须有 CEX 的 KYC 通道）</li>
+                  <li>短期交易 / 套利（频繁买卖，需要流动性）</li>
+                  <li>小额零钱（不值得花精力迁移）</li>
+                  <li>需要合约、期权等复杂金融工具</li>
+                </ul>
+                <p style="margin-top:8px;"><strong>适合"提回自托管"的情况：</strong></p>
+                <ul>
+                  <li>持有超过 0.01 BTC（超过你"承受损失"的心理门槛）</li>
+                  <li>计划持有 1 年以上（长期 HODL）</li>
+                  <li>任何时候，只要你想"真正拥有"这些比特币</li>
+                  <li>任何时候，只要你对交易所的安全性有哪怕一丝疑虑</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 五、安全提币流程 ============ -->
+          <section id="withdraw">
+            <h2>五、如何安全地把币从交易所提到自己的钱包</h2>
+
+            <p>提币（Withdrawal）是把比特币从交易所转出到你自己控制地址的行为。这是你<strong>从"债务"变回"真正所有者"</strong>的关键一步。</p>
+
+            <div class="withdraw-steps">
+              <div class="withdraw-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <div class="step-title">准备一个自托管钱包</div>
+                  <div class="step-desc">在手机上安装软件钱包（如 BlueWallet、Samourai），或准备硬件钱包（Ledger、Trezor）。如果是第一次使用，建议先在小额测试网（testnet）上练习。</div>
+                </div>
+              </div>
+              <div class="withdraw-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <div class="step-title">获取你的收款地址</div>
+                  <div class="step-desc">打开钱包，找到收款/接收选项，复制你的比特币地址（以 bc1q 或 3 开头，约 26-35 个字符）。<strong>注意：比特币主网地址（LNP）和闪电网络地址是不同体系</strong>，确保选择正确的网络。</div>
+                  <div class="step-warn">⚠️ 每次收款都用新地址，保护隐私！</div>
+                </div>
+              </div>
+              <div class="withdraw-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <div class="step-title">在交易所发起提币</div>
+                  <div class="step-desc">找到"提币"/"提现"菜单，选择比特币（BTC），粘贴你的收款地址。选择网络：<strong>比特币主网（BTC / Bitcoin）</strong>，不要选错为 BSV、BCH 等分叉链。</div>
+                  <div class="step-warn">⚠️ 地址格式和网络必须完全匹配！一旦发错链，币可能永久丢失。</div>
+                </div>
+              </div>
+              <div class="withdraw-step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <div class="step-title">确认提币信息并验证地址</div>
+                  <div class="step-desc">仔细核对收款地址的<strong>每一个字符</strong>（最好部分字符验证）。输入提币数量，检查手续费。大多数交易所会自动估算手续费。</div>
+                </div>
+              </div>
+              <div class="withdraw-step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                  <div class="step-title">完成安全验证（2FA）</div>
+                  <div class="step-desc">交易所会要求邮箱确认 + Google Authenticator 或短信验证码。这一步是交易所的最后防线，确保是你本人操作。</div>
+                </div>
+              </div>
+              <div class="withdraw-step">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                  <div class="step-title">等待链上确认</div>
+                  <div class="step-desc">提币提交后，交易所会在内部广播到比特币网络。通常需要等待 1-6 个区块确认（约 10-60 分钟）才能到账。大额提币建议等 3 个以上确认。</div>
+                  <div class="step-warn">⚠️ 提币一旦发出，交易所无法撤回！</div>
+                </div>
+              </div>
+              <div class="withdraw-step">
+                <div class="step-num">7</div>
+                <div class="step-content">
+                  <div class="step-title">在钱包中确认到账</div>
+                  <div class="step-desc">打开你的自托管钱包，查看余额变化，或在区块浏览器（mempool.space）上搜索你的地址，验证交易状态为"已确认"。</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">💡 提币费用的小技巧</span>
+              <div class="text">
+                <p>比特币网络手续费按 <strong>sat/vB（每虚拟字节聪数）</strong>计价，不是固定金额。</p>
+                <ul>
+                  <li><strong>网络空闲时</strong>（非周末/节假日）：费率 5-15 sat/vB 即可，费用约 ¥5-20</li>
+                  <li><strong>网络繁忙时</strong>（减半前后/市场剧烈波动）：费率可能飙升至 100+ sat/vB</li>
+                  <li>提币到冷钱包（不急）：建议等网络费率下降再提，节省费用</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、风险案例 ============ -->
+          <section id="cases">
+            <h2>六、血的教训：两个历史性崩盘案例</h2>
+
+            <h3>6.1 FTX 暴雷（2022 年 11 月）</h3>
+            <div class="case-box">
+              <span class="case-label">⚠️ 真实事件</span>
+              <div class="case-title">FTX：加密世界最惨烈的信任崩塌</div>
+              <div class="case-body">
+                <p><strong>事件：</strong>2022 年 11 月 2 日，CoinDesk 披露 FTX 姐妹公司 Alameda Research 的资产负债表存在问题——大量资产是与 FTX 关联的山寨币，而非真正的流动性资产。</p>
+                <p>随后 72 小时内：用户大规模挤兑（48 小时内被提取 60 亿美元），FTX 宣布破产，创始人 Sam Bankman-Fried（SBF）被捕。</p>
+                <p><strong>核心问题：</strong>FTX 未经用户同意，将用户存款（FTX）挪用到交易公司（Alameda）进行高风险投资（做市、做多币种）。这本质上是<strong>银行"借新还旧"的套路</strong>，但发生在没有任何监管保护的加密交易所里。</p>
+                <p><strong>损失规模：</strong>约 130 亿美元用户资产缺口。债权人平均回收率预计 15-25%（截至 2024 年）。</p>
+                <p><strong>教训：</strong>"持牌"、"监管"不等于"安全"——FTX 持有巴哈马证券牌照，但毫无实质保护。</p>
+              </div>
+            </div>
+
+            <h3>6.2 Mt.Gox 被黑（2014 年）</h3>
+            <div class="case-box">
+              <span class="case-label">⚠️ 历史事件</span>
+              <div class="case-title">Mt.Gox：比特币最早的"大地震"</div>
+              <div class="case-body">
+                <p><strong>事件：</strong>2014 年 2 月，当时全球最大的比特币交易所 Mt.Gox 宣布破产，原因是黑客利用交易延展性漏洞（transaction malleability），在 2011-2014 年间持续盗取用户存款，累计损失约 85 万枚 BTC（当时价值约 4.6 亿美元）。</p>
+                <p><strong>根本原因：</strong>Mt.Gox 使用自己开发的交易系统，存在严重安全漏洞，且内部管理混乱。用户资金与公司运营资金混合，没有隔离。</p>
+                <p><strong>历史意义：</strong>Mt.Gox 事件是比特币历史上最重要的安全教育事件，直接催生了<strong>冷存储</strong>、<strong>多重签名</strong>、<strong>Proof of Reserves（储备证明）</strong>等行业安全标准。</p>
+                <p><strong>赔偿进展：</strong>2024 年，Mt.Gox 破产清算所开始向债权人偿还约 14 万枚 BTC（占被盗总额的 16.6%），偿还价值远超当年损失。</p>
+              </div>
+            </div>
+
+            <h3>6.3 FTX 与 Mt.Gox 的对比</h3>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>维度</th>
+                  <th>Mt.Gox（2014）</th>
+                  <th>FTX（2022）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>问题类型</td>
+                  <td>外部黑客攻击</td>
+                  <td>内部欺诈 + 挪用</td>
+                </tr>
+                <tr>
+                  <td>损失规模</td>
+                  <td>85 万 BTC（当时约 $4.6 亿）</td>
+                  <td>~$130 亿用户资产缺口</td>
+                </tr>
+                <tr>
+                  <td>根本原因</td>
+                  <td>技术漏洞 + 管理混乱</td>
+                  <td>缺乏隔离 + 监管缺失</td>
+                </tr>
+                <tr>
+                  <td>行业影响</td>
+                  <td>推动冷存储/多签标准</td>
+                  <td>推动 Proof of Reserves 运动</td>
+                </tr>
+                <tr>
+                  <td>用户结局</td>
+                  <td>10+ 年等待，2024 年开始赔付</td>
+                  <td>预计回收 15-25%</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- ============ 延伸探索 ============ -->
+          <div class="explorer-box">
+            <div class="exp-header">
+              <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+              <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+            </div>
+            <div class="exp-result">
+              <ul class="exp-links">
+                <li><a href="https://www.coinbase.com" target="_blank" rel="noopener">Coinbase 官网（全球最大合规交易所）<span class="exp-go">→</span></a></li>
+                <li><a href="https://www.binance.com" target="_blank" rel="noopener">Binance 币安（全球交易量最大的加密交易所）<span class="exp-go">→</span></a></li>
+                <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool.space（比特币区块浏览器，查看链上真实数据）<span class="exp-go">→</span></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ============ 七、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>七、多视角重新解读</h2>
+
+            <div class="perspective-card" id="exchange-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 同一个"交易所"，六种身份</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="finance">💰 金融从业者</button>
+                  <button class="p-tab" data-angle="security">🔒 安全专家</button>
+                  <button class="p-tab" data-angle="user">👤 普通用户</button>
+                  <button class="p-tab" data-angle="business">🏢 交易所运营者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="philosophy">🧠 哲学思想者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <!-- 金融从业者 -->
+                <div class="p-content" data-angle="finance">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 金融从业者</div>
+                  <div class="p-quote">"交易所是比特币进入传统金融体系的唯一合规入口——没有 KYC，比特币永远是边缘资产；有了 KYC，比特币才有机构级流动性的可能。"</div>
+                  <ul>
+                    <li><strong>托管服务的金融价值：</strong>机构级托管（如 Coinbase Custody）让养老金、家族办公室、对冲基金可以合规持有比特币——这是 ETF 出现前最重要的机构入场渠道</li>
+                    <li><strong>交易所资产负债表：</strong>交易所的收入来自交易手续费 + 杠杆利息 + 理财产品收益，但 FTX 案例暴露了"混合运营"的致命诱惑</li>
+                    <li><strong>Proof of Reserves（储备证明）：</strong>FTX 后兴起，通过 Merkle 树证明用户资产有 1:1 储备支撑。Kraken、Binance 均有公开储备证明页面</li>
+                    <li><strong>双边市场效应：</strong>交易所是典型的双边市场——买家越多、卖家越多，流动性越好，形成自然垄断格局</li>
+                    <li><strong>监管套利：</strong>CEX 将总部设在监管宽松地区（马耳他、迪拜），服务全球用户，但当用户所在国加强监管时，用户资产可能面临跨境法律冲突</li>
+                  </ul>
+                </div>
+                <!-- 安全专家 -->
+                <div class="p-content" data-angle="security">
+                  <div class="p-angle-badge" style="background:rgba(239,68,68,0.12);color:#EF4444;">🔒 安全专家</div>
+                  <div class="p-quote">"Mt.Gox 的 85 万 BTC 不是被一个天才黑客偷走的——它死于一个本不该存在的技术债务累积。交易所安全的核心不是防火墙，而是架构设计。"</div>
+                  <ul>
+                    <li><strong>资产隔离原则：</strong>用户资产必须与公司运营资金严格隔离，存放在多重签名冷钱包（M-of-N 签名）——理想状态：Coinbase 模式，85% 资产冷存储，需 3-of-5 或更高多签阈值</li>
+                    <li><strong>热钱包限额：</strong>热钱包只存放日常运营所需资金（通常为总资产的 1-5%），超出部分自动转冷</li>
+                    <li><strong>Proof of Reserves（链上验证）：</strong>交易所公布冷钱包地址，用户可在区块链上独立验证——Coinbase 的冷钱包地址公开可查，约占总持仓的 90%+</li>
+                    <li><strong>热钱包被黑场景：</strong>2016 年 Bitfinex 被黑 12 万 BTC，原因是多重签名实现存在漏洞（BitGo 软件签名服务被绕过）——安全是系统工程</li>
+                    <li><strong>社会工程学攻击：</strong>交易所内部人员被钓鱼攻击导致密钥泄露（2022 年 Harmony Horizon Bridge 被黑 1.9 亿，攻击者通过多签的 2-of-5 密钥泄露实现）</li>
+                    <li><strong>提币白名单：</strong>设置"只允许向已认证地址提币"，防止被钓鱼后大规模资产转移</li>
+                  </ul>
+                </div>
+                <!-- 普通用户 -->
+                <div class="p-content" data-angle="user">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👤 普通用户</div>
+                  <div class="p-quote">"我在 2021 年牛市高点买入，FTX 暴雷后亏了 30%——但如果我当初把币提到自己的钱包，就不会有这个损失。学费已交，教训要记一辈子。"</div>
+                  <ul>
+                    <li><strong>风险认知的滞后：</strong>大多数人是在"赚钱效应"驱动下进场的，对风险缺乏直观感知——FTX 暴雷是比特币世界最残酷的风险教育课</li>
+                    <li><strong>"放在交易所"的心理舒适区：</strong>交易所提供了法币充值、随时查看余额、即时买卖的便利——把币提到自己钱包意味着"暂时失去流动性"，心理摩擦很大</li>
+                    <li><strong>真实风险门槛：</strong>建议：持有超过 0.005 BTC（约 500 美元，2024 年价格），就应该考虑迁移到自托管</li>
+                    <li><strong>备份意识：</strong>自托管钱包最大的风险是"自己弄丢"——助记词手抄在纸上，放两三个安全位置（防火、防水、不在同一个房子里）</li>
+                    <li><strong>恢复演练：</strong>拿到新钱包后，先做一次完整恢复测试：删除钱包 → 用助记词恢复 → 确认余额正确。然后再正式使用。</li>
+                    <li><strong>不要告诉任何人你的助记词：</strong>任何向你索要助记词的人——无论以什么理由——都是骗子。交易所永远不会问你要助记词。</li>
+                  </ul>
+                </div>
+                <!-- 交易所运营者 -->
+                <div class="p-content" data-angle="business">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">🏢 交易所运营者</div>
+                  <div class="p-quote">"资产托管是交易所最核心的信誉资产——一旦失去用户信任，所有交易量、牌照、团队都是零。"</div>
+                  <ul>
+                    <li><strong>运营者的两难：</strong>用户存款 = 无息负债（这是银行的核心盈利模式）——交易所天然有动机"借用"用户资产进行投资。FTX 的错误不是"用了用户资产"，而是"用了之后亏光了"</li>
+                    <li><strong>监管合规的成本：</strong>申请牌照、维持合规团队、建立 AML 系统，每年成本可能超过 1 亿美元——这也是为什么监管合规的交易所费率更高</li>
+                    <li><strong>储备金率：</strong>健康的交易所应该维持 100% 以上的储备金率（负债端用户存款，资产端链上冷钱包 + 现金储备）。低于 100% 意味着资不抵债</li>
+                    <li><strong>竞争格局：</strong>头部效应极强（币安 + Coinbase 占全球现货交易量约 60%），长尾交易所面临流动性不足、用户获取成本高的困境</li>
+                    <li><strong>DEX 的威胁：</strong>Uniswap、dYdX 等 DEX 提供了"无需许可"的自托管交易体验，传统 CEX 必须通过产品差异化（法币通道、合规、理财产品）来维持用户黏性</li>
+                  </ul>
+                </div>
+                <!-- 历史学家 -->
+                <div class="p-content" data-angle="history">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">📜 历史学家</div>
+                  <div class="p-quote">"Mt.Gox → Bitfinex → QuadrigaCX → FTX：每隔几年，比特币世界就会经历一次'交易所大地震'。历史不会简单重复，但押韵的韵脚越来越清晰。"</div>
+                  <ul>
+                    <li><strong>2010 年 BitcoinMarket.com：</strong>最早的比特币交易所，Mt.Gox 创始人 Mark Karpelès 收购它并改名 Mt.Gox（Magic: The Gathering Online Exchange，"万智牌在线交易所"——最初是交易卡牌游戏的网站）</li>
+                    <li><strong>2014 年 Mt.Gox 崩盘：</strong>约 85 万 BTC 被盗（约流通量的 7%），比特币价格从 $1,000 跌至 $300（-70%）。但比特币网络在黑客攻击下毫发无损——真正被摧毁的是 Mt.Gox 这家公司，不是比特币</li>
+                    <li><strong>2016 年 Bitfinex 被黑：</strong>12 万 BTC，约为当时价格的 $7200 万。受害者按比例承担 36% 的损失（其余通过 BFX 代币补偿，最终偿还完毕）</li>
+                    <li><strong>2019 年 QuadrigaCX：</strong>创始人 Gerald Cotten 在印度去世，唯一持有冷钱包密钥的人不在了，约 2.6 亿美元用户资产被锁死</li>
+                    <li><strong>2022 年 FTX：</strong>130 亿美元用户缺口。SBF 被判 25 年监禁。引发加密行业监管大地震</li>
+                    <li><strong>规律总结：</strong>几乎每一次交易所崩盘，都伴随着"创始人过度自信 + 缺乏监管 + 挪用用户资产"的组合。这个规律在下一个周期还会重演吗？</li>
+                  </ul>
+                </div>
+                <!-- 哲学思想者 -->
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">🧠 哲学思想者</div>
+                  <div class="p-quote">"中本聪设计比特币，是为了让你把银行从交易中剔除。但讽刺的是，今天大多数人仍然需要通过银行授权才能进入比特币——而他们自己对此毫无察觉。"</div>
+                  <ul>
+                    <li><strong>去中心化的讽刺：</strong>比特币的核心价值主张是"去银行化"（debanking），但用户进入比特币的入口——中心化交易所——却比传统银行更加中心化（币安一家独大）</li>
+                    <li><strong>托管的本质：</strong>当用户把比特币存在交易所，他们实际上是在"信任"另一群人（中本聪最讨厌的中间人）。这不是技术问题，而是人性的问题</li>
+                    <li><strong>"自律"的不可能性：</strong>FTX 创始人 SBF 曾是"监管科技"的倡导者，多次在国会作证，主张"负责任的加密行业"。但他一边倡导监管，一边挪用用户资产。这说明：自律是必要的，但永远不够</li>
+                    <li><strong>真正的比特币主权：</strong>只有当你的私钥只有你自己知道、存在你物理控制的地方时，比特币才是真正属于你的。这是一个几乎无法妥协的原则</li>
+                    <li><strong>比特币的"文明价值"：</strong>比特币的存在本身，是对"中心化是不可避免的"这一假设的根本性反驳。交易所的存在是对这一反驳的"暂时性妥协"——但每一次妥协，都在提醒我们比特币真正想要实现的目标</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、动手实验 ============ -->
+          <section id="labs">
+            <h2>八、动手实验区</h2>
+
+            <!-- 实验 1：计算你的资产暴露风险 -->
+            <h3>🧮 实验 1：评估你的比特币托管风险</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">输入你的比特币持仓量（BTC）：</span>
+              </div>
+              <div style="margin:14px 0;">
+                <input type="number" id="btcHoldings" placeholder="例如：0.5" min="0" step="0.001" style="width:200px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.9rem;" oninput="calcRisk()">
+              </div>
+              <div class="exp-result" id="riskResult">
+                <div class="exp-empty">👆 输入持仓量，计算建议的托管策略</div>
+              </div>
+            </div>
+
+            <!-- 实验 2：查看主流交易所冷钱包 -->
+            <h3>🔍 实验 2：查看交易所的链上冷钱包</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <input type="text" id="walletInput" placeholder="输入比特币地址，或点击下方样例" style="flex:1;">
+                <button onclick="lookupWallet()" class="btn btn-primary">🔍 查询</button>
+              </div>
+              <div class="exp-header" style="flex-wrap:wrap;gap:8px;margin-top:10px;">
+                <span style="font-size:0.78rem;color:var(--text-muted);">样例：</span>
+                <button class="btn btn-sm" onclick="document.getElementById('walletInput').value='bc1q9sd4rrexpfpr2u5jnp6u0w8eh0ntuhadd0lmqc';lookupWallet()">Binance 热钱包</button>
+                <button class="btn btn-sm" onclick="document.getElementById('walletInput').value='bc1qpr8k5u7u0fplx5hyy9jsxr7mu0n5kt3mhjjn5q';lookupWallet()">Coinbase 冷钱包</button>
+              </div>
+              <div class="exp-result" id="walletResult">
+                <div class="exp-empty">👆 输入任意比特币地址，查看链上余额和交易记录</div>
+              </div>
+              <div style="margin-top:10px;">
+                <p style="font-size:0.78rem;color:var(--text-muted);">
+                  💡 <strong>提示：</strong>使用 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查询链上真实数据。
+                  大型交易所的冷钱包地址通常公开披露——在对应交易所官网的"储备证明"页面可找到。
+                </p>
+              </div>
+            </div>
+
+            <!-- 实验 3：对比特币提币所需时间 -->
+            <h3>⏱ 实验 3：比特币 vs 传统转账速度对比</h3>
+            <div class="compare-table" style="margin-top:12px;">
+              <thead>
+                <tr>
+                  <th>转账类型</th>
+                  <th>确认时间</th>
+                  <th>费用</th>
+                  <th>可逆性</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>比特币链上转账（标准）</td>
+                  <td>约 10-60 分钟（3 确认）</td>
+                  <td>¥5-50（取决于网络拥堵）</td>
+                  <td class="tag-no">不可逆</td>
+                </tr>
+                <tr>
+                  <td>交易所内部划转</td>
+                  <td>即时</td>
+                  <td>免费</td>
+                  <td class="tag-no">不可逆</td>
+                </tr>
+                <tr>
+                  <td>闪电网络</td>
+                  <td>&lt; 1 秒</td>
+                  <td>&lt; ¥1</td>
+                  <td class="tag-no">不可逆</td>
+                </tr>
+                <tr>
+                  <td>SWIFT 国际汇款</td>
+                  <td>1-5 个工作日</td>
+                  <td>¥150-500 + 中转费</td>
+                  <td class="tag-mid">理论可撤销</td>
+                </tr>
+                <tr>
+                  <td>支付宝/微信转账</td>
+                  <td>即时</td>
+                  <td>免费</td>
+                  <td class="tag-yes">可争议撤销</td>
+                </tr>
+              </tbody>
+            </div>
+            <p class="table-note" style="margin-top:6px;font-size:0.78rem;color:var(--text-muted);">
+              注：比特币的"不可逆"是双刃剑——意味着没有人可以冻结或撤销你的交易，但也意味着错误操作无法撤回。
+            </p>
+          </section>
+
+          <!-- ============ 九、大白话总结 ============ -->
+          <section id="summary">
+            <h2>九、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把这些复杂的放在日常场景中</span>
+              <p><strong>交易所 = 货币兑换柜台</strong></p>
+              <ul>
+                <li>你去银行把人民币换成美元 → 交易所把你的钱换成比特币</li>
+                <li>但银行倒闭，你的存款有 FDIC 保险；交易所倒闭，你的比特币没有保护</li>
+                <li>所以：兑换完，赶紧"把美元现金拿回家"</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>私钥 = 保险柜密码</strong></p>
+              <ul>
+                <li>密码在你手里 → 保险柜里的金子是你的</li>
+                <li>密码在银行手里 → 银行可以冻结、动用、倒闭——金子是不是你的，取决于银行讲不讲信用</li>
+                <li>FTX 的教训：Bankman-Fried 说他"讲信用"，所有人都信了——直到他被 FBI 带走</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>提币 = 从"记账"变"实物"</strong></p>
+              <ul>
+                <li>存在交易所 = 你的比特币是一个数据库里的数字（"记账"）</li>
+                <li>提到自己钱包 = 你的比特币真正在链上存在（"实物"）</li>
+                <li>就像：你银行里有 100 万，但这 100 万是数字；你把现金提出来藏在家里，才叫真正拥有</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>什么时候该提？</strong></p>
+              <ul>
+                <li>持有超过心理"损失承受线"的金额 → 提！</li>
+                <li>不打算在 3 个月内交易 → 提！</li>
+                <li>听到了任何关于交易所的负面消息 → 赶紧提！</li>
+                <li>记住：Mt.Gox 和 FTX 的用户，都是在"感觉不对劲"之后没有行动的人</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>你已经理解了交易所与托管的风险。下一步，是看看<strong>机构世界</strong>如何用全新的方式接触比特币——从华尔街的 ETF 到 MicroStrategy 的"买币战略"：</p>
+            <a href="05-04-institutions-etf.html" class="btn btn-primary">继续学习：机构采纳与 ETF →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="05-02-wallets-keys.html" class="btn">← 回顾：钱包与密钥管理</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="05-02-wallets-keys.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">钱包与密钥管理</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        生态篇 · 3 / 7
+      </div>
+      <a href="05-04-institutions-etf.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">机构采纳与 ETF</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      calcRisk();
+    });
+
+    // ===== 托管风险计算器 =====
+    function calcRisk() {
+      const btc = parseFloat(document.getElementById('btcHoldings').value) || 0;
+      const resultDiv = document.getElementById('riskResult');
+      if (!btc || btc <= 0) {
+        resultDiv.innerHTML = '<div class="exp-empty">👆 输入持仓量，计算建议的托管策略</div>';
+        return;
+      }
+      const btcValueUSD = btc * 70000; // approx
+      const tiers = [
+        { min: 0, max: 0.005, advice: '可放在交易所热钱包，练习买卖流程。', risk: '#EF4444', label: '小额学习' },
+        { min: 0.005, max: 0.05, advice: '提到软件钱包（BlueWallet/Samourai），备份助记词。', risk: '#EAB308', label: '建议迁移' },
+        { min: 0.05, max: 0.5, advice: '使用硬件钱包（Ledger/Trezor），助记词分2-3份保管。', risk: '#F97316', label: '强烈建议迁移' },
+        { min: 0.5, max: 99, advice: '使用多签方案（2-of-3），考虑 Coinbase Custody 或自建多签。', risk: '#10B981', label: '必须自托管' },
+      ];
+      const tier = tiers.find(t => btc >= t.min && btc <= t.max) || tiers[tiers.length - 1];
+      resultDiv.innerHTML = `
+        <div class="exp-field"><span><strong>持仓量</strong></span><span>${btc} BTC ≈ $${btcValueUSD.toLocaleString()} USD</span></div>
+        <div class="exp-field"><span><strong>风险评估</strong></span><span style="color:${tier.risk};font-weight:700;">${tier.label}</span></div>
+        <div class="exp-field" style="border-top:1px solid var(--border);margin-top:6px;padding-top:8px;">
+          <span><strong>建议</strong></span>
+          <span style="max-width:60%;text-align:right;font-size:0.82rem;line-height:1.5;">${tier.advice}</span>
+        </div>
+      `;
+    }
+
+    // ===== 交易所钱包查询（模拟 mempool API） =====
+    async function lookupWallet() {
+      const addr = document.getElementById('walletInput').value.trim();
+      const resultDiv = document.getElementById('walletResult');
+      if (!addr) { resultDiv.innerHTML = '<div class="exp-empty">请输入比特币地址</div>'; return; }
+      try {
+        resultDiv.innerHTML = '<div class="exp-empty">⏳ 正在查询...</div>';
+        const resp = await fetch(`https://mempool.space/api/address/${addr}`);
+        if (!resp.ok) throw new Error('查询失败');
+        const data = await resp.json();
+        const funded = data.chain_stats.funded_txo_sum / 1e8;
+        const spent = data.chain_stats.spent_txo_sum / 1e8;
+        const balance = funded - spent;
+        resultDiv.innerHTML = `
+          <div class="exp-field"><span><strong>地址</strong></span><span style="font-family:var(--font-mono);font-size:0.7rem;word-break:break-all;max-width:60%;text-align:right;">${addr}</span></div>
+          <div class="exp-field"><span><strong>链上余额</strong></span><span style="font-weight:700;color:var(--orange);">${balance.toFixed(4)} BTC</span></div>
+          <div class="exp-field"><span><strong>历史总收入</strong></span><span>${funded.toFixed(4)} BTC</span></div>
+          <div class="exp-field"><span><strong>历史总支出</strong></span><span>${spent.toFixed(4)} BTC</span></div>
+          <div class="exp-field"><span><strong>未花费输出</strong></span><span>${data.chain_stats.funded_txo_count - data.chain_stats.spent_txo_count} 笔</span></div>
+          <div style="margin-top:10px;">
+            <a href="https://mempool.space/address/${addr}" target="_blank" style="color:var(--orange);font-size:0.82rem;">在 mempool.space 上查看完整交易历史 ↗</a>
+          </div>
+        `;
+      } catch(e) {
+        resultDiv.innerHTML = `<div class="exp-empty">⚠️ 查询失败，请检查地址格式或稍后重试。</div>`;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>技术篇总览 | 比特币学习地图</title>
+  <meta name="description" content="比特币技术全景地图：从密码学到Layer2，深入理解比特币如何运转。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ===== SVG 区块样式 ===== */
+    .svg-visual-wrap {
+      background: #111;
+      border: 1.5px solid #2A2A2A;
+      border-radius: 18px;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .svg-visual-wrap svg {
+      border-radius: 10px;
+    }
+    .protocol-stack {
+      margin: 2.5rem 0;
+      background: #111;
+      border: 1.5px solid #2A2A2A;
+      border-radius: 18px;
+      padding: 24px;
+    }
+    .protocol-stack svg {
+      border-radius: 10px;
+    }
+    @media (max-width: 900px) {
+      .svg-visual-wrap,
+      .protocol-stack {
+        padding: 12px;
+      }
+    }
+
+    /* ===== 章节卡片 ===== */
+    .chapter-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .chapter-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .chapter-card .chapter-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .chapter-card .chapter-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+    .chapter-card .chapter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .chapter-card .chapter-tag {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text-muted);
+    }
+
+    /* ===== 路线图 ===== */
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .roadmap-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all var(--transition);
+    }
+    .roadmap-node:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .roadmap-node.current {
+      border-color: var(--orange);
+      background: rgba(247,147,26,0.08);
+    }
+    .roadmap-node .node-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-node .node-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orange);
+      min-width: 20px;
+    }
+    .roadmap-node .node-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .roadmap-node .node-desc {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .roadmap-arrow {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    /* ===== 对比表 ===== */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 14px 0;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .compare-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .compare-table td {
+      color: var(--text-secondary);
+    }
+    .compare-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .compare-table .new-marker {
+      display: inline-block;
+      font-size: 0.62rem;
+      padding: 1px 5px;
+      border-radius: 8px;
+      background: rgba(16,185,129,0.12);
+      color: #10B981;
+      font-weight: 600;
+    }
+    .table-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ===== 视角卡片 ===== */
+    .perspective-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .perspective-header {
+      padding: 14px 18px;
+      background: rgba(247,147,26,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .ph-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .ph-label-icon { font-size: 1rem; }
+    .perspective-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .p-tab {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .p-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .p-tab.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .perspective-body { padding: 16px 18px; }
+    .p-content { display: none; }
+    .p-content.active { display: block; }
+    .p-angle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .p-quote {
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      margin: 10px 0;
+    }
+    .p-content ul {
+      padding-left: 20px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .perspective-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p-dot-indicator { display: flex; gap: 4px; }
+    .p-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .p-dot.active { background: var(--orange); }
+
+    /* ===== 实验区 ===== */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .lab-section .lab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .lab-section .lab-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .lab-section .lab-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .lab-section .lab-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+    }
+    .lab-section .lab-list li:last-child { border-bottom: none; }
+    .lab-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 700px) {
+      .roadmap-grid { grid-template-columns: 1fr 1fr; }
+      .perspective-tabs { gap: 4px; }
+      .p-tab { font-size: 0.65rem; padding: 4px 7px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="04-00-overview.html">技术篇</a>
+        <span>›</span>
+        <span>总览</span>
+      </div>
+
+      <h1>🔧 技术篇总览</h1>
+      <p class="page-subtitle">拆开比特币这台"全球超级账本机器"，看清每个零件如何运转。从密码学基石到闪电网络，共 9 页，层层递进。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 5–8 分钟</span>
+        <span class="page-tag">📊 难度：中级</span>
+        <span class="page-tag">📑 技术篇 0/9</span>
+        <span class="page-tag">🆕 总览页</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>技术篇进度</span>
+          <span>0 / 9 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">技术篇是什么</a>
+          <a href="#architecture">知识架构图</a>
+          <a href="#stack">协议栈全景</a>
+          <a href="#why">为什么学技术</a>
+          <a href="#compare">技术篇 vs 入门篇</a>
+          <a href="#guide">学习路径指南</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 一、技术篇是什么 ============ -->
+          <section id="intro">
+            <h2>一、技术篇是什么？</h2>
+
+            <div class="story-box orange">
+              <span class="story-label">💡 核心直觉</span>
+              <p><strong>入门篇</strong>给你一张"直觉地图"——告诉你比特币大概是什么。私钥即所有权、区块链不可篡改、挖矿维持安全……</p>
+              <p style="margin-top:8px;"><strong>技术篇</strong>给你一套"工程图纸"——回答<em>比特币如何做到</em>这一切。密钥怎么生成？交易怎么验证？区块怎么链接？网络怎么同步？</p>
+              <p style="margin-top:8px;">如果说入门篇是"使用手册"，技术篇就是"原理说明"。</p>
+            </div>
+
+            <h3>1.1 本篇讲解方式：三维讲解</h3>
+            <p>技术篇每个主题都从三个维度讲解，帮助你立体理解：</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="chapter-card">
+                <div style="font-size:1.5rem;margin-bottom:6px;">📖</div>
+                <h4>① 正常讲解</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">从概念到机制，按逻辑顺序展开技术原理。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.5rem;margin-bottom:6px;">🔄</div>
+                <h4>② 多视角重新解释</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">同一主题，从开发者、安全研究者、经济学者等 6 个视角再看一遍。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.5rem;margin-bottom:6px;">💡</div>
+                <h4>③ 大白话比喻</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">用生活化的比喻，把复杂技术变成可感知的画面。</p>
+              </div>
+            </div>
+
+            <h3>1.2 技术篇路线图</h3>
+            <div class="roadmap-grid">
+              <div class="roadmap-node current">
+                <div class="node-header">
+                  <span class="node-num">00</span>
+                  <span class="node-title">总览</span>
+                </div>
+                <span class="node-desc">你在这里</span>
+              </div>
+              <div class="roadmap-arrow">→</div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">01</span>
+                  <span class="node-title">密码学基石</span>
+                </div>
+                <span class="node-desc">哈希与签名</span>
+              </div>
+              <div class="roadmap-arrow">→</div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">02</span>
+                  <span class="node-title">密钥与地址</span>
+                </div>
+                <span class="node-desc">BIP32/39/44</span>
+              </div>
+              <div class="roadmap-arrow">→</div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">03</span>
+                  <span class="node-title">交易与脚本</span>
+                </div>
+                <span class="node-desc">UTXO 模型</span>
+              </div>
+              <div class="roadmap-arrow">→</div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">04</span>
+                  <span class="node-title">区块结构</span>
+                </div>
+                <span class="node-desc">Merkle 树</span>
+              </div>
+              <div class="roadmap-arrow">→</div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">05</span>
+                  <span class="node-title">挖矿共识</span>
+                </div>
+                <span class="node-desc">PoW 细节</span>
+              </div>
+              <div class="roadmap-arrow">→</div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">06</span>
+                  <span class="node-title">节点网络</span>
+                </div>
+                <span class="node-desc">P2P 验证</span>
+              </div>
+              <div class="roadmap-arrow">→</div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">07</span>
+                  <span class="node-title">协议升级</span>
+                </div>
+                <span class="node-desc">BIP 治理</span>
+              </div>
+              <div class="roadmap-arrow">→</div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">08</span>
+                  <span class="node-title">扩展 Layer2</span>
+                </div>
+                <span class="node-desc">闪电网络</span>
+              </div>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:6px;">⏱ 技术篇总学习时长约 45 分钟 · 共 9 页 · 从密码学到闪电网络</p>
+          </section>
+
+          <!-- ============ 二、知识架构图（SVG 1） ============ -->
+          <section id="architecture">
+            <h2>二、知识架构图</h2>
+            <p style="color:var(--text-secondary);font-size:0.88rem;margin-top:-8px;">技术篇全景：9 个章节分为基础设施层、核心层、网络层、扩展层，层层依赖，层层递进。</p>
+
+            <!-- SVG 1: 技术篇全景架构图（保留原始内容） -->
+            <div class="svg-visual-wrap" style="margin-top:1.2rem;">
+              <h3 style="font-size:0.85rem;color:#999;margin-bottom:1rem;font-weight:500;">🔬 技术篇全景架构图</h3>
+              <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+                <svg viewBox="0 0 900 520" width="900" xmlns="http://www.w3.org/2000/svg"
+                     style="display:block;max-width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,'Noto Sans SC',sans-serif;">
+                  <defs>
+                    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1"/>
+                      <stop offset="100%" style="stop-color:#141414;stop-opacity:1"/>
+                    </linearGradient>
+                    <filter id="orangeGlow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="4" result="blur"/>
+                      <feFlood flood-color="#F7931A" flood-opacity="0.35"/>
+                      <feComposite in2="blur" operator="in"/>
+                      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <filter id="purpleGlow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="4" result="blur"/>
+                      <feFlood flood-color="#8B5CF6" flood-opacity="0.35"/>
+                      <feComposite in2="blur" operator="in"/>
+                      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <filter id="blueGlow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="3" result="blur"/>
+                      <feFlood flood-color="#3B82F6" flood-opacity="0.35"/>
+                      <feComposite in2="blur" operator="in"/>
+                      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <filter id="currentGlow" x="-40%" y="-40%" width="180%" height="180%">
+                      <feGaussianBlur stdDeviation="8" result="blur"/>
+                      <feFlood flood-color="#F7931A" flood-opacity="0.6"/>
+                      <feComposite in2="blur" operator="in"/>
+                      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L8,3 z" fill="#F7931A"/>
+                    </marker>
+                    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L8,3 z" fill="#8B5CF6"/>
+                    </marker>
+                    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L8,3 z" fill="#3B82F6"/>
+                    </marker>
+                  </defs>
+                  <rect x="10" y="10" width="880" height="500" rx="18" ry="18" fill="url(#bgGrad)" stroke="#2A2A2A" stroke-width="1.5"/>
+                  <!-- 当前页高亮 -->
+                  <g filter="url(#currentGlow)">
+                    <rect x="330" y="24" width="240" height="62" rx="14" ry="14" fill="#F7931A" stroke="#FFA940" stroke-width="2"/>
+                  </g>
+                  <rect x="330" y="24" width="240" height="62" rx="14" ry="14" fill="rgba(247,147,26,0.15)" stroke="#FFA940" stroke-width="2"/>
+                  <rect x="332" y="26" width="236" height="58" rx="12" ry="12" fill="none" stroke="#F7931A" stroke-width="0"/>
+                  <text x="450" y="49" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">总览</text>
+                  <text x="450" y="67" text-anchor="middle" fill="#FFE0B2" font-size="11">当前页 · 你在这里</text>
+                  <line x1="450" y1="86" x2="450" y2="108" stroke="#F7931A" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowOrange)"/>
+                  <!-- 基础设施层标签 -->
+                  <text x="170" y="115" text-anchor="middle" fill="#666" font-size="10" font-weight="600" letter-spacing="1">基础设施层</text>
+                  <!-- 密码学基石 -->
+                  <rect x="20" y="122" width="140" height="68" rx="10" ry="10" fill="#1a1a1a" stroke="#F7931A" stroke-width="1.5"/>
+                  <rect x="20" y="122" width="140" height="3" rx="2" ry="2" fill="#F7931A"/>
+                  <text x="90" y="143" text-anchor="middle" fill="#F7931A" font-size="11" font-weight="700">01 密码学基石</text>
+                  <text x="90" y="158" text-anchor="middle" fill="#999" font-size="10">SHA-256 · ECDSA</text>
+                  <text x="90" y="172" text-anchor="middle" fill="#666" font-size="9">哈希函数 · 数字签名</text>
+                  <line x1="160" y1="156" x2="182" y2="140" stroke="#F7931A" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+                  <!-- 密钥与地址 -->
+                  <rect x="162" y="122" width="140" height="68" rx="10" ry="10" fill="#1a1a1a" stroke="#F7931A" stroke-width="1.5"/>
+                  <rect x="162" y="122" width="140" height="3" rx="2" ry="2" fill="#F7931A"/>
+                  <text x="232" y="143" text-anchor="middle" fill="#F7931A" font-size="11" font-weight="700">02 密钥与地址</text>
+                  <text x="232" y="158" text-anchor="middle" fill="#999" font-size="10">BIP32 · BIP39</text>
+                  <text x="232" y="172" text-anchor="middle" fill="#666" font-size="9">HD钱包 · 助记词</text>
+                  <line x1="302" y1="156" x2="320" y2="156" stroke="#F7931A" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowOrange)"/>
+                  <!-- 核心层标签 -->
+                  <text x="450" y="115" text-anchor="middle" fill="#666" font-size="10" font-weight="600" letter-spacing="1">核心层</text>
+                  <!-- 交易与脚本 -->
+                  <rect x="340" y="122" width="140" height="68" rx="10" ry="10" fill="#1a1a1a" stroke="#8B5CF6" stroke-width="1.5"/>
+                  <rect x="340" y="122" width="140" height="3" rx="2" ry="2" fill="#8B5CF6"/>
+                  <text x="410" y="143" text-anchor="middle" fill="#A78BFA" font-size="11" font-weight="700">03 交易与脚本</text>
+                  <text x="410" y="158" text-anchor="middle" fill="#999" font-size="10">UTXO · Script</text>
+                  <text x="410" y="172" text-anchor="middle" fill="#666" font-size="9">P2PKH → Taproot</text>
+                  <line x1="340" y1="156" x2="322" y2="156" stroke="#8B5CF6" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+                  <!-- 区块结构 -->
+                  <rect x="480" y="122" width="140" height="68" rx="10" ry="10" fill="#1a1a1a" stroke="#8B5CF6" stroke-width="1.5"/>
+                  <rect x="480" y="122" width="140" height="3" rx="2" ry="2" fill="#8B5CF6"/>
+                  <text x="550" y="143" text-anchor="middle" fill="#A78BFA" font-size="11" font-weight="700">04 区块结构</text>
+                  <text x="550" y="158" text-anchor="middle" fill="#999" font-size="10">Merkle Tree</text>
+                  <text x="550" y="172" text-anchor="middle" fill="#666" font-size="9">Block · Header</text>
+                  <line x1="550" y1="190" x2="550" y2="215" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+                  <!-- 挖矿共识 -->
+                  <rect x="550" y="215" width="140" height="68" rx="10" ry="10" fill="#1a1a1a" stroke="#8B5CF6" stroke-width="1.5"/>
+                  <rect x="550" y="215" width="140" height="3" rx="2" ry="2" fill="#8B5CF6"/>
+                  <text x="620" y="236" text-anchor="middle" fill="#A78BFA" font-size="11" font-weight="700">05 挖矿共识</text>
+                  <text x="620" y="251" text-anchor="middle" fill="#999" font-size="10">PoW · 难度调整</text>
+                  <text x="620" y="265" text-anchor="middle" fill="#666" font-size="9">51% 攻击 · 矿池</text>
+                  <line x1="550" y1="283" x2="550" y2="308" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+                  <!-- 网络层标签 -->
+                  <text x="730" y="115" text-anchor="middle" fill="#666" font-size="10" font-weight="600" letter-spacing="1">网络层</text>
+                  <!-- 节点网络 -->
+                  <rect x="620" y="122" width="140" height="68" rx="10" ry="10" fill="#1a1a1a" stroke="#3B82F6" stroke-width="1.5"/>
+                  <rect x="620" y="122" width="140" height="3" rx="2" ry="2" fill="#3B82F6"/>
+                  <text x="690" y="143" text-anchor="middle" fill="#60A5FA" font-size="11" font-weight="700">06 节点网络</text>
+                  <text x="690" y="158" text-anchor="middle" fill="#999" font-size="10">P2P · SPV</text>
+                  <text x="690" y="172" text-anchor="middle" fill="#666" font-size="9">Gossip · mempool</text>
+                  <!-- 协议升级 -->
+                  <rect x="760" y="122" width="120" height="68" rx="10" ry="10" fill="#1a1a1a" stroke="#3B82F6" stroke-width="1.5"/>
+                  <rect x="760" y="122" width="120" height="3" rx="2" ry="2" fill="#3B82F6"/>
+                  <text x="820" y="143" text-anchor="middle" fill="#60A5FA" font-size="11" font-weight="700">07 协议升级</text>
+                  <text x="820" y="158" text-anchor="middle" fill="#999" font-size="10">BIP · 软硬分叉</text>
+                  <text x="820" y="172" text-anchor="middle" fill="#666" font-size="9">SegWit · Taproot</text>
+                  <!-- 扩展层标签 -->
+                  <text x="620" y="298" text-anchor="middle" fill="#666" font-size="10" font-weight="600" letter-spacing="1">扩展层</text>
+                  <!-- Layer2 -->
+                  <rect x="560" y="315" width="160" height="70" rx="12" ry="12" fill="#1a1a1a" stroke="#10B981" stroke-width="1.5"/>
+                  <rect x="560" y="315" width="160" height="3" rx="2" ry="2" fill="#10B981"/>
+                  <text x="640" y="338" text-anchor="middle" fill="#34D399" font-size="12" font-weight="700">08 Layer2 扩展</text>
+                  <text x="640" y="354" text-anchor="middle" fill="#999" font-size="10">Lightning Network</text>
+                  <text x="640" y="370" text-anchor="middle" fill="#666" font-size="9">HTLC · 通道 · 路由</text>
+                  <line x1="480" y1="156" x2="504" y2="156" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+                  <!-- 底部学习时长 -->
+                  <rect x="20" y="440" width="860" height="50" rx="12" ry="12" fill="rgba(247,147,26,0.05)" stroke="#F7931A" stroke-width="1" stroke-dasharray="6,4"/>
+                  <text x="450" y="463" text-anchor="middle" fill="#F7931A" font-size="13" font-weight="700">⏱ 技术篇总学习时长约 45 分钟</text>
+                  <text x="450" y="481" text-anchor="middle" fill="#666" font-size="10">共 9 页 · 从密码学到闪电网络 · 层层递进</text>
+                  <!-- 图例 -->
+                  <g transform="translate(20,400)">
+                    <rect x="0" y="0" width="12" height="12" rx="3" fill="#F7931A"/>
+                    <text x="18" y="10" fill="#999" font-size="10">基础设施</text>
+                    <rect x="90" y="0" width="12" height="12" rx="3" fill="#8B5CF6"/>
+                    <text x="108" y="10" fill="#999" font-size="10">核心层</text>
+                    <rect x="170" y="0" width="12" height="12" rx="3" fill="#3B82F6"/>
+                    <text x="188" y="10" fill="#999" font-size="10">网络层</text>
+                    <rect x="255" y="0" width="12" height="12" rx="3" fill="#10B981"/>
+                    <text x="273" y="10" fill="#999" font-size="10">扩展层</text>
+                    <rect x="330" y="0" width="12" height="12" rx="3" fill="#F7931A" filter="url(#currentGlow)"/>
+                    <text x="348" y="10" fill="#F7931A" font-size="10" font-weight="600">当前页</text>
+                    <line x1="410" y1="6" x2="450" y2="6" stroke="#F7931A" stroke-width="1.5" stroke-dasharray="5,3"/>
+                    <text x="456" y="10" fill="#999" font-size="10">学习顺序</text>
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、协议栈全景（SVG 2） ============ -->
+          <section id="stack">
+            <h2>三、协议栈全景</h2>
+            <p style="color:var(--text-secondary);font-size:0.88rem;margin-top:-8px;">比特币协议如同 OSI 模型，从底层加密到顶层应用，每一层各司其职，层与层之间相互依赖。</p>
+
+            <!-- SVG 2: 比特币协议栈图（保留原始内容） -->
+            <div class="protocol-stack" style="margin-top:1.2rem;">
+              <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+                <svg viewBox="0 0 900 520" width="900" xmlns="http://www.w3.org/2000/svg"
+                     style="display:block;max-width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,'Noto Sans SC',sans-serif;">
+                  <defs>
+                    <linearGradient id="layer5Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:0.3"/>
+                      <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:0.1"/>
+                    </linearGradient>
+                    <linearGradient id="layer4Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.3"/>
+                      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:0.1"/>
+                    </linearGradient>
+                    <linearGradient id="layer3Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:#F7931A;stop-opacity:0.3"/>
+                      <stop offset="100%" style="stop-color:#F7931A;stop-opacity:0.1"/>
+                    </linearGradient>
+                    <linearGradient id="layer2Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.3"/>
+                      <stop offset="100%" style="stop-color:#10B981;stop-opacity:0.1"/>
+                    </linearGradient>
+                    <linearGradient id="layer1Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:#EC4899;stop-opacity:0.3"/>
+                      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:0.1"/>
+                    </linearGradient>
+                    <linearGradient id="stackHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:#1a1a1a"/>
+                      <stop offset="100%" style="stop-color:#111"/>
+                    </linearGradient>
+                    <filter id="stackGlow" x="-10%" y="-10%" width="120%" height="120%">
+                      <feGaussianBlur stdDeviation="3" result="blur"/>
+                      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+                  <rect x="0" y="0" width="900" height="520" rx="18" ry="18" fill="#111" stroke="#2A2A2A" stroke-width="1.5"/>
+                  <!-- 栈头部 -->
+                  <rect x="20" y="18" width="220" height="36" rx="10" ry="10" fill="url(#stackHeaderGrad)" stroke="#2A2A2A" stroke-width="1"/>
+                  <text x="130" y="41" text-anchor="middle" fill="#E5E5E5" font-size="12" font-weight="700" letter-spacing="0.5">比特币协议栈</text>
+                  <!-- Layer 5 加密层 -->
+                  <rect x="20" y="68" width="560" height="72" rx="12" ry="0" fill="none" stroke="#8B5CF6" stroke-width="2"/>
+                  <rect x="20" y="68" width="12" height="12" rx="12" ry="0" fill="#111"/>
+                  <rect x="568" y="68" width="12" height="12" rx="0" ry="12" fill="#111"/>
+                  <rect x="28" y="76" width="8" height="56" rx="4" fill="#8B5CF6" filter="url(#stackGlow)"/>
+                  <text x="52" y="93" fill="#A78BFA" font-size="10" font-weight="700">L5</text>
+                  <text x="52" y="108" fill="#E5E5E5" font-size="12" font-weight="700">加密层</text>
+                  <text x="52" y="123" fill="#666" font-size="10">Cryptography</text>
+                  <text x="145" y="93" fill="#A78BFA" font-size="10" font-weight="700">secp256k1</text>
+                  <text x="145" y="108" fill="#E5E5E5" font-size="11">椭圆曲线密码学</text>
+                  <text x="145" y="123" fill="#999" font-size="10">ECDSA 签名 · Schnorr 签名</text>
+                  <!-- Layer 4 网络层 -->
+                  <rect x="20" y="148" width="560" height="72" rx="0" ry="0" fill="none" stroke="#3B82F6" stroke-width="2"/>
+                  <rect x="20" y="212" width="12" height="8" rx="0" ry="0" fill="#111"/>
+                  <rect x="568" y="212" width="12" height="8" rx="0" ry="0" fill="#111"/>
+                  <rect x="28" y="156" width="8" height="56" rx="4" fill="#3B82F6" filter="url(#stackGlow)"/>
+                  <text x="52" y="173" fill="#60A5FA" font-size="10" font-weight="700">L4</text>
+                  <text x="52" y="188" fill="#E5E5E5" font-size="12" font-weight="700">网络层</text>
+                  <text x="52" y="203" fill="#666" font-size="10">P2P Network</text>
+                  <text x="145" y="173" fill="#60A5FA" font-size="10" font-weight="700">P2P Protocol</text>
+                  <text x="145" y="188" fill="#E5E5E5" font-size="11">点对点通信</text>
+                  <text x="145" y="203" fill="#999" font-size="10">Gossip 广播 · 节点发现 · 区块传播</text>
+                  <!-- Layer 3 共识层 -->
+                  <rect x="20" y="220" width="560" height="72" rx="0" ry="0" fill="none" stroke="#F7931A" stroke-width="2"/>
+                  <rect x="28" y="228" width="8" height="56" rx="4" fill="#F7931A" filter="url(#stackGlow)"/>
+                  <text x="52" y="245" fill="#F7931A" font-size="10" font-weight="700">L3</text>
+                  <text x="52" y="260" fill="#E5E5E5" font-size="12" font-weight="700">共识层</text>
+                  <text x="52" y="275" fill="#666" font-size="10">Consensus</text>
+                  <text x="145" y="245" fill="#F7931A" font-size="10" font-weight="700">PoW · Blockchain</text>
+                  <text x="145" y="260" fill="#E5E5E5" font-size="11">工作量证明共识</text>
+                  <text x="145" y="275" fill="#999" font-size="10">Merkle 树 · 难度调整 · 最长链原则</text>
+                  <!-- Layer 2 脚本层 -->
+                  <rect x="20" y="292" width="560" height="72" rx="0" ry="0" fill="none" stroke="#10B981" stroke-width="2"/>
+                  <rect x="28" y="300" width="8" height="56" rx="4" fill="#10B981" filter="url(#stackGlow)"/>
+                  <text x="52" y="317" fill="#34D399" font-size="10" font-weight="700">L2</text>
+                  <text x="52" y="332" fill="#E5E5E5" font-size="12" font-weight="700">脚本层</text>
+                  <text x="52" y="347" fill="#666" font-size="10">Script</text>
+                  <text x="145" y="317" fill="#34D399" font-size="10" font-weight="700">Bitcoin Script</text>
+                  <text x="145" y="332" fill="#E5E5E5" font-size="11">交易验证语言</text>
+                  <text x="145" y="347" fill="#999" font-size="10">P2PKH · P2SH · SegWit · Taproot</text>
+                  <!-- Layer 1 应用层 -->
+                  <rect x="20" y="364" width="560" height="72" rx="12" ry="0" fill="none" stroke="#EC4899" stroke-width="2"/>
+                  <rect x="20" y="420" width="12" height="16" fill="#111"/>
+                  <rect x="568" y="420" width="12" height="16" fill="#111"/>
+                  <rect x="20" y="428" width="12" height="8" rx="0" ry="12" fill="#111"/>
+                  <rect x="568" y="428" width="12" height="8" rx="0" ry="12" fill="#111"/>
+                  <rect x="28" y="372" width="8" height="56" rx="4" fill="#EC4899" filter="url(#stackGlow)"/>
+                  <text x="52" y="389" fill="#F472B6" font-size="10" font-weight="700">L1</text>
+                  <text x="52" y="404" fill="#E5E5E5" font-size="12" font-weight="700">应用层</text>
+                  <text x="52" y="419" fill="#666" font-size="10">Application</text>
+                  <text x="145" y="389" fill="#F472B6" font-size="10" font-weight="700">Bitcoin App</text>
+                  <text x="145" y="404" fill="#E5E5E5" font-size="11">比特币应用层</text>
+                  <text x="145" y="419" fill="#999" font-size="10">钱包 · 浏览器 · 交易所 · 商家支付</text>
+                  <!-- 分隔线 -->
+                  <line x1="310" y1="76" x2="310" y2="132" stroke="#2A2A2A" stroke-width="1"/>
+                  <line x1="310" y1="156" x2="310" y2="212" stroke="#2A2A2A" stroke-width="1"/>
+                  <line x1="310" y1="228" x2="310" y2="284" stroke="#2A2A2A" stroke-width="1"/>
+                  <line x1="310" y1="300" x2="310" y2="356" stroke="#2A2A2A" stroke-width="1"/>
+                  <!-- 右侧章节对应 -->
+                  <line x1="580" y1="68" x2="580" y2="436" stroke="#2A2A2A" stroke-width="1.5"/>
+                  <rect x="590" y="18" width="290" height="36" rx="10" ry="10" fill="url(#stackHeaderGrad)" stroke="#2A2A2A" stroke-width="1"/>
+                  <text x="735" y="41" text-anchor="middle" fill="#E5E5E5" font-size="12" font-weight="700" letter-spacing="0.5">技术篇章节</text>
+                  <!-- L5 章节 -->
+                  <rect x="590" y="76" width="290" height="56" rx="8" fill="#8B5CF6" fill-opacity="0.08" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="4,3"/>
+                  <text x="735" y="94" text-anchor="middle" fill="#A78BFA" font-size="11" font-weight="700">🔐 01 密码学基石</text>
+                  <text x="735" y="112" text-anchor="middle" fill="#666" font-size="10">哈希函数 · 数字签名原理</text>
+                  <!-- L4 章节 -->
+                  <rect x="590" y="156" width="290" height="56" rx="8" fill="#3B82F6" fill-opacity="0.08" stroke="#3B82F6" stroke-width="1" stroke-dasharray="4,3"/>
+                  <text x="735" y="174" text-anchor="middle" fill="#60A5FA" font-size="11" font-weight="700">🌐 06 节点网络</text>
+                  <text x="735" y="192" text-anchor="middle" fill="#666" font-size="10">P2P · SPV · 节点类型</text>
+                  <!-- L3 章节 -->
+                  <rect x="590" y="228" width="290" height="56" rx="8" fill="#F7931A" fill-opacity="0.08" stroke="#F7931A" stroke-width="1" stroke-dasharray="4,3"/>
+                  <text x="735" y="246" text-anchor="middle" fill="#F7931A" font-size="11" font-weight="700">⛏ 04 区块结构 · 05 挖矿共识</text>
+                  <text x="735" y="264" text-anchor="middle" fill="#666" font-size="10">Merkle 树 · PoW · 难度公式</text>
+                  <!-- L2 章节 -->
+                  <rect x="590" y="300" width="290" height="56" rx="8" fill="#10B981" fill-opacity="0.08" stroke="#10B981" stroke-width="1" stroke-dasharray="4,3"/>
+                  <text x="735" y="318" text-anchor="middle" fill="#34D399" font-size="11" font-weight="700">📜 03 交易与脚本</text>
+                  <text x="735" y="336" text-anchor="middle" fill="#666" font-size="10">UTXO · Script · P2PKH → Taproot</text>
+                  <!-- L1 章节 -->
+                  <rect x="590" y="372" width="290" height="56" rx="8" fill="#EC4899" fill-opacity="0.08" stroke="#EC4899" stroke-width="1" stroke-dasharray="4,3"/>
+                  <text x="735" y="390" text-anchor="middle" fill="#F472B6" font-size="11" font-weight="700">💳 应用：闪电网络</text>
+                  <text x="735" y="408" text-anchor="middle" fill="#666" font-size="10">Layer2 快速支付通道</text>
+                  <!-- 层间连接箭头 -->
+                  <line x1="735" y1="132" x2="735" y2="156" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrowPurple)"/>
+                  <line x1="735" y1="212" x2="735" y2="228" stroke="#3B82F6" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrowBlue)"/>
+                  <line x1="735" y1="284" x2="735" y2="300" stroke="#F7931A" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrowOrange)"/>
+                  <line x1="735" y1="356" x2="735" y2="372" stroke="#10B981" stroke-width="1" stroke-dasharray="3,3"/>
+                  <!-- 底部图例 -->
+                  <line x1="20" y1="456" x2="870" y2="456" stroke="#2A2A2A" stroke-width="1"/>
+                  <text x="20" y="472" fill="#666" font-size="10" font-weight="600">图例：</text>
+                  <rect x="70" y="463" width="10" height="10" rx="3" fill="#EC4899"/>
+                  <text x="86" y="472" fill="#999" font-size="10">应用层</text>
+                  <rect x="145" y="463" width="10" height="10" rx="3" fill="#10B981"/>
+                  <text x="161" y="472" fill="#999" font-size="10">脚本层</text>
+                  <rect x="220" y="463" width="10" height="10" rx="3" fill="#F7931A"/>
+                  <text x="236" y="472" fill="#999" font-size="10">共识层</text>
+                  <rect x="295" y="463" width="10" height="10" rx="3" fill="#3B82F6"/>
+                  <text x="311" y="472" fill="#999" font-size="10">网络层</text>
+                  <rect x="370" y="463" width="10" height="10" rx="3" fill="#8B5CF6"/>
+                  <text x="386" y="472" fill="#999" font-size="10">加密层</text>
+                  <line x1="460" y1="468" x2="490" y2="468" stroke="#2A2A2A" stroke-width="1.5" stroke-dasharray="4,3"/>
+                  <text x="498" y="472" fill="#999" font-size="10">层间依赖</text>
+                  <rect x="570" y="463" width="10" height="10" rx="3" fill="none" stroke="#F7931A" stroke-width="1" stroke-dasharray="4,3"/>
+                  <text x="588" y="472" fill="#F7931A" font-size="10">技术篇章节</text>
+                </svg>
+              </div>
+            </div>
+
+            <h3>3.1 五层架构详解</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;">
+              <div class="chapter-card">
+                <div style="width:6px;height:24px;background:#8B5CF6;border-radius:3px;margin-bottom:8px;"></div>
+                <h4>L5 加密层</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">椭圆曲线 secp256k1、SHA-256、RIPEMD-160。ECDSA 签名 → Schnorr 签名演进。</p>
+                <div class="chapter-tags"><span class="chapter-tag">01 密码学基石</span></div>
+              </div>
+              <div class="chapter-card">
+                <div style="width:6px;height:24px;background:#3B82F6;border-radius:3px;margin-bottom:8px;"></div>
+                <h4>L4 网络层</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">P2P 协议、Gossip 广播、节点发现、区块传播、mempool 同步。</p>
+                <div class="chapter-tags"><span class="chapter-tag">06 节点网络</span></div>
+              </div>
+              <div class="chapter-card">
+                <div style="width:6px;height:24px;background:#F7931A;border-radius:3px;margin-bottom:8px;"></div>
+                <h4>L3 共识层</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">PoW 共识、区块结构、Merkle 树、难度调整、最长链原则。</p>
+                <div class="chapter-tags"><span class="chapter-tag">04 区块结构</span><span class="chapter-tag">05 挖矿共识</span></div>
+              </div>
+              <div class="chapter-card">
+                <div style="width:6px;height:24px;background:#10B981;border-radius:3px;margin-bottom:8px;"></div>
+                <h4>L2 脚本层</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">Bitcoin Script、P2PKH → P2SH → SegWit → Taproot 演进。</p>
+                <div class="chapter-tags"><span class="chapter-tag">03 交易与脚本</span></div>
+              </div>
+              <div class="chapter-card">
+                <div style="width:6px;height:24px;background:#EC4899;border-radius:3px;margin-bottom:8px;"></div>
+                <h4>L1 应用层</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">钱包、区块浏览器、交易所 API、闪电网络等实际应用。</p>
+                <div class="chapter-tags"><span class="chapter-tag">08 Layer2</span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、为什么学技术 ============ -->
+          <section id="why">
+            <h2>四、为什么学技术？</h2>
+
+            <h3>4.1 从"知道"到"理解"的跨越</h3>
+            <p>入门篇给你的是直觉，技术篇给你的是判断力。两者结合，才能在这个充满噪音和误解的领域做出真正独立的判断。</p>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;" class="compare-table">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <h4 style="color:var(--orange);font-size:0.88rem;margin-bottom:10px;">入门篇的收获</h4>
+                <ul style="font-size:0.82rem;color:var(--text-secondary);padding-left:16px;line-height:1.8;">
+                  <li>私钥 = 比特币的所有权</li>
+                  <li>区块链 = 不可篡改的账本</li>
+                  <li>挖矿 = 用算力换安全</li>
+                  <li>比特币 = 稀缺性 + 去中心化</li>
+                </ul>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <h4 style="color:#10B981;font-size:0.88rem;margin-bottom:10px;">技术篇的收获</h4>
+                <ul style="font-size:0.82rem;color:var(--text-secondary);padding-left:16px;line-height:1.8;">
+                  <li>私钥怎么生成（椭圆曲线数学）</li>
+                  <li>签名怎么验证（ECDSA 算法）</li>
+                  <li>共识怎么达成（PoW 机制）</li>
+                  <li>协议怎么升级（软硬分叉）</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>4.2 技术理解能做什么？</h3>
+            <ul>
+              <li><strong>识别谎言</strong>：面对"比特币用了什么技术"的争议，你能自己判断，而不是听信任何单方说法</li>
+              <li><strong>评估风险</strong>：知道 51% 攻击的真正成本、知道 Taproot 为什么重要</li>
+              <li><strong>保护资产</strong>：理解多重签名钱包、时间锁、受托人设计的原理</li>
+              <li><strong>把握机会</strong>：Layer2、铭文、RGB……技术演进就是新机会的来源</li>
+            </ul>
+          </section>
+
+          <!-- ============ 五、技术篇 vs 入门篇 ============ -->
+          <section id="compare">
+            <h2>五、技术篇 vs 入门篇：加深与新增</h2>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>主题</th>
+                  <th>入门篇（基础层）</th>
+                  <th>技术篇（深入 / 新增）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>密钥 / 地址</strong></td>
+                  <td>私钥即所有权、助记词</td>
+                  <td>椭圆曲线、分层确定性、地址类型演进</td>
+                </tr>
+                <tr>
+                  <td><strong>区块链</strong></td>
+                  <td>区块链是什么、不可篡改直觉</td>
+                  <td>区块结构、Merkle 树、链式哈希细节</td>
+                </tr>
+                <tr>
+                  <td><strong>交易</strong></td>
+                  <td>略提及</td>
+                  <td>交易结构、Script 脚本、P2PKH → Taproot</td>
+                </tr>
+                <tr>
+                  <td><strong>挖矿</strong></td>
+                  <td>挖矿直觉、难度概念</td>
+                  <td>PoW 细节、难度公式、51% 攻击、矿池</td>
+                </tr>
+                <tr>
+                  <td><strong>节点网络</strong> <span class="new-marker">新增</span></td>
+                  <td>—</td>
+                  <td>全节点 / 轻节点 / SPV、mempool、去中心化验证</td>
+                </tr>
+                <tr>
+                  <td><strong>密码学</strong> <span class="new-marker">新增</span></td>
+                  <td>—</td>
+                  <td>SHA-256、数字签名原理</td>
+                </tr>
+                <tr>
+                  <td><strong>协议升级</strong> <span class="new-marker">新增</span></td>
+                  <td>—</td>
+                  <td>软硬分叉、BIP 流程、SegWit / Taproot 史</td>
+                </tr>
+                <tr>
+                  <td><strong>扩展 Layer2</strong> <span class="new-marker">新增</span></td>
+                  <td>—</td>
+                  <td>闪电网络、侧链、RGB、铭文</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="table-note"><span class="new-marker">新增</span> 标记为技术篇独有内容，入门篇未涉及。</p>
+          </section>
+
+          <!-- ============ 六、学习路径指南 ============ -->
+          <section id="guide">
+            <h2>六、学习路径指南</h2>
+
+            <h3>6.1 推荐顺序与核心概念</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:16px 0;">
+              <div class="chapter-card">
+                <div class="chapter-num">01</div>
+                <div class="chapter-title">密码学基石</div>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">哈希函数、SHA-256、ECDSA 签名、数字签名原理</p>
+              </div>
+              <div class="chapter-card">
+                <div class="chapter-num">02</div>
+                <div class="chapter-title">密钥与地址</div>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">椭圆曲线、BIP32/39/44、HD 钱包、助记词、地址类型</p>
+              </div>
+              <div class="chapter-card">
+                <div class="chapter-num">03</div>
+                <div class="chapter-title">交易与脚本</div>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">UTXO 模型、Bitcoin Script、P2PKH → Taproot、SegWit</p>
+              </div>
+              <div class="chapter-card">
+                <div class="chapter-num">04</div>
+                <div class="chapter-title">区块结构</div>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">Block Header、Merkle 树、SPV 证明、区块链接</p>
+              </div>
+              <div class="chapter-card">
+                <div class="chapter-num">05</div>
+                <div class="chapter-title">挖矿共识</div>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">PoW、难度调整、51% 攻击、矿池、矿工激励</p>
+              </div>
+              <div class="chapter-card">
+                <div class="chapter-num">06</div>
+                <div class="chapter-title">节点网络</div>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">P2P 协议、Gossip、SPV 节点、mempool、全节点</p>
+              </div>
+              <div class="chapter-card">
+                <div class="chapter-num">07</div>
+                <div class="chapter-title">协议升级</div>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">软硬分叉、BIP 流程、SegWit、Taproot、升级史</p>
+              </div>
+              <div class="chapter-card">
+                <div class="chapter-num">08</div>
+                <div class="chapter-title">扩展 Layer2</div>
+                <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">闪电网络、HTLC、通道、路由、侧链、铭文</p>
+              </div>
+            </div>
+
+            <h3>6.2 学习建议</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="chapter-card">
+                <div style="font-size:1.3rem;">🎯</div>
+                <h4>按顺序读</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">技术篇有前后依赖：密钥生成 → 交易签名 → 区块打包 → 网络传播。顺序走能建立完整链条。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.3rem;">💻</div>
+                <h4>动手实验</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">每页都有互动区：查真实交易、看区块结构、模拟签名验证。实践比光看更深刻。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.3rem;">🔄</div>
+                <h4>多视角切换</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">同个概念，开发者看实现、安全者看风险、经济者看激励。六个视角帮你立体理解。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.3rem;">📝</div>
+                <h4>不求全懂</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">技术细节繁多，第一遍抓主线。遇到不懂的地方，先记下，回头再来。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、多视角重新解释 ============ -->
+          <section id="perspectives">
+            <h2>七、多视角重新解释</h2>
+            <p>同一个概念，换一个身份看，收获完全不同。以下用"技术篇总览"这个主题来演示：</p>
+
+            <!-- 视角卡片 -->
+            <div class="perspective-card" id="overview-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 技术篇总览</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="technology">👨‍💻 开发者</button>
+                  <button class="p-tab" data-angle="security">🛡 安全研究员</button>
+                  <button class="p-tab" data-angle="user">👛 普通用户</button>
+                  <button class="p-tab" data-angle="economist">💰 经济学家</button>
+                  <button class="p-tab" data-angle="historian">📜 历史学家</button>
+                  <button class="p-tab" data-angle="philosophy">🤔 哲学爱好者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <!-- 开发者视角 -->
+                <div class="p-content" data-angle="technology">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👨‍💻 开发者</div>
+                  <div class="p-quote">"技术篇是比特币工程师的必读手册——从椭圆曲线到闪电网络，每一层都有其设计权衡。"</div>
+                  <ul>
+                    <li><strong>secp256k1 的选择</strong>：为什么用这条椭圆曲线而不是 RSA？性能 + 安全性 + 无需许可证的专利</li>
+                    <li><strong>Script 的刻意限制</strong>：图灵不完备意味着什么？每个脚本都必然终止，避免停机问题</li>
+                    <li><strong>BIP 治理的务实</strong>：没有"官方升级"，只有社区共识——好设计自己流行</li>
+                    <li><strong>闪电网络是工程奇迹</strong>：HTLC、路由、penalty 机制……每个细节都有安全考量的权衡</li>
+                  </ul>
+                </div>
+                <!-- 安全研究员视角 -->
+                <div class="p-content" data-angle="security">
+                  <div class="p-angle-badge" style="background:rgba(239,68,68,0.12);color:#EF4444;">🛡 安全研究员</div>
+                  <div class="p-quote">"安全不是一层，而是每一层的精心叠加。密码学基石若有裂缝，上层设计再完美也徒劳。"</div>
+                  <ul>
+                    <li><strong>哈希碰撞的实际威胁</strong>：SHA-256 的 256 位长度意味着暴力碰撞在宇宙尺度上都是不可能的</li>
+                    <li><strong>ECDSA 签名漏洞</strong>：Nonce 重用会导致私钥泄露——比特币早期曾因此导致损失</li>
+                    <li><strong>51% 攻击的边界</strong>：算力集中化是真实风险，但攻击成本极高且收益有限</li>
+                    <li><strong>闪电网络的 Penalty 机制</strong>：双花惩罚如何防止通道内欺诈？</li>
+                    <li><strong>协议升级的风险</strong>：软分叉带来新规则兼容性，硬分叉则可能造成链分裂</li>
+                  </ul>
+                </div>
+                <!-- 普通用户视角 -->
+                <div class="p-content" data-angle="user">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">👛 普通用户</div>
+                  <div class="p-quote">"我不关心椭圆曲线——我关心我的币安不安全。但懂一点技术，确实能帮我做出更好的决策。"</div>
+                  <ul>
+                    <li><strong>为什么用硬件钱包</strong>：私钥永远不出设备，黑客就算控制了电脑也拿不到私钥</li>
+                    <li><strong>为什么要等 3 个确认</strong>：每多一个区块，逆转成本指数级增长——6 个确认几乎是不可逆转的</li>
+                    <li><strong>手续费为什么波动</strong>：区块空间有限，网络拥堵时大家竞价，费率飙升</li>
+                    <li><strong>闪电网络适合什么</strong>：日常小额支付（咖啡、打赏）——便宜、快速；但不适合大额</li>
+                    <li><strong>为什么 Taproot 重要</strong>：你的多签交易和单签交易看起来一样——隐私提升</li>
+                  </ul>
+                </div>
+                <!-- 经济学家视角 -->
+                <div class="p-content" data-angle="economist">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学家</div>
+                  <div class="p-quote">"比特币的技术设计，就是一套经济激励体系的工程实现。密码学和博弈论的完美融合。"</div>
+                  <ul>
+                    <li><strong>2100 万上限</strong>：如何保证？共识规则硬编码，14 天调整一次难度以维持出块速度</li>
+                    <li><strong>矿工激励演变</strong>：区块奖励每 4 年减半（约 2140 年归零）→ 手续费将完全替代区块奖励</li>
+                    <li><strong>UTXO 模型 vs 账户模型</strong>：UTXO 的并发性天然优于账户模型——多笔交易互不冲突</li>
+                    <li><strong>Layer2 的经济学</strong>：闪电网络让微支付在经济上可行——链上交易费太高，小额无法支付</li>
+                    <li><strong>安全预算问题</strong>：区块奖励归零后，手续费收入能否支撑足够的算力保护网络安全？</li>
+                  </ul>
+                </div>
+                <!-- 历史学家视角 -->
+                <div class="p-content" data-angle="historian">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">📜 历史学家</div>
+                  <div class="p-quote">"比特币的技术演进，是人类历史上最有趣的协作实验之一——没有公司，没有CEO，靠代码和共识驱动。"</div>
+                  <ul>
+                    <li><strong>2009 年创世区块</strong>：中本聪嵌入"Times 03/Jan/2009 Chancellor on brink of second bailout for banks"，宣告了对传统金融的挑战</li>
+                    <li><strong>2010 年 OP_LSHIFT 漏洞</strong>：首次紧急补丁，中本聪在 6 小时内发布修复——展现了比特币的响应速度</li>
+                    <li><strong>2011-2017 区块大小战争</strong>：从 Bitcoin XT、Classic、Unlimited 到 SegWit，软分叉胜出证明了用户主权的可能性</li>
+                    <li><strong>2017 UASF</strong>：用户节点强制激活 SegWit——这是历史上罕见的"用户用脚投票"的技术决策</li>
+                    <li><strong>2021 Taproot</strong>：几乎无争议通过——比特币社区成熟了？</li>
+                  </ul>
+                </div>
+                <!-- 哲学爱好者视角 -->
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">🤔 哲学爱好者</div>
+                  <div class="p-quote">"比特币不只是一个技术系统——它是一套关于信任、稀缺性和去中心化的哲学命题。"</div>
+                  <ul>
+                    <li><strong>去中心化的悖论</strong>：真正的去中心化需要什么样的激励设计？权力下放与效率的永恒矛盾</li>
+                    <li><strong>稀缺性的哲学</strong>：比特币用数学创造了数字稀缺性——这在人类历史上是前所未有的</li>
+                    <li><strong>代码即法律？</strong>：智能合约的局限性——代码无法处理现实世界的模糊性，预言机问题</li>
+                    <li><strong>自我主权</strong>：掌握自己的私钥，就是掌握自己的财富主权——这是自由的最后一道防线</li>
+                    <li><strong>时间偏好与反脆弱</strong>：比特币 15 年运行，经历了无数次攻击依然屹立——这本身就是最有力的证明</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签切换视角，左右滑动可切换</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、动手实验区 ============ -->
+          <section id="labs">
+            <h2>八、动手实验区</h2>
+            <p>技术篇每个页面都会嵌入真实可操作的实验模块。以下是本篇预告：</p>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span style="font-size:1.2rem;">🔍</span>
+                <span class="lab-title">区块浏览器实验（每页都有）</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">🔍</span>
+                  <div>
+                    <strong>查一笔真实交易</strong>：输入 TXID，查看交易的输入、输出、手续费、确认状态。体验 UTXO 如何被花费。
+                    <br><span style="font-size:0.72rem;color:var(--text-muted);">样例：f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16（创世块后第一笔转账）</span>
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📦</span>
+                  <div>
+                    <strong>查一个区块的哈希值</strong>：输入区块高度，查看区块头哈希，理解"区块哈希"如何由前一区块哈希 + Merkle 根 + Nonce 等字段计算得出。
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span style="font-size:1.2rem;">🔐</span>
+                <span class="lab-title">密码学实验（01-密码学基石）</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">#️⃣</span>
+                  <div>
+                    <strong>哈希计算器</strong>：输入任意字符串，实时计算 SHA-256 哈希，感受"雪崩效应"——改一个字符，哈希完全不同。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">✍️</span>
+                  <div>
+                    <strong>签名验证演示</strong>：用浏览器内嵌的 ECDSA 实现，输入私钥（演示用假数据），看签名如何生成、公钥如何推导。
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span style="font-size:1.2rem;">⚡</span>
+                <span class="lab-title">闪电网络实验（08-Layer2）</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">🔗</span>
+                  <div>
+                    <strong>闪电通道模拟</strong>：模拟开通道、更新余额、关通道结算的全过程，理解 HTLC（哈希时间锁合约）如何实现跨节点路由。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">🌐</span>
+                  <div>
+                    <strong>路由可视化</strong>：输入起点和终点节点，看闪电网络如何通过哈希锁找到支付路径。
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <p style="font-size:0.82rem;color:var(--text-muted);margin-top:10px;">
+              💡 这些实验全部在浏览器内运行，无需安装任何软件。真实链上数据查询通过 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> API 完成。
+            </p>
+          </section>
+
+          <!-- ============ 九、大白话总结 ============ -->
+          <section id="summary">
+            <h2>九、大白话总结</h2>
+
+            <div class="story-box orange">
+              <span class="story-label">💡 把比特币比作一台全球公开运行的超级账本机器</span>
+              <ul style="font-size:0.88rem;line-height:1.9;">
+                <li><strong>密码学</strong>是这台机器的<strong>锁芯技术</strong>——只有你有钥匙（私钥）才能动你的币</li>
+                <li><strong>密钥和地址</strong>是<strong>钥匙和锁孔</strong>——一个助记词能造出无限把钥匙</li>
+                <li><strong>交易</strong>是<strong>记账条目</strong>——每笔交易就像撕掉旧钞票、签发新钞票</li>
+                <li><strong>区块</strong>是<strong>账本的一页</strong>——每页都带着"上一页的指纹"（哈希指针）</li>
+                <li><strong>挖矿</strong>是<strong>翻页盖章</strong>——矿工算出正确数字（PoW）才能翻到下一页</li>
+                <li><strong>节点</strong>是<strong>记账员</strong>——每台全节点都存着完整账本并亲自核对</li>
+                <li><strong>协议升级</strong>是<strong>给运转中的机器换零件</strong>——不能停机，还得保证兼容</li>
+                <li><strong>Layer2</strong>是<strong>并行快线</strong>——主链贵但安全，闪电网络快且便宜</li>
+              </ul>
+              <p style="margin-top:12px;font-weight:600;">技术篇，就是<strong>拆开这台机器，逐个零件讲给你听</strong>。</p>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:24px 0;">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:6px;">📖</div>
+                <h4 style="font-size:0.88rem;">9 个章节</h4>
+                <p style="font-size:0.75rem;color:var(--text-muted);">从密码学到 Layer2，层层递进</p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:6px;">⏱</div>
+                <h4 style="font-size:0.88rem;">约 45 分钟</h4>
+                <p style="font-size:0.75rem;color:var(--text-muted);">总学习时长，可分段完成</p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:6px;">🔄</div>
+                <h4 style="font-size:0.88rem;">6 个视角</h4>
+                <p style="font-size:0.75rem;color:var(--text-muted);">每个主题都有多角度解读</p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:6px;">🧪</div>
+                <h4 style="font-size:0.88rem;">真实实验</h4>
+                <p style="font-size:0.75rem;color:var(--text-muted);">浏览器内可操作的互动模块</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 准备好了吗？</h3>
+            <p>从密码学基石开始，一步步深入比特币的技术内核。</p>
+            <a href="04-01-cryptography.html" class="btn btn-primary">开始学习：密码学基石 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="../02-basics/02-07-payment.html" class="btn">← 回顾入门篇</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="../03-economics/03-08-valuation-models.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">经济学篇 · 估值模型</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        技术篇 · 0 / 9
+      </div>
+      <a href="04-01-cryptography.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">密码学基石</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      initOverviewPerspectives();
+    });
+
+    // ===== 已读标记 =====
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-00-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-00-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // ===== 多视角卡片 =====
+    function initOverviewPerspectives() {
+      const card = document.getElementById('overview-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      // 触摸滑动
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+
+      // 自动轮播
+      let autoTimer = setInterval(() => show(current + 1), 5000);
+      card.addEventListener('mouseenter', () => clearInterval(autoTimer));
+      card.addEventListener('mouseleave', () => {
+        autoTimer = setInterval(() => show(current + 1), 5000);
+      });
+
+      show(0);
+    }
+  </script>
+</body>
+</html>

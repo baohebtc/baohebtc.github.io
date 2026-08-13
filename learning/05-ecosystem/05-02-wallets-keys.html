@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>钱包与密钥管理 | 比特币学习地图</title>
+  <meta name="description" content="比特币钱包完全指南：热钱包/冷钱包/硬件钱包/多签对比，托管 vs 自托管，助记词安全，私钥是比特币的全部。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 钱包类型对比表 ---- */
+    .wallet-compare {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 16px 0;
+    }
+    .wallet-compare th,
+    .wallet-compare td {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .wallet-compare th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .wallet-compare td {
+      color: var(--text-secondary);
+    }
+    .wallet-compare td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .wallet-compare tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .wallet-compare .tag-yes { color: #10B981; font-weight: 700; }
+    .wallet-compare .tag-no { color: #EF4444; font-weight: 700; }
+    .wallet-compare .tag-mid { color: #EAB308; font-weight: 700; }
+
+    /* ---- 助记词安全卡片 ---- */
+    .mnemonic-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .mnem-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      border-left: 3px solid #EF4444;
+    }
+    .mnem-card.do { border-left-color: #10B981; }
+    .mnem-card .mnem-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .mnem-card .mnem-title.danger { color: #EF4444; }
+    .mnem-card .mnem-title.safe { color: #10B981; }
+    .mnem-card .mnem-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ---- 托管 vs 自托管对比 ---- */
+    .custody-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .custody-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .custody-card.custody { border-top: 3px solid #EAB308; }
+    .custody-card.self { border-top: 3px solid #10B981; }
+    .custody-card .custody-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .custody-card .custody-title.custody { color: #EAB308; }
+    .custody-card .custody-title.self { color: #10B981; }
+    .custody-card ul {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      padding-left: 16px;
+    }
+    .custody-card ul li { margin-bottom: 6px; }
+
+    /* ---- 密钥管理决策树 ---- */
+    .decision-tree {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .decision-tree .tree-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.85rem;
+    }
+    .decision-tree .tree-step:last-child { border-bottom: none; }
+    .decision-tree .tree-num {
+      min-width: 28px;
+      height: 28px;
+      background: var(--orange);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .decision-tree .tree-text { color: var(--text); }
+    .decision-tree .tree-text .tree-q {
+      font-weight: 600;
+      color: var(--orange);
+    }
+
+    /* ---- 密钥流程图 ---- */
+    .key-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 16px 0;
+    }
+    .key-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      text-align: center;
+      min-width: 120px;
+    }
+    .key-node .kn-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .key-node .kn-value {
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      word-break: break-all;
+    }
+    .key-node .kn-value.orange { color: var(--orange); }
+    .key-node .kn-value.blue { color: #3B82F6; }
+    .key-node .kn-value.green { color: #10B981; }
+    .key-node .kn-value.purple { color: #8B5CF6; }
+    .key-arrow {
+      font-size: 1.4rem;
+      color: var(--text-muted);
+    }
+    .key-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .custody-compare { grid-template-columns: 1fr; }
+      .key-flow { flex-direction: column; }
+      .key-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html#ecosystem">生态篇</a>
+        <span>›</span>
+        <span>钱包与密钥</span>
+      </div>
+
+      <h1>🔑 钱包与密钥管理</h1>
+      <p class="page-subtitle">在比特币里，你的钱不放在"账户"里——放在一把"私钥"里。私钥丢了，钱没了；私钥被人偷了，钱也没了。理解密钥管理，就是理解比特币安全的全部。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 22 分钟</span>
+        <span class="page-tag">📊 难度：中等</span>
+        <span class="page-tag">📑 生态篇 2/7</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>生态篇进度</span>
+          <span>2 / 7 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 28.6%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">引言：私钥 = 全部</a>
+          <a href="#basics">密钥基础回顾</a>
+          <a href="#wallet-types">钱包类型全对比</a>
+          <a href="#custody">托管 vs 自托管</a>
+          <a href="#mnemonic">助记词安全</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 引言 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币里，<strong>没有"找回密码"</strong>这个按钮。</p>
+            <p style="margin-top:8px;">你的助记词（12/24 个单词）是你的比特币的<strong>唯一凭证</strong>。它不是"密码"，不是"用户名"，不是"验证码"——它是<strong>你资产的全部</strong>。把它想象成一张写有你所有银行账号+密码+身份证号的纸——这张纸丢了，你就失去了一切。</p>
+            <p style="margin-top:8px;">钱包是"查看和管理"这把钥匙的工具。私钥才是真正的"钱"。选对钱包、用对方式保管私钥——这是比特币生存技能的第一课。</p>
+          </div>
+
+          <!-- ============ 一、密钥基础回顾 ============ -->
+          <section id="basics">
+            <h2>一、密钥基础：一句话带过（衔接 02-basics）</h2>
+
+            <p>在深入钱包管理之前，先快速过一遍密钥三角关系（已在 02-basics 详细学过，此处极简回顾）：</p>
+
+            <div class="key-flow">
+              <div class="key-node">
+                <div class="kn-label">私钥</div>
+                <div class="kn-value orange">随机 256 位</div>
+                <div class="key-note">你真正控制的钱</div>
+              </div>
+              <div class="key-arrow">→</div>
+              <div class="key-node">
+                <div class="kn-label">公钥</div>
+                <div class="kn-value blue">椭圆曲线乘法</div>
+                <div class="key-note">可分享，不能反推私钥</div>
+              </div>
+              <div class="key-arrow">→</div>
+              <div class="key-node">
+                <div class="kn-label">地址</div>
+                <div class="kn-value green">哈希 + 编码</div>
+                <div class="key-note">你收款用的"账号"</div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">钱包的本质</span>
+              <div class="text">
+                <p><strong>钱包 ≠ 存钱的地方。</strong>钱包是一个<strong>私钥管理器</strong>。</p>
+                <p>它帮你生成私钥、保管私钥、用私钥签名交易、展示你的地址——但你的比特币实际上在链上（UTXO），钱包只是你的"钥匙链"。</p>
+                <p>换一个钱包，导入同样的私钥，你的币完全一样存在——因为币不在钱包里，在区块链上。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、钱包类型全对比 ============ -->
+          <section id="wallet-types">
+            <h2>二、钱包类型全对比：没有"最好"，只有"最适合"</h2>
+
+            <p>钱包的分类维度很多：按联网状态、按硬件形态、按签名方式、按私钥数量……以下是核心对比：</p>
+
+            <table class="wallet-compare">
+              <thead>
+                <tr>
+                  <th>维度</th>
+                  <th>🔥 热钱包<br><small>（手机/桌面/网页）</small></th>
+                  <th>❄️ 冷钱包<br><small>（硬件/纸）</small></th>
+                  <th>🔐 多签钱包</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>联网状态</td>
+                  <td class="tag-no">始终联网</td>
+                  <td class="tag-yes">不联网（离线）</td>
+                  <td class="tag-mid">取决于实现</td>
+                </tr>
+                <tr>
+                  <td>私钥位置</td>
+                  <td>设备本地 / 服务器</td>
+                  <td>硬件安全芯片</td>
+                  <td>多个设备分布</td>
+                </tr>
+                <tr>
+                  <td>安全性</td>
+                  <td class="tag-mid">⚠️ 中（易受攻击）</td>
+                  <td class="tag-yes">✅ 高（离线防偷）</td>
+                  <td class="tag-yes">✅ 最高（门槛签名）</td>
+                </tr>
+                <tr>
+                  <td>便利性</td>
+                  <td class="tag-yes">✅ 随时可用</td>
+                  <td class="tag-mid">需插设备输 PIN</td>
+                  <td class="tag-no">❌ 复杂（需多人协作）</td>
+                </tr>
+                <tr>
+                  <td>适合场景</td>
+                  <td>日常小额支付</td>
+                  <td>大额长期存储</td>
+                  <td>机构/家庭/遗产规划</td>
+                </tr>
+                <tr>
+                  <td>成本</td>
+                  <td class="tag-yes">免费</td>
+                  <td class="tag-mid">约 50-300 美元</td>
+                  <td class="tag-mid">取决于方案</td>
+                </tr>
+                <tr>
+                  <td>备份方式</td>
+                  <td>助记词（12/24 词）</td>
+                  <td>助记词 + 物理安全</td>
+                  <td>多份助记词分散保管</td>
+                </tr>
+                <tr>
+                  <td>单点故障风险</td>
+                  <td class="tag-no">高（设备丢失/被黑）</td>
+                  <td class="tag-mid">中（设备损坏/丢失）</td>
+                  <td class="tag-yes">低（无单一失败点）</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>2.1 热钱包详解：便利的代价</h3>
+            <p><strong>热钱包</strong>（Hot Wallet）= 私钥存储在联网设备上的钱包。常见形式：</p>
+            <ul>
+              <li><strong>手机钱包</strong>：BlueWallet、Samourai Wallet、Muun——私钥存在手机安全区（iOS Keychain / Android Keystore）</li>
+              <li><strong>桌面钱包</strong>：Electrum、Bitcoin Core——私钥存在电脑本地硬盘</li>
+              <li><strong>网页钱包</strong>：Exchange 托管钱包、区块链浏览器内置钱包——私钥存在服务器（你不控制）</li>
+            </ul>
+            <div class="story-box blue">
+              <span class="story-label">⚠️ 热钱包的风险</span>
+              <p>联网 = 暴露面 = 攻击面。</p>
+              <ul>
+                <li>手机被黑 / 下载恶意软件 → 私钥被盗</li>
+                <li>钓鱼攻击：被诱导导入私钥到假钱包</li>
+                <li>网页钱包：交易所跑路 / 被黑</li>
+                <li>手机丢失（无 PIN 码保护）→ 资产损失</li>
+              </ul>
+              <p style="margin-top:8px;"><strong>最佳实践</strong>：热钱包只存你"能接受损失的金额"，比如零花钱。大额存冷钱包。</p>
+            </div>
+
+            <h3>2.2 冷钱包详解：离线才是王道</h3>
+            <p><strong>冷钱包</strong>（Cold Wallet）= 私钥完全不接触互联网的钱包。</p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:14px 0;">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">🔐</div>
+                <h4 style="font-size:0.88rem;font-weight:700;margin-bottom:6px;">硬件钱包</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">专用设备（Ledger/Trezor/Jade），私钥存储在安全芯片，永不联网。交易时设备签名后在联网设备显示。</p>
+                <div style="margin-top:8px;font-size:0.7rem;">
+                  <span style="color:#10B981;font-weight:600;">✅ 安全</span>
+                  <span style="color:#EAB308;margin-left:8px;">⚠️ 需购买</span>
+                </div>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">📄</div>
+                <h4 style="font-size:0.88rem;font-weight:700;margin-bottom:6px;">纸钱包</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">把私钥/助记词手写或打印在纸上。完全离线，但防火防盗防潮——纸会损毁。</p>
+                <div style="margin-top:8px;font-size:0.7rem;">
+                  <span style="color:#10B981;font-weight:600;">✅ 免费/离线</span>
+                  <span style="color:#EF4444;margin-left:8px;">⚠️ 易损毁</span>
+                </div>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">🖥️</div>
+                <h4 style="font-size:0.88rem;font-weight:700;margin-bottom:6px;">空气钱包（Air-Gapped）</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">通过二维码在完全离线的电脑上生成密钥，永远不联网。极度安全，但操作繁琐。</p>
+                <div style="margin-top:8px;font-size:0.7rem;">
+                  <span style="color:#10B981;font-weight:600;">✅ 极高安全</span>
+                  <span style="color:#EF4444;margin-left:8px;">⚠️ 操作复杂</span>
+                </div>
+              </div>
+            </div>
+
+            <h3>2.3 多签钱包：多人共管的艺术</h3>
+            <p><strong>多签</strong>（Multi-Signature，Multisig）= 需要 M-of-N 个密钥才能授权一笔交易。</p>
+            <p>例如：2-of-3 多签 = 3 把钥匙，任意 2 把可以动用资金。</p>
+
+            <div class="highlight-box">
+              <span class="label">多签钱包的典型应用</span>
+              <div class="text">
+                <ul>
+                  <li><strong>家庭共有账户</strong>：夫妻 2-of-3，孩子持有一把钥匙——防止单人意外丢失</li>
+                  <li><strong>公司金库</strong>：CEO、CFO、CTO 三人 2-of-3——防止内部单点欺诈</li>
+                  <li><strong>遗产规划</strong>：你 + 律师 + 家人 = 2-of-3；你在世时持有 2 把，去世后家人+律师可取</li>
+                  <li><strong>自我保险</strong>：手机钱包（1把）+ 硬件钱包（1把）+ 律师（1把）= 2-of-3，手机丢了我有备用的</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>2.4 BIP39 / BIP32 / BIP44：一句话理解</h3>
+            <p>三个标准，让比特币钱包"可互换"且"可派生"：</p>
+            <ul>
+              <li><strong>BIP39</strong>：助记词协议。把随机数变成 12/24 个常用单词，方便抄写备份。</li>
+              <li><strong>BIP32</strong>：HD 钱包（分层确定性）协议。一个主私钥，可以派生成无数个子私钥——用一个助记词备份所有地址。</li>
+              <li><strong>BIP44</strong>：地址派生路径规则。<code>m/44'/0'/0'/0/0</code> 这样的路径，让不同钱包可以访问同一组地址。</li>
+            </ul>
+            <div class="story-box purple">
+              <span class="story-label">🔄 互操作性的基础</span>
+              <p>只要备份了 12/24 个助记词，就可以在任何 BIP39 兼容钱包恢复所有密钥——即使那个钱包公司倒闭了。这就是标准化的价值。</p>
+            </div>
+          </section>
+
+          <!-- ============ 三、托管 vs 自托管 ============ -->
+          <section id="custody">
+            <h2>三、托管 vs 自托管：谁掌舵你的币？</h2>
+
+            <div class="custody-compare">
+              <div class="custody-card custody">
+                <div class="custody-title custody">🏦 托管钱包（Custodial）</div>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;">第三方替你保管私钥——Coinbase、Binance、Robinhood 等</p>
+                <ul>
+                  <li>✅ 操作简单，像普通 App 一样买卖</li>
+                  <li>✅ 有客服、有保险、有找回机制</li>
+                  <li>✅ 不用担心助记词备份</li>
+                  <li>❌ 你没有私钥 → 币不是你的</li>
+                  <li>❌ 交易所可冻结账户 / 暂停提币</li>
+                  <li>❌ 交易所倒闭/被黑 = 资产损失</li>
+                  <li>❌ KYC 强制要求，隐私全无</li>
+                </ul>
+              </div>
+              <div class="custody-card self">
+                <div class="custody-title self">🔑 自托管钱包（Self-Custody）</div>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;">你自己保管私钥——硬件钱包、手机钱包等</p>
+                <ul>
+                  <li>✅ 私钥在手 = 真主权，无人可冻结</li>
+                  <li>✅ 24/7 可用，不需要第三方许可</li>
+                  <li>✅ 隐私保护，无需 KYC</li>
+                  <li>✅ 跨平台迁移，不受钱包公司影响</li>
+                  <li>❌ 需自己管理助记词（无找回）</li>
+                  <li>❌ 操作有一定学习门槛</li>
+                  <li>❌ 安全责任完全在你自己</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">📜 比特币哲学核心信条</span>
+              <div class="text">
+                <p style="font-size:1rem;font-weight:700;color:var(--orange);">"不是你的私钥，就不是你的币。"</p>
+                <p>—— 这句话最早由 Tiern Nolan 在 2013 年提出（Bitcointalk 论坛），现已成为比特币社区最广泛流传的安全警示。</p>
+                <p>每一次交易所暴雷都在验证这句话：Mt.Gox（2014，85万 BTC）、Bitfinex（2016，12万 BTC）、FTX（2022，数十亿美元）——每一次，受损失的都是"没有自托管"的用户。</p>
+              </div>
+            </div>
+
+            <h3>3.1 混合方案：适合大多数人的现实策略</h3>
+            <p>不是所有人都需要 100% 自托管。实用的分层策略：</p>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin:14px 0;">
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="min-width:80px;font-weight:700;font-size:0.82rem;color:#10B981;">零花钱层</div>
+                  <div style="flex:1;font-size:0.82rem;color:var(--text-secondary);">热钱包（手机 App）→ 随意花，丢了不心疼</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="min-width:80px;font-weight:700;font-size:0.82rem;color:#EAB308;">日常层</div>
+                  <div style="flex:1;font-size:0.82rem;color:var(--text-secondary);">中型交易所 / 热钱包 → 适合几周到几个月的持仓</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="min-width:80px;font-weight:700;font-size:0.82rem;color:#F97316;">核心层</div>
+                  <div style="flex:1;font-size:0.82rem;color:var(--text-secondary);">硬件钱包（冷存储）→ 长期持有，多份助记词备份</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="min-width:80px;font-weight:700;font-size:0.82rem;color:#8B5CF6;">保险层</div>
+                  <div style="flex:1;font-size:0.82rem;color:var(--text-secondary);">多签 + 遗产规划 → 超大额持仓（>10 BTC）或多持有人</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、助记词安全 ============ -->
+          <section id="mnemonic">
+            <h2>四、助记词安全：保管"资产的全部"</h2>
+
+            <p>BIP39 助记词（12 或 24 个单词）是你的主种子——它能推导出所有子私钥。保护它，就是保护你的全部比特币。</p>
+
+            <h3>4.1 绝对禁止做的事</h3>
+            <div class="mnemonic-cards">
+              <div class="mnem-card">
+                <div class="mnem-title danger">❌ 绝对禁止</div>
+                <div class="mnem-desc">把助记词截图、拍照、发微信、保存到云笔记（iCloud/Google Drive/Evernote）——一旦设备被黑或账号被登入，资产清零。</div>
+              </div>
+              <div class="mnem-card">
+                <div class="mnem-title danger">❌ 绝对禁止</div>
+                <div class="mnem-desc">在联网设备上输入助记词（非硬件钱包导入场景）——键盘记录器、剪贴板监控随时在等着你。</div>
+              </div>
+              <div class="mnem-card">
+                <div class="mnem-title danger">❌ 绝对禁止</div>
+                <div class="mnem-desc">只留一份备份——火灾、洪水、盗窃、搬家丢失……任何一份出问题就完了。</div>
+              </div>
+              <div class="mnem-card">
+                <div class="mnem-title danger">❌ 绝对禁止</div>
+                <div class="mnem-desc">把助记词告诉任何人——包括自称"钱包客服"、"交易所安全部门"、"朋友推荐"的人。比特币官方永远不会问你要助记词。</div>
+              </div>
+            </div>
+
+            <h3>4.2 应该做的事</h3>
+            <div class="mnemonic-cards">
+              <div class="mnem-card do">
+                <div class="mnem-title safe">✅ 正确做法</div>
+                <div class="mnem-desc">手写在纸上（或蚀刻在金属板）——物理备份，且多份分散保管（银行保险箱 + 家中防火防水盒）。</div>
+              </div>
+              <div class="mnem-card do">
+                <div class="mnem-title safe">✅ 正确做法</div>
+                <div class="mnem-desc">使用专业金属助记词板（Cryptosteel、CryptoTag、Bitlox）——防火防水防腐蚀，可传承百年。</div>
+              </div>
+              <div class="mnem-card do">
+                <div class="mnem-title safe">✅ 正确做法</div>
+                <div class="mnem-desc">助记词分片保管——例如 3-of-5 把助记词分成两组，任意 2 组可恢复——防火防盗的同时降低单点暴露风险。</div>
+              </div>
+              <div class="mnem-card do">
+                <div class="mnem-title safe">✅ 正确做法</div>
+                <div class="mnem-desc">BIP39 Passphrase（可选额外密码）——在 24 个词后面加一个自定义密码，即使助记词被偷也打不开。需要记住密码，丢了同样无法恢复。</div>
+              </div>
+            </div>
+
+            <h3>4.3 BIP39 Passphrase：双钥匙保险箱</h3>
+            <div class="story-box green">
+              <span class="story-label">🔐 Passphrase = 助记词之上的额外护盾</span>
+              <p>BIP39 Passphrase 是一个可选的额外单词或密码（最长 100 字符），与助记词共同生成种子。</p>
+              <ul>
+                <li><strong>没有 passphrase</strong> → 只有助记词的人可以动用资金</li>
+                <li><strong>有 passphrase</strong> → 光有助记词不够，还必须知道 passphrase</li>
+                <li>即使用穷举法（试遍所有可能的助记词组合），也无法破解加了 passphrase 的钱包</li>
+              </ul>
+              <p style="margin-top:8px;"><strong>⚠️ 警告</strong>：Passphrase 必须记住——它不会存储在任何地方，忘记了就等于放弃了那部分资产。与助记词分开保管！</p>
+            </div>
+
+            <h3>4.4 验证备份：恢复测试</h3>
+            <div class="highlight-box">
+              <span class="label">⏰ 必须做的"恢复测试"</span>
+              <div class="text">
+                <p>在钱包中完成备份后，<strong>务必进行一次"恢复测试"</strong>：</p>
+                <ol style="padding-left:20px;">
+                  <li>在新设备上安装同一个钱包软件</li>
+                  <li>选择"用助记词恢复"（不要选"创建新钱包"）</li>
+                  <li>输入完整的 12/24 个单词</li>
+                  <li>验证恢复出的地址与你原始地址一致</li>
+                </ol>
+                <p style="margin-top:8px;">通过测试后，才算真正备份成功。否则，等到真正需要恢复时才发现备份不完整——可能就来不及了。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 五、多视角 ============ -->
+          <section id="perspectives">
+            <h2>五、多视角重新解释</h2>
+
+            <div class="perspective-card" id="wallet-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 同一个钱包问题，六种身份</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="security">🔒 安全专家</button>
+                  <button class="p-tab" data-angle="user">👤 普通用户</button>
+                  <button class="p-tab" data-angle="philosophy">🧠 哲学家</button>
+                  <button class="p-tab" data-angle="technology">👨‍💻 技术极客</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="finance">💰 经济学者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <!-- 安全专家 -->
+                <div class="p-content" data-angle="security">
+                  <div class="p-angle-badge" style="background:rgba(239,68,68,0.12);color:#EF4444;">🔒 安全专家</div>
+                  <div class="p-quote">"比特币安全的本质是风险管理——没有绝对安全，只有让攻击成本高到不值得。"</div>
+                  <ul>
+                    <li><strong>攻击面分析</strong>：热钱包最大威胁 = 恶意软件（键盘记录/剪贴板劫持）、钓鱼攻击、设备丢失。冷钱包最大威胁 = 物理盗窃 + 备份丢失。</li>
+                    <li><strong>威胁模型（Threat Model）</strong>：普通用户 vs 亿美元持币机构 vs 国家级 APT，防护策略完全不同。没有"一刀切"的安全方案。</li>
+                    <li><strong>冷存储最佳实践</strong>：硬件钱包 + BIP39 Passphrase + 多份金属备份 + 分地理分布 + 恢复测试 = 当前最高实用安全标准。</li>
+                    <li><strong>Social Engineering（社会工程）</strong>：技术安全做到极致，不如一个"假钱包客服"电话——人的因素永远是最弱一环。安全培训 > 技术堆砌。</li>
+                    <li><strong>MPC（多方计算）</strong>：2024-2026 年新趋势——把私钥拆成多个碎片（2-of-2 或 2-of-3），每方只知道自己的碎片，手机/服务器各持一份。设备被偷不等于私钥丢失。</li>
+                  </ul>
+                </div>
+                <!-- 普通用户 -->
+                <div class="p-content" data-angle="user">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">👤 普通用户</div>
+                  <div class="p-quote">"我只想安全地持有一些比特币，不想成为安全专家——有没有简单到不会出错的方法？"</div>
+                  <ul>
+                    <li><strong>最小化方案</strong>：买少量 BTC → 存到硬件钱包（一次性设置）→ 把助记词写在纸上 + 拍金属板 → 锁在家里 + 银行保险箱一份。</li>
+                    <li><strong>"五美元扳手攻击"防护</strong>：别在公开场合炫耀持仓，别把大额地址关联到真实身份——隐私就是安全。</li>
+                    <li><strong>备份频次</strong>：设好钱包后立即备份，<strong>不要等</strong>——等你想到要备份时，可能已经丢失了。</li>
+                    <li><strong>遗产问题</strong>：你有没有告诉过你信任的人，你的比特币在哪里？你的助记词如何传递？——这是普通用户最不愿意面对但最重要的问题。</li>
+                    <li><strong>记住这句</strong>："慢慢积累，定期备份，备份后测试，永远不问任何人要你的助记词。"</li>
+                  </ul>
+                </div>
+                <!-- 哲学家 -->
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(247,147,26,0.12);color:#F97316;">🧠 哲学家</div>
+                  <div class="p-quote">"比特币把'所有权'还原成了它的原始含义——不是法律赋予的权利，而是密码学赋予的事实。"</div>
+                  <ul>
+                    <li><strong>绝对所有权 = 绝对责任</strong>：没有中央权威 = 没有中央保护。你是自己的银行，也是自己的保险柜。这个等价交换是比特币自由叙事的代价。</li>
+                    <li><strong>助记词是人类记忆与密码学的交汇</strong>：用人类可读的词汇（wordlist）编码数学随机性——这是让"普通人能掌握密码学"的天才设计。</li>
+                    <li><strong>自我主权（Self-Sovereignty）的哲学意义</strong>：比特币的所有权不依赖法律系统（房产证、证券账户）、不依赖政府、不依赖机构——它依赖数学。这种"去制度化"的所有权，是人类历史上前所未有的。</li>
+                    <li><strong>时间的价值</strong>：比特币用 256 位的随机数、4 年减半周期、2140 年的最终发行上限——这些数字不是随意设定的，它们是对"永恒"这个概念的计算学表达。</li>
+                    <li><strong>"可选择的遗忘"悖论</strong>：比特币给你"永久控制权"，但也意味着"遗忘即永远失去"——无法重置、无法申诉、无法恢复。这是数字时代的"薛定谔所有权"。</li>
+                  </ul>
+                </div>
+                <!-- 技术极客 -->
+                <div class="p-content" data-angle="technology">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👨‍💻 技术极客</div>
+                  <div class="p-quote">"比特币密钥管理的演进史，就是密码学工程化的历史——从原始私钥到 BIP39/HD/MPC，每一步都是权衡。"</div>
+                  <ul>
+                    <li><strong>BIP39 词表设计</strong>：2048 个单词（11 位 entropy）的精心筛选——避免易混淆字母对（b/8、1/l、o/0），支持首字母纠错（键盘输入场景）。这是密码学 + 语言学的交叉设计。</li>
+                    <li><strong>HD 钱包派生</strong>：BIP32 定义的 CKDpriv/CKDpub 派生函数，让一个种子可以管理无限地址——隐私性与便利性兼得。但硬分叉风险（BTC/BCH 的 BIP49/BIP84 派生路径不同）需要留意。</li>
+                    <li><strong>Taproot 与 Schnorr 签名</strong>：2021 年 Taproot 升级后，Schnorr 签名允许密钥聚合（MuSig）——多个签名可以合并为一个，看起来与单签无异。比特币多签的隐私性提升了一个量级。</li>
+                    <li><strong>PSBT（Partially Signed Bitcoin Transactions）</strong>：让多签/离线签名的流程标准化——在冷钱包签 PSBT → 导入热钱包广播，交易被分解为"签名"和"广播"两步，各司其职。</li>
+                    <li><strong>硬件钱包安全性边界</strong>：绝大多数硬件钱包（Ledger/Trezor）使用安全芯片（EAL5+），但固件漏洞供应链攻击仍是现实威胁——值得监控的领域。</li>
+                  </ul>
+                </div>
+                <!-- 历史学家 -->
+                <div class="p-content" data-angle="history">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</div>
+                  <div class="p-quote">"比特币钱包的演化史，折射出比特币从极客玩具到机构资产的全过程。"</div>
+                  <ul>
+                    <li><strong>2010-2013：私钥即一切</strong>——早期比特币没有"钱包软件"，用户直接管理原始私钥文件（wallet.dat）。助记词还没发明，备份 = 复制整个文件。</li>
+                    <li><strong>2013：BIP39 诞生</strong>——Trezor 团队（Pieter Wuille 等）提出 BIP39，用人类可读词汇替代随机数字。比特币从"极客专属"开始走向"普通用户可用"。</li>
+                    <li><strong>2014：硬件钱包商业化</strong>——Ledger（法国）和 Trezor（捷克）同年发布硬件钱包，把冷存储从"需要懂编程"变成"插上 USB 就能用"。</li>
+                    <li><strong>2016-2018：HD 钱包普及</strong>——一个助记词管理所有地址成为行业标准。2017 年 SegWit + BIP84（P2WPKH 派生路径）让单签钱包成本大幅降低。</li>
+                    <li><strong>2019-2022：机构托管崛起</strong>——Coinbase Custody、Fidelity Digital Assets、NYDIG 等机构级托管服务兴起，但 FTX 暴雷再次证明"托管 ≠ 安全"。</li>
+                    <li><strong>2024-2026：MPC + 智能合约钱包</strong>——阈值签名（Threshold Signatures）和智能合约钱包（Argent、Safe）让"社交恢复"成为可能——解决了"人死了/失忆了，钱怎么办"的终极问题。</li>
+                  </ul>
+                </div>
+                <!-- 经济学者 -->
+                <div class="p-content" data-angle="finance">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学者</div>
+                  <div class="p-quote">"比特币钱包的选择，本质上是在'安全性'和'流动性'之间的资产配置决策。"</div>
+                  <ul>
+                    <li><strong>安全-流动性权衡</strong>：安全性高的冷钱包，资产流动性差（变现慢）；热钱包流动性好，但安全性低。这和"现金放家里 vs 存银行"的经济学权衡完全一样。</li>
+                    <li><strong>资产分层配置</strong>：Mayer's Multiple（比特币周期指标）提示：当比特币 Mayer Multiple &lt; 0.3 时，往往是积累期（可加大冷存储配置）；&gt; 2.4 时往往在过热期（可考虑配置更多流动性）。</li>
+                    <li><strong>自托管的机会成本</strong>：托管给机构 = 放弃完全控制权，但获得：合规托管、保险覆盖、流动性服务。无托管 = 完全控制，但需承担全部安全成本。哪种更优，取决于你的资金规模和风险管理能力。</li>
+                    <li><strong>比特币钱包公司的商业模式</strong>：硬件钱包赚硬件毛利（低频高价），交易所托管赚交易费+借贷利息（高频现金流）——商业模式本身决定了它们的激励方向：硬件钱包希望你多买、交易所希望你多交易。</li>
+                    <li><strong>遗产规划的经济学</strong>：比特币传承涉及复杂的税务/法律/密码学问题。提前规划的家庭（多签 + 律师钥匙）vs "币在脑子里"的人——在极端情况下的财富传承结果差距巨大。</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、动手实验 ============ -->
+          <section id="labs">
+            <h2>六、动手实验区</h2>
+
+            <h3>📋 实验 1：制定你的"选钱包清单"</h3>
+            <div class="lab-section">
+              <p>根据你的实际情况，回答以下问题，找出最适合你的钱包组合：</p>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:12px 0;">
+                <div style="display:flex;flex-direction:column;gap:12px;font-size:0.85rem;">
+                  <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <span style="color:var(--orange);font-weight:700;min-width:20px;">Q1</span>
+                    <div>
+                      <p style="margin-bottom:6px;">你持有（或计划持有）的比特币量级是？</p>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="radio" name="q1" style="accent-color:var(--orange);"> A. 零花钱（< 0.01 BTC）→ 热钱包足够
+                      </label><br>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="radio" name="q1" style="accent-color:var(--orange);"> B. 小额资产（0.01-0.5 BTC）→ 手机钱包 + 注意备份
+                      </label><br>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="radio" name="q1" style="accent-color:var(--orange);"> C. 中等资产（0.5-5 BTC）→ 硬件钱包是必须的
+                      </label><br>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="radio" name="q1" style="accent-color:var(--orange);"> D. 大额资产（> 5 BTC）→ 硬件钱包 + 多签 + 分散备份
+                      </label>
+                    </div>
+                  </div>
+                  <hr style="border:none;border-top:1px solid var(--border-light);">
+                  <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <span style="color:var(--orange);font-weight:700;min-width:20px;">Q2</span>
+                    <div>
+                      <p style="margin-bottom:6px;">你的使用场景是？</p>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="checkbox" name="q2" style="accent-color:var(--orange);"> 日常小额支付（咖啡、网购等）
+                      </label><br>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="checkbox" name="q2" style="accent-color:var(--orange);"> 定期定投（Cost Averaging）
+                      </label><br>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="checkbox" name="q2" style="accent-color:var(--orange);"> 长期持有（HODL）
+                      </label><br>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="checkbox" name="q2" style="accent-color:var(--orange);"> 家庭共有/遗产传承
+                      </label>
+                    </div>
+                  </div>
+                  <hr style="border:none;border-top:1px solid var(--border-light);">
+                  <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <span style="color:var(--orange);font-weight:700;min-width:20px;">Q3</span>
+                    <div>
+                      <p style="margin-bottom:6px;">你的技术背景？</p>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="radio" name="q3" style="accent-color:var(--orange);"> A. 纯小白 → 优先选 UX 好的（BlueWallet/Cash App）
+                      </label><br>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="radio" name="q3" style="accent-color:var(--orange);"> B. 有一定技术理解 → Electrum + 硬件钱包
+                      </label><br>
+                      <label style="font-size:0.78rem;color:var(--text-secondary);">
+                        <input type="radio" name="q3" style="accent-color:var(--orange);"> C. 懂命令行/懂技术 → Bitcoin Core + 空气钱包
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="background:rgba(247,147,26,0.08);border:1px solid rgba(247,147,26,0.2);border-radius:var(--radius-sm);padding:14px;">
+                <p style="font-size:0.82rem;color:var(--text-secondary);">
+                  💡 <strong>推荐组合（对应上面选项）</strong>：<br>
+                  A+A+小白 → 热钱包（如 Cash App）<br>
+                  B+C+中等 → 硬件钱包（Ledger/Trezor/Jade）+ 手机热钱包<br>
+                  C+长期持有+懂技术 → 硬件钱包 + BIP39 Passphrase + 金属板备份<br>
+                  D+遗产传承 → 2-of-3 多签（如 Unchained Capital）
+                </p>
+              </div>
+            </div>
+
+            <h3>🔍 实验 2：验证你的助记词（绝不联网！）</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+              </div>
+              <div class="exp-result">
+                <ul class="exp-links">
+                  <li><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币白皮书（Bitcoin.org 官方英文版）：第 3 章交易、第 4 章时间戳服务器 <span class="exp-go">→</span></a></li>
+                  <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space 区块浏览器：查看你的地址余额与交易历史 <span class="exp-go">→</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>🧪 实验 3：模拟"最坏情况"恢复计划</h3>
+            <div class="lab-section">
+              <p>想清楚三个极端场景，为每个场景制定恢复计划：</p>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:12px 0;">
+                <div style="display:flex;flex-direction:column;gap:10px;font-size:0.82rem;">
+                  <div style="padding:10px;border:1px solid rgba(239,68,68,0.3);border-radius:8px;">
+                    <strong style="color:#EF4444;">场景A：我手机钱包被偷了</strong>
+                    <p style="color:var(--text-secondary);margin-top:4px;">→ 答：立即在新设备安装同一钱包，用助记词恢复。前提：助记词已安全备份，且没有 passphrase 泄露。</p>
+                  </div>
+                  <div style="padding:10px;border:1px solid rgba(249,115,22,0.3);border-radius:8px;">
+                    <strong style="color:#F97316;">场景B：我忘了 BIP39 Passphrase</strong>
+                    <p style="color:var(--text-secondary);margin-top:4px;">→ 答：无解。Passphrase 的设计就是"无后门"。所以：Passphrase 要记在助记词之外的单独地方（比如密码管理器）。</p>
+                  </div>
+                  <div style="padding:10px;border:1px solid rgba(139,92,246,0.3);border-radius:8px;">
+                    <strong style="color:#8B5CF6;">场景C：我突然去世，家人不知道我的比特币</strong>
+                    <p style="color:var(--text-secondary);margin-top:4px;">→ 答：这就是"比特币遗产问题"。建议：把助记词/存储位置告诉可信赖的人，或使用多签（2-of-3：你+家人+律师）。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、大白话总结 ============ -->
+          <section id="summary">
+            <h2>七、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把这些复杂的放在日常场景中</span>
+              <p><strong>助记词 = 你资产的"唯一钥匙"（物理比喻）</strong></p>
+              <ul>
+                <li>想象你有一套公寓，里面有保险箱，保险箱里有珠宝</li>
+                <li>助记词 = 保险箱的密码纸 + 公寓钥匙的组合备份</li>
+                <li>你把这张纸放在防火保险箱里，同时在银行租了保险箱存一份副本</li>
+                <li>公寓丢了（手机被偷）？用密码纸 + 备用钥匙去银行取副本 → 重新设一个保险箱</li>
+                <li>有人问你密码 → 不给，因为给了等于把珠宝直接送给他</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>热钱包 = 口袋里的现金</strong></p>
+              <ul>
+                <li>热钱包适合"随时要花的零钱"</li>
+                <li>口袋里装 100 块可以，揣 100 万现金在身上就傻了</li>
+                <li>同理：热钱包放小额（能接受损失的金额），大额放冷钱包</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>冷钱包 = 家里的保险柜 + 银行保险箱</strong></p>
+              <ul>
+                <li>硬件钱包：保险柜（随时可开，但要输 PIN）</li>
+                <li>助记词金属板：银行保险箱副本（极端情况才用）</li>
+                <li>BIP39 Passphrase：保险柜的"双重密码"（即使有人撬开保险柜，还需要第二密码）</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>托管 = 把钱存银行</strong></p>
+              <ul>
+                <li>方便（存钱取钱方便）</li>
+                <li>风险：银行倒闭/被冻结 → 你的钱也受限</li>
+                <li>比特币的答案：银行（交易所）不是你的，只是替你保管</li>
+              </ul>
+            </div>
+
+            <div class="story-box purple">
+              <span class="story-label">📦 记住这三句话</span>
+              <ol style="padding-left:20px;font-size:0.88rem;">
+                <li style="margin-bottom:6px;"><strong>不是你的私钥，就不是你的币。</strong>——有了这句话，你就不会把大额资产放交易所。</li>
+                <li style="margin-bottom:6px;"><strong>助记词是资产的 100%。</strong>——保护它，就像保护你所有银行账号+密码+身份证的组合。</li>
+                <li><strong>备份 + 测试 + 分散保管。</strong>——光备份不够，测试过才算成功，分散保管才不怕单点灾难。</li>
+              </ol>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>钱包 = 私钥管理器</strong>，不是"存钱的地方"——你的比特币在链上，不在钱包里</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>热钱包 vs 冷钱包</strong>：热钱包是口袋零钱，冷钱包是保险柜——小额用热，大额用冷</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>托管 vs 自托管</strong>：托管给第三方 = 信任风险；自托管 = 完全主权 + 完全责任</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>助记词安全三原则</strong>：绝不联网/截图、多份分散保管、备份后测试</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">5️⃣</div>
+                <p><strong>BIP39 Passphrase</strong> = 在助记词之上加密码——即使助记词被偷，没有密码也无法访问</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">6️⃣</div>
+                <p><strong>多签钱包</strong>：M-of-N 签名——解决单点故障、遗产传承、机构共管等高级需求</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>你已经掌握了比特币的"钥匙管理学"。接下来看这些比特币是如何进入普通人手中的——<strong>交易所与托管服务</strong>。</p>
+            <a href="05-03-exchanges-custody.html" class="btn btn-primary">继续学习：交易所与托管 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="05-01-ecosystem-panorama.html" class="btn">← 生态系统全景</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="05-01-ecosystem-panorama.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">生态系统全景</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        生态篇 · 2 / 7
+      </div>
+      <a href="05-03-exchanges-custody.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">交易所与托管</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+    });
+  </script>
+</body>
+</html>

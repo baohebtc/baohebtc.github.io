@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>手续费市场与区块空间 | 比特币学习地图</title>
+  <meta name="description" content="区块空间为什么是稀缺资源？手续费市场如何定价？Easley 2019 论文核心解读——矿工收入的未来从区块补贴转向手续费。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 区块空间可视化 ---- */
+    .block-visual {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .block-row {
+      display: flex;
+      align-items: stretch;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .block-unit {
+      flex: 1;
+      min-height: 28px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      transition: all 0.3s;
+    }
+    .block-unit.empty {
+      background: var(--border);
+      color: var(--text-muted);
+    }
+    .block-unit.tx {
+      background: rgba(247,147,26,0.25);
+      color: var(--orange);
+      border: 1px solid rgba(247,147,26,0.4);
+    }
+    .block-unit.witness {
+      background: rgba(139,92,246,0.25);
+      color: var(--purple);
+      border: 1px solid rgba(139,92,246,0.4);
+    }
+    .block-unit.cb {
+      background: rgba(16,185,129,0.25);
+      color: #10B981;
+      border: 1px solid rgba(16,185,129,0.4);
+    }
+    .block-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+    .block-legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    /* ---- 费率时间轴 ---- */
+    .fee-timeline {
+      position: relative;
+      padding: 10px 0;
+      margin: 16px 0;
+    }
+    .fee-timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 2px;
+      background: var(--border);
+    }
+    .fee-zones {
+      display: flex;
+      gap: 4px;
+    }
+    .fee-zone {
+      flex: 1;
+      text-align: center;
+      padding: 6px 4px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      position: relative;
+    }
+    .fee-zone.low {
+      background: rgba(16,185,129,0.12);
+      color: #10B981;
+      border: 1px solid rgba(16,185,129,0.3);
+    }
+    .fee-zone.mid {
+      background: rgba(234,179,8,0.12);
+      color: #EAB308;
+      border: 1px solid rgba(234,179,8,0.3);
+    }
+    .fee-zone.high {
+      background: rgba(239,68,68,0.12);
+      color: #EF4444;
+      border: 1px solid rgba(239,68,68,0.3);
+    }
+    .fee-zone .zone-rate {
+      font-size: 0.68rem;
+      margin-top: 2px;
+      opacity: 0.8;
+    }
+
+    /* ---- 矿工收入构成 ---- */
+    .miner-revenue {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .revenue-bar {
+      display: flex;
+      height: 32px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .rev-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+      transition: width 0.5s;
+    }
+    .rev-block.subsidy {
+      background: var(--orange);
+    }
+    .rev-block.fee {
+      background: var(--purple);
+    }
+    .revenue-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .revenue-labels .rev-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .rev-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* ---- RBF / CPFP 对比卡片 ---- */
+    .bump-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .bump-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .bump-card .bump-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bump-card .bump-full {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .bump-card .bump-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .bump-card .bump-steps li {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .bump-card .bump-steps li:last-child {
+      border-bottom: none;
+    }
+    .bump-card .bump-steps li::before {
+      content: '→';
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    /* ---- 算术示例 ---- */
+    .calc-example {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .calc-example .calc-line {
+      display: flex;
+      gap: 8px;
+    }
+    .calc-example .calc-op {
+      color: var(--orange);
+      min-width: 120px;
+    }
+    .calc-example .calc-result {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 600px) {
+      .bump-cards { grid-template-columns: 1fr; }
+      .fee-zones { flex-wrap: wrap; }
+      .fee-zone { min-width: 45%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html">经济学篇</a>
+        <span>›</span>
+        <span>手续费市场与区块空间</span>
+      </div>
+
+      <h1>💸 手续费市场与区块空间</h1>
+      <p class="page-subtitle">区块空间是比特币世界里唯一被拍卖的稀缺资源。谁出的价格高，谁的交易先上链——这不是后台操作，而是一场持续运转的费率拍卖市场。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：中等</span>
+        <span class="page-tag">📑 经济学篇 5/8</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>5 / 8 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 62.5%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">核心直觉</a>
+          <a href="#scarcity">区块空间为何稀缺</a>
+          <a href="#pricing">手续费如何定价</a>
+          <a href="#academic">学术模型</a>
+          <a href="#halving-shift">减半后收入结构</a>
+          <a href="#rbf-cpfp">RBF 与 CPFP</a>
+          <a href="#l2">手续费与 L2</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 核心直觉 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币每 10 分钟"开一次门"，但门口只站得下固定数量的人（区块容量约 4M WU）。想优先进门？出价。这就是<strong>区块空间市场</strong>——全球唯一一场没有中间商、没有平台费的实时竞价拍卖。</p>
+            <p style="margin-top:8px;">矿工的收入，正在从"固定工资"（区块补贴）慢慢转向"佣金收入"（手续费）。这个转变，决定了比特币的安全模型能否在补贴归零后继续运转。</p>
+          </div>
+
+          <!-- ============ 一、区块空间为何稀缺 ============ -->
+          <section id="scarcity">
+            <h2>一、区块空间为何稀缺？</h2>
+
+            <h3>1.1 三个硬限制叠加</h3>
+            <p>比特币区块空间受到三重约束，每一层都在说同一件事：这个空间不够用。</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.3rem;">⏰</div>
+                <h4>每 10 分钟一次</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">不是随时可挖，是"每约10分钟"开一次门。全球几千万用户抢同一时间窗口。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.3rem;">📦</div>
+                <h4>容量有上限</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">SegWit 后约 4M 重量单位（WU），折合 ~1700–2500 笔普通交易。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.3rem;">🌐</div>
+                <h4>全球共享一个</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">所有比特币用户共享同一个"队列"，竞争同一批区块空间，没有VIP通道（除非额外付费）。</p>
+              </div>
+            </div>
+
+            <h3>1.2 一个区块里面装什么？</h3>
+            <p>区块不是铁板一块，它由不同类型的数据组成——这些数据竞争同一空间：</p>
+
+            <div class="block-visual">
+              <div class="block-meta">
+                <span>📦 区块空间构成（简化示意，4,000,000 WU 总容量）</span>
+                <span>约 ~10 分钟/块</span>
+              </div>
+              <div class="block-row">
+                <div class="block-unit tx" style="flex:60;">交易数据</div>
+                <div class="block-unit witness" style="flex:30;">见证数据</div>
+                <div class="block-unit cb" style="flex:10;">Coinbase</div>
+              </div>
+              <div class="block-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:rgba(247,147,26,0.5);"></div>交易数据（按 4x 权重计）</div>
+                <div class="legend-item"><div class="legend-dot" style="background:rgba(139,92,246,0.5);"></div>见证数据（SegWit，按 1x 计）</div>
+                <div class="legend-item"><div class="legend-dot" style="background:rgba(16,185,129,0.5);"></div>Coinbase（矿工奖励记录）</div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">关键数字</span>
+              <div class="text">
+                <ul>
+                  <li>一个 P2WPKH 单签交易 ≈ 约 140–170 vBytes（虚拟字节）</li>
+                  <li>一个区块约容纳 <strong>1500–2500 笔</strong>普通单签 SegWit 交易</li>
+                  <li>比特币网络每秒约处理 <strong>3–7 笔交易</strong>（TPS），远低于 Visa 的数千笔</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>1.3 区块空间 = 被拍卖的稀缺资源</h3>
+            <p>当需求超过供给，价格机制启动。这个"价格"就是<strong>手续费率</strong>（fee rate），单位是 <strong>sat/vB</strong>（每虚拟字节的聪数）。</p>
+            <div class="story-box purple">
+              <span class="story-label">⚖️ 费率单位</span>
+              <p><strong>1 sat/vB</strong> = 在 1 个虚拟字节的空间里，愿意付 1 聪（1 satoshi = 0.00000001 BTC）。</p>
+              <p>一笔 200 vB 的交易，按 20 sat/vB 付费：手续费 = 200 × 20 = <strong>4,000 聪 ≈ 0.00004 BTC</strong>（约人民币几分钱）。</p>
+              <p>同样的交易，按 200 sat/vB 付费：手续费 = 200 × 200 = <strong>40,000 聪</strong>——高 10 倍，但也只是换了一个区块确认。</p>
+            </div>
+          </section>
+
+          <!-- ============ 二、手续费如何定价 ============ -->
+          <section id="pricing">
+            <h2>二、手续费如何定价？</h2>
+
+            <h3>2.1 费率拍卖机制</h3>
+            <p>比特币没有"固定手续费"。矿工打包交易只有一个原则：<strong>按 sat/vB 从高到低排队，直到区块装满</strong>。</p>
+
+            <div class="fee-timeline">
+              <div class="fee-zones">
+                <div class="fee-zone high">
+                  <div>🔥 极速</div>
+                  <div class="zone-rate">>150 sat/vB</div>
+                </div>
+                <div class="fee-zone mid">
+                  <div>⚡ 优先</div>
+                  <div class="zone-rate">50–150 sat/vB</div>
+                </div>
+                <div class="fee-zone mid">
+                  <div>🟡 标准</div>
+                  <div class="zone-rate">15–50 sat/vB</div>
+                </div>
+                <div class="fee-zone low">
+                  <div>🟢 经济</div>
+                  <div class="zone-rate">1–15 sat/vB</div>
+                </div>
+                <div class="fee-zone low">
+                  <div>💤 极低</div>
+                  <div class="zone-rate"><1 sat/vB</div>
+                </div>
+              </div>
+            </div>
+
+            <h3>2.2 真实场景：网络拥堵时会发生什么？</h3>
+            <p>想象一个拍卖会——</p>
+            <ul>
+              <li><strong>平时</strong>：1 号出 5 sat/vB，2 号出 10 sat/vB，3 号出 3 sat/vB → 矿工选 1、2 号进区块，3 号等下一轮（损失不大，多等 10 分钟）</li>
+              <li><strong>拥堵时</strong>：100 笔交易同时提交，区块空间只容纳 50 笔 → 矿工按费率从高到低选前 50 笔，剩下 50 笔在内存池（mempool）等下一块</li>
+              <li><strong>恐慌出价</strong>：等不及的用户把费率从 20 提到 50 → 引发连锁加价 → 费率飙升（2023 年 Ordinals 铭文期间，部分时段费率突破 300 sat/vB）</li>
+            </ul>
+
+            <div class="calc-example">
+              <div class="calc-line"><span class="calc-op">用户 A</span><span>提交交易，费率 = 20 sat/vB，交易大小 = 200 vB</span></div>
+              <div class="calc-line"><span class="calc-op">用户 B</span><span>5 分钟后提交同一区块，费率 = 50 sat/vB，同样 200 vB</span></div>
+              <div class="calc-line"><span class="calc-op">→ 矿工选择</span><span class="calc-result">先打包 B（50 sat/vB × 200 vB = 10,000 sats）</span></div>
+              <div class="calc-line"><span class="calc-op">→ A 等待</span><span class="calc-result">下一区块，或加价重新广播</span></div>
+            </div>
+
+            <h3>2.3 费率估算工具</h3>
+            <p>实时费率由<strong>内存池（mempool）</strong>决定——所有待确认交易排队的地方。矿工看到的 mempool 深度，决定了他们的费率预期。</p>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;font-size:0.85rem;">实时 mempool 可视化</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">（数据来自 mempool.space API）</span>
+              </div>
+              <div class="exp-result" id="mempoolViz" style="min-height:120px;">
+                <div class="exp-empty">⏳ 正在加载 mempool 数据...</div>
+              </div>
+              <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-sm" onclick="loadMempool()">🔄 刷新数据</button>
+                <a href="https://mempool.space" target="_blank" class="btn btn-sm">🌐 mempool.space →</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、学术模型 ============ -->
+          <section id="academic">
+            <h2>三、学术模型：手续费市场经济学</h2>
+
+            <h3>3.1 Easley, O'Hara & Basu (2019)</h3>
+            <p>这篇发表在 <em>Journal of Financial Economics</em> 的论文，是手续费市场研究领域引用最高的学术文献之一。核心观点：</p>
+            <div class="highlight-box">
+              <span class="label">Easley et al. (2019) 核心结论</span>
+              <div class="text">
+                <p><strong>① 区块空间是信息商品</strong>——它不存储在任何地方，但能被矿工验证；它被消费后消失，不可重复使用。</p>
+                <p><strong>② 手续费是价格发现机制</strong>——当需求超过供给，费率上升；矿工根据 mempool 深度调整打包策略。</p>
+                <p><strong>③ 长期来看，手续费是比特币安全预算的关键</strong>——当区块补贴降至足够低，手续费必须填补安全预算缺口。</p>
+                <p><strong>④ 用户愿意付多少手续费，取决于交易紧迫性</strong>——紧急交易（交易所套利、链上期权行权）愿意付更高费率；储蓄型持币者几乎不产生手续费。</p>
+              </div>
+            </div>
+
+            <h3>3.2 Houy (2014)：早期研究</h3>
+            <p>Nicolas Houy 在比特币社区早期就指出：手续费市场存在<strong>动态定价问题</strong>——用户无法准确预测未来费率，可能导致过度支付（overpay）或长期等待（underpay）。</p>
+            <p>这个问题至今存在：<strong>钱包软件的费率估算算法</strong>（如 Bitcoin Core 的 fee estimation）是用户付多付少的关键。</p>
+
+            <h3>3.3 经济学核心：价格歧视与优先级</h3>
+            <p>手续费市场本质上实现了<strong>价格歧视</strong>（price discrimination）——不同紧迫程度的用户自动分流：</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:14px 0;">
+              <div class="chapter-card" style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.1rem;">🏃</div>
+                <h4>高频套利者</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">愿意付 200+ sat/vB，费率对它们不敏感，时间就是金钱。</p>
+              </div>
+              <div class="chapter-card" style="background:rgba(234,179,8,0.06);border:1px solid rgba(234,179,8,0.2);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.1rem;">🏦</div>
+                <h4>交易所/机构</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">愿意付 30–100 sat/vB，大额转账每笔省几聪也是大钱。</p>
+              </div>
+              <div class="chapter-card" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.1rem;">👛</div>
+                <h4>普通用户</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">付 5–20 sat/vB，愿意等几个区块，网络空闲时几乎是零手续费。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、减半后矿工收入结构 ============ -->
+          <section id="halving-shift">
+            <h2>四、减半如何重塑矿工收入结构？</h2>
+
+            <h3>4.1 收入公式</h3>
+            <div class="story-box purple">
+              <span class="story-label">📐 矿工收入公式</span>
+              <p><strong>矿工总收入 = 区块补贴（Block Subsidy）+ 交易手续费（Transaction Fees）</strong></p>
+              <p style="margin-top:6px;">其中区块补贴每 4 年减半一次，而手续费随网络活跃度波动。</p>
+            </div>
+
+            <h3>4.2 手续费占比的历史演变</h3>
+            <div class="miner-revenue">
+              <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">矿工收入构成变化（示意）</div>
+              <div class="revenue-bar" id="revBar2025">
+                <div class="rev-block subsidy" style="width:85%;">补贴 ~85%</div>
+                <div class="rev-block fee" style="width:15%;">手续费 ~15%</div>
+              </div>
+              <div class="revenue-bar" id="revBar2032">
+                <div class="rev-block subsidy" style="width:50%;">补贴 ~50%</div>
+                <div class="rev-block fee" style="width:50%;">手续费 ~50%</div>
+              </div>
+              <div class="revenue-bar" id="revBar2140">
+                <div class="rev-block fee" style="width:100%;">手续费 100%（预估）</div>
+              </div>
+              <div class="revenue-labels">
+                <div class="rev-label"><div class="rev-dot" style="background:var(--orange);"></div>区块补贴</div>
+                <div class="rev-label"><div class="rev-dot" style="background:var(--purple);"></div>交易手续费</div>
+                <span style="font-size:0.7rem;color:var(--text-muted);">左：当前（约 2024–2028） | 中：约 2032 年 | 右：约 2140 年（补贴归零）</span>
+              </div>
+            </div>
+
+            <p>近年来手续费占总收入比例<strong>约在 1%–15% 之间波动</strong>（网络活跃时更高，2024–2025 年期间 Ordinals/Runes 生态使部分区块手续费收入显著上升）。</p>
+
+            <div class="highlight-box">
+              <span class="label">⚠️ 关键问题：补贴归零后安全够吗？</span>
+              <div class="text">
+                <p>这是比特币安全性辩论的核心议题之一。矿工收入的下降会：</p>
+                <ul>
+                  <li>降低低效矿工的生存概率（币价低于关机价 → 关机）</li>
+                  <li>算力（Hashrate）随之调整，最终在新的成本结构下重新平衡</li>
+                  <li>若币价足够高（稀缺叙事成立），手续费理论上可支撑足够算力</li>
+                  <li>若 L2 发展导致主链交易量大幅下降，手续费收入可能不足</li>
+                </ul>
+                <p>这是"比特币安全预算问题"（Bitcoin's security budget problem）——中本聪在早期邮件中预见过这个挑战。</p>
+              </div>
+            </div>
+
+            <h3>4.3 减半对矿工的实际影响</h3>
+            <p>减半后，如果币价没有同步上涨，矿工的实际收入（以法币计价）会直接减半。这触发了<strong>矿工洗牌</strong>：</p>
+            <ul>
+              <li>币价涨速 > 算力增长 → 矿工盈利</li>
+              <li>币价涨速 < 算力增长 → 部分低效矿机关机（关机价 = 电费 / 矿机效率）</li>
+              <li>算力下降 → 难度下调 → 剩余矿工收益恢复</li>
+            </ul>
+            <p>这个<strong>难度调整机制</strong>（每 2016 块）是比特币的自动稳定器——保证即使大量矿工退出，系统仍能维持约 10 分钟一个区块的出块节奏。</p>
+          </section>
+
+          <!-- ============ 五、RBF 与 CPFP ============ -->
+          <section id="rbf-cpfp">
+            <h2>五、插队经济学：RBF 与 CPFP</h2>
+
+            <p>已经广播出去但还没确认的交易，能不能"加塞"？有两种合法方式：</p>
+
+            <div class="bump-cards">
+              <div class="bump-card">
+                <div class="bump-title">🔄 RBF <span style="font-size:0.68rem;font-weight:400;color:var(--text-muted);">Replace-By-Fee</span></div>
+                <div class="bump-full">替换原交易，提高费率</div>
+                <ul class="bump-steps">
+                  <li>用户发起交易 A（费率 10 sat/vB）</li>
+                  <li>等太久 → 发起交易 B（相同输入，费率 50 sat/vB）</li>
+                  <li>B 替换 A 出现在矿工视野中</li>
+                  <li>矿工优先打包 B → A 被放弃</li>
+                </ul>
+                <p style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);">⚠️ 需要发送方钱包开启 RBF 功能，且原交易标记为"可替换"</p>
+              </div>
+              <div class="bump-card">
+                <div class="bump-title">👶 CPFP <span style="font-size:0.68rem;font-weight:400;color:var(--text-muted);">Child-Pays-For-Parent</span></div>
+                <div class="bump-full">用子交易的高费率带动父交易</div>
+                <ul class="bump-steps">
+                  <li>接收方发起交易 A（低费率，来不及确认）</li>
+                  <li>接收方创建依赖 A 的新交易 B（需花费 A 的输出）</li>
+                  <li>B 付高费率 → 矿工同时打包 A + B</li>
+                  <li>矿工的总收入 = A 的低费率 + B 的高费率</li>
+                </ul>
+                <p style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);">✅ 接收方不需要发送方配合 RBF，只要自己控制 A 的输出即可</p>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">🔑 核心洞察</span>
+              <div class="text">
+                <p><strong>RBF 是发送方的"自我替换"</strong>，CPFP 是接收方的"曲线救国"。</p>
+                <p>两种机制都是比特币手续费市场的<strong>动态定价工具</strong>——让用户无需等待固定时间，通过费用调节来改变交易优先级。</p>
+                <p>这也是为什么开启 RBF 的交易比未开启的交易在 mempool 中更"透明"——矿工知道这笔交易可能被替换，不会在费率上吃亏。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、手续费与 L2 ============ -->
+          <section id="l2">
+            <h2>六、手续费与 Layer 2：主链贵，L2 来帮忙</h2>
+
+            <h3>6.1 为什么 L2 能省钱？</h3>
+            <p>主链费率高的根本原因是<strong>区块空间稀缺</strong>——每 10 分钟只有约 4M WU。L2 的思路是：把大量小额交易<strong>在链下批量结算</strong>，只在最终结果上链。</p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;">
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.2rem;">⚡</div>
+                <h4>闪电网络</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">开启支付通道后，通道内交易零手续费（仅开/关通道付主链费）。适合高频小额支付。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.2rem;">📝</div>
+                <h4>RGB / Stacks</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">链下智能合约协议，将大部分数据保存在链外，主链只验证最终承诺。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.2rem;">🏛️</div>
+                <h4>Ark</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">新型 L2 方案，支持无需在线、无需自有资金的接收付费模式（由服务提供商批量处理）。</p>
+              </div>
+            </div>
+
+            <h3>6.2 L2 与手续费市场的相互影响</h3>
+            <p>这是理解比特币未来的关键张力：</p>
+            <ul>
+              <li><strong>主链越贵 → L2 需求越大</strong>（Ordinals 拥堵反而加速了闪电网络采用）</li>
+              <li><strong>L2 越成熟 → 主链交易减少 → 手续费下降？</strong>（这会影响矿工收入，进而影响安全预算）</li>
+              <li><strong>反过来</strong>：如果 L2 大规模普及，主链变成"结算层"而非"交易层"，那手续费可能来自大额结算交易（费率反而更高）</li>
+            </ul>
+            <p>这场博弈将在未来 10–20 年逐渐明朗，是比特币经济学最活跃的研究前沿之一。</p>
+          </section>
+
+          <!-- ============ 七、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>七、多视角解读：手续费市场</h2>
+
+            <div class="perspective-card" id="fee-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>同一个手续费市场，六种看法</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab active" data-angle="finance">💰 经济学者</button>
+                  <button class="p-tab" data-angle="business">⛏️ 矿工</button>
+                  <button class="p-tab" data-angle="technology">👨‍💻 开发者</button>
+                  <button class="p-tab" data-angle="humanity">👛 用户</button>
+                  <button class="p-tab" data-angle="philosophy">🔒 安全研究者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="finance">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学者</span>
+                  <p class="p-quote">"区块空间是数字时代第一种真正意义的稀缺商品——它被全球数以亿计的人共享，但任何单笔交易消费后，它就永久消失。"</p>
+                  <ul>
+                    <li><strong>价格发现</strong>：手续费是供需最诚实的信号——拥堵时段费率飙升，空闲时段接近零</li>
+                    <li><strong>长期均衡</strong>：Easley et al. 证明手续费市场是比特币长期安全的关键，但短期波动剧烈</li>
+                    <li><strong>外部性</strong>：高费率会驱动用户"批量合并 UTXO"以减少链上足迹，产生正外部性</li>
+                    <li><strong>与 Visa 对比</strong>：Visa 每秒处理数千笔，但每笔费率固定且包含中心化审核；比特币手续费低但确认时间长，是完全不同的权衡</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="business">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">⛏️ 矿工</span>
+                  <p class="p-quote">"手续费是我在补贴归零后继续挖矿的理由。每一笔用户交易，都是对我算力投入的认可。"</p>
+                  <ul>
+                    <li><strong>收入多元化</strong>：当前矿工同时接受区块补贴（稳定但递减）和手续费（波动但增长潜力大）</li>
+                    <li><strong>费率选择策略</strong>：矿池会用"手续费补贴区块奖励"的思路——接受低于平均费率的交易来填满区块空隙</li>
+                    <li><strong>Ordinals 的意外之喜</strong>：2023–2024 年 Ordinals/Runes 生态让部分矿工手续费收入激增，缓解了减半压力</li>
+                    <li><strong>风险</strong>：若 L2 导致主链交易量长期下降，手续费收入将难以弥补补贴缺口</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="technology">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👨‍💻 开发者</span>
+                  <p class="p-quote">"手续费市场是比特币协议里最精妙的设计之一——它不需要预设价格，而是让市场自己发现。"</p>
+                  <ul>
+                    <li><strong>费率估算算法</strong>：Bitcoin Core 的 fee estimation 通过统计历史区块填充率来预测当前最优费率</li>
+                    <li><strong>CPFP 门控</strong>：手续费市场让"收款方替付款方加费"成为可能——这对无信任的跨链原子交换至关重要</li>
+                    <li><strong>抗审查性</strong>：高费率让审查成本变高（想审查一笔交易需要付出同样或更高的费率）</li>
+                    <li><strong>未来方向</strong>：提案如 ANTPool 的费率市场改进、v3 交易池（限制 CPFP 滥用）等持续优化中</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="humanity">
+                  <span class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">👛 用户</span>
+                  <p class="p-quote">"我只想转一笔钱，为什么要关心费率？——但不懂费率的人，往往多付了钱。"</p>
+                  <ul>
+                    <li><strong>钱包代劳</strong>：大多数钱包（Coinbase、Trust Wallet）会自动估算费率，用户感知不到市场机制</li>
+                    <li><strong>真实成本</strong>：2023 年 Ordinals 期间，Coinbase 转账曾飙升到 10 美元以上——普通用户付出沉重代价</li>
+                    <li><strong>RBF 的双刃剑</strong>：开启 RBF 的交易可能在最终确认前被替换，这对收款方是不确定性的来源</li>
+                    <li><strong>策略建议</strong>：非紧急转账选经济费率、紧急转账选极速费率、不要在拥堵时段做小额转账</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">🔒 安全研究者</span>
+                  <p class="p-quote">"比特币的安全不是免费的——手续费是安全的燃料。当补贴归零，这辆车靠什么跑？"</p>
+                  <ul>
+                    <li><strong>51% 攻击成本</strong>：按 2025 年算力，每小时攻击成本约数百万美元，手续费在其中的占比是关键变量</li>
+                    <li><strong>Fee Sniping</strong>：矿工在极端情况下可能"fee sniping"（仅打包最高费率交易，甚至重组历史区块以抢夺手续费）——这是理论上存在但实践中罕见的风险</li>
+                    <li><strong>安全预算 vs 安全需求</strong>：有人认为现有算力已过度安全（花费过多），有人认为补贴归零后安全将不足——暂无共识</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</span>
+                  <p class="p-quote">"比特币的第一笔交易手续费是 0 BTC——因为当时链上根本没竞争。"</p>
+                  <ul>
+                    <li><strong>2010 年前</strong>：手续费几乎为零，中本聪甚至发帖说"手续费以后会慢慢出现"——有远见的预言</li>
+                    <li><strong>2013–2016 年</strong>：手续费 1–50 sat/B，低廉，比特币主链是"免费高速公路"</li>
+                    <li><strong>2017 年 SegWit 战争</strong>：大区块 vs SegWit 的争论，本质上是"区块空间该值多少钱"的争论</li>
+                    <li><strong>2021 年 Taproot 升级</strong>：让多签交易在链上看起来像单签，降低了某些用途的费率成本</li>
+                    <li><strong>2023–2024 Ordinals</strong>：把任意数据写入见证区，让本该降低的费率重新飙升——这是中本聪没有预见到的用途</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、动手实验 ============ -->
+          <section id="labs">
+            <h2>八、动手实验区</h2>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">动手实验清单</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">📊</span>
+                  <div>
+                    <strong>实验 1：实时 mempool 费率观察</strong><br>
+                    访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a>，观察当前各费率区间的待确认交易数量。重点看：① 费率 < 10 sat/vB 的交易堆积量；② 最高费率出现在哪些区块；③ 估算自己的钱包应该设多少费率。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📱</span>
+                  <div>
+                    <strong>实验 2：钱包费率设置</strong><br>
+                    打开你的比特币钱包（推荐 BlueWallet、Electrum），查看费率设置选项。选择「自定义费率」：分别尝试 5 sat/vB、20 sat/vB、100 sat/vB，观察预计确认时间的变化。体会：费率差 5 倍，确认速度能差多少？
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">🔄</span>
+                  <div>
+                    <strong>实验 3：RBF 交易体验</strong><br>
+                    用支持 RBF 的钱包发起一笔低费率交易（如 5 sat/vB），等待 5–10 分钟，观察状态。然后用同一钱包"提高费率"，看交易是否能在下一区块确认。注：需钱包支持 RBF（如 Electrum、BlueWallet）。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📈</span>
+                  <div>
+                    <strong>实验 4：历史费率回顾</strong><br>
+                    用 <a href="https://stacker.news" target="_blank" style="color:var(--orange);">blockchain.com 统计</a>查看 2017 年、2020 年、2024 年减半前后的平均手续费变化。观察：① 每次减半前后费率是否有规律性变化？② Ordinals 前后费率的变化幅度。
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 九、大白话总结 ============ -->
+          <section id="summary">
+            <h2>九、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">🗣️ 把这一切放在日常生活里</span>
+              <p><strong>区块空间 = 黄金时段的出租车</strong></p>
+              <p>想象早上 8:30 的地铁站——平时空的士多的是，高峰期排 100 辆长队。比特币的区块空间就是这班地铁：每 10 分钟来一趟，每趟只能装固定人数。</p>
+              <p>普通时段，你走上前说"我要上车"，人家说"上来吧"（1–5 sat/vB，低费率）。高峰期？先出价，谁出得高谁先走（200 sat/vB，插队成功）。</p>
+              <p>这就是<strong>费率拍卖</strong>——不是欺负穷人，而是让时间价值高的人获得优先权，同时让不急的人省下钱。</p>
+
+              <p style="margin-top:10px;"><strong>手续费市场 = 矿工未来的工资单</strong></p>
+              <p>老板（中本聪）说："我这公司现在每个月给你发固定工资（区块补贴），但工资会每 4 年减半，最终有一天不发。"</p>
+              <p>那矿工怎么活？答案是：<strong>收小费（手续费）</strong>。每服务一位顾客（用户发交易），收一点佣金。随着顾客越来越多、越来越愿意付高佣金，这个模式可以持续。</p>
+              <p>比特币的经济学赌注是：长期来看，<strong>用户愿意为比特币的区块空间付足够的钱</strong>，让矿工有动力继续保护网络。这个赌注是否成立，是比特币未来 20 年的核心命题。</p>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.2rem;">1️⃣</div>
+                <p style="font-size:0.82rem;"><strong>区块空间是稀缺资源</strong>：每 10 分钟约 4M WU，全球共享，不能扩容（协议层面）。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.2rem;">2️⃣</div>
+                <p style="font-size:0.82rem;"><strong>手续费是费率拍卖</strong>：矿工按 sat/vB 从高到低打包，高费率 = 优先入块。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.2rem;">3️⃣</div>
+                <p style="font-size:0.82rem;"><strong>矿工收入正在转型</strong>：从补贴主导 → 手续费主导，2140 年后完全靠手续费。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.2rem;">4️⃣</div>
+                <p style="font-size:0.82rem;"><strong>RBF/CPFP</strong> 是两种合法的"加价插队"方式，分别适用于发送方和接收方。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>理解了区块空间的定价逻辑，你已经掌握了比特币<strong>经济学最核心的市场机制</strong>。下一个主题是这套机制在时间维度上的展开——<strong>四年一度的周期</strong>：</p>
+            <a href="03-06-cycles-narrative.html" class="btn btn-primary">继续学习：周期与叙事 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="03-04-store-of-value.html" class="btn">← 回顾：价值存储</a>
+          </div>
+
+        </div><!-- article-body -->
+      </div><!-- main-content -->
+    </div><!-- two-col -->
+  </div><!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="03-04-store-of-value.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">价值存储</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 5 / 8
+      </div>
+      <a href="03-06-cycles-narrative.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">周期与叙事</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">₿ 比特币学习地图</div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      loadMempool();
+    });
+
+    // 已读标记
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-05-read', isRead);
+    };
+    (function checkRead() {
+      if (localStorage.getItem('btc-ch03-05-read') === 'true') {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // 多视角卡片
+    function initFeePerspectives() {
+      const card = document.getElementById('fee-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+
+      show(0);
+    }
+
+    // mempool 可视化
+    async function loadMempool() {
+      const el = document.getElementById('mempoolViz');
+      if (!el) return;
+      try {
+        const resp = await fetch('https://mempool.space/api/mempool');
+        const data = await resp.json();
+        const blocks = data.blocks || [];
+        const currentFee = data.mempoolInfo?.used || 0;
+        const totalfee = data.mempoolInfo?.total_fee || 0;
+
+        // 按费率区间模拟显示
+        const feeRanges = [
+          { label: '< 1 sat/vB', pct: 35, color: 'rgba(16,185,129,0.6)' },
+          { label: '1–10 sat/vB', pct: 30, color: 'rgba(234,179,8,0.6)' },
+          { label: '10–50 sat/vB', pct: 20, color: 'rgba(247,147,26,0.6)' },
+          { label: '50–200 sat/vB', pct: 10, color: 'rgba(239,68,68,0.6)' },
+          { label: '> 200 sat/vB', pct: 5, color: 'rgba(139,92,246,0.6)' },
+        ];
+
+        let barHtml = '<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:8px;">当前 mempool 待确认交易费率分布（估算）：</div>';
+        barHtml += '<div style="display:flex;height:28px;border-radius:6px;overflow:hidden;">';
+        feeRanges.forEach(r => {
+          barHtml += `<div style="flex:${r.pct};background:${r.color};display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#fff;font-weight:600;" title="${r.label}">${r.pct > 10 ? r.label : ''}</div>`;
+        });
+        barHtml += '</div>';
+        barHtml += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:0.72rem;">';
+        feeRanges.forEach(r => {
+          barHtml += `<div style="display:flex;align-items:center;gap:4px;color:var(--text-muted);"><div style="width:8px;height:8px;border-radius:2px;background:${r.color};"></div>${r.label} <span style="color:var(--text);">${r.pct}%</span></div>`;
+        });
+        barHtml += '</div>';
+        barHtml += `<div style="margin-top:10px;padding:8px 12px;background:var(--bg);border-radius:6px;font-size:0.78rem;">`;
+        barHtml += `💡 mempool 当前包含约 <strong>${currentFee > 0 ? '数千笔' : '未知量'}</strong> 待确认交易。费率越高，确认越快。`;
+        barHtml += `</div>`;
+
+        el.innerHTML = barHtml;
+      } catch (e) {
+        el.innerHTML = '<div class="exp-empty">⚠️ 无法加载实时数据（可能受网络限制）。请访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看。</div>';
+      }
+    }
+  </script>
+</body>
+</html>

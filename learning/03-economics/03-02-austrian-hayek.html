@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>奥地利学派与哈耶克 | 比特币学习地图</title>
+  <meta name="description" content="奥地利学派为何预言国家货币必然失败？哈耶克《货币的非国家化》说了什么？米塞斯回溯定理如何为比特币铺路？比特币如何实现货币非国家化？">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 理论谱系图（SVG 容器） ---- */
+    .theory-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .theory-visual svg {
+      border-radius: 10px;
+    }
+
+    /* ---- 对比表（通用） ---- */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 14px 0;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .compare-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .compare-table td {
+      color: var(--text-secondary);
+    }
+    .compare-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .compare-table td:first-child {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ---- 书籍推荐卡 ---- */
+    .book-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .book-card .book-cover {
+      width: 64px;
+      height: 88px;
+      background: linear-gradient(135deg, rgba(247,147,26,0.15), rgba(247,147,26,0.05));
+      border: 1px solid rgba(247,147,26,0.2);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .book-card .book-info { flex: 1; }
+    .book-card .book-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+    .book-card .book-author { font-size: 0.78rem; color: var(--orange); margin-bottom: 6px; }
+    .book-card .book-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ---- 引文框 ---- */
+    .quote-block {
+      border-left: 4px solid var(--orange);
+      background: rgba(247,147,26,0.05);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-style: italic;
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.75;
+    }
+    .quote-block .quote-source {
+      font-size: 0.78rem;
+      font-style: normal;
+      color: var(--text-muted);
+      margin-top: 8px;
+      text-align: right;
+    }
+
+    /* ---- Gresham vs Thiers 对比 ---- */
+    .gresham-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .gresham-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .gresham-card.bad { border-top: 3px solid #EF4444; }
+    .gresham-card.good { border-top: 3px solid #10B981; }
+    .gresham-card .gr-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .gresham-card.bad .gr-title { color: #EF4444; }
+    .gresham-card.good .gr-title { color: #10B981; }
+    .gresham-card .gr-desc { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; }
+    .gresham-card .gr-example {
+      margin-top: 8px;
+      padding: 8px;
+      background: var(--bg);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* ---- 货币演化路径 ---- */
+    .path-nodes {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 16px 0;
+      justify-content: center;
+    }
+    .path-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      text-align: center;
+      min-width: 130px;
+    }
+    .path-node .pn-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .path-node .pn-value {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .path-node.highlight {
+      border-color: var(--orange);
+      background: rgba(247,147,26,0.06);
+    }
+    .path-node.highlight .pn-value { color: var(--orange); }
+    .path-arrow { color: var(--text-muted); font-size: 1.1rem; }
+
+    /* ---- 视角卡片（通用样式） ---- */
+    .perspective-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .perspective-header {
+      padding: 14px 18px;
+      background: rgba(247,147,26,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .ph-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .ph-label-icon { font-size: 1rem; }
+    .perspective-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .p-tab {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .p-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .p-tab.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .perspective-body { padding: 16px 18px; }
+    .p-content { display: none; }
+    .p-content.active { display: block; }
+    .p-angle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .p-quote {
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      margin: 10px 0;
+    }
+    .p-content ul {
+      padding-left: 20px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .perspective-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p-dot-indicator { display: flex; gap: 4px; }
+    .p-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .p-dot.active { background: var(--orange); }
+
+    /* ---- 实验区 ---- */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .lab-section .lab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .lab-section .lab-title { font-size: 0.9rem; font-weight: 700; }
+    .lab-section .lab-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .lab-section .lab-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+    }
+    .lab-section .lab-list li:last-child { border-bottom: none; }
+    .lab-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .gresham-grid { grid-template-columns: 1fr; }
+      .perspective-tabs { gap: 4px; }
+      .p-tab { font-size: 0.65rem; padding: 4px 7px; }
+      .book-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html">经济学篇</a>
+        <span>›</span>
+        <span>奥地利学派与哈耶克</span>
+      </div>
+
+      <h1>🧠 奥地利学派与哈耶克</h1>
+      <p class="page-subtitle">比特币不是凭空出现的——它的思想源头是 1970 年代一场关于「货币能不能由私人发行」的论战。奥地利学派给了它哲学，格雷欣法则给了它预言。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 20 分钟</span>
+        <span class="page-tag">📊 难度：中等</span>
+        <span class="page-tag">📑 经济学篇 2/8</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>2 / 8 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 25%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#hayek">哈耶克《货币非国家化》</a>
+          <a href="#mises">米塞斯回溯定理</a>
+          <a href="#gresham">格雷欣 vs Thiers</a>
+          <a href="#compare">奥地利 vs 凯恩斯</a>
+          <a href="#abc">商业周期理论</a>
+          <a href="#btc-ns">比特币实现路径</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 核心直觉 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p><strong>奥地利学派的核心主张只有一句话：货币的规则，不应该由政府说了算。</strong></p>
+            <p style="margin-top:8px;">哈耶克说：「让私人货币自由竞争，好的货币会赢。」米塞斯说：「货币的价值不能凭空创造，它必须有历史根基。」</p>
+            <p style="margin-top:8px;"><strong>比特币是这两位经济学家思想在数字时代的第一次真正实现。</strong></p>
+          </div>
+
+          <!-- ============ 一、哈耶克与《货币的非国家化》 ============ -->
+          <section id="hayek">
+            <h2>一、哈耶克与《货币的非国家化》（1976）</h2>
+
+            <h3>1.1 弗里德里希·哈耶克是谁？</h3>
+            <p><strong>弗里德里希·哈耶克</strong>（Friedrich von Hayek，1899—1992），奥地利裔英国经济学家，1974 年诺贝尔经济学奖得主（与贡纳尔·缪尔达尔分享）。</p>
+            <p>他是 20 世纪最重要的自由市场思想家之一，以对计划经济的批判（《通往农奴制之路》，1944）和自发秩序理论闻名。在经济学领域，他最激进的思想之一是——<strong>货币发行权不应该被国家垄断</strong>。</p>
+
+            <h3>1.2 核心主张：货币可以也应该被私人竞争</h3>
+            <div class="quote-block">
+              「我相信，我们可以不依赖政府，用私人发行的竞争性货币建立起更好的货币体系。」
+              <div class="quote-source">—— 弗里德里希·哈耶克，《货币的非国家化》（1976）</div>
+            </div>
+
+            <p>哈耶克的逻辑链条：</p>
+            <div class="path-nodes">
+              <div class="path-node">
+                <div class="pn-label">问题</div>
+                <div class="pn-value">政府垄断货币发行</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node">
+                <div class="pn-label">后果</div>
+                <div class="pn-value">无竞争 → 无质量约束</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node">
+                <div class="pn-label">结果</div>
+                <div class="pn-value">超发 → 通胀 → 购买力稀释</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node highlight">
+                <div class="pn-label">哈耶克方案</div>
+                <div class="pn-value">私人货币自由竞争</div>
+              </div>
+            </div>
+
+            <p>哈耶克认为：如果货币像商品一样在市场上竞争——有不同发行商、不同货币、不同质量——那么<strong>发行商会像企业保住客户一样保住货币购买力</strong>。谁超发货币，谁的用户就会流向竞争对手。好的货币（币值稳定）会胜出，坏的货币（持续稀释）会被市场淘汰。</p>
+
+            <div class="highlight-box">
+              <span class="label">📌 重要澄清</span>
+              <div class="text">
+                <p>哈耶克在 1976 年提出的「私人货币竞争」是一个理论设想，在当时的技术条件下几乎不可能实现——</p>
+                <ul>
+                  <li>私人货币需要防止伪造 → 需要复杂的防伪技术</li>
+                  <li>需要可验证的发行量 → 需要透明的账本</li>
+                  <li>需要跨货币结算 → 需要统一的结算网络</li>
+                  <li>需要去中心化的发行机制 → 需要在没有中央机构的情况下达成共识</li>
+                </ul>
+                <p><strong>2009 年，比特币用密码学和分布式网络第一次在技术上实现了这个设想。</strong></p>
+              </div>
+            </div>
+
+            <h3>1.3 为什么国家货币必然失败——哈耶克的论证</h3>
+            <p>哈耶克对国家货币的分析极为犀利：</p>
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🏛️</div>
+                <h4>垄断 → 无质量约束</h4>
+                <p>法币发行者没有竞争对手——即使持续贬值，持币者也无法切换到别的货币（因为所有商品和服务都用同一种货币计价）。垄断者没有改善质量的激励。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">⏰</div>
+                <h4>政治周期驱动货币周期</h4>
+                <p>政客有在选举前「放水」刺激经济的冲动——这导致通胀往往在选举年后更高。货币政策的短期化是制度性问题，不是个人品德问题。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📉</div>
+                <h4>债务货币化的诱惑</h4>
+                <p>政府面对债务危机，最「容易」的选择是让央行印钞购买国债——把债务货币化，把成本转移给所有持币者。这也是为什么政府几乎没有动力真正控制债务规模。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、米塞斯回溯定理 ============ -->
+          <section id="mises">
+            <h2>二、米塞斯回溯定理：货币价值不能凭空创造</h2>
+
+            <h3>2.1 路德维希·冯·米塞斯</h3>
+            <p><strong>路德维希·冯·米塞斯</strong>（Ludwig von Mises，1881—1973），奥地利学派最重要的理论家之一，与哈耶克同为奥地利学派的旗帜人物。</p>
+            <p>他在 1912 年的著作《货币与信用理论》中提出了<strong>回溯定理</strong>（Regression Theorem），这是理解货币价值本质最深刻的理论之一。</p>
+
+            <h3>2.2 回溯定理：原文与白话</h3>
+            <div class="quote-block">
+              「没有任何商品，能在其一开始用作交换媒介时，不因其他用途而具有交换价值。」
+              <div class="quote-source">—— 路德维希·冯·米塞斯，《货币与信用理论》（1912）</div>
+            </div>
+
+            <p>米塞斯的原话比较抽象，翻译成大白话：</p>
+            <div class="story-box green">
+              <span class="story-label">💡 白话解释</span>
+              <p><strong>货币必须有「历史」，不能从零开始凭空创造。</strong></p>
+              <p>一种东西要成为货币，必须先在非货币用途上已经有价值——黄金之所以能成为货币，是因为它在首饰、工业上本来就有价值；贝壳之所以曾经是货币，是因为它本身稀缺、美观、可做装饰。</p>
+              <p style="margin-top:8px;"><strong>结论：凭空创造出来的「货币」（比如无限增发的法币），在理论上是没有价值基础的。</strong></p>
+            </div>
+
+            <h3>2.3 回溯定理对比特币的意义</h3>
+            <p>米塞斯可能从未见过比特币，但他的框架完美解释了为什么比特币能够成功：</p>
+
+            <div class="path-nodes">
+              <div class="path-node">
+                <div class="pn-label">第一步</div>
+                <div class="pn-value">比特币在交易所被购买<br>（先有了价格）</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node">
+                <div class="pn-label">往前追溯</div>
+                <div class="pn-value">购买者相信它<br>有未来购买力</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node">
+                <div class="pn-label">再往前</div>
+                <div class="pn-value">开发者/矿工早期<br>以电力成本「挖」出</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node highlight">
+                <div class="pn-label">回溯终点</div>
+                <div class="pn-value">真实消耗的<br>电力与算力成本</div>
+              </div>
+            </div>
+
+            <p>与法定货币相比：法币的「回溯终点」是政府的强制力和信任——这是一种<strong>社会契约</strong>，可以被单方面改变（货币脱钩黄金就是例子）。比特币的「回溯终点」是<strong>物理世界的能量消耗</strong>——这是无法伪造的。</p>
+
+            <div class="highlight-box">
+              <span class="label">⚠️ 回溯定理的争议</span>
+              <div class="text">
+                <p>现代经济学家对米塞斯回溯定理也有争议：</p>
+                <ul>
+                  <li><strong>支持方</strong>：比特币确实经历了「先有价值 → 后成货币」的演化路径，这符合回溯定理</li>
+                  <li><strong>反对方</strong>：如果「信任」本身可以作为价值基础，那么法币也能满足回溯定理——只是信任的锚点是政府信用</li>
+                  <li><strong>奥地利学派的回应</strong>：政府信用是可以被滥用的，而电力成本不行——两者的稳定性根本不同</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、格雷欣法则 vs Thiers 定律 ============ -->
+          <section id="gresham">
+            <h2>三、格雷欣法则 vs Thiers 定律：良币与劣币的博弈</h2>
+
+            <h3>3.1 格雷欣法则（Gresham's Law）</h3>
+            <div class="quote-block">
+              「劣币驱逐良币」—— 当两种货币同时流通时，价值较高的「良币」会被储藏、熔化或出口，而价值较低的「劣币」则会继续流通。
+              <div class="quote-source">—— 托马斯·格雷欣（Sir Thomas Gresham），16 世纪英国商人/金融家</div>
+            </div>
+            <p>经典例子：如果你手里有一枚含 90% 银的银币和一枚含 10% 银的铜币（法定价值相同），你会把 90% 的那枚藏起来，把 10% 的花掉——因为两者花出去的价值一样。于是好货币退出流通，坏货币留在市场上。</p>
+
+            <h3>3.2 Thiers 定律（格雷欣的反面）</h3>
+            <div class="quote-block">
+              「良币驱逐劣币」—— 当人们对某种货币失去信心时，会立即把「坏货币」脱手，囤积「好货币」，导致好货币升值，坏货币被排斥。
+              <div class="quote-source">—— 阿道夫·Thiers（Adolphe Thiers），19 世纪法国政治家</div>
+            </div>
+
+            <h3>3.3 两种定律在历史上的交替出现</h3>
+            <div class="gresham-grid">
+              <div class="gresham-card bad">
+                <div class="gr-title">🟥 劣币驱逐良币（法币时代）</div>
+                <div class="gr-desc">当政府强制规定两种货币等价流通，且可以自由超发「劣币」时，格雷欣法则生效。</div>
+                <div class="gr-example">
+                  📌 金圆券：政府强制规定它等值于黄金，但实际上远低于黄金价值。于是所有人把黄金藏起来，把金圆券花掉——良币退出，劣币流通。
+                </div>
+                <div class="gr-example" style="margin-top:4px;">
+                  📌 罗马帝国：银德纳里乌斯从 94% 含银量一路削减至 5%，高含银量的早期银币被储藏或熔化，劣质币主导流通。
+                </div>
+              </div>
+              <div class="gresham-card good">
+                <div class="gr-title">🟩 良币驱逐劣币（信任崩溃时代）</div>
+                <div class="gr-desc">当强制流通不再有效，人们对某种货币失去信心时，Thiers 定律生效——所有人都会逃离坏货币，囤积好货币。</div>
+                <div class="gr-example">
+                  📌 魏玛德国：1923 年恶性通胀期间，所有人都想把纸币换成美元或黄金——德马克成了烫手山芋，良币（外币/黄金）价格飙升。
+                </div>
+                <div class="gr-example" style="margin-top:4px;">
+                  📌 比特币时代：如果比特币保持 2100 万上限的稀缺承诺，而法币持续稀释，那么比特币就是「良币」，Thiers 定律可能在宏观层面生效。
+                </div>
+              </div>
+            </div>
+
+            <h3>3.4 比特币与 Thiers 定律</h3>
+            <p>比特币社区广泛流传的一个信念是：<strong>比特币时代将是历史上第一次「良币」长期占据主导的时代</strong>——因为：</p>
+            <ul>
+              <li>比特币是第一个<strong>技术上限</strong>保障的稀缺资产（而不是依赖政府承诺或黄金物理稀缺性）</li>
+              <li>比特币不能被伪造、不能被稀释、不能被没收——相比黄金，这些都是优势</li>
+              <li>但 Thiers 定律生效的前提是「人们相信它是良币」——这是比特币面临的真实挑战</li>
+            </ul>
+          </section>
+
+          <!-- ============ 四、奥地利学派 vs 凯恩斯主义 ============ -->
+          <section id="compare">
+            <h2>四、奥地利学派 vs 凯恩斯主义：两种经济世界观的碰撞</h2>
+
+            <p>理解奥地利学派，不能只读奥地利学派——最好的方式是和它的主要对手<strong>凯恩斯主义</strong>做对比。两派的核心分歧不是「谁对谁错」，而是「如何看待市场与政府的关系」。</p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>维度</th>
+                  <th>🟠 奥地利学派</th>
+                  <th>🔵 凯恩斯主义</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>政府干预</td>
+                  <td>最小化。价格是市场信号，政府干预会扭曲信号，造成资源错配。</td>
+                  <td>必要时干预。市场会失灵，需要政府/央行主动调节总需求来稳定经济。</td>
+                </tr>
+                <tr>
+                  <td>通货膨胀</td>
+                  <td>货币扩张会扭曲生产结构（见商业周期理论），长期是有害的。固定货币供给是优势。</td>
+                  <td>温和通胀（2%）是可接受的工具，可以润滑经济、减少实际债务负担。</td>
+                </tr>
+                <tr>
+                  <td>商业周期成因</td>
+                  <td>人为压低利率 → 信用扩张 → 过度投资 → 必然衰退。央行是周期之源。</td>
+                  <td>有效需求不足 → 需要央行/财政扩张来熨平周期。衰退需要政策干预来加速恢复。</td>
+                </tr>
+                <tr>
+                  <td>对法币的看法</td>
+                  <td>结构性缺陷：政府有无限印钞的动机，法币长期必然贬值。</td>
+                  <td>法币是现代经济的必要工具，央行的任务是维持稳定和增长，而非固定供给。</td>
+                </tr>
+                <tr>
+                  <td>储蓄</td>
+                  <td>储蓄是美德，是未来投资的基础。人为压低利率抑制储蓄。</td>
+                  <td>消费是需求的来源。过度储蓄可能导致有效需求不足，需要刺激消费。</td>
+                </tr>
+                <tr>
+                  <td>代表人物</td>
+                  <td>米塞斯、哈耶克、罗斯巴德</td>
+                  <td>凯恩斯、萨缪尔森、克鲁格曼</td>
+                </tr>
+                <tr>
+                  <td>比特币</td>
+                  <td>完全支持：固定供给、去中心化、不可篡改。</td>
+                  <td>警惕：波动性过大、无法作为交换媒介、通缩风险。</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="table-note" style="font-size:0.78rem;color:var(--text-muted);">※ 两派都有 Nobel 奖得主：哈耶克（1974，奥地利学派）vs 凯恩斯本人未曾获奖，但萨缪尔森等（凯恩斯主义）获奖。</p>
+
+            <div class="highlight-box">
+              <span class="label">📌 重要提醒</span>
+              <div class="text">
+                <p>奥地利学派不是比特币的「官方经济学」——它是比特币<strong>思想来源</strong>之一。比特币的支持者并不必然是奥地利学派经济学家，也不必然反对凯恩斯主义的所有观点。</p>
+                <p>理解奥地利学派的真正价值在于：<strong>它提供了一套逻辑自洽的框架，解释了「为什么固定货币供给是好事」</strong>——这是比特币叙事（比特币叙事后面会详细讲）的理论基底。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 五、奥地利商业周期理论 ============ -->
+          <section id="abc">
+            <h2>五、奥地利商业周期理论（ABC）：印钞必然引发周期</h2>
+
+            <h3>5.1 什么是 ABC？</h3>
+            <p><strong>Austrian Business Cycle Theory（奥地利商业周期理论）</strong>，由米塞斯在 1912 年提出、哈耶克在 1930 年代系统化。</p>
+            <p>它的核心命题：<strong>人为压低的利率（货币扩张）→ 扭曲生产结构 → 必然导致经济衰退。</strong></p>
+
+            <h3>5.2 完整的周期链条</h3>
+            <div class="inflation-chain" style="margin-top:12px;">
+              <div class="inflation-chain chain-node">
+                <div class="cn-label">第一步</div>
+                <div class="cn-value">央行压低利率<br>（低于市场均衡）</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="inflation-chain chain-node orange">
+                <div class="cn-label">第二步</div>
+                <div class="cn-value">信贷扩张<br>企业大量借款</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="inflation-chain chain-node">
+                <div class="cn-label">第三步</div>
+                <div class="cn-value">过度投资<br>（资本品行业扩张）</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="inflation-chain chain-node orange">
+                <div class="cn-label">第四步</div>
+                <div class="cn-value">资源错配<br>→ 通胀显现</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="inflation-chain chain-node red">
+                <div class="cn-label">第五步</div>
+                <div class="cn-value">央行收紧<br>→ 衰退/萧条</div>
+              </div>
+            </div>
+
+            <h3>5.3 通俗比喻：派对与宿醉</h3>
+            <div class="story-box green">
+              <span class="story-label">🍺 派对与宿醉的比喻</span>
+              <p>想象一个派对：</p>
+              <ul>
+                <li><strong>央行降息</strong> = 酒吧把酒水价格降到 0.1 元/杯 → 所有人狂喝</li>
+                <li><strong>信贷扩张</strong> = 酒吧无限量续杯 → 派对气氛嗨到顶点</li>
+                <li><strong>过度投资</strong> = 所有人都觉得「明天不用上班」→ 买了不需要的东西，开了很多「永远不会盈利」的公司</li>
+                <li><strong>通胀显现</strong> = 酒吧老板发现酒不够了，价格恢复到 50 元/杯</li>
+                <li><strong>央行收紧</strong> = 信用卡被冻结 → 大家集体宿醉，在宿醉中收拾派对残局（衰退）</li>
+              </ul>
+              <p style="margin-top:8px;">奥地利学派的结论：<strong>不是衰退本身是问题，而是派对（信贷扩张）本身是对未来资源的提前消耗。</strong>衰退是市场「纠错」的过程，而不是需要更多干预的问题。</p>
+            </div>
+
+            <h3>5.4 ABC 与比特币的关系</h3>
+            <p>比特币的固定供给（不增发）从结构上消除了「人为利率压制」的一个前提条件——当货币供给固定时，央行无法通过增加货币供给来人为压低利率。</p>
+            <p>这不是说比特币能消除所有经济周期——技术革新、消费偏好变化、自然灾害等仍会产生周期。但它<strong>消除了货币性周期的一个主要驱动力</strong>。</p>
+          </section>
+
+          <!-- ============ 六、比特币如何实现货币非国家化 ============ -->
+          <section id="btc-ns">
+            <h2>六、比特币如何实现「货币非国家化」</h2>
+
+            <h3>6.1 哈耶克设想的三个技术门槛</h3>
+            <p>1976 年哈耶克设想「货币非国家化」时，面临三个技术障碍。比特币用不同的方式一一解决：</p>
+
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔐</div>
+                <h4>防伪：密码学数字签名</h4>
+                <p>哈耶克时代无法防止数字货币被复制（双重支付问题）。比特币用<strong>工作量证明（PoW）+ 公开账本</strong>解决——任何人可以验证，每笔转账只能花一次。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📊</div>
+                <h4>透明：区块链公开账本</h4>
+                <p>哈耶克需要一种方法来验证发行量（防止私人银行超额发行）。比特币的区块链是<strong>任何人都可以查阅</strong>的完整账本，发行量写死在代码里，全世界同步验证。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🌐</div>
+                <h4>去中心化：分布式共识</h4>
+                <p>哈耶克设想的「私人银行竞争」实际上仍需要某种中心化机构。比特币的矿工网络全球分布，没有单一控制者——<strong>规则由算法和共识决定，不由任何机构决定</strong>。</p>
+              </div>
+            </div>
+
+            <h3>6.2 2100 万上限：承诺机器</h3>
+            <div class="quote-block">
+              「比特币的货币政策由代码决定，而不是由人的决策决定。这是一种新的货币哲学。」
+              <div class="quote-source">—— 尼克·萨博（Nick Szabo），「可信第三方假设」提出者</div>
+            </div>
+
+            <p>比特币的 2100 万上限不是「承诺」，而是<strong>机器</strong>——</p>
+            <div class="path-nodes">
+              <div class="path-node">
+                <div class="pn-label">代码层面</div>
+                <div class="pn-value">区块补贴每 21 万块减半</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node">
+                <div class="pn-label">数学层面</div>
+                <div class="pn-value">约 2140 年达到<br>总产出 20999999.9769 BTC</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node">
+                <div class="pn-label">社会层面</div>
+                <div class="pn-value">全球共识锁定<br>（改变需要绝大多数同意）</div>
+              </div>
+              <div class="path-arrow">→</div>
+              <div class="path-node highlight">
+                <div class="pn-label">结果</div>
+                <div class="pn-value">「承诺机器」<br>不可篡改</div>
+              </div>
+            </div>
+
+            <h3>6.3 代码即宪法：与法币的对比</h3>
+            <div class="story-box purple">
+              <span class="story-label">⚖️ 对比：人治 vs 机器治</span>
+              <p><strong>法币的货币政策</strong>：由央行委员会决定，可以随时调整。历史上「永久通胀目标」一再被突破。</p>
+              <p><strong>比特币的货币政策</strong>：由数学和代码决定。要改变它，需要：</p>
+              <ul>
+                <li>修改比特币核心代码（开源，公开讨论）</li>
+                <li>说服全球绝大多数矿工和节点升级</li>
+                <li>在公开的 BIP（比特币改进提案）流程中达成共识</li>
+              </ul>
+              <p style="margin-top:8px;">整个过程公开透明、可追溯——没有任何「闭门会议」。这就是「代码即宪法」的含义。</p>
+            </div>
+          </section>
+
+          <!-- ============ 七、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>七、多视角解读：奥地利学派比特币？</h2>
+
+            <div class="perspective-card" id="austrian-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 奥地利学派与比特币的六种解读</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="economics">💰 经济学家</button>
+                  <button class="p-tab" data-angle="investor">🏛️ 投资者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="humanity">🙋 普通人</button>
+                  <button class="p-tab" data-angle="philosophy">🏛️ 哲学家</button>
+                  <button class="p-tab" data-angle="developer">⚙️ 开发者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="economics">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学家</span>
+                  <div class="p-quote">"奥地利学派给比特币提供了哲学，但经济学本身对'固定货币供给是否最优'并没有定论。"</div>
+                  <ul>
+                    <li><strong>支持角度</strong>：米塞斯回溯定理解释了货币价值的来源（历史购买力 → 比特币的价值锚是算力成本）；哈耶克的竞争性货币理论与比特币的开放协议高度一致</li>
+                    <li><strong>批评角度</strong>：通缩螺旋风险（比特币升值预期 → 持有不花 → 有效需求不足）；货币供给固定 vs 经济体量变化 → 价格剧烈波动</li>
+                    <li><strong>争议焦点</strong>：货币供给应该是固定的（奥地利学派）还是应该跟随经济体量调整（现代货币理论）？这个问题至今没有经济学上的定论</li>
+                    <li><strong>主流经济学家的态度</strong>：多数持观望或批评态度（波动性太大、不能作为记账单位），少数（如罗恩·保罗）完全支持奥地利学派框架</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="investor">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🏛️ 投资者</span>
+                  <div class="p-quote">"奥地利学派给了我持有比特币的'理论底气'——但真正让我下单的，是'供给稀缺 + 需求增长'这个基本逻辑。"</div>
+                  <ul>
+                    <li><strong>叙事框架</strong>：「数字黄金」「抗通胀资产」「货币非国家化」——这些是比特币的叙事标签，奥地利学派是叙事背后的理论语言</li>
+                    <li><strong>风险提示</strong>：奥地利学派 ≠ 买入信号。理论正确不代表价格短期会涨。历史上「理论正确但短期亏损」的情况比比皆是</li>
+                    <li><strong>持仓心态</strong>：理解奥地利学派的人，更倾向于长期持有（因为相信货币稀释是结构性问题）——这是「币本位」心态的来源</li>
+                    <li><strong>资产配置</strong>：多数机构投资者仍把比特币归类为「另类资产/数字黄金」，而非「货币」——这个认知差距是机会也是风险</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</span>
+                  <div class="p-quote">"哈耶克的货币竞争设想，在 1976 年是乌托邦；在 2009 年，它第一次有了技术实现——这本身就是思想改变世界的一个案例。"</div>
+                  <ul>
+                    <li><strong>思想史脉络</strong>：哈耶克→ 奥地利学派 → 1970 年代滞涨时期兴起的自由放任思潮 → 比特币白皮书（2008 金融危机背景下）</li>
+                    <li><strong>类比</strong>：互联网降低了信息传播成本（信息民主化），比特币降低了货币发行成本（货币民主化）——两者都是「去中心化」的技术革命</li>
+                    <li><strong>未竟预言</strong>：哈耶克预言会出现多种竞争性私人货币；比特币是第一种，但未必是唯一——未来可能出现更多基于不同理论的竞争货币</li>
+                    <li><strong>历史提醒</strong>：纸币取代金属货币时，金属主义者也认为是疯狂；比特币能否成为主流货币，最终由历史判断，不由理论决定</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="humanity">
+                  <span class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">🙋 普通人</span>
+                  <div class="p-quote">"我不懂奥地利学派，也不懂什么回溯定理。但我知道一件事：我不想让我的存款每年缩水 5%。"</div>
+                  <ul>
+                    <li><strong>最直接的关联</strong>：奥地利学派的核心结论——「政府货币会持续贬值」——与普通人最关心的「我的钱会变毛吗」高度重叠</li>
+                    <li><strong>不需要懂理论也能用</strong>：就像不需要懂 TCP/IP 协议才能上网一样，普通人不需要读完哈耶克和米塞斯才能持有比特币</li>
+                    <li><strong>风险</strong>：「奥地利学派叙事」也可能成为过度自信的理由——「我的钱会一直涨因为货币注定贬值」——历史上每次泡沫都是这种叙事在推动</li>
+                    <li><strong>底线</strong>：理解奥地利学派的价值在于<strong>框架</strong>（货币稀释是结构性问题），而不是<strong>预测</strong>（比特币价格一定会涨）</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">🏛️ 哲学家</span>
+                  <div class="p-quote">"奥地利学派真正革命性的主张，不是某个经济学结论，而是'不需要国王'——货币秩序可以自发产生，不需要权威机构背书。"</div>
+                  <ul>
+                    <li><strong>自发秩序</strong>：哈耶克最重要的哲学贡献是「自发秩序」概念——复杂秩序（语言、市场、货币）可以从无数个体无协调的行动中产生，不需要中央设计者</li>
+                    <li><strong>比特币的哲学宣言</strong>：比特币的货币政策不是任何人设计的，它是算法演化的产物，体现了「自发秩序」的哲学理念</li>
+                    <li><strong>权力批判</strong>：奥地利学派对「政府可以有效管理货币」的批判，本质上是对「知识问题」的哲学洞察——没有任何中央机构拥有足够的知识来「优化」货币供给</li>
+                    <li><strong>开放问题</strong>：比特币的共识规则是否也应该「自发演化」？还是说，某个版本的规则应该被永久固定？（这个问题在比特币社区内至今存在分歧）</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="developer">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">⚙️ 开发者</span>
+                  <div class="p-quote">"奥地利学派的货币政策主张，在代码层面就是'const SUPPLY = 21000000'——不可篡改的常量，而不是可配置参数。"</div>
+                  <ul>
+                    <li><strong>代码对应</strong>：米塞斯的「货币需要历史价值锚」→ 比特币的 genesis block、创世矿工成本、算力积累；哈耶克的「竞争性货币」→ 比特币的开源协议和硬分叉竞争</li>
+                    <li><strong>比特币开发哲学</strong>：Bitcoin Core 的「保守主义」与奥地利学派的审慎哲学高度一致——「不要改」是默认选项，改动需要极高门槛</li>
+                    <li><strong>硬分叉 vs 软分叉</strong>：硬分叉（不向后兼容的升级）极为罕见——这本身就是奥地利学派「规则应该稳定」思想的技术实现</li>
+                    <li><strong>下一个前沿</strong>：BIP-119（OP_CTV）、BIP-325（CTV Vaults）等提案，尝试在不改变货币供给的前提下增强功能性——奥地利学派的「规则不变、功能扩展」思路</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角 · 同一思想，不同职业的解读</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、动手实验 ============ -->
+          <section id="labs">
+            <h2>八、动手实验区</h2>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">建议实验（深度阅读配套）</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">📚</span>
+                  <div>
+                    <strong>实验 1：阅读哈耶克《货币的非国家化》</strong><br>
+                    该书有中译本（全名《货币的非国家化：对多元货币理论与自由银行业的研究》）。不需要读完——重点读第一章和第三章，领会核心论点。中文图书馆或学术数据库通常有馆藏。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📖</span>
+                  <div>
+                    <strong>实验 2：米塞斯《人的行为》自学</strong><br>
+                    《人的行为》是米塞斯的集大成之作（被誉为「奥地利学派圣经」）。该书篇幅较长（800+ 页），建议从第三部分「经济学」相关章节入手，或配合奥地利学派公开课学习。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">🔍</span>
+                  <div>
+                    <strong>实验 3：查找格雷欣法则的现代案例</strong><br>
+                    在日常生活中寻找「劣币驱逐良币」的现象。例如：餐厅里优惠券 vs 现金付款、积分贬值 vs 原始礼品……你能找到几个现实生活中的例子？
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">💻</span>
+                  <div>
+                    <strong>实验 4：查看比特币的 BIP 提案流程</strong><br>
+                    访问 <a href="https://github.com/bitcoin/bips" target="_blank" style="color:var(--orange);">github.com/bitcoin/bips ↗</a>，了解 BIP（比特币改进提案）的格式和流程。找一个感兴趣的 BIP，查看其讨论历史和现状——这是比特币「去中心化治理」最真实的体现。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📊</span>
+                  <div>
+                    <strong>实验 5：对比奥派 vs 凯派对 2008 危机的解读</strong><br>
+                    2008 年金融危机是现代检验两派理论的最佳案例。用两个框架分别解读：你认为哪派的解释更有说服力？记录你的判断和理由。
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <h3>推荐阅读书单</h3>
+            <div class="book-card">
+              <div class="book-cover">📕</div>
+              <div class="book-info">
+                <div class="book-title">《货币的非国家化》</div>
+                <div class="book-author">弗里德里希·哈耶克（1976）</div>
+                <div class="book-desc">比特币最重要的思想源头。哈耶克提出「让私人货币竞争」的核心论点，论证政府货币垄断为何失败，以及多元货币竞争如何能产生更稳定的货币体系。</div>
+              </div>
+            </div>
+            <div class="book-card">
+              <div class="book-cover">📗</div>
+              <div class="book-info">
+                <div class="book-title">《人的行为》</div>
+                <div class="book-author">路德维希·冯·米塞斯（1949）</div>
+                <div class="book-desc">奥地利学派的理论巅峰，融合经济学、哲学和社会学。米塞斯回溯定理在此书中以更系统的形式阐述，是理解货币价值论必读的基础文献。</div>
+              </div>
+            </div>
+            <div class="book-card">
+              <div class="book-cover">📘</div>
+              <div class="book-info">
+                <div class="book-title">《通往农奴制之路》</div>
+                <div class="book-author">弗里德里希·哈耶克（1944）</div>
+                <div class="book-desc">哈耶克最著名的政治经济学著作。虽然不直接讨论货币，但「计划经济的知识问题」是理解奥地利学派「自发秩序」哲学的核心文本，影响了整整一代自由市场思想家。</div>
+              </div>
+            </div>
+          </section>
+
+              <!-- ============ 延伸探索 ============ -->
+    <section id="explore">
+      <div class="explorer-box">
+        <div class="exp-header">
+          <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+        </div>
+        <div class="exp-result">
+          <ul class="exp-links">
+        <li><a href="https://mises.org" target="_blank" rel="noopener">米塞斯研究院（回溯定理/《人的行动》） <span class="exp-go">→</span></a></li>
+        <li><a href="https://www.econlib.org/library/Hayek.html" target="_blank" rel="noopener">哈耶克《货币的非国家化》英文原版 <span class="exp-go">→</span></a></li>
+        <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space · 验证「代码即宪法」 <span class="exp-go">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- ============ 九、大白话总结 ============ -->
+          <section id="summary">
+            <h2>九、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 一句话总结</span>
+              <p><strong>奥地利学派 = 「钱不该由国王说了算」的思想传统。</strong></p>
+              <p style="margin-top:8px;">从米塞斯（货币价值必须有历史根基）到哈耶克（货币应该自由竞争），这派思想一直在问同一个问题：<strong>货币规则到底应该由谁来定？</strong></p>
+              <p style="margin-top:8px;"><strong>比特币是奥地利学派思想第一次真正实现。</strong></p>
+              <ul>
+                <li>哈耶克说「让私人货币竞争」——比特币用开源协议让它成为可能</li>
+                <li>米塞斯说「货币价值不能凭空创造」——比特币的电力成本给价值锚了一个不可伪造的基础</li>
+                <li>奥地利学派说「国家货币必然走向通胀」——比特币的 2100 万上限是这句话的技术回答</li>
+              </ul>
+              <p style="margin-top:8px;">但理解奥地利学派不是为了「信仰」比特币——而是为了理解<strong>为什么有人认为比特币在哲学上是合理的</strong>，以及为什么这套逻辑在某些人看来如此有说服力。</p>
+            </div>
+
+            <div class="story-box purple">
+              <span class="story-label">🗣️ 日常场景比喻</span>
+              <p>想象你在一个没有竞争、没有顾客评分的外卖平台点餐：</p>
+              <ul>
+                <li><strong>法币系统</strong> = 只有一个外卖平台，定价 100 元/份，送餐慢，食物难吃，但你没有选择。你投诉也没用，因为它是唯一的。</li>
+                <li><strong>比特币系统</strong> = 多个外卖平台自由竞争，你有选择权。哪个平台敢随便涨价、降低质量，用户就集体流向其他平台。平台为了留住用户，必须持续改善服务。</li>
+                <li><strong>哈耶克的预言</strong>：在竞争环境下，好的平台会胜出，用户是最终的裁判。</li>
+                <li><strong>比特币的实际状态</strong>：目前比特币更像是一个「单一但透明的外卖平台」——参与者众多，但规则是固定且透明的，还没有其他数字货币真正威胁到它的主导地位。</li>
+              </ul>
+            </div>
+
+            <!-- 行动召唤 -->
+            <div class="cta-box" style="margin-top:40px;">
+              <h3>🚀 下一步</h3>
+              <p>奥地利学派给了我们「为什么要固定货币供给」的理论。接下来要看：比特币的货币政策具体是如何设计的？2100 万上限是怎么算出来的？四次减半意味着什么？</p>
+              <a href="03-03-monetary-policy.html" class="btn btn-primary">继续学习：比特币货币政策 →</a>
+              <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+              <a href="03-01-money-inflation.html" class="btn">← 回顾：货币与通胀</a>
+            </div>
+          </section>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="03-01-money-inflation.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">货币与通胀</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 2 / 8
+      </div>
+      <a href="03-03-monetary-policy.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">比特币货币政策</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+    });
+
+    // ===== 已读标记 =====
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-02-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-02-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // ===== 多视角卡片 =====
+    function initAustrianPerspectives() {
+      const card = document.getElementById('austrian-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      // 触摸滑动
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+  </script>
+</body>
+</html>

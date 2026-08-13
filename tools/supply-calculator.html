@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>比特币供应总量计算器 · 比特币学习地图</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+.calc-hero { padding: 48px 0 32px; }
+.calc-body { padding: 0 0 60px; }
+.calc-grid { display: grid; grid-template-columns: 360px 1fr; gap: 28px; align-items: start; }
+@media(max-width:800px){ .calc-grid{grid-template-columns:1fr} }
+.calc-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: sticky; top: 72px; }
+.calc-panel h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 20px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
+.field input, .field select { width: 100%; padding: 9px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 0.9rem; outline: none; transition: border-color var(--transition); font-family: var(--font-sans); }
+.field input:focus, .field select:focus { border-color: var(--orange); }
+.field .hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+.result-panel { }
+.result-header { margin-bottom: 20px; }
+.result-header h2 { font-size: 1.3rem; font-weight: 700; }
+.result-header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+.result-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.result-card h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-bottom: 12px; }
+.result-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+.result-row:last-child { border-bottom: none; }
+.result-row .label { color: var(--text-secondary); }
+.result-row .value { font-weight: 700; font-family: var(--font-mono); font-size: 0.9rem; }
+.result-row .value.green { color: #22C55E; }
+.result-row .value.red { color: #EF4444; }
+.result-row .value.orange { color: var(--orange); }
+.big-result { font-size: 1.8rem; font-weight: 800; color: var(--orange); font-family: var(--font-mono); }
+.summary-box { background: rgba(247,147,26,0.06); border: 1px solid rgba(247,147,26,0.15); border-radius: var(--radius); padding: 16px 20px; margin-top: 16px; }
+.summary-box p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; }
+.summary-box strong { color: var(--orange); }
+
+/* 减半时间表 */
+.halving-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 4px; }
+.halving-table th { background: var(--bg); color: var(--orange); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.72rem; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.halving-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text-secondary); font-family: var(--font-mono); }
+.halving-table tr:last-child td { border-bottom: none; }
+.halving-table tr:hover td { background: var(--bg-card-hover); }
+.halving-table .current-row td { background: rgba(247,147,26,0.06); color: var(--orange); font-weight: 700; }
+
+/* SVG chart */
+.supply-chart { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-top: 16px; }
+.supply-chart h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+.chart-note { font-size: 0.72rem; color: var(--text-muted); margin-top: 10px; text-align: center; }
+
+/* S2F */
+.s2f-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+.s2f-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+.s2f-card .s2f-val { font-size: 1.4rem; font-weight: 800; color: var(--orange); font-family: var(--font-mono); }
+.s2f-card .s2f-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="index.html" class="nav-link active" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="calc-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">首页</a><span>›</span><a href="index.html">工具</a><span>›</span><span>供应总量计算器</span></div>
+    <h1>⛏️ 比特币供应总量计算器</h1>
+    <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px">输入任意日期或区块高度，实时计算比特币的累计产出量、通胀率与 Stock-to-Flow 比率</p>
+  </div>
+</header>
+
+<main class="calc-body">
+  <div class="container">
+    <div class="calc-grid">
+
+      <!-- 输入面板 -->
+      <div class="calc-panel">
+        <h2>📥 查询参数</h2>
+
+        <div class="field">
+          <label>查询方式</label>
+          <select id="queryMode" onchange="toggleInputMode()">
+            <option value="date">📅 按日期查询</option>
+            <option value="height">🏗️ 按区块高度查询</option>
+          </select>
+        </div>
+
+        <div class="field" id="dateField">
+          <label>查询日期</label>
+          <input type="date" id="queryDate" value="2024-05-01" min="2009-01-03" max="2032-12-31" oninput="calculate()">
+          <div class="hint">比特币从 2009-01-03 创世区块开始</div>
+        </div>
+
+        <div class="field" id="heightField" style="display:none">
+          <label>区块高度</label>
+          <input type="number" id="queryHeight" value="840000" min="0" max="6930000" step="1" oninput="calculate()">
+          <div class="hint">约每 10 分钟出一个块</div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="calculate()">🔄 重新计算</button>
+
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+          <h3 style="font-size:0.82rem;font-weight:700;margin-bottom:12px;color:var(--text-secondary)">📌 减半周期一览</h3>
+          <div class="halving-table" id="halvingQuick">
+            <!-- JS 填充 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 结果面板 -->
+      <div class="result-panel">
+        <div class="result-header">
+          <h2>📊 查询结果</h2>
+          <p id="result-date-label">截至 2024-05-01 的比特币供应情况</p>
+        </div>
+
+        <!-- 核心数据 -->
+        <div class="result-card">
+          <h3>🏦 累计供应量</h3>
+          <div class="result-row">
+            <span class="label">累计已产出 BTC</span>
+            <span class="value orange" id="total-supply">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">占 2100 万上限</span>
+            <span class="value green" id="pct-supply">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">距上限还剩</span>
+            <span class="value" id="remaining">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">区块高度</span>
+            <span class="value" id="block-height">—</span>
+          </div>
+        </div>
+
+        <!-- 通胀率 -->
+        <div class="result-card">
+          <h3>📈 年化通胀率</h3>
+          <div class="result-row">
+            <span class="label">当年新增 BTC</span>
+            <span class="value orange" id="annual-new">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">年化通胀率</span>
+            <span class="value red" id="inflation-rate">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">当前区块奖励</span>
+            <span class="value" id="current-reward">—</span>
+          </div>
+        </div>
+
+        <!-- S2F -->
+        <div class="result-card">
+          <h3>🔢 Stock-to-Flow 比率</h3>
+          <div class="result-row">
+            <span class="label">S2F 比率（存量/流量）</span>
+            <span class="value orange" id="s2f-ratio">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">相当于黄金的 %</span>
+            <span class="value green" id="s2f-gold">—</span>
+          </div>
+          <div class="summary-box">
+            <p>黄金的 S2F 约 <strong>62</strong>，比特币在减半后 S2F 急剧攀升，长期接近黄金级别的稀缺性。<br>减半后第一年的 S2F = <strong id="s2f-year1">—</strong></p>
+          </div>
+        </div>
+
+        <!-- 供应曲线 -->
+        <div class="supply-chart">
+          <h3>📉 比特币供应曲线（逼近 2100 万）</h3>
+          <svg id="supplySvg" viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+            <defs>
+              <linearGradient id="supplyGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#F7931A" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#F7931A" stop-opacity="1"/>
+              </linearGradient>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F7931A" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#F7931A" stop-opacity="0.02"/>
+              </linearGradient>
+            </defs>
+            <!-- 网格线 -->
+            <line x1="50" y1="200" x2="540" y2="200" stroke="#2A2A2A" stroke-width="1"/>
+            <line x1="50" y1="152" x2="540" y2="152" stroke="#2A2A2A" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <line x1="50" y1="104" x2="540" y2="104" stroke="#2A2A2A" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <line x1="50" y1="56" x2="540" y2="56" stroke="#2A2A2A" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <!-- Y轴标签 -->
+            <text x="46" y="204" text-anchor="end" font-size="9" fill="#666" font-family="var(--font-mono)">0M</text>
+            <text x="46" y="156" text-anchor="end" font-size="9" fill="#666" font-family="var(--font-mono)">7M</text>
+            <text x="46" y="108" text-anchor="end" font-size="9" fill="#666" font-family="var(--font-mono)">14M</text>
+            <text x="46" y="60" text-anchor="end" font-size="9" fill="#666" font-family="var(--font-mono)">21M</text>
+            <!-- 供应曲线（SVG polyline） -->
+            <polyline id="supplyPolyline" points="" fill="none" stroke="url(#supplyGrad)" stroke-width="2.5"/>
+            <!-- 面积填充 -->
+            <polygon id="supplyArea" points="" fill="url(#areaGrad)"/>
+            <!-- 21M上限线 -->
+            <line x1="50" y1="56" x2="540" y2="56" stroke="#F7931A" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+            <text x="544" y="60" font-size="9" fill="#F7931A" opacity="0.7">2100万</text>
+            <!-- X轴年份标签 -->
+            <g id="xLabels" font-size="9" fill="#666" font-family="var(--font-mono)">
+              <text x="50" y="218" text-anchor="middle">2009</text>
+              <text x="105" y="218" text-anchor="middle">2012</text>
+              <text x="160" y="218" text-anchor="middle">2016</text>
+              <text x="215" y="218" text-anchor="middle">2020</text>
+              <text x="270" y="218" text-anchor="middle">2024</text>
+              <text x="325" y="218" text-anchor="middle">2028</text>
+              <text x="380" y="218" text-anchor="middle">2032</text>
+              <text x="435" y="218" text-anchor="middle">2036</text>
+              <text x="490" y="218" text-anchor="middle">2040</text>
+              <text x="540" y="218" text-anchor="middle">2044</text>
+            </g>
+            <!-- 当前标记 -->
+            <circle id="supplyDot" cx="0" cy="0" r="5" fill="#F7931A" stroke="#0D0D0D" stroke-width="2" style="display:none"/>
+            <line id="supplyDashY" x1="0" y1="0" x2="0" y2="200" stroke="#F7931A" stroke-width="1" stroke-dasharray="3,3" style="display:none"/>
+          </svg>
+          <div class="chart-note">⚡ 减半时间表：2009→2012→2016→2020→2024→2028→2032... 每 4 年区块奖励减半，供应趋近 2100 万上限</div>
+        </div>
+
+        <!-- 减半详细表 -->
+        <div class="result-card" style="margin-top:16px">
+          <h3>📅 减半周期完整时间表</h3>
+          <div style="overflow-x:auto">
+            <table class="halving-table" id="halvingTable">
+              <thead>
+                <tr>
+                  <th>周期</th>
+                  <th>区块高度</th>
+                  <th>日期</th>
+                  <th>奖励/块</th>
+                  <th>累计供应</th>
+                  <th>年化通胀</th>
+                </tr>
+              </thead>
+              <tbody id="halvingBody">
+                <!-- JS 填充 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../index.html">首页</a> · <a href="index.html">工具</a> · <a href="../reference/index.html">参考</a>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 计算结果仅供参考。比特币供应量基于规则推算，实际流通量受 coinbase 未兑付等因素影响。</p>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>initNav();</script>
+<script>
+// ============================================================
+// 供应量计算核心逻辑
+// ============================================================
+
+// 创世区块：2009-01-03
+const GENESIS_DATE = new Date('2009-01-03');
+const GENESIS_TIMESTAMP = GENESIS_DATE.getTime();
+
+// 每 210000 块减半一次
+const HALVING_INTERVAL = 210000;
+// 每块时间约 10 分钟（秒）
+const SECONDS_PER_BLOCK = 10 * 60;
+// 每天秒数
+const SECONDS_PER_DAY = 86400;
+// 每天约 144 块
+const BLOCKS_PER_DAY = Math.round(SECONDS_PER_DAY / SECONDS_PER_BLOCK);
+// 每年约 52596 块
+const BLOCKS_PER_YEAR = Math.round(BLOCKS_PER_DAY * 365);
+
+// 初始奖励
+const INITIAL_REWARD = 50;
+// 总供应上限
+const TOTAL_MAX = 21000000;
+
+// ============================================================
+// 辅助函数
+// ============================================================
+
+function daysSinceGenesis(date) {
+  const d = new Date(date);
+  return Math.floor((d.getTime() - GENESIS_TIMESTAMP) / SECONDS_PER_DAY / 1000);
+}
+
+function blockHeightFromDate(date) {
+  return Math.max(0, daysSinceGenesis(date) * BLOCKS_PER_DAY);
+}
+
+function dateFromBlockHeight(height) {
+  const days = Math.floor(height / BLOCKS_PER_DAY);
+  return new Date(GENESIS_TIMESTAMP + days * SECONDS_PER_DAY * 1000);
+}
+
+function supplyAtHeight(height) {
+  if (height < 0) return 0;
+  let total = 0;
+  let remaining = height;
+  let reward = INITIAL_REWARD;
+  const halvingCount = Math.floor(height / HALVING_INTERVAL);
+  for (let i = 0; i <= halvingCount && reward > 0; i++) {
+    const start = i * HALVING_INTERVAL;
+    const end = Math.min((i + 1) * HALVING_INTERVAL, height);
+    const blocks = end - start;
+    total += blocks * reward;
+    reward = INITIAL_REWARD / Math.pow(2, i + 1);
+  }
+  // 处理最后一个不完整周期
+  if (height > (halvingCount + 1) * HALVING_INTERVAL) {
+    // 已经超过
+  }
+  return total;
+}
+
+// 精确供应量计算（按区块）
+function exactSupplyAtHeight(height) {
+  height = Math.floor(height);
+  if (height <= 0) return 0;
+  let total = 0;
+  let currentReward = INITIAL_REWARD;
+  let currentHalving = 0;
+  let blockInEra = 0;
+
+  for (let h = 1; h <= height; h++) {
+    total += currentReward;
+    blockInEra++;
+    if (blockInEra >= HALVING_INTERVAL && h < height) {
+      currentHalving++;
+      currentReward = INITIAL_REWARD / Math.pow(2, currentHalving);
+      blockInEra = 0;
+    }
+  }
+  return total;
+}
+
+// 年度新增供应（给定高度的年化通胀）
+function annualInflationAtHeight(height) {
+  if (height <= 0) return { inflation: 0, annualNew: 0 };
+  const currentSupply = exactSupplyAtHeight(height);
+  const blockInYear = BLOCKS_PER_YEAR;
+  let reward = INITIAL_REWARD;
+  let halving = 0;
+  // 找到当前奖励
+  while ((halving + 1) * HALVING_INTERVAL <= height) {
+    halving++;
+    reward = INITIAL_REWARD / Math.pow(2, halving);
+  }
+  // 如果在当前周期已过半，减半奖励取整后的实际值
+  const blocksInCurrentEra = height - halving * HALVING_INTERVAL;
+  // 年化新增 = 每块奖励 * 年块数
+  const annualNew = reward * BLOCKS_PER_YEAR;
+  const inflation = currentSupply > 0 ? (annualNew / currentSupply) * 100 : 0;
+  return { inflation, annualNew };
+}
+
+// ============================================================
+// 减半周期数据
+// ============================================================
+
+const HALVINGS = [
+  { halving: 0, startHeight: 0,            reward: 50,    label: '2009-01-03', desc: '创世区块' },
+  { halving: 1, startHeight: 210000,        reward: 25,    label: '2012-11-28', desc: '首次减半' },
+  { halving: 2, startHeight: 420000,        reward: 12.5,  label: '2016-07-09', desc: '第二次减半' },
+  { halving: 3, startHeight: 630000,        reward: 6.25,  label: '2020-05-11', desc: '第三次减半' },
+  { halving: 4, startHeight: 840000,        reward: 3.125, label: '2024-04-19', desc: '第四次减半' },
+  { halving: 5, startHeight: 1050000,      reward: 1.5625,label: '2028-预计', desc: '第五次减半' },
+  { halving: 6, startHeight: 1260000,      reward: 0.78125,label: '2032-预计', desc: '第六次减半' },
+  { halving: 7, startHeight: 1470000,      reward: 0.390625,label: '2036-预计', desc: '第七次减半' },
+  { halving: 8, startHeight: 1680000,      reward: 0.1953125,label: '2040-预计', desc: '第八次减半' },
+  { halving: 9, startHeight: 1890000,      reward: 0.09765625,label: '2044-预计', desc: '第九次减半' },
+  { halving: 10,startHeight: 2100000,      reward: 0.048828125,label: '2048-预计', desc: '第十次减半' },
+  { halving: 11,startHeight: 2310000,      reward: 0.0244140625,label: '2052-预计', desc: '第十一次减半' },
+  { halving: 12,startHeight: 2520000,      reward: 0.01220703125,label: '2056-预计', desc: '第十二次减半' },
+];
+
+// 预计算每减半节点累计供应
+const halvingSupplyCache = {};
+HALVINGS.forEach((h) => {
+  halvingSupplyCache[h.startHeight] = exactSupplyAtHeight(h.startHeight);
+});
+
+// 精确累计供应（到任意区块）
+function getCumulativeSupply(height) {
+  height = Math.floor(height);
+  if (height <= 0) return 0;
+  // 找到当前在哪个减半周期
+  let eraIdx = HALVINGS.findIndex((h) => h.startHeight > height);
+  if (eraIdx === -1) eraIdx = HALVINGS.length;
+  eraIdx = eraIdx - 1; // 当前周期
+  if (eraIdx < 0) eraIdx = 0;
+
+  const era = HALVINGS[eraIdx];
+  const startH = era.startHeight;
+  const blocksInEra = height - startH;
+  const supplyAtEraStart = halvingSupplyCache[startH] || 0;
+  const eraSupply = blocksInEra * era.reward;
+  return supplyAtEraStart + eraSupply;
+}
+
+// ============================================================
+// 格式化
+// ============================================================
+
+function fmtSupply(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(4) + ' M BTC';
+  if (n >= 1000) return (n / 1000).toFixed(2) + ' K BTC';
+  return n.toFixed(4) + ' BTC';
+}
+
+function fmtSupplyNum(n) {
+  return Math.floor(n).toLocaleString() + ' BTC';
+}
+
+function fmtPct(n) {
+  return n.toFixed(4) + '%';
+}
+
+function fmtDate(date) {
+  if (!(date instanceof Date)) date = new Date(date);
+  return date.toISOString().slice(0, 10);
+}
+
+// ============================================================
+// 供应曲线 SVG 数据点
+// ============================================================
+
+function buildSupplyCurve() {
+  const W = 490, H = 144; // SVG 可用区域（留出边距）
+  const maxSupply = TOTAL_MAX;
+  // 从 2009 到 2044，约 35 年
+  const startYear = 2009, endYear = 2044;
+  const totalDays = (new Date(endYear + '-01-01') - GENESIS_TIMESTAMP) / 86400000;
+
+  const points = [];
+  const areaPts = [];
+
+  for (let year = startYear; year <= endYear; year += 0.5) {
+    const yearStart = new Date(year + '-01-01');
+    const days = (yearStart - GENESIS_TIMESTAMP) / 86400000;
+    const height = Math.max(0, days) * BLOCKS_PER_DAY;
+    const supply = getCumulativeSupply(Math.floor(height));
+    const x = 50 + ((year - startYear) / (endYear - startYear)) * W;
+    const y = 200 - Math.min(supply / maxSupply, 1) * H;
+    points.push([x, y]);
+    areaPts.push([x, y]);
+  }
+
+  // 封闭面积
+  areaPts.push([50 + W, 200]);
+  areaPts.push([50, 200]);
+
+  return {
+    polyline: points.map(p => p.join(',')).join(' '),
+    area: areaPts.map(p => p.join(',')).join(' '),
+    dot: points[Math.floor(points.length / 2)] || [0, 0],
+  };
+}
+
+// ============================================================
+// UI 交互
+// ============================================================
+
+function toggleInputMode() {
+  const mode = document.getElementById('queryMode').value;
+  document.getElementById('dateField').style.display = mode === 'date' ? '' : 'none';
+  document.getElementById('heightField').style.display = mode === 'height' ? '' : 'none';
+  calculate();
+}
+
+function calculate() {
+  let height;
+  let dateStr;
+
+  const mode = document.getElementById('queryMode').value;
+  if (mode === 'date') {
+    const dateVal = document.getElementById('queryDate').value;
+    if (!dateVal) return;
+    dateStr = dateVal;
+    height = blockHeightFromDate(dateVal);
+  } else {
+    const h = parseInt(document.getElementById('queryHeight').value);
+    if (isNaN(h) || h < 0) return;
+    height = h;
+    dateStr = fmtDate(dateFromBlockHeight(height));
+  }
+
+  const supply = getCumulativeSupply(Math.floor(height));
+  const pct = (supply / TOTAL_MAX) * 100;
+  const remaining = TOTAL_MAX - supply;
+  const { inflation, annualNew } = annualInflationAtHeight(Math.floor(height));
+
+  // 当前区块奖励
+  let reward = INITIAL_REWARD;
+  for (let i = 0; i < HALVINGS.length - 1; i++) {
+    if (height >= HALVINGS[i].startHeight && height < HALVINGS[i + 1].startHeight) {
+      reward = HALVINGS[i].reward;
+      break;
+    }
+  }
+  if (height >= HALVINGS[HALVINGS.length - 1].startHeight) {
+    reward = HALVINGS[HALVINGS.length - 1].reward;
+  }
+
+  // S2F
+  const s2f = inflation > 0 ? 100 / inflation : Infinity;
+  const goldS2f = 62;
+  const s2fPct = s2f < Infinity ? Math.min((goldS2f / s2f) * 100, 100).toFixed(1) : '∞';
+  const s2fYear1 = (100 / inflation).toFixed ? (100 / inflation).toFixed(1) : '—';
+
+  // 更新 DOM
+  document.getElementById('result-date-label').textContent = '截至 ' + dateStr + ' 的比特币供应情况';
+  document.getElementById('total-supply').textContent = fmtSupplyNum(supply);
+  document.getElementById('pct-supply').textContent = pct.toFixed(4) + '%';
+  document.getElementById('remaining').textContent = fmtSupplyNum(remaining);
+  document.getElementById('block-height').textContent = Math.floor(height).toLocaleString();
+  document.getElementById('annual-new').textContent = fmtSupplyNum(annualNew);
+  document.getElementById('inflation-rate').textContent = inflation.toFixed(4) + '%';
+  document.getElementById('current-reward').textContent = reward + ' BTC/块';
+  document.getElementById('s2f-ratio').textContent = s2f < 10000 ? s2f.toFixed(2) : '∞';
+  document.getElementById('s2f-gold').textContent = s2fPct + '%';
+  document.getElementById('s2f-year1').textContent = s2fYear1;
+
+  // 通胀颜色
+  document.getElementById('inflation-rate').className = 'value ' + (inflation < 2 ? 'green' : inflation < 5 ? 'orange' : 'red');
+
+  // 更新 SVG 当前标记
+  const curveData = buildSupplyCurve();
+  const startYear = 2009, endYear = 2044;
+  const W = 490;
+  const H = 144;
+  const days = (new Date(dateStr) - GENESIS_TIMESTAMP) / 86400000;
+  const progress = Math.max(0, Math.min(1, days / ((new Date(endYear + '-01-01') - GENESIS_TIMESTAMP) / 86400000)));
+  const dotX = 50 + progress * W;
+  const dotY = 200 - Math.min(supply / TOTAL_MAX, 1) * H;
+
+  const dot = document.getElementById('supplyDot');
+  const dashY = document.getElementById('supplyDashY');
+  if (dot) {
+    dot.setAttribute('cx', dotX);
+    dot.setAttribute('cy', dotY);
+    dot.style.display = '';
+  }
+  if (dashY) {
+    dashY.setAttribute('x1', dotX);
+    dashY.setAttribute('y1', dotY);
+    dashY.setAttribute('x2', dotX);
+    dashY.setAttribute('y2', 200);
+    dashY.style.display = '';
+  }
+}
+
+// ============================================================
+// 渲染减半时间表
+// ============================================================
+
+function renderHalvingTables() {
+  const today = new Date();
+  const todayHeight = blockHeightFromDate(today);
+
+  // 快速一览（左侧面板）
+  const quickEl = document.getElementById('halvingQuick');
+  if (quickEl) {
+    quickEl.innerHTML = HALVINGS.slice(0, 6).map(h => {
+      const supply = halvingSupplyCache[h.startHeight] || 0;
+      const { inflation } = annualInflationAtHeight(h.startHeight);
+      const isPast = h.startHeight <= todayHeight;
+      return `
+        <tr style="${isPast ? '' : 'opacity:0.5'}">
+          <td>${h.label}</td>
+          <td>${h.reward} BTC</td>
+          <td>${fmtSupplyNum(supply)}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  // 完整表格
+  const tbody = document.getElementById('halvingBody');
+  if (tbody) {
+    tbody.innerHTML = HALVINGS.map(h => {
+      const supply = halvingSupplyCache[h.startHeight] || 0;
+      const { inflation } = annualInflationAtHeight(h.startHeight);
+      const isCurrent = todayHeight >= h.startHeight &&
+        (h === HALVINGS[HALVINGS.length - 1] || todayHeight < HALVINGS[HALVINGS.indexOf(h) + 1].startHeight);
+      const rowClass = isCurrent ? 'current-row' : (h.startHeight > todayHeight ? 'future-row' : '');
+      return `
+        <tr class="${rowClass}">
+          <td>${h.desc}</td>
+          <td>${h.startHeight.toLocaleString()}</td>
+          <td>${h.label}</td>
+          <td>${h.reward} BTC</td>
+          <td>${fmtSupplyNum(supply)}</td>
+          <td>${inflation.toFixed(4)}%</td>
+        </tr>`;
+    }).join('');
+  }
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+
+function init() {
+  // 设置日期输入范围
+  const today = new Date();
+  const dateInput = document.getElementById('queryDate');
+  if (dateInput) dateInput.max = today.toISOString().slice(0, 10);
+
+  // 渲染减半表
+  renderHalvingTables();
+
+  // 绘制初始供应曲线
+  const curveData = buildSupplyCurve();
+  const polyline = document.getElementById('supplyPolyline');
+  const area = document.getElementById('supplyArea');
+  if (polyline) polyline.setAttribute('points', curveData.polyline);
+  if (area) area.setAttribute('points', curveData.area);
+
+  // 初始计算
+  calculate();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

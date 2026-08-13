@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>密码学基石 | 比特币学习地图</title>
+  <meta name="description" content="深入比特币密码学基础：SHA-256哈希、ECDSA/Schnorr数字签名、secp256k1椭圆曲线，理解私钥为何不可伪造。">
+  <link rel="stylesheet" href="../../shared/style.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="04-00-overview.html">技术篇</a>
+        <span>›</span>
+        <span>密码学基石</span>
+      </div>
+
+      <h1>🔐 密码学基石</h1>
+      <p class="page-subtitle">哈希、签名、椭圆曲线——比特币的"数学锁芯"，为什么只有你能动你的币？</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：中级</span>
+        <span class="page-tag">📑 技术篇 1/9</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>技术篇进度</span>
+          <span>1 / 9 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 11%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">什么是密码学</a>
+          <a href="#hash">哈希函数</a>
+          <a href="#digital-sig">数字签名</a>
+          <a href="#ecc">椭圆曲线 secp256k1</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- 核心直觉 -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p><strong>比特币的密码学 = 门卫系统。</strong>哈希函数是"指纹识别"（任何文件都有唯一指纹，指纹相同则文件相同）；数字签名是"手写签名"（只有你才能签，签名可以被任何人验证）。</p>
+            <p style="margin-top:8px;">比特币只用三种密码学：哈希（SHA-256）、签名（ECDSA/secp256k1）、Merkle树。正是这三种简单的积木，支撑起了整个比特币的安全大厦。</p>
+          </div>
+
+          <!-- 引言 -->
+          <section id="intro">
+            <h2>这一章解决什么问题？</h2>
+            <p>你可能已经知道：<strong>私钥控制比特币</strong>、<strong>区块链不可篡改</strong>。</p>
+            <p>但<strong>为什么</strong>？</p>
+            <ul>
+              <li>为什么有了私钥就能"签名"交易、证明所有权？</li>
+              <li>为什么改了区块里的一个字，整个链的哈希就全变了？</li>
+              <li>为什么别人无法伪造你的签名？</li>
+            </ul>
+            <p class="highlight">答案全在<strong>密码学</strong>——哈希函数和数字签名，是比特币这座大厦的地基。</p>
+          </section>
+
+          <!-- 第一部分：哈希函数 -->
+          <section id="hash">
+            <h2>一、哈希函数：数字世界的"搅拌机"</h2>
+
+            <h3>1.1 什么是哈希函数？</h3>
+            <p>哈希函数是一种<strong>单向数学变换</strong>：</p>
+            <div class="hash-demo">
+              <div class="hash-flow">
+                <div class="hash-input">
+                  <span class="label">输入（任意长度）</span>
+                  <div class="input-box">"比特币"</div>
+                </div>
+                <div class="hash-arrow">→ <strong>SHA-256</strong> →</div>
+                <div class="hash-output">
+                  <span class="label">输出（固定256位）</span>
+                  <div class="output-box">6b3c0e7a...f82d1c</div>
+                </div>
+              </div>
+            </div>
+            <p>无论输入是一句话、一本书、还是整个维基百科，SHA-256 永远输出<strong>固定长度的64字符十六进制串</strong>（256位二进制）。</p>
+
+            <figure class="diagram-container" style="margin:28px 0;text-align:center;">
+              <svg viewBox="0 0 620 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:620px;height:auto;font-family:var(--font-sans);">
+                <!-- 输入 -->
+                <rect x="10" y="45" width="140" height="70" rx="10" fill="#1A1A1A" stroke="#3B82F6" stroke-width="1.5"/>
+                <text x="80" y="65" text-anchor="middle" fill="#60A5FA" font-size="10" font-weight="700">输入 INPUT</text>
+                <text x="80" y="82" text-anchor="middle" fill="#E5E5E5" font-size="11" font-family="monospace">"Hello,</text>
+                <text x="80" y="97" text-anchor="middle" fill="#E5E5E5" font-size="11" font-family="monospace">Bitcoin!"</text>
+                <!-- 箭头1 -->
+                <line x1="152" y1="80" x2="218" y2="80" stroke="#F7931A" stroke-width="2" marker-end="url(#arr)"/>
+                <!-- 哈希函数 -->
+                <rect x="220" y="35" width="180" height="90" rx="12" fill="rgba(247,147,26,0.1)" stroke="#F7931A" stroke-width="2"/>
+                <text x="310" y="62" text-anchor="middle" fill="#F7931A" font-size="12" font-weight="800">🔄 SHA-256 哈希函数</text>
+                <text x="310" y="80" text-anchor="middle" fill="#999" font-size="9">搅拌/计算过程</text>
+                <text x="310" y="95" text-anchor="middle" fill="#F7931A" font-size="10">输出 256-bit 哈希值</text>
+                <!-- 箭头2 -->
+                <line x1="402" y1="80" x2="468" y2="80" stroke="#F7931A" stroke-width="2"/>
+                <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#F7931A"/></marker></defs>
+                <!-- 输出 -->
+                <rect x="470" y="45" width="140" height="70" rx="10" fill="#1A1A1A" stroke="#10B981" stroke-width="1.5"/>
+                <text x="540" y="65" text-anchor="middle" fill="#10B981" font-size="10" font-weight="700">输出 OUTPUT</text>
+                <text x="540" y="85" text-anchor="middle" fill="#6EE7B7" font-size="10" font-family="monospace">a13ba7f2</text>
+                <text x="540" y="99" text-anchor="middle" fill="#6EE7B7" font-size="10" font-family="monospace">...3de9</text>
+                <!-- 特性标注 -->
+                <text x="310" y="142" text-anchor="middle" fill="#666" font-size="9">✓ 同样的输入 → 永远得到同样的输出  |  ✓ 轻微改动输入 → 完全不同的哈希</text>
+              </svg>
+              <figcaption style="color:var(--text-muted);font-size:0.8rem;margin-top:6px;">图1: SHA-256 哈希函数的工作原理 — 任意长度输入，固定64字符输出</figcaption>
+            </figure>
+
+            <h3>1.2 哈希的核心特性</h3>
+            <div class="feature-cards">
+              <div class="feature-card">
+                <div class="feature-icon">🔀</div>
+                <h4>单向性</h4>
+                <p>从输入能算出输出，但<strong>无法从输出反推输入</strong>。</p>
+                <p class="example">例：知道哈希值 6b3c0e7a...，无法算出原文是"比特币"。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h4>确定性</h4>
+                <p>相同输入永远产生相同输出。</p>
+                <p class="example">例：SHA-256("比特币") 永远等于 6b3c0e7a...，不会变。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">💥</div>
+                <h4>雪崩效应</h4>
+                <p>输入改一个字，输出<strong>完全改变</strong>。</p>
+                <p class="example">例："比特币" vs "比特币！" → 哈希值完全不同。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h4>抗碰撞</h4>
+                <p>几乎不可能找到两个不同输入产生相同哈希。</p>
+                <p class="example">SHA-256 有 2²⁵⁶ 种输出，宇宙原子数级别。</p>
+              </div>
+            </div>
+
+            <!-- 动手实验：哈希计算器 -->
+            <div class="lab-section">
+              <h3>动手实验：哈希计算器</h3>
+              <div class="lab-box">
+                <div class="lab-controls">
+                  <label for="hashInput">输入任意文本：</label>
+                  <input type="text" id="hashInput" placeholder="试试输入：比特币" value="比特币">
+                  <button onclick="calculateHash()" class="btn-lab">计算 SHA-256</button>
+                </div>
+                <div class="lab-result">
+                  <div class="result-label">SHA-256 哈希值：</div>
+                  <div id="hashOutput" class="hash-result">等待计算...</div>
+                </div>
+                <div class="lab-tips">
+                  <p>💡 <strong>试试看</strong>：</p>
+                  <ul>
+                    <li>改一个字（如"比特"→"比 特"），看哈希如何剧变</li>
+                    <li>输入一段长文，看输出是否还是64字符</li>
+                    <li>输入空格，看会得到什么</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <h3>1.3 比特币中的哈希应用</h3>
+            <table class="usage-table">
+              <thead>
+                <tr>
+                  <th>场景</th>
+                  <th>哈希作用</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>区块链接</strong></td>
+                  <td>每个区块头包含前一个区块的哈希，形成不可篡改的链</td>
+                </tr>
+                <tr>
+                  <td><strong>Merkle树</strong></td>
+                  <td>用哈希把所有交易组织成一棵树，高效验证交易存在性</td>
+                </tr>
+                <tr>
+                  <td><strong>挖矿</strong></td>
+                  <td>矿工不断改变 nonce，计算区块哈希，直到小于目标值</td>
+                </tr>
+                <tr>
+                  <td><strong>地址生成</strong></td>
+                  <td>公钥经过多次哈希变换生成比特币地址</td>
+                </tr>
+                <tr>
+                  <td><strong>交易ID</strong></td>
+                  <td>每笔交易的哈希就是它的唯一标识（txid）</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- 第二部分：数字签名 -->
+          <section id="digital-sig">
+            <h2>二、数字签名：私钥的"防伪印章"</h2>
+
+            <h3>2.1 签名的本质：证明"是我本人"</h3>
+            <p>现实世界：你在支票上<strong>亲笔签名</strong>，银行验证笔迹后兑现。</p>
+            <p>比特币世界：你用<strong>私钥签名</strong>，网络验证后执行转账。</p>
+
+            <div class="signature-flow">
+              <div class="flow-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <strong>生成签名</strong><br>
+                  私钥 + 消息 → 签名<br>
+                  <span class="step-note">（别人无法生成）</span>
+                </div>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <strong>验证签名</strong><br>
+                  签名 + 消息 + 公钥 → 是/否<br>
+                  <span class="step-note">（任何人都能验证）</span>
+                </div>
+              </div>
+            </div>
+
+            <figure class="diagram-container" style="margin:28px 0;text-align:center;">
+              <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto;font-family:var(--font-sans);">
+                <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#F7931A"/></marker></defs>
+                <!-- Alice 区域 -->
+                <rect x="10" y="15" width="210" height="150" rx="10" fill="rgba(139,92,246,0.07)" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="5,3"/>
+                <text x="115" y="36" text-anchor="middle" fill="#A78BFA" font-size="11" font-weight="700">👤 Alice (签名者)</text>
+                <rect x="22" y="48" width="88" height="38" rx="8" fill="#8B5CF6" opacity="0.25" stroke="#8B5CF6" stroke-width="1"/>
+                <text x="66" y="67" text-anchor="middle" fill="#A78BFA" font-size="10">🔑 私钥</text>
+                <rect x="120" y="48" width="88" height="38" rx="8" fill="#3B82F6" opacity="0.25" stroke="#3B82F6" stroke-width="1"/>
+                <text x="164" y="67" text-anchor="middle" fill="#60A5FA" font-size="10">📄 消息</text>
+                <text x="115" y="108" text-anchor="middle" fill="#F7931A" font-size="20">⚡</text>
+                <text x="115" y="126" text-anchor="middle" fill="#F7931A" font-size="9">签名</text>
+                <rect x="55" y="138" width="120" height="28" rx="8" fill="#10B981" opacity="0.2" stroke="#10B981" stroke-width="1"/>
+                <text x="115" y="157" text-anchor="middle" fill="#6EE7B7" font-size="10">📝 数字签名</text>
+                <!-- 中间箭头 -->
+                <line x1="222" y1="88" x2="278" y2="88" stroke="#F7931A" stroke-width="2" marker-end="url(#arr2)"/>
+                <text x="250" y="80" text-anchor="middle" fill="#999" font-size="8">签名+原文</text>
+                <!-- Bob 区域 -->
+                <rect x="280" y="15" width="210" height="150" rx="10" fill="rgba(16,185,129,0.07)" stroke="#10B981" stroke-width="1" stroke-dasharray="5,3"/>
+                <text x="385" y="36" text-anchor="middle" fill="#6EE7B7" font-size="11" font-weight="700">👤 Bob (验证者)</text>
+                <rect x="295" y="48" width="88" height="38" rx="8" fill="#10B981" opacity="0.25" stroke="#10B981" stroke-width="1"/>
+                <text x="339" y="67" text-anchor="middle" fill="#6EE7B7" font-size="10">🔓 公钥</text>
+                <rect x="393" y="48" width="88" height="38" rx="8" fill="#F7931A" opacity="0.2" stroke="#F7931A" stroke-width="1"/>
+                <text x="437" y="67" text-anchor="middle" fill="#FFA940" font-size="10">📝 签名</text>
+                <text x="385" y="108" text-anchor="middle" fill="#10B981" font-size="20">✓</text>
+                <text x="385" y="126" text-anchor="middle" fill="#10B981" font-size="9">验证通过</text>
+                <text x="385" y="157" text-anchor="middle" fill="#6EE7B7" font-size="10">数学保证!</text>
+                <!-- 密钥原理 -->
+                <rect x="510" y="20" width="180" height="145" rx="10" fill="#1A1A1A" stroke="#2A2A2A" stroke-width="1"/>
+                <text x="600" y="42" text-anchor="middle" fill="#F7931A" font-size="10" font-weight="700">💡 关键原理</text>
+                <line x1="520" y1="50" x2="680" y2="50" stroke="#2A2A2A" stroke-width="1"/>
+                <text x="520" y="70" fill="#999" font-size="9">✓ 私钥签名，公钥验证</text>
+                <text x="520" y="88" fill="#999" font-size="9">✓ 知道公钥无法反推私钥</text>
+                <text x="520" y="106" fill="#999" font-size="9">✓ 签名不可伪造</text>
+                <text x="520" y="124" fill="#999" font-size="9">✓ 数学担保的身份证明</text>
+                <text x="520" y="145" fill="#666" font-size="8">ECDSA(旧) / Schnorr(新)</text>
+              </svg>
+              <figcaption style="color:var(--text-muted);font-size:0.8rem;margin-top:6px;">图2: 数字签名流程 — 私钥签名、公钥验证、数学保证不可伪造</figcaption>
+            </figure>
+
+            <h3>2.2 非对称加密：公钥与私钥</h3>
+            <div class="key-pair-explain">
+              <div class="key-card private">
+                <div class="key-icon">🔑</div>
+                <h4>私钥（Private Key）</h4>
+                <ul>
+                  <li>随机生成的256位数字</li>
+                  <li><strong>只有你拥有</strong>，绝对保密</li>
+                  <li>用来<strong>签名</strong>交易</li>
+                </ul>
+                <p class="key-warning">⚠️ 泄露私钥 = 丢币</p>
+              </div>
+              <div class="key-card public">
+                <div class="key-icon">🔓</div>
+                <h4>公钥（Public Key）</h4>
+                <ul>
+                  <li>由私钥经椭圆曲线算法推导</li>
+                  <li><strong>可以公开</strong>，全网可见</li>
+                  <li>用来<strong>验证</strong>签名</li>
+                </ul>
+                <p class="key-note">公钥不能反推私钥（单向性）</p>
+              </div>
+            </div>
+
+            <h3>2.3 ECDSA 与 Schnorr 签名</h3>
+            <table class="sig-table">
+              <thead>
+                <tr>
+                  <th>签名算法</th>
+                  <th>启用时间</th>
+                  <th>特点</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ECDSA</strong></td>
+                  <td>2009年起</td>
+                  <td>椭圆曲线数字签名算法，比特币初始选择</td>
+                </tr>
+                <tr>
+                  <td><strong>Schnorr</strong></td>
+                  <td>2021年 Taproot 升级</td>
+                  <td>签名更短、可聚合、隐私更强、验证更快</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="sig-note">Schnorr 签名允许多签聚合为单签外观，提升隐私并节省空间。</p>
+
+            <!-- 动手实验：签名演示 -->
+            <div class="lab-section">
+              <h3>动手实验：签名演示</h3>
+              <div class="lab-box">
+                <div class="lab-controls">
+                  <label for="messageToSign">输入要签名的消息：</label>
+                  <input type="text" id="messageToSign" placeholder="例如：我同意转账0.1 BTC" value="Hello Bitcoin">
+
+                  <label for="privateKeyInput">私钥（演示用，随机生成）：</label>
+                  <input type="text" id="privateKeyInput" readonly placeholder="点击生成">
+                  <button onclick="generateDemoKey()" class="btn-lab-secondary">生成演示私钥</button>
+
+                  <button onclick="signDemoMessage()" class="btn-lab">签名</button>
+                </div>
+
+                <div class="lab-result">
+                  <div class="result-row">
+                    <span class="result-label">公钥：</span>
+                    <code id="publicKeyOutput">等待生成...</code>
+                  </div>
+                  <div class="result-row">
+                    <span class="result-label">签名：</span>
+                    <code id="signatureOutput">等待签名...</code>
+                  </div>
+                </div>
+
+                <div class="lab-verify">
+                  <h4>验证签名</h4>
+                  <p>任何人拿到<strong>签名 + 消息 + 公钥</strong>都能验证是否由对应私钥签署。</p>
+                  <button onclick="verifyDemoSignature()" class="btn-lab-secondary">验证</button>
+                  <div id="verifyResult" class="verify-result"></div>
+                </div>
+              </div>
+              <p class="lab-warning">⚠️ <strong>安全提示</strong>：这是浏览器内演示，使用随机生成的密钥。真实交易请用专业钱包签名，切勿在此输入真实私钥。</p>
+            </div>
+          </section>
+
+          <!-- 第三部分：椭圆曲线 -->
+          <section id="ecc">
+            <h2>三、椭圆曲线：私钥生成公钥的数学引擎</h2>
+
+            <h3>3.1 secp256k1 曲线</h3>
+            <p>比特币使用的椭圆曲线参数由 <strong>secp256k1</strong> 定义：</p>
+            <div class="curve-params">
+              <div class="param">
+                <span class="param-label">曲线方程</span>
+                <code>y² = x³ + 7</code>
+              </div>
+              <div class="param">
+                <span class="param-label">素数域</span>
+                <code>p = 2²⁵⁶ - 2³² - 977</code>
+              </div>
+              <div class="param">
+                <span class="param-label">生成点 G</span>
+                <code>固定坐标点</code>
+              </div>
+            </div>
+
+            <figure class="diagram-container" style="margin:28px 0;text-align:center;">
+              <svg viewBox="0 0 660 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:660px;height:auto;font-family:var(--font-sans);">
+                <defs>
+                  <pattern id="ecgrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e1e1e" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <!-- 坐标系 -->
+                <rect x="40" y="30" width="360" height="200" fill="url(#ecgrid)" rx="6"/>
+                <line x1="40" y1="130" x2="400" y2="130" stroke="#3a3a3a" stroke-width="1"/>
+                <line x1="220" y1="30" x2="220" y2="230" stroke="#3a3a3a" stroke-width="1"/>
+                <text x="405" y="134" fill="#666" font-size="9">x</text>
+                <text x="225" y="27" fill="#666" font-size="9">y</text>
+                <!-- 椭圆曲线 -->
+                <path d="M 55 130 Q 100 40 220 50 Q 340 40 385 130 Q 340 220 220 210 Q 100 220 55 130" fill="rgba(247,147,26,0.07)" stroke="#F7931A" stroke-width="2"/>
+                <!-- G点 -->
+                <circle cx="120" cy="88" r="7" fill="#F7931A"/>
+                <line x1="120" y1="88" x2="120" y2="130" stroke="#F7931A" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+                <line x1="40" y1="88" x2="120" y2="88" stroke="#F7931A" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+                <text x="130" y="85" fill="#F7931A" font-size="12" font-weight="700">G</text>
+                <text x="75" y="118" fill="#F7931A" font-size="8" text-anchor="middle">Gx</text>
+                <text x="138" y="100" fill="#F7931A" font-size="8">Gy</text>
+                <!-- 2G -->
+                <circle cx="305" cy="55" r="5" fill="#8B5CF6"/>
+                <text x="316" y="52" fill="#A78BFA" font-size="9">2G</text>
+                <!-- 参数框 -->
+                <rect x="420" y="25" width="225" height="210" rx="12" fill="#1A1A1A" stroke="#2A2A2A" stroke-width="1"/>
+                <text x="532" y="52" text-anchor="middle" fill="#F7931A" font-size="12" font-weight="800">secp256k1 参数</text>
+                <line x1="428" y1="62" x2="638" y2="62" stroke="#2A2A2A" stroke-width="1"/>
+                <text x="430" y="82" fill="#999" font-size="9">曲线方程:</text>
+                <text x="430" y="100" fill="#F7931A" font-size="13" font-family="monospace">y² = x³ + 7</text>
+                <text x="430" y="120" fill="#888" font-size="9">p = 0xFFFFFFFF FFFFFFFF</text>
+                <text x="430" y="136" fill="#888" font-size="9">    FFFFFFFF FFFFFFFF</text>
+                <text x="430" y="156" fill="#888" font-size="9">n = 0xFFFFFFFF FFFFFFFF</text>
+                <text x="430" y="172" fill="#888" font-size="9">    FFFFFFFF 5BA8B2E5</text>
+                <line x1="428" y1="185" x2="638" y2="185" stroke="#2A2A2A" stroke-width="1"/>
+                <text x="430" y="205" fill="#888" font-size="9">Gx = 0x79BE667E...</text>
+                <text x="430" y="221" fill="#888" font-size="9">Gy = 0x483ADA77...</text>
+                <text x="430" y="235" fill="#666" font-size="8">私钥 = [1, n] 之间的随机数</text>
+              </svg>
+              <figcaption style="color:var(--text-muted);font-size:0.8rem;margin-top:6px;">图3: secp256k1 椭圆曲线 — 比特币密码学引擎，由极简参数 a=0, b=7 定义</figcaption>
+            </figure>
+
+            <h3>3.2 私钥 → 公钥：点乘运算</h3>
+            <div class="math-flow">
+              <div class="math-step">
+                <span class="math-label">私钥 k</span>
+                <span class="math-desc">（随机256位数字）</span>
+              </div>
+              <div class="math-arrow">↓</div>
+              <div class="math-step highlight">
+                <span class="math-label">公钥 P = k × G</span>
+                <span class="math-desc">（椭圆曲线点乘）</span>
+              </div>
+              <div class="math-arrow">↓</div>
+              <div class="math-step">
+                <span class="math-label">公钥坐标 (x, y)</span>
+                <span class="math-desc">（可压缩/未压缩格式）</span>
+              </div>
+            </div>
+            <p><strong>关键</strong>：知道 k 和 G，容易算 P；但知道 P 和 G，<strong>无法反推 k</strong>（椭圆曲线离散对数难题）。</p>
+
+            <div class="info-box">
+              <h4>为什么选 secp256k1？</h4>
+              <ul>
+                <li><strong>效率</strong>：比 RSA 同等安全强度下密钥更短、运算更快</li>
+                <li><strong>开放</strong>：参数公开，无专利限制</li>
+                <li><strong>安全</strong>：经过多年密码学社区审查</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 多视角重新理解密码学 -->
+          <div class="perspective-card" id="perspectives">
+            <div class="perspective-header">
+              <div class="ph-label"><span class="ph-label-icon">🔄</span><span>多视角 · 比特币密码学</span></div>
+              <div class="perspective-tabs">
+                <button class="p-tab active" data-angle="dev">💻 开发者</button>
+                <button class="p-tab" data-angle="security">🔐 安全研究员</button>
+                <button class="p-tab" data-angle="user">👤 普通用户</button>
+                <button class="p-tab" data-angle="math">🔢 数学家</button>
+                <button class="p-tab" data-angle="historian">📜 历史学家</button>
+                <button class="p-tab" data-angle="analogy">🎭 比喻大师</button>
+              </div>
+            </div>
+            <div class="perspective-body">
+              <div class="p-content active" data-angle="dev">
+                <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">💻 开发者视角</div>
+                <div class="p-quote">"secp256k1 不是随便选的——它是 Schnorr 签名的天然家园，也是后量子时代的候选者。"</div>
+                <ul>
+                  <li><strong>ECDSA vs Schnorr</strong>：比特币目前使用 ECDSA（椭圆曲线数字签名算法），2021年 Taproot 升级引入了 Schnorr 签名（支持密钥聚合，多签交易更小、更私密）</li>
+                  <li><strong>哈希函数族</strong>：比特币使用 SHA-256（区块哈希、RPOW）+ RIPEMD-160（地址生成）。SHA-256 由 NSA 设计，但被广泛认为无后门</li>
+                  <li><strong>Base58Check 编码</strong>：地址从公钥到 base58 字符串经历 RIPEMD-160(SHA-256(pubkey)) → 校验和 → Base58 编码，4 个字节用于错误检测</li>
+                  <li><strong>交易签名流程</strong>：签名者对交易哈希用私钥签名，验证者用公钥恢复并验证——无需暴露私钥</li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="security">
+                <div class="p-angle-badge" style="background:rgba(239,68,68,0.12);color:#EF4444;">🔐 安全研究员视角</div>
+                <div class="p-quote">"比特币的密码学安全边界是：全球所有计算机同时运算 2^128 年也无法破解ECDSA。"</div>
+                <ul>
+                  <li><strong>暴力破解 ECDSA</strong>：需要解决椭圆曲线离散对数问题（ECDLP），最优算法复杂度 ~O(√n)，比特币 256 位密钥对应 ~2^128 次运算——远超宇宙原子总数</li>
+                  <li><strong>碰撞攻击 SHA-256</strong>：需要 2^256 次运算，比特宇宙诞生以来的所有计算量也不及其万一</li>
+                  <li><strong>随机数 k 的重要性</strong>：ECDSA 签名若使用相同的 k（nonce），可以从签名中提取私钥——比特币钱包使用 RFC 6979 确定性 nonce 生成</li>
+                  <li><strong>量子计算威胁</strong>：Shor 算法可在多项式时间破解 ECDSA（~O(n³)），但需要 4000+ 逻辑量子比特。Grover 算法可将 SHA-256 暴力搜索从 2^256 降至 2^128，仍然安全</li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="user">
+                <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">👤 普通用户视角</div>
+                <div class="p-quote">"你每一次签名比特币交易，都是在你的私钥在数学上证明'我授权了这笔转账'。"</div>
+                <ul>
+                  <li><strong>私钥 = 密码，地址 = 收款码</strong>：你把地址发给别人（像给银行卡号），对方用这个地址向你转比特币</li>
+                  <li><strong>签名不需要联网</strong>：硬件钱包在安全芯片内完成签名，签名数据通过蓝牙/USB 传输到手机——私钥永远不触网</li>
+                  <li><strong>不可伪造</strong>：没有你的私钥，任何人无法伪造你的签名把比特币转走——这是数学保证，不是公司保证</li>
+                  <li><strong>Merkle 证明</strong>：轻钱包只需下载区块头（Merkle 验证），不需要下载所有历史交易，就能验证你收到的那笔钱是否在链上</li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="math">
+                <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🔢 数学家视角</div>
+                <div class="p-quote">"椭圆曲线 secp256k1 的数学之美在于：它用了一个极简方程 y²=x³+7，却构建了宇宙级别的安全。"</div>
+                <ul>
+                  <li><strong>有限域数学</strong>：secp256k1 在素数域 p = 2^256 - 2^32 - 977 上运算，所有坐标都是 0 到 p-1 之间的整数，溢出会自动模 p 取余</li>
+                  <li><strong>群结构</strong>：曲线上的点构成阿贝尔群，运算规则：P + O = P，P + (−P) = O（单位元 O 在无穷远处）</li>
+                  <li><strong>椭圆曲线对数难题</strong>：已知 G（基点）和 Q = nG，求 n ——这在数学上等价于在离散对数问题</li>
+                  <li><strong>哈希碰撞</strong>：SHA-256 的 2^256 搜索空间比可观测宇宙中的原子数（~2^170）还多 2^86 倍</li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="historian">
+                <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">📜 历史学家视角</div>
+                <div class="p-quote">"中本聪选择 secp256k1 不是偶然——它比 NIST 推荐的曲线更'干净'，没有 NSA 的参与痕迹。"</div>
+                <ul>
+                  <li><strong>RSA vs ECC</strong>：RSA（1977）依赖大整数分解，2048位 RSA ≈ 256位 ECC 安全强度，但 ECC 密钥更短、签名更快</li>
+                  <li><strong>NIST P-256 的争议</strong>：NSA 设计的 NIST P-256 被广泛使用，但 2013 年斯诺登披露 NSA 可能在 NIST 标准中植入后门（Dual_EC_DRBG 随机数生成器）</li>
+                  <li><strong>比特币选择 secp256k1</strong>：中本聪在 NIST 曲线之外选择了这条由 Certicom 专利（后已开放）的曲线，争议更小</li>
+                  <li><strong>哈希函数演进</strong>：从 MD5 → SHA-1（2005年被攻破）→ SHA-256 → SHA-3（BLAKE3），比特币始终走在密码学前沿</li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="analogy">
+                <div class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">🎭 比喻大师视角</div>
+                <div class="p-quote">"比特币密码学就像一把用数学原理铸造的锁——它不需要钥匙匠，因为物理世界不可能复制它。"</div>
+                <ul>
+                  <li><strong>哈希 = 指纹</strong>：人的指纹可以唯一标识一个人，但反过来，给你一个指纹，你造不出那个人。SHA-256 给文件生成"数字指纹"，无法反向工程</li>
+                  <li><strong>数字签名 = 蜡封</strong>：古代用蜡封信，现代用数字签名"封"交易。蜡封只有你有钥匙能盖，数字签名只有你有私钥能签，任何人都能验证</li>
+                  <li><strong>椭圆曲线 = 摩尔斯码游戏</strong>：在曲线上"跳舞"（做乘法），从起点和终点可以验证你跳了正确步数，但从终点倒推步数几乎不可能</li>
+                  <li><strong>secp256k1 = 宇宙棋盘</strong>：棋盘有 2^256 个格子，比宇宙中所有原子数还多——你在棋盘上走了 n 步，但没人能从你的终点反推 n</li>
+                </ul>
+              </div>
+            </div>
+            <div class="perspective-footer">
+              <div class="p-footer-left"><span style="font-size:0.7rem;color:var(--text-muted);">点击标签切换视角 · 支持触摸滑动</span></div>
+            </div>
+          </div>
+
+          <!-- 密码学实验区 -->
+          <section id="labs">
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:700;">🔬 密码学动手实验</span>
+              </div>
+              <div style="padding:12px 0;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
+                  <div>
+                    <h4 style="font-size:0.88rem;font-weight:600;margin-bottom:8px;">🧮 SHA-256 哈希计算器</h4>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">
+                      在 <strong>emn178.github.io/online-tools/sha256.html</strong> 输入任意文字，观察哈希值如何"彻底改变"——哪怕只改一个字符，哈希完全不同。
+                    </p>
+                    <a href="https://emn178.github.io/online-tools/sha256.html" target="_blank" class="btn btn-sm" style="background:rgba(247,147,26,0.1);color:var(--orange);border:1px solid rgba(247,147,26,0.2);padding:6px 14px;border-radius:8px;font-size:0.78rem;text-decoration:none;">在线哈希工具 →</a>
+                  </div>
+                  <div>
+                    <h4 style="font-size:0.88rem;font-weight:600;margin-bottom:8px;">🔐 ECDSA 签名演示</h4>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">
+                      用 <strong>cryptoexamples.com</strong> 生成一对密钥，用公钥加密消息，观察"签名"和"验证"流程——私钥从未离开你的浏览器。
+                    </p>
+                    <a href="https://www.cryptoexamples.com" target="_blank" class="btn btn-sm" style="background:rgba(247,147,26,0.1);color:var(--orange);border:1px solid rgba(247,147,26,0.2);padding:6px 14px;border-radius:8px;font-size:0.78rem;text-decoration:none;">cryptoexamples →</a>
+                  </div>
+                  <div>
+                    <h4 style="font-size:0.88rem;font-weight:600;margin-bottom:8px;">⛓️ 区块哈希查询</h4>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">
+                      在 <strong>mempool.space</strong> 查看最新区块的哈希值，验证它是否符合"前面有多个0"（工作证明）的要求。
+                    </p>
+                    <a href="https://mempool.space" target="_blank" class="btn btn-sm" style="background:rgba(247,147,26,0.1);color:var(--orange);border:1px solid rgba(247,147,26,0.2);padding:6px 14px;border-radius:8px;font-size:0.78rem;text-decoration:none;">mempool.space →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 大白话总结 -->
+          <section id="summary">
+            <h2>大白话总结</h2>
+            <div class="summary-box">
+              <div class="summary-icon">🔐</div>
+              <div class="summary-text">
+                <p><strong>哈希函数</strong> = <strong>数字搅拌机</strong></p>
+                <ul>
+                  <li>把任何东西扔进去，出来一堆"肉馅"（固定长度的乱码）</li>
+                  <li>无法从肉馅还原出原本的牛肉</li>
+                  <li>改一点原料，肉馅完全不同</li>
+                  <li>比特币用它给每个区块、每笔交易打上"指纹"</li>
+                </ul>
+
+                <p><strong>数字签名</strong> = <strong>防伪印章</strong></p>
+                <ul>
+                  <li>你用私钥"盖章"，别人用公钥验证"是你盖的"</li>
+                  <li>只有你有印章，别人无法伪造</li>
+                  <li>每笔交易都要盖章，网络验证后才执行</li>
+                </ul>
+
+                <p><strong>椭圆曲线</strong> = <strong>造印章的机器</strong></p>
+                <ul>
+                  <li>私钥是原料，公钥是成品</li>
+                  <li>原料 → 成品容易，成品 → 原料不可能</li>
+                  <li>这就是为什么"私钥即一切"</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section>
+            <h2>本章核心要点</h2>
+            <div class="points-grid">
+              <div class="point-card">
+                <div class="point-num">1</div>
+                <p><strong>SHA-256</strong>是单向、抗碰撞的哈希函数，是区块链不可篡改的数学基础</p>
+              </div>
+              <div class="point-card">
+                <div class="point-num">2</div>
+                <p><strong>数字签名</strong>证明"只有我能动这笔币"，无需信任任何人</p>
+              </div>
+              <div class="point-card">
+                <div class="point-num">3</div>
+                <p><strong>私钥泄露 = 丢币</strong>，备份助记词是唯一恢复方式</p>
+              </div>
+              <div class="point-card">
+                <div class="point-num">4</div>
+                <p><strong>椭圆曲线</strong>保证了公钥可公开而私钥安全</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 延伸阅读 -->
+          <section>
+            <h2>延伸阅读</h2>
+            <ul class="reading-list">
+              <li><a href="https://en.wikipedia.org/wiki/SHA-2" target="_blank">SHA-2 - Wikipedia</a></li>
+              <li><a href="https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm" target="_blank">ECDSA - Wikipedia</a></li>
+              <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki" target="_blank">BIP-340: Schnorr Signatures</a></li>
+              <li><a href="https://andrea.corbellini.name/2015/05/17/elliptic-curve-cryptography-a-gentle-introduction/" target="_blank">Elliptic Curve Cryptography: A Gentle Introduction</a></li>
+            </ul>
+            <div class="highlight-box">
+              <span class="label">密码学三大基石</span>
+              <div class="text">
+                <p><strong>哈希</strong>：单向指纹，保证数据不可篡改、工作量证明可公开验证。</p>
+                <p><strong>非对称加密</strong>：私钥签名、公钥验证，实现"拥有即控制"的所有权模型。</p>
+                <p><strong>椭圆曲线</strong>：用更短的密钥达到同等安全，让比特币地址能在手机上离线生成。</p>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部导航 -->
+  <nav class="chapter-nav">
+    <a href="04-00-overview.html" class="nav-prev">
+      <span class="nav-label">← 上一章</span>
+      <span class="nav-title">技术篇总览</span>
+    </a>
+    <a href="04-02-keys-addresses.html" class="nav-next">
+      <span class="nav-label">下一章 →</span>
+      <span class="nav-title">密钥与地址</span>
+    </a>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <p>₿ 比特币学习地图 | 让学习比特币像打开宝盒一样简单</p>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 哈希计算器（浏览器内 Web Crypto API） =====
+    async function calculateHash() {
+      const input = document.getElementById('hashInput').value;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(input);
+
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      document.getElementById('hashOutput').textContent = hashHex;
+    }
+
+    // ===== 签名演示（简化演示，使用 Web Crypto API ECDSA） =====
+    let demoKeyPair = null;
+
+    async function generateDemoKey() {
+      // 生成 ECDSA P-256 密钥对（演示用，比特币用 secp256k1）
+      demoKeyPair = await crypto.subtle.generateKey(
+        { name: 'ECDSA', namedCurve: 'P-256' },
+        true,
+        ['sign', 'verify']
+      );
+
+      // 导出公钥
+      const publicKeyBuffer = await crypto.subtle.exportKey('raw', demoKeyPair.publicKey);
+      const publicKeyHex = Array.from(new Uint8Array(publicKeyBuffer))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // 生成演示私钥（随机32字节）
+      const privateKeyBytes = new Uint8Array(32);
+      crypto.getRandomValues(privateKeyBytes);
+      const privateKeyHex = Array.from(privateKeyBytes)
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+
+      document.getElementById('privateKeyInput').value = privateKeyHex;
+      document.getElementById('publicKeyOutput').textContent = publicKeyHex.substring(0, 64) + '...';
+    }
+
+    async function signDemoMessage() {
+      if (!demoKeyPair) {
+        alert('请先生成演示私钥');
+        return;
+      }
+
+      const message = document.getElementById('messageToSign').value;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(message);
+
+      const signatureBuffer = await crypto.subtle.sign(
+        { name: 'ECDSA', hash: { name: 'SHA-256' } },
+        demoKeyPair.privateKey,
+        data
+      );
+
+      const signatureHex = Array.from(new Uint8Array(signatureBuffer))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+
+      document.getElementById('signatureOutput').textContent = signatureHex.substring(0, 64) + '...';
+    }
+
+    async function verifyDemoSignature() {
+      if (!demoKeyPair) {
+        alert('请先生成密钥对');
+        return;
+      }
+
+      const message = document.getElementById('messageToSign').value;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(message);
+
+      const signatureHex = document.getElementById('signatureOutput').textContent.replace('...', '');
+      const signatureBytes = new Uint8Array(signatureHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+      const isValid = await crypto.subtle.verify(
+        { name: 'ECDSA', hash: { name: 'SHA-256' } },
+        demoKeyPair.publicKey,
+        signatureBytes,
+        data
+      );
+
+      const resultDiv = document.getElementById('verifyResult');
+      resultDiv.textContent = isValid ? '✅ 签名验证通过！' : '❌ 签名验证失败';
+      resultDiv.className = 'verify-result ' + (isValid ? 'success' : 'fail');
+    }
+
+    // 页面加载
+    window.addEventListener('DOMContentLoaded', () => {
+      // 自动计算初始哈希
+      calculateHash();
+    });
+  </script>
+</body>
+</html>

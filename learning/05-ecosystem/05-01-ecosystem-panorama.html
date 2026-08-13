@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生态系统全景 | 比特币学习地图</title>
+  <meta name="description" content="比特币生态全景图：矿工、节点、钱包、交易所、L2、应用层——它们如何协作？去中心化如何从中涌现？一页全览。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 生态全景 SVG 图 ---- */
+    .eco-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .eco-diagram svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ---- 角色卡片网格 ---- */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .role-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .role-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .role-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .role-card.miner::before { background: #F97316; }
+    .role-card.node::before { background: #3B82F6; }
+    .role-card.wallet::before { background: #10B981; }
+    .role-card.exchange::before { background: #EAB308; }
+    .role-card.l2::before { background: #8B5CF6; }
+    .role-card.app::before { background: #EC4899; }
+
+    .role-card .role-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    .role-card .role-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .role-card .role-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .role-card .role-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .role-card .role-tag {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+    .role-tag.green { background: rgba(16,185,129,0.12); color: #10B981; }
+    .role-tag.red { background: rgba(239,68,68,0.12); color: #EF4444; }
+    .role-tag.blue { background: rgba(59,130,246,0.12); color: #3B82F6; }
+    .role-tag.orange { background: rgba(249,115,22,0.12); color: #F97316; }
+    .role-tag.purple { background: rgba(139,92,246,0.12); color: #8B5CF6; }
+
+    /* ---- 协作流程图 ---- */
+    .collab-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 14px 0;
+      font-size: 0.82rem;
+    }
+    .collab-node {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      min-width: 80px;
+      text-align: center;
+    }
+    .collab-arrow {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+    }
+    .collab-node.miner { background: rgba(249,115,22,0.12); color: #F97316; }
+    .collab-node.node { background: rgba(59,130,246,0.12); color: #3B82F6; }
+    .collab-node.user { background: rgba(16,185,129,0.12); color: #10B981; }
+    .collab-node.exchange { background: rgba(234,179,8,0.12); color: #EAB308; }
+
+    /* ---- emergent 卡片 ---- */
+    .emergent-box {
+      background: var(--bg-card);
+      border: 2px solid var(--orange);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .emergent-box .em-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--orange);
+    }
+
+    /* ---- 浮岛比喻 ---- */
+    .island-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 0;
+    }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .role-grid { grid-template-columns: 1fr; }
+      .collab-flow { flex-direction: column; }
+      .collab-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html#ecosystem">生态篇</a>
+        <span>›</span>
+        <span>生态系统全景</span>
+      </div>
+
+      <h1>🌍 生态系统全景</h1>
+      <p class="page-subtitle">比特币不只是一串代码——它是一整座城市。矿工是安保、节点是规则守卫、钱包是钥匙保管、交易所是货币兑换……认识这座城市的居民，你就理解了它为何如此坚韧。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：入门</span>
+        <span class="page-tag">📑 生态篇 1/7</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>生态篇进度</span>
+          <span>1 / 7 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 14.3%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">引言：城市比喻</a>
+          <a href="#roles">生态六大角色</a>
+          <a href="#collaboration">角色协作机制</a>
+          <a href="#emergence">去中心化的涌现</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 引言 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币不是一台单机游戏，而是一座<strong>自运转的城市</strong>。</p>
+            <p style="margin-top:8px;">这座城市没有市长、没有警察局总部、没有中央银行——但它有<strong>矿工（安保力量）</strong>维持秩序、<strong>节点（规划局）</strong>执行法规、<strong>钱包（个人保险箱）</strong>管理财产、<strong>交易所（货币兑换点）</strong>连接外部世界、<strong>L2（地铁高速）</strong>分流交通、<strong>开发者（基础设施工人）</strong>持续修缮道路。</p>
+            <p style="margin-top:8px;">这些角色各自独立运行，又通过精确的"协议规则"相互协作。没有单点可以关停，也没有单一势力可以篡改规则——这就是"去中心化"最直观的样子。</p>
+          </div>
+
+          <!-- ============ 一、生态全景 SVG ============ -->
+          <section id="intro">
+            <h2>一、比特币生态系统全景图</h2>
+
+            <p>先看全貌。下图展示了比特币生态中最重要的几类参与者，以及它们之间的价值流向与信息流向：</p>
+
+            <div class="eco-diagram">
+              <svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" width="800" height="480" style="max-width:100%;">
+                <!-- 背景 -->
+                <rect width="800" height="480" fill="var(--bg)" rx="12"/>
+                <!-- 外圈：比特币核心（协议层） -->
+                <circle cx="400" cy="240" r="170" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.6"/>
+                <circle cx="400" cy="240" r="110" fill="none" stroke="var(--border)" stroke-width="1" opacity="0.4"/>
+                <!-- 核心节点：比特币协议 -->
+                <circle cx="400" cy="240" r="55" fill="rgba(247,147,26,0.12)" stroke="#F7931A" stroke-width="2"/>
+                <text x="400" y="234" text-anchor="middle" font-size="13" font-weight="700" fill="#F7931A">₿ 比特币</text>
+                <text x="400" y="252" text-anchor="middle" font-size="10" fill="var(--text-muted)">协议层</text>
+
+                <!-- 六个角色节点 -->
+                <!-- 矿工 -->
+                <circle cx="620" cy="130" r="42" fill="rgba(249,115,22,0.12)" stroke="#F97316" stroke-width="1.5"/>
+                <text x="620" y="124" text-anchor="middle" font-size="20">⛏️</text>
+                <text x="620" y="141" text-anchor="middle" font-size="11" font-weight="700" fill="#F97316">矿工</text>
+                <!-- 节点 -->
+                <circle cx="400" cy="60" r="42" fill="rgba(59,130,246,0.12)" stroke="#3B82F6" stroke-width="1.5"/>
+                <text x="400" y="54" text-anchor="middle" font-size="20">🔗</text>
+                <text x="400" y="71" text-anchor="middle" font-size="11" font-weight="700" fill="#3B82F6">全节点</text>
+                <!-- 钱包 -->
+                <circle cx="180" cy="130" r="42" fill="rgba(16,185,129,0.12)" stroke="#10B981" stroke-width="1.5"/>
+                <text x="180" y="124" text-anchor="middle" font-size="20">👛</text>
+                <text x="180" y="141" text-anchor="middle" font-size="11" font-weight="700" fill="#10B981">钱包</text>
+                <!-- 交易所 -->
+                <circle cx="180" cy="350" r="42" fill="rgba(234,179,8,0.12)" stroke="#EAB308" stroke-width="1.5"/>
+                <text x="180" y="344" text-anchor="middle" font-size="20">🏦</text>
+                <text x="180" y="361" text-anchor="middle" font-size="11" font-weight="700" fill="#EAB308">交易所</text>
+                <!-- L2 -->
+                <circle cx="620" cy="350" r="42" fill="rgba(139,92,246,0.12)" stroke="#8B5CF6" stroke-width="1.5"/>
+                <text x="620" y="344" text-anchor="middle" font-size="20">⚡</text>
+                <text x="620" y="361" text-anchor="middle" font-size="11" font-weight="700" fill="#8B5CF6">L2 扩展</text>
+                <!-- 开发者 -->
+                <circle cx="400" cy="420" r="42" fill="rgba(236,72,153,0.12)" stroke="#EC4899" stroke-width="1.5"/>
+                <text x="400" y="414" text-anchor="middle" font-size="20">👨‍💻</text>
+                <text x="400" y="431" text-anchor="middle" font-size="11" font-weight="700" fill="#EC4899">开发者</text>
+
+                <!-- 连接线 -->
+                <!-- 钱包→节点 -->
+                <line x1="218" y1="145" x2="355" y2="90" stroke="#10B981" stroke-width="1.5" opacity="0.6"/>
+                <text x="280" y="108" font-size="8" fill="#10B981" opacity="0.8">广播交易</text>
+                <!-- 钱包→交易所 -->
+                <line x1="180" y1="172" x2="180" y2="308" stroke="#EAB308" stroke-width="1.5" opacity="0.5"/>
+                <text x="198" y="242" font-size="8" fill="#EAB308" opacity="0.8">法币入口</text>
+                <!-- 交易所→矿工 -->
+                <line x1="218" y1="350" x2="578" y2="130" stroke="#EAB308" stroke-width="1.2" opacity="0.4"/>
+                <text x="400" y="240" font-size="8" fill="#F97316" opacity="0.6">区块奖励+手续费</text>
+                <!-- 矿工→节点 -->
+                <line x1="578" y1="130" x2="455" y2="90" stroke="#F97316" stroke-width="1.5" opacity="0.6"/>
+                <text x="515" y="100" font-size="8" fill="#3B82F6" opacity="0.8">提交区块</text>
+                <!-- 节点→钱包 -->
+                <line x1="355" y1="90" x2="222" y2="130" stroke="#3B82F6" stroke-width="1.5" opacity="0.6"/>
+                <text x="290" y="102" font-size="8" fill="#10B981" opacity="0.8">验证状态</text>
+                <!-- 开发者→所有 -->
+                <line x1="400" y1="378" x2="400" y2="295" stroke="#EC4899" stroke-width="1.5" opacity="0.5"/>
+                <line x1="400" y1="378" x2="558" y2="330" stroke="#EC4899" stroke-width="1.2" opacity="0.4"/>
+                <line x1="400" y1="378" x2="242" y2="330" stroke="#EC4899" stroke-width="1.2" opacity="0.4"/>
+                <text x="415" y="345" font-size="8" fill="#EC4899" opacity="0.7">代码更新</text>
+                <!-- L2 ↔ 钱包 -->
+                <line x1="578" y1="350" x2="222" y2="350" stroke="#8B5CF6" stroke-width="1.2" opacity="0.4"/>
+                <line x1="622" y1="335" x2="180" y2="300" stroke="#8B5CF6" stroke-width="1" opacity="0.3"/>
+                <text x="400" y="380" font-size="8" fill="#8B5CF6" opacity="0.6">链下支付通道</text>
+                <!-- L2 → 矿工 -->
+                <line x1="620" y1="308" x2="620" y2="172" stroke="#8B5CF6" stroke-width="1.2" opacity="0.5"/>
+                <text x="632" y="240" font-size="8" fill="#F97316" opacity="0.6">结算上链</text>
+
+                <!-- 标注 -->
+                <text x="400" y="20" text-anchor="middle" font-size="11" font-weight="600" fill="var(--text)">比特币生态全景图</text>
+              </svg>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">看懂这张图的关键</span>
+              <div class="text">
+                <p>每个圆圈是一个独立角色，它们之间<strong>没有"老板-员工"关系</strong>——只有协议规定的协作规则：</p>
+                <ul>
+                  <li>用户通过<strong>钱包</strong>签名交易，钱包将交易广播给<strong>节点</strong></li>
+                  <li><strong>节点</strong>验证交易并转发给其他节点和<strong>矿工</strong></li>
+                  <li><strong>矿工</strong>将交易打包进区块，节点验证区块，合法则接受</li>
+                  <li><strong>交易所</strong>提供法币进出通道，但不影响协议本身</li>
+                  <li><strong>开发者</strong>提出改进方案，由全节点运营者决定是否运行</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、生态六大角色 ============ -->
+          <section id="roles">
+            <h2>二、生态六大角色详解</h2>
+
+            <div class="role-grid">
+              <!-- 矿工 -->
+              <div class="role-card miner">
+                <div class="role-icon">⛏️</div>
+                <div class="role-name">矿工（Miner）</div>
+                <div class="role-desc">比特币网络的"安保力量"。他们贡献算力竞争记账权，把交易打包成区块写入区块链，维持网络安全——同时获得新发比特币（区块奖励）和交易手续费。</div>
+                <div class="role-tags">
+                  <span class="role-tag orange">ASIC 硬件</span>
+                  <span class="role-tag green">POW 共识</span>
+                  <span class="role-tag red">算力竞争</span>
+                </div>
+              </div>
+
+              <!-- 全节点 -->
+              <div class="role-card node">
+                <div class="role-icon">🔗</div>
+                <div class="role-name">全节点（Full Node）</div>
+                <div class="role-desc">比特币规则的"自律委员会"。独立下载并验证每一个区块和每一笔交易，不信任任何第三方数据——是比特币抗审查性的最终保障。</div>
+                <div class="role-tags">
+                  <span class="role-tag blue">规则验证</span>
+                  <span class="role-tag green">抗审查</span>
+                  <span class="role-tag orange">去信任化</span>
+                </div>
+              </div>
+
+              <!-- 钱包 -->
+              <div class="role-card wallet">
+                <div class="role-icon">👛</div>
+                <div class="role-name">钱包（Wallet）</div>
+                <div class="role-desc">比特币的"个人金库入口"。不存币，只管理私钥——私钥签名交易，用户才能控制自己的比特币。是比特币自我主权的核心工具。</div>
+                <div class="role-tags">
+                  <span class="role-tag green">私钥管理</span>
+                  <span class="role-tag blue">热/冷钱包</span>
+                  <span class="role-tag orange">自托管</span>
+                </div>
+              </div>
+
+              <!-- 交易所 -->
+              <div class="role-card exchange">
+                <div class="role-icon">🏦</div>
+                <div class="role-name">交易所（Exchange）</div>
+                <div class="role-desc">比特币与现实世界的"货币兑换门"。提供买卖、托管、流动性服务——但交易所持有你的私钥，意味着你信任交易所来保管你的资产。</div>
+                <div class="role-tags">
+                  <span class="role-tag orange">KYC/AML</span>
+                  <span class="role-tag red">托管风险</span>
+                  <span class="role-tag blue">流动性入口</span>
+                </div>
+              </div>
+
+              <!-- L2 扩展 -->
+              <div class="role-card l2">
+                <div class="role-icon">⚡</div>
+                <div class="role-name">L2 扩展（Layer 2）</div>
+                <div class="role-desc">比特币的"高速公路与地铁"。在链下处理大量小额交易，只把最终状态锚定到主链——提升吞吐量、降低手续费，同时保持主链安全性。</div>
+                <div class="role-tags">
+                  <span class="role-tag purple">闪电网络</span>
+                  <span class="role-tag blue">链下支付</span>
+                  <span class="role-tag green">高吞吐量</span>
+                </div>
+              </div>
+
+              <!-- 应用层 -->
+              <div class="role-card app">
+                <div class="role-icon">🛠️</div>
+                <div class="role-name">应用层（Application Layer）</div>
+                <div class="role-desc">基于比特币协议构建的应用生态：Ordinals（数字收藏品）、Nostr（去中心化社交）、RGB（智能合约）——比特币之上的创新花园。</div>
+                <div class="role-tags">
+                  <span class="role-tag purple">Ordinals</span>
+                  <span class="role-tag blue">Nostr</span>
+                  <span class="role-tag orange">RGB</span>
+                </div>
+              </div>
+            </div>
+
+            <h3>2.1 矿工：安全保障者</h3>
+            <p>比特币采用<strong>工作量证明（Proof of Work）</strong>——矿工用算力竞争"谁有权写下一页账本"。</p>
+            <p>这不仅是技术设计，更是一种<strong>经济激励机制</strong>：</p>
+            <ul>
+              <li>攻击比特币 = 购买价值数百亿美元的 ASIC 矿机 + 支付每小时数百万美元的电力——经济上毫无意义</li>
+              <li>诚实挖矿 = 获得区块奖励 + 手续费，比攻击更有利可图</li>
+              <li>矿工可切换矿池（无需许可），即使某个矿池占比过高，单一矿工无法单独作恶</li>
+            </ul>
+
+            <h3>2.2 全节点：规则守护者</h3>
+            <p>全节点不挖矿，但它们是比特币"<strong>抗审查性</strong>"的终极保障：</p>
+            <div class="highlight-box">
+              <span class="label">为什么全节点很重要？</span>
+              <div class="text">
+                <p>全节点会<strong>独立验证</strong>每一条规则——交易是否有效？区块奖励是否符合规则？签名是否正确？</p>
+                <p>任何违背规则的行为——即使 99% 的算力支持——都会被全节点<strong>直接拒绝</strong>。这就是比特币"代码即法律"的含义。</p>
+                <p>运行全节点不需要许可，任何人都可以参与。目前全球活跃全节点数量约 18,000+（2024 年数据），分布在 100+ 国家/地区。</p>
+              </div>
+            </div>
+
+            <h3>2.3 交易所与法币入口</h3>
+            <p>普通人进入比特币世界的最常见入口。但这里有个根本性矛盾：</p>
+            <div class="story-box blue">
+              <span class="story-label">⚠️ 交易所 = 比特币精神的对立面？</span>
+              <p>比特币的目标是"不需要可信第三方"。但交易所恰恰是<strong>最大的可信第三方</strong>——你把比特币交给它，它替你保管私钥。</p>
+              <p style="margin-top:8px;">代价：Mt.Gox（2014 年，85 万 BTC 消失）、FTX（2022 年，资不抵债）……每一次交易所暴雷都在提醒："<strong>不是你的私钥，就不是你的币</strong>。"</p>
+            </div>
+
+            <h3>2.4 L2：比特币的性能扩展</h3>
+            <p>比特币主链每秒约处理 7 笔交易（TPS），无法支撑"全球支付系统"的愿景。L2 扩展方案在链下解决：</p>
+            <ul>
+              <li><strong>闪电网络</strong>（Lightning Network）：支付通道。两人预先在链上锁定资金，链下无限次转账，最后结算到主链。适合小额高频支付。</li>
+              <li><strong>Rootstock（RSK）</strong>：侧链，支持智能合约，与比特币双向锚定。</li>
+              <li><strong>Stacks</strong>：在比特币上构建智能合约层。</li>
+            </ul>
+
+            <h3>2.5 开发者生态</h3>
+            <p>比特币没有"公司"，但有<strong>全球最专注的开源开发者社区</strong>：</p>
+            <ul>
+              <li><strong>Bitcoin Core</strong>：参考实现客户端，由全球数百名志愿者贡献代码</li>
+              <li>中本聪原始代码仅剩约 <strong>0.06%</strong>，其余 99.94% 来自社区</li>
+              <li><strong>BIP 流程</strong>（Bitcoin Improvement Proposal）：任何人都可以提案，经社区讨论后实施</li>
+              <li>比特币的格言：<strong>"不换代码，就不会被黑"</strong>——极度审慎的升级文化</li>
+            </ul>
+          </section>
+
+          <!-- ============ 三、协作机制 ============ -->
+          <section id="collaboration">
+            <h2>三、生态角色如何协作</h2>
+
+            <h3>3.1 一笔交易的生命周期</h3>
+            <div class="collab-flow">
+              <div class="collab-node user">用户发起转账</div>
+              <div class="collab-arrow">→</div>
+              <div class="collab-node wallet">钱包签名交易</div>
+              <div class="collab-arrow">→</div>
+              <div class="collab-node node">全节点验证</div>
+              <div class="collab-arrow">→</div>
+              <div class="collab-node miner">矿工打包入块</div>
+              <div class="collab-arrow">→</div>
+              <div class="collab-node node">全节点确认</div>
+            </div>
+
+            <h3>3.2 价值与信息的双向流动</h3>
+            <div class="highlight-box">
+              <span class="label">两条并行线路</span>
+              <div class="text">
+                <p><strong>价值流（从上到下）</strong>：比特币从coinbase奖励 → 矿工 → 手续费 → 持有者 → 交易所 → 新进入者，循环往复。</p>
+                <p><strong>信息流（从下到上）</strong>：规则变化信号 → 开发者提案 → 全节点运营商决定是否升级 → 矿工执行新规则。</p>
+                <p>两条线路相互制衡——没有人同时控制两者，也就无法单方面改变比特币。</p>
+              </div>
+            </div>
+
+            <h3>3.3 协作中的博弈均衡</h3>
+            <p>生态中每个角色的利益并不完全一致，但<strong>博弈论</strong>维持着整体均衡：</p>
+            <ul>
+              <li><strong>矿工 vs 全节点</strong>：矿工想让区块变大（全包含更多手续费），但全节点有权力拒绝超大区块（即使挖出来也不接受）。现实中两者博弈的结果是 SegWit（增加容量但不增大区块）。</li>
+              <li><strong>开发者 vs 矿工</strong>：开发者提出协议改进，但必须获得全节点运营者的支持。矿工算力只是考量之一，"用户主权"（全节点）是最终裁判。</li>
+              <li><strong>交易所 vs 自托管者</strong>：交易所提供便利性，但每次暴雷事件都在教育用户"自我托管"的价值——市场通过惩罚劣行自我进化。</li>
+            </ul>
+          </section>
+
+          <!-- ============ 四、去中心化的涌现 ============ -->
+          <section id="emergence">
+            <h2>四、去中心化如何从角色中涌现</h2>
+
+            <p>"去中心化"不是设计出来的，而是从生态结构的<strong>多重冗余</strong>中自然涌现的。</p>
+
+            <div class="emergent-box">
+              <div class="em-title">🧬 涌现（Emergence）：整体 > 各部分之和</div>
+              <p>比特币的去中心化不是任何单一角色的功劳，而是多个角色<strong>互相制衡</strong>的结果：</p>
+              <ul>
+                <li>矿工能打包交易，但全节点能拒绝无效区块</li>
+                <li>开发者能写代码，但全节点运营商决定是否运行</li>
+                <li>交易所能托管资产，但用户随时可以提币到自己的钱包</li>
+                <li>没有单一势力能同时控制：矿场+节点+开发者+交易所</li>
+              </ul>
+            </div>
+
+            <div class="island-diagram">
+              <h4 style="font-size:0.9rem;margin-bottom:12px;">🏝️ "孤岛防御"模型</h4>
+              <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">
+                把比特币生态想象成一系列浮在海上的<strong>独立岛屿</strong>——即使最强的海啸摧毁了其中一座（某个矿池倒闭、某个交易所关门），其余岛屿依然照常运转。
+              </p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px;">
+                <div style="padding:8px 14px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:8px;font-size:0.78rem;">⛏️ 矿工岛</div>
+                <div style="padding:8px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;font-size:0.78rem;">🔗 节点岛</div>
+                <div style="padding:8px 14px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:8px;font-size:0.78rem;">👛 钱包岛</div>
+                <div style="padding:8px 14px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:8px;font-size:0.78rem;">⚡ L2岛</div>
+                <div style="padding:8px 14px;background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.3);border-radius:8px;font-size:0.78rem;">👨‍💻 开发者岛</div>
+              </div>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin-top:10px;text-align:center;">
+                每个角色都是独立岛屿，之间只有"协议之桥"连接——断了一座桥，不影响其他岛屿的自给自足。
+              </p>
+            </div>
+
+            <h3>4.1 历史上的"孤岛检验"</h3>
+            <ul>
+              <li><strong>2014 年 Mt.Gox 倒闭</strong>：全球最大交易所倒闭，比特币价格暴跌 80%+——但网络本身照常运转，半年后价格收复失地并再创新高。</li>
+              <li><strong>2017 年"区块大小战争"</strong>：社区分裂，比特币现金（BCH）硬分叉出去——比特币主链活下来，BCH 逐渐边缘化。</li>
+              <li><strong>2021 年中国全面禁止挖矿</strong>：全球算力骤降 50%+——四个月内算力完全恢复，且分布更加全球化。</li>
+              <li><strong>2022 年 FTX 暴雷</strong>：加密行业信誉重创，但比特币网络从未中断——再次证明"协议 ≠ 机构"。</li>
+            </ul>
+            <p>每一次危机都是一次"孤岛检验"——比特币安然通过，证明去中心化的韧性不是口号。</p>
+          </section>
+
+          <!-- ============ 五、多视角 ============ -->
+          <section id="perspectives">
+            <h2>五、多视角重新解释</h2>
+
+            <div class="perspective-card" id="eco-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 同一个生态，六种身份</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="technology">👨‍💻 协议开发者</button>
+                  <button class="p-tab" data-angle="dev">🛠️ 钱包开发者</button>
+                  <button class="p-tab" data-angle="finance">💰 经济学者</button>
+                  <button class="p-tab" data-angle="business">🔍 行业分析师</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="philosophy">🧠 哲学家</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <!-- 协议开发者 -->
+                <div class="p-content" data-angle="technology">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👨‍💻 协议开发者</div>
+                  <div class="p-quote">"比特币的生态设计是博弈论的工程实现——每个角色的自利行为，最终都导向系统整体稳定。"</div>
+                  <ul>
+                    <li><strong>激励相容（Incentive Compatibility）</strong>：比特币的精妙之处在于，让破坏系统的成本 > 维护系统的收益。中本聪通过区块奖励 + 手续费的双层激励，使诚实挖矿永远是最优策略。</li>
+                    <li><strong>无需许可的参与</strong>：任何人可以随时成为矿工、运行节点、提交 BIP——没有准入门槛，意味着没有单点控制者。</li>
+                    <li><strong>协议升级的艰难</strong>：比特币改变规则极难（软分叉需向后兼容，硬分叉需社区共识）——这不是 Bug，这是 Feature。越难改，攻击者越难以篡改规则。</li>
+                    <li><strong>当前挑战</strong>：矿池集中度（Foundry USA + AntPool 超 51% 的现象级讨论）；Taproot 采用率提升缓慢；L2 与主链的治理关系仍需厘清。</li>
+                  </ul>
+                </div>
+                <!-- 钱包开发者 -->
+                <div class="p-content" data-angle="dev">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">🛠️ 钱包开发者</div>
+                  <div class="p-quote">"钱包是比特币用户体验的全部——90% 的'比特币太复杂'的感受，其实都是'钱包 UX 太烂'。"</div>
+                  <ul>
+                    <li><strong>生态入口</strong>：普通用户接触比特币的唯一界面是钱包。钱包的设计决定用户对整个生态的感知。</li>
+                    <li><strong>多签钱包的崛起</strong>：从 Casa、Unchained Capital 到 BitGo，企业级托管和个人多签钱包正成为机构持有的标准工具。</li>
+                    <li><strong>闪电钱包</strong>：Phoenix、Breeze、BlueWallet 等支持闪电网络的钱包让用户几乎无感地使用 L2——小额支付生态正在成熟。</li>
+                    <li><strong>安全 UX 悖论</strong>：越安全的钱包（冷存储、多签）越难用；越易用的（云托管）越不安全。如何在安全性与便利性之间找到平衡，是钱包开发者的核心命题。</li>
+                    <li><strong>生物识别 + MPC</strong>：2024-2026 年趋势：阈值签名（MPC）将私钥拆分为多个碎片，生物识别解锁，无需单一私钥存在——这是比特币自托管体验的未来。</li>
+                  </ul>
+                </div>
+                <!-- 经济学者 -->
+                <div class="p-content" data-angle="finance">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学者</div>
+                  <div class="p-quote">"比特币生态是一个活的货币市场实验——每个参与者都在定价区块空间，同时为整个网络的存续出资。"</div>
+                  <ul>
+                    <li><strong>区块空间经济学</strong>：主链是"精品拍卖行"（低频高价值），闪电网络是"批发超市"（高频小额）。两者共同构成完整的比特币支付市场结构。</li>
+                    <li><strong>网络效应</strong>：比特币的价值随参与者数量指数增长（Metcalfe 定律：价值 ∝ 用户数²）。每新增一个全节点、钱包用户、矿工，都让整个生态更有价值。</li>
+                    <li><strong>交易所的双重角色</strong>：既是价格发现中心（BTC/USD 等交易对），又是流动性提供者和托管服务方——三者合一是系统性风险的根源（FTX 教训）。</li>
+                    <li><strong>安全预算危机</strong>：区块奖励每 4 年减半（2140 年归零），矿工收入将完全依赖手续费——届时，如果比特币价格不足以覆盖电力成本，安全预算会怎样？这是悬而未决的经济学难题。</li>
+                  </ul>
+                </div>
+                <!-- 行业分析师 -->
+                <div class="p-content" data-angle="business">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🔍 行业分析师</div>
+                  <div class="p-quote">"比特币生态版图正在从'单中心（挖矿）'向'多中心（机构+开发者+应用）'演进。"</div>
+                  <ul>
+                    <li><strong>矿业的商品化</strong>：矿机（ASIC）越来越标准化，矿池服务越来越同质化——矿业的利润空间被持续压缩，集中度在资本层面而非运营层面。</li>
+                    <li><strong>交易所的合规化</strong>：MiCA（欧盟加密资产市场监管框架）、美国 SEC 的 ETF 审批——合规交易所正在成为比特币进入传统金融的正规渠道。</li>
+                    <li><strong>机构入场改变生态</strong>：MicroStrategy 累计持仓超 63 万 BTC，BlackRock/富达 ETF 持有超 100 万 BTC——"聪明钱"的涌入改变了比特币的持有者结构和生态权力分布。</li>
+                    <li><strong>Ordinals/Runes 的生态影响</strong>：2023-2024 年 Ordinals 协议让矿工获得了额外的"数据存储费"收益，缓解了减半带来的安全预算压力——这是比特币生态的意外之喜，也是协议层与应用层互动的经典案例。</li>
+                  </ul>
+                </div>
+                <!-- 历史学家 -->
+                <div class="p-content" data-angle="history">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</div>
+                  <div class="p-quote">"比特币生态的演进史是一部技术自由主义运动史——每一个角色的崛起，都是对上一个单点故障的回应。"</div>
+                  <ul>
+                    <li><strong>2010-2013：矿工独大</strong>——早期用 CPU/GPU 挖矿，矿工是唯一角色。2011 年出现了第一个交易所（Mt.Gox），但全节点还是少数。</li>
+                    <li><strong>2013-2017：交易所崛起</strong>——Mt.Gox 成为事实上的"比特币银行"，权力集中。2014 年 Mt.Gox 倒闭 → 催生了去中心化交易所（ShapeShift、Bisq）和自托管运动。</li>
+                    <li><strong>2017：SegWit 战争</strong>——矿工 vs 全节点/用户的核心矛盾爆发。最终以 UASF（用户激活软分叉）迫使矿工接受 SegWit——这是比特币历史上最接近"人民起义"的时刻。</li>
+                    <li><strong>2019-2022：机构入场</strong>——Bakkt、CME 期货、灰度 ETF → MicroStrategy → 2024 年现货 ETF 获批。比特币从"极客玩具"正式成为"机构资产"。</li>
+                    <li><strong>2023-2026：L2/应用层爆发</strong>——闪电网络容量持续增长（2026 年估计通道数超 10 万），Ordinals/Nostr/RGB 等让比特币成为"智能资产平台"。</li>
+                  </ul>
+                </div>
+                <!-- 哲学家 -->
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(247,147,26,0.12);color:#F97316;">🧠 哲学家</div>
+                  <div class="p-quote">"比特币的生态是一种'无为之治'的制度实验——创始人不管理任何人，协议不命令任何人，系统却自运转了 15+ 年。"</div>
+                  <ul>
+                    <li><strong>自发秩序（Spontaneous Order）</strong>：哈耶克的核心思想——好制度不是设计出来的，而是在个体追逐私利中自然涌现的。比特币生态正是这句话的最佳注脚。</li>
+                    <li><strong>价值储藏 vs 交换媒介的张力</strong>：比特币持有者（HODLer）与比特币用户（支付者）的利益并不一致。前者希望价格上涨，后者希望手续费低。这两种叙事张力是比特币身份政治的核心。</li>
+                    <li><strong>去中心化 vs 效率的哲学困境</strong>：完全去中心化意味着慢（共识难达成），高效率意味着中心化（单点决策快）——比特币在两者之间的权衡，本身就是一个哲学命题。</li>
+                    <li><strong>"主权"与"责任"的不可分割</strong>：持有自己的私钥 = 完全主权 = 完全责任（没有客服、没有重置密码、没有保险）。比特币把自由的成本同时交给了用户。</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、动手实验 ============ -->
+          <section id="labs">
+            <h2>六、动手实验区</h2>
+
+            <h3>🔍 实验 1：标注你自己的生态角色图</h3>
+            <div class="lab-section">
+              <p>以下是一张简化的比特币生态角色图。请对照你在现实中使用过的服务，<strong>在脑海中（或纸上）标注</strong>：</p>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin:12px 0;font-size:0.82rem;">
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <span>你用过交易所吗？</span>
+                    <input type="checkbox" id="lab-ex1a" style="width:16px;height:16px;accent-color:var(--orange);">
+                    <label for="lab-ex1a" style="font-size:0.78rem;color:var(--text-secondary);">是 → 哪个？交易所属于生态的"货币兑换门"角色。</label>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <span>你用过钱包吗？</span>
+                    <input type="checkbox" id="lab-ex1b" style="width:16px;height:16px;accent-color:var(--orange);">
+                    <label for="lab-ex1b" style="font-size:0.78rem;color:var(--text-secondary);">是 → 热钱包（手机App）还是冷钱包（硬件）？</label>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <span>你运行过全节点吗？</span>
+                    <input type="checkbox" id="lab-ex1c" style="width:16px;height:16px;accent-color:var(--orange);">
+                    <label for="lab-ex1c" style="font-size:0.78rem;color:var(--text-secondary);">是 → Bitcoin Core、Umbrel、RaspiBlitz？</label>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <span>你听说过闪电网络吗？</span>
+                    <input type="checkbox" id="lab-ex1d" style="width:16px;height:16px;accent-color:var(--orange);">
+                    <label for="lab-ex1d" style="font-size:0.78rem;color:var(--text-secondary);">是 → 用过 Cash App、Strike 或 Phoenix 钱包吗？</label>
+                  </div>
+                </div>
+                <p style="margin-top:12px;font-size:0.8rem;color:var(--text-secondary);">
+                  💡 <strong>提示</strong>：完整生态参与 = 拥有自己的钱包（自托管）+ 偶尔使用交易所（法币入口）+ 考虑运行全节点（规则守护）。你在哪个位置？
+                </p>
+              </div>
+            </div>
+
+            <h3>🔍 实验 2：查询当前矿池算力分布</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+              </div>
+              <div class="exp-result">
+                <ul class="exp-links">
+                  <li><a href="https://mempool.space" target="_blank" rel="noopener">实时矿池算力分布（mempool.space 可视化矿池分布） <span class="exp-go">→</span></a></li>
+                  <li><a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener">Blockchain.com 全节点统计与区块浏览器 <span class="exp-go">→</span></a></li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>📊 实验 3：比特币生态健康度自测</h3>
+            <div class="lab-section">
+              <p>用以下指标，评估比特币生态的去中心化程度（每个问题思考"这是集中还是分散"）：</p>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:12px 0;">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;">
+                    <span style="color:var(--orange);font-weight:700;">Q1.</span>
+                    <span>前 3 大矿池的算力之和是否超过 51%？</span>
+                  </div>
+                  <div style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;">
+                    <span style="color:var(--orange);font-weight:700;">Q2.</span>
+                    <span>Bitcoin Core 代码库是否由单一公司控制？</span>
+                  </div>
+                  <div style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;">
+                    <span style="color:var(--orange);font-weight:700;">Q3.</span>
+                    <span>大多数用户通过哪类服务持有比特币（交易所 vs 自托管）？</span>
+                  </div>
+                  <div style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;">
+                    <span style="color:var(--orange);font-weight:700;">Q4.</span>
+                    <span>闪电网络通道是否集中在少数大服务商？</span>
+                  </div>
+                </div>
+                <p style="margin-top:10px;font-size:0.78rem;color:var(--text-muted);">
+                  提示：Q1 和 Q3 的答案往往是"集中"——但这不代表比特币被攻击。真正的去中心化在于：这些集中点能随时被替代吗？
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、大白话总结 ============ -->
+          <section id="summary">
+            <h2>七、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把比特币生态放在日常场景中</span>
+              <p><strong>比特币生态 = 一座城市，没有市长</strong></p>
+              <ul>
+                <li><strong>矿工 = 城市安保</strong>。他们巡逻（算力竞争）、维持秩序（验证交易），报酬是城市发行的货币（新 BTC）+ 大家给的小费（手续费）。</li>
+                <li><strong>全节点 = 规划局</strong>。他们不参与日常巡逻，但他们手里有一本<strong>无法伪造的城市法规全书</strong>——任何安保的行为都必须符合这本书，否则不被承认。</li>
+                <li><strong>钱包 = 你的个人保险箱</strong>。钥匙在你手里，没人能替你打开。</li>
+                <li><strong>交易所 = 城市入口的货币兑换处</strong>。你可以在这里把美元换成城市货币——但你得先把货币存在兑换处，不安全。</li>
+                <li><strong>L2 = 城市地下铁</strong>。大量通勤的人走地铁（链下快速交易），只在两端连接地上（主链结算）。</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>去中心化 = 这座城市没有"一炸就瘫"的目标</strong></p>
+              <ul>
+                <li>炸掉一个兑换处（交易所倒闭）→ 城市还在运转，换一家就是</li>
+                <li>炸掉一批安保（矿池关门）→ 其他安保补上（矿工可换矿池）</li>
+                <li>炸掉规划局（开发者被压制）→ 全球还有几千个规划局副本（开源代码 Fork）</li>
+                <li>唯一真正的威胁：说服全世界同时放弃这本书（共识攻击）——而这需要付出比摧毁整个城市更高的代价</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>六大生态角色</strong>：矿工（安保）、全节点（规则守护）、钱包（私钥管理）、交易所（法币入口）、L2（性能扩展）、应用层（创新生态）</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>去中心化 = 多重冗余</strong>——没有任何单一角色可以关停整个系统，每个角色都有"备选方案"</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>全节点是最终裁判</strong>——即使 99% 的算力支持，违背规则的区块仍会被全节点拒绝</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>博弈论维持均衡</strong>——每个角色的自利行为都导向整体稳定，攻击成本永远高于维护成本</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">5️⃣</div>
+                <p><strong>历史证明韧性</strong>——Mt.Gox、FTX、中国清退——每一次危机比特币都活下来并变得更强</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">6️⃣</div>
+                <p><strong>应用层是未来</strong>——Ordinals/Runes/闪电网络正在把比特币从"货币"扩展为"资产平台"</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>你已经理解了比特币生态的全貌。接下来认识生态中<strong>最贴近日常使用</strong>的角色——钱包与密钥管理。</p>
+            <a href="05-02-wallets-keys.html" class="btn btn-primary">继续学习：钱包与密钥 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="05-00-overview.html" class="btn">← 生态篇总览</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="05-00-overview.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">生态篇总览</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        生态篇 · 1 / 7
+      </div>
+      <a href="05-02-wallets-keys.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">钱包与密钥</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+    });
+  </script>
+</body>
+</html>

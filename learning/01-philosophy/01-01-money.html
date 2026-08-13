@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>货币的千年之问 · 比特币学习地图</title>
+<meta name="description" content="从贝壳到比特币：货币的本质是共识而不是商品本身。货币三大功能、五千年演化时间线、法币与比特币的正面对比。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+/* ---- 文章基础（两栏内正文不再限宽） ---- */
+.article-wrap { padding: 32px 0 60px; }
+.article-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.article-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; line-height: 1.25; }
+.article-header h1 .emoji { font-size: 1.8rem; margin-right: 8px; }
+.article-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; }
+.article-body { max-width: 820px; }
+.article-body p { font-size: 0.98rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.85; }
+.article-body h2 { font-size: 1.3rem; font-weight: 700; margin: 32px 0 14px; color: var(--text); }
+.article-body h3 { font-size: 1.05rem; font-weight: 600; margin: 20px 0 10px; color: var(--text); }
+.article-body ul, .article-body ol { padding-left: 22px; margin-bottom: 16px; }
+.article-body li { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.7; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--text-muted); font-style: italic; }
+.article-body blockquote { border-left: 3px solid var(--orange); padding: 12px 16px; margin: 20px 0; background: rgba(247,147,26,0.06); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; color: var(--text-secondary); }
+.article-body code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--orange); }
+.article-body section { scroll-margin-top: calc(var(--nav-h) + 20px); }
+
+/* 时间线 */
+.timeline { position: relative; padding-left: 24px; margin: 20px 0; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+.timeline-item { position: relative; margin-bottom: 20px; }
+.timeline-item::before { content: ''; position: absolute; left: -21px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--orange); border: 2px solid var(--bg); }
+.timeline-item .tl-year { font-size: 0.72rem; color: var(--orange); font-weight: 700; font-family: var(--font-mono); }
+.timeline-item .tl-text { font-size: 0.9rem; color: var(--text-secondary); margin-top: 2px; }
+
+/* 进度指示 */
+.reading-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(247,147,26,0.1); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.75rem; color: var(--orange); cursor: pointer; transition: all var(--transition); }
+.reading-indicator:hover { background: rgba(247,147,26,0.15); }
+.reading-indicator.read { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.2); color: #22C55E; }
+
+/* ---- 关键概念卡片网格 ---- */
+.feature-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin: 18px 0; }
+.feature-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; transition: all var(--transition); }
+.feature-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+.feature-card .feature-icon { font-size: 1.3rem; margin-bottom: 6px; }
+.feature-card h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.feature-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0; }
+
+/* ---- 动手实验区 ---- */
+.explorer-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin: 20px 0; }
+.explorer-box .exp-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.explorer-box .exp-title { font-weight: 700; font-size: 0.92rem; }
+.explorer-box .exp-result { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; }
+.explorer-box .exp-result p { font-size: 0.86rem; margin-bottom: 8px; }
+.explorer-box .exp-result p:last-child { margin-bottom: 0; }
+.explorer-box .exp-link { color: var(--orange); text-decoration: none; font-weight: 600; }
+.explorer-box .exp-link:hover { text-decoration: underline; }
+.explorer-box .calc-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.explorer-box .calc-row label { font-size: 0.85rem; color: var(--text-secondary); min-width: 96px; }
+.explorer-box input, .explorer-box select { padding: 7px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.85rem; }
+.explorer-box input:focus, .explorer-box select:focus { outline: none; border-color: var(--orange); }
+.exp-out { font-family: var(--font-mono); font-size: 0.9rem; color: var(--orange); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- 阅读进度条 -->
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<!-- 顶部导航 -->
+<nav class="navbar top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../00-overview.html" class="nav-link active" data-section="learning">📚 学习区</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<!-- 文章主体：两栏 -->
+<main class="article-wrap">
+  <div class="container two-col">
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar-nav">
+      <h4>本页导航</h4>
+      <nav id="toc">
+        <a href="#intro">货币本质</a>
+        <a href="#timeline">货币演化时间线</a>
+        <a href="#compare">法币 vs 比特币</a>
+        <a href="#conclusion">核心结论</a>
+      </nav>
+    </aside>
+
+    <!-- 正文 -->
+    <div class="main-content">
+
+      <div class="breadcrumb" id="page-breadcrumb">
+        <a href="../../index.html">首页</a><span>›</span>
+        <a href="../00-overview.html">学习路径</a><span>›</span>
+        <a href="../00-overview.html">哲学篇</a><span>›</span>
+        <span>货币的千年之问</span>
+      </div>
+
+      <header class="article-header">
+        <h1><span class="emoji">🤔</span>货币的千年之问</h1>
+        <p class="page-subtitle" style="margin-bottom:0">从贝壳到比特币，人类花了5000年，才找到「不依赖信任的货币」</p>
+        <div class="article-meta">
+          <span class="page-tag">❓ 哲学篇</span>
+          <span>预计阅读 8 分钟</span>
+          <span>🌱 适合所有人</span>
+          <button class="reading-indicator" id="read-btn" onclick="markRead()">
+            <span id="read-icon">⬜</span> <span id="read-text">标记为已读</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="article-body">
+
+        <!-- ============ 核心直觉 ============ -->
+        <div class="story-box orange">
+          <span class="story-label">💡 核心直觉</span>
+          <p><strong>货币的本质是共识，而不是商品本身。</strong>黄金之所以值钱，不是因为它是黄金，而是因为几千年来所有人都同意「它值钱」。一张纸、一枚贝壳、一串数字，只要足够多的人相信，它就是货币。</p>
+          <p style="margin-top:8px;">所以真正的问题从来不是「什么东西可以当钱」，而是：<strong>这份共识由谁维护？维护它的人可以随时改规则吗？</strong></p>
+        </div>
+
+        <!-- ============ 一、货币本质 ============ -->
+        <section id="intro">
+          <h2>💰 货币是什么？</h2>
+
+          <p>货币，这个我们每天都在使用的东西，到底是什么？大多数人从来没有认真想过这个问题。</p>
+
+          <p>从经济学角度，货币有三大功能：</p>
+          <ul>
+            <li><strong>交换媒介（Medium of Exchange）</strong>：你可以用它换东西，不需要以物易物</li>
+            <li><strong>价值尺度（Unit of Account）</strong>：所有东西的价值用它来衡量——比如这碗面 30 元</li>
+            <li><strong>价值存储（Store of Value）</strong>：今天赚的钱可以留到明天用，不会凭空消失</li>
+          </ul>
+
+          <p>但这里有一个极其重要但经常被忽视的问题：<strong>货币之所以能工作，依赖于一个前提——所有人都相信「这东西能换到东西」。</strong></p>
+
+          <div class="highlight-box">
+            <span class="label">🧠 核心洞见</span>
+            <span class="text">货币不是天然存在的，货币是「信任的结晶」。一张纸之所以有价值，是因为社会共识——所有人都相信它有价值。任何货币体系，本质上都是一个「信任体系」。</span>
+          </div>
+
+          <h3>好货币的四个硬指标</h3>
+          <div class="feature-cards">
+            <div class="feature-card">
+              <div class="feature-icon">💎</div>
+              <h4>稀缺性</h4>
+              <p>不能被随意增发。贝壳退出历史舞台，就是因为有人找到了整片贝壳海滩。</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">✂️</div>
+              <h4>可分割性</h4>
+              <p>能拆成小单位买一杯咖啡。1 BTC = 1 亿聪，比黄金好切太多。</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎒</div>
+              <h4>可移植性</h4>
+              <p>能带着走、能跨境送。一串助记词可以带走一亿美元，黄金不行。</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <h4>可验证性</h4>
+              <p>任何人都能确认真假。金条要送去化验，比特币只要一个全节点。</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 二、货币演化时间线 ============ -->
+        <section id="timeline">
+          <h2>🏛️ 货币的演变：信任的载体</h2>
+
+          <p>让我们回顾一下货币的演变史：</p>
+
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="tl-year">~5000年前</div>
+              <div class="tl-text"><strong>以物易物</strong>：我用一头羊换你的布。不需要货币，但「需求双巧合」太难了——你刚好需要我的羊吗？</div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-year">~3000年前</div>
+              <div class="tl-text"><strong>商品货币</strong>：贝壳、盐、牛、贵金属。货币本身有使用价值——牛可以耕田，银可以做餐具。人们信任这些「本身有价值」的东西。</div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-year">~800年前</div>
+              <div class="tl-text"><strong>铸币</strong>：国家开始铸造标准化硬币。货币的「信任」从「这东西有使用价值」转移到了「政府保证了它的重量和纯度」。</div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-year">~350年前</div>
+              <div class="tl-text"><strong>纸币</strong>：商人发现不用真的搬金银，把「欠条」传来传去更方便。于是「纸币」诞生了——它本质上是对银行的债权凭证。</div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-year">1971年后</div>
+              <div class="tl-text"><strong>法定货币（法币）</strong>：布雷顿森林体系崩溃，美元与黄金脱钩。货币从「黄金的欠条」变成了「政府的承诺」。各国央行可以无限印钞。</div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-year">2009年</div>
+              <div class="tl-text"><strong>比特币</strong>：不需要政府，不需要银行，不需要任何人批准。信任从「人」转移到了「数学」。</div>
+            </div>
+          </div>
+
+          <div class="treasure-box">
+            <h3>💎 演化的隐藏主线：信任对象的迁移</h3>
+            <p>五千年货币史，表面上是「材料的更替」（贝壳→金属→纸→比特），实质上是<strong>信任对象的一路搬家</strong>：</p>
+            <ul>
+              <li>信任<strong>物品本身</strong>（牛、盐、黄金有使用价值）</li>
+              <li>→ 信任<strong>铸币的君主</strong>（保证成色与重量）</li>
+              <li>→ 信任<strong>发钞的银行</strong>（保证纸能兑成金）</li>
+              <li>→ 信任<strong>政府的承诺</strong>（1971 年后，什么都不兑了）</li>
+              <li>→ 信任<strong>数学规则</strong>（2009 年后，不需要信任任何人）</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ============ 三、法币 vs 比特币 ============ -->
+        <section id="compare">
+          <h2>⚠️ 信任的代价</h2>
+
+          <p>问题来了：<strong>「信任人」是一件极其危险的事。</strong></p>
+
+          <p>当我们把钱存进银行，我们实际上是在「信任」银行会：</p>
+          <ul>
+            <li>不会悄悄多印「电子数字」稀释我们的存款</li>
+            <li>不会把我们的钱借出去然后倒闭</li>
+            <li>不会在政府要求时拒绝让我们取钱</li>
+            <li>不会在政治压力下冻结我们的账户</li>
+          </ul>
+
+          <p>这些不是假设——<strong>每一条都真实发生过。</strong></p>
+
+          <div class="story-box">
+            <span class="story-label">📖 真实事件</span>
+            <p><strong>1933年，美国总统罗斯福签署第6102号行政令</strong>：禁止私人持有黄金。美联储以远低于市场的价格强制收购黄金，无数普通美国人的储蓄被稀释。这不是「很久以前」的事——离我们只有不到100年。</p>
+          </div>
+
+          <div class="story-box">
+            <span class="story-label">📖 真实事件</span>
+            <p><strong>2008年金融危机</strong>：全球各大央行疯狂印钞「救市」，量化宽松（QE）规模达到历史之最。各国政府债务创历史新高。这意味着什么？<strong>你的储蓄正在被稀释，但没有人问过你愿不愿意。</strong></p>
+          </div>
+
+          <div class="story-box">
+            <span class="story-label">📖 真实事件</span>
+            <p><strong>2013年，塞浦路斯政府冻结银行储户存款</strong>：为了获得国际救助贷款，政府直接没收超过10万欧元银行存款的约48%，俗称「内部纾困」（bail-in）。把钱存在银行，不再是「安全」的同义词。</p>
+          </div>
+
+          <h3>📊 三种货币的正面对比</h3>
+          <div class="table-wrap">
+            <table class="compare-table">
+              <tr>
+                <th>属性</th>
+                <th>黄金</th>
+                <th>法币（美元/人民币）</th>
+                <th>比特币</th>
+              </tr>
+              <tr>
+                <td>稀缺性</td>
+                <td>较强（年增约 1.5%）</td>
+                <td>无（央行可随意增发）</td>
+                <td>绝对（上限 2100 万，代码写死）</td>
+              </tr>
+              <tr>
+                <td>可分割性</td>
+                <td>差（需要熔铸切割）</td>
+                <td>好（分到分/美分）</td>
+                <td>极好（1 BTC = 1 亿聪）</td>
+              </tr>
+              <tr>
+                <td>可移植性</td>
+                <td>极差（跨境搬运沉重且违法风险高）</td>
+                <td>中（受银行营业时间与管制约束）</td>
+                <td>极好（12 个单词跨越国境，10 分钟全球到账）</td>
+              </tr>
+              <tr>
+                <td>可验证性</td>
+                <td>需专业鉴定（存在镀钨假金条）</td>
+                <td>依赖银行/央行账本</td>
+                <td>任何人可运行全节点独立验证</td>
+              </tr>
+              <tr>
+                <td>信任对象</td>
+                <td>物理属性 + 保管机构</td>
+                <td>政府与央行的自律</td>
+                <td>数学与开源代码</td>
+              </tr>
+              <tr>
+                <td>可被没收/审查</td>
+                <td>可以（1933 年就发生过）</td>
+                <td>可以（冻结账户只需一道命令）</td>
+                <td>私钥在手则物理上无法强夺</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- 多视角重新解释 -->
+          <h3 id="perspectives">🔄 多视角重新解释：同一个「钱」，六种读法</h3>
+          <div class="perspective-card" id="money-perspectives">
+            <div class="perspective-header">
+              <div class="ph-label">
+                <span class="ph-label-icon">🔄</span>
+                <span>多视角 · 货币的六重身份</span>
+              </div>
+              <div class="perspective-tabs">
+                <button class="p-tab" data-angle="technology">👨‍💻 开发者</button>
+                <button class="p-tab" data-angle="finance">💰 经济学家</button>
+                <button class="p-tab" data-angle="history">📜 历史学家</button>
+                <button class="p-tab" data-angle="philosophy">🧠 哲学家</button>
+                <button class="p-tab" data-angle="business">🏛️ 政治家</button>
+                <button class="p-tab" data-angle="humanity">🙋 普通人</button>
+              </div>
+            </div>
+            <div class="perspective-body">
+              <div class="p-content" data-angle="technology">
+                <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">⚙️ 开发者</div>
+                <div class="p-quote">"哈希函数让账本不可篡改。"</div>
+                <ul>
+                  <li>货币在我眼里就是一份<strong>数据结构 + 一套状态转移规则</strong>，谁能改状态，谁就掌握货币</li>
+                  <li>哈希把每个区块的内容压成一串指纹，改一个字符，后面所有指纹全崩——<strong>篡改可被立刻检测</strong></li>
+                  <li>法币账本的「防篡改」靠权限管理和审计制度；比特币账本的防篡改靠算法，<strong>不依赖任何机构的操守</strong></li>
+                  <li>这是人类第一次把「不可篡改」从制度承诺变成了<strong>可验证的工程属性</strong></li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="finance">
+                <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学家</div>
+                <div class="p-quote">"比特币是稀缺性的数学表达。"</div>
+                <ul>
+                  <li>货币的核心矛盾是<strong>供给弹性</strong>：需求上升时，供给能不能跟着涨？能涨的东西存不住价值</li>
+                  <li>黄金的存量/增量比（Stock-to-Flow）约 60，是历史上最硬的商品货币；比特币在 2024 年减半后已超过黄金</li>
+                  <li>比特币的独特之处在于<strong>供给对价格完全无弹性</strong>——价格涨十倍，产出也不会多一枚</li>
+                  <li>它把「稀缺」从地质学问题变成了<strong>数学问题</strong>：2100 万，不是估算，是定义</li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="history">
+                <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</div>
+                <div class="p-quote">"货币形态演进是去中心化的过程。"</div>
+                <ul>
+                  <li>把五千年拉直看，货币一直在<strong>被收权、再被夺回</strong>之间来回摆动</li>
+                  <li>私人铸币 → 王室垄断铸币权 → 私人银行发钞 → 央行垄断发钞 → 点对点电子现金</li>
+                  <li>每一次「集中」都换来效率，也都以<strong>货币贬值</strong>收场：罗马银币成色从 98% 跌到 5%，只用了 200 年</li>
+                  <li>比特币不是历史的断裂，而是这条摆动曲线的最新一次<strong>回摆</strong></li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="philosophy">
+                <div class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">🧠 哲学家</div>
+                <div class="p-quote">"价值来自共识，不是本质属性。"</div>
+                <ul>
+                  <li>没有任何东西「本身」值钱。价值是<strong>主体间的现象</strong>——它存在于人与人之间，而不在物体内部</li>
+                  <li>纸币是共识、黄金是共识、比特币也是共识；区别只在于<strong>共识由谁背书、能否被单方撕毁</strong></li>
+                  <li>比特币最激进的哲学主张是：<strong>共识可以被写成代码，并让所有人独立验证</strong>，而不必信任讲述者</li>
+                  <li>于是「信任」从一种人际德性，变成了一种<strong>可计算的对象</strong></li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="business">
+                <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🏛️ 政治家</div>
+                <div class="p-quote">"国家垄断货币发行权的终结？"</div>
+                <ul>
+                  <li>铸币权（seigniorage）是现代国家最重要的<strong>隐性财政工具</strong>——不用投票就能筹到钱</li>
+                  <li>失去它，意味着战争、赤字、救市都必须<strong>明着加税或借债</strong>，政治成本陡然升高</li>
+                  <li>因此各国的反应高度分化：萨尔瓦多设为法定货币，中国全面禁止，美国走 ETF 与合规化路线</li>
+                  <li>真正的问题不是「能否禁止」，而是<strong>当资本可以用一串助记词离境时，货币主权还剩多少</strong></li>
+                </ul>
+              </div>
+              <div class="p-content" data-angle="humanity">
+                <div class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">🙋 普通人</div>
+                <div class="p-quote">"比特币让每个人都能保管自己的财富。"</div>
+                <ul>
+                  <li>对绝大多数人来说，「货币理论」是抽象的，<strong>存款被冻结、汇款被拒绝、物价一年涨 50%</strong> 是具体的</li>
+                  <li>全球仍有约 14 亿成年人没有银行账户，他们不是不想存钱，是<strong>没人给他们开户</strong></li>
+                  <li>比特币不需要许可、不看护照、不问职业——<strong>你只需要能记住 12 个单词</strong></li>
+                  <li>代价是责任回到自己身上：没有客服，没有找回，<strong>自由和自负其责是同一枚硬币的两面</strong></li>
+                </ul>
+              </div>
+            </div>
+            <div class="perspective-footer">
+              <div class="p-footer-left">
+                <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+              </div>
+              <div class="p-dot-indicator">
+                <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+                <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 四、核心结论 ============ -->
+        <section id="conclusion">
+          <h2>❓ 根本问题</h2>
+
+          <p>让我们回到最基本的问题：</p>
+
+          <blockquote>
+            「信任」能不能被「数学」替代？
+          </blockquote>
+
+          <p>如果你能设计一种货币：</p>
+          <ul>
+            <li>总量固定，不会被任何人「多印」</li>
+            <li>不需要任何机构替你保管</li>
+            <li>任何两个人之间可以直接转账，不需要中间人</li>
+            <li>任何人可以验证它的规则是否被遵守</li>
+            <li>没有人可以冻结你的账户、没收你的资产</li>
+          </ul>
+
+          <p>那么，你就解决了「信任人」的问题——你把「信任」交给了数学规则本身。</p>
+
+          <!-- 动手实验区 -->
+          <h3 id="labs">🧪 动手实验区</h3>
+
+          <div class="explorer-box">
+            <div class="exp-header">
+              <span class="exp-title">🔍 实验 1：查看黄金 / 美元 / 比特币的百年价值对比</span>
+            </div>
+            <div class="exp-result">
+              <p>亲手把「购买力」画出来，比任何论证都有说服力。建议按顺序看三张图：</p>
+              <p>① <a class="exp-link" href="https://www.macrotrends.net/1333/historical-gold-prices-100-year-chart" target="_blank" rel="noopener">黄金 100 年价格走势（macrotrends.net）↗</a><br>
+              观察 1971 年这个断点——布雷顿森林体系崩溃后，金价从 35 美元开始一路狂奔。涨的不是黄金，是美元在缩水。</p>
+              <p>② <a class="exp-link" href="https://www.macrotrends.net/2603/dollar-purchasing-power-chart" target="_blank" rel="noopener">美元购买力历史曲线（macrotrends.net）↗</a><br>
+              1913 年美联储成立至今，1 美元的购买力已经跌去约 97%。</p>
+              <p>③ <a class="exp-link" href="https://www.macrotrends.net/charts/bitcoin-price" target="_blank" rel="noopener">比特币长期价格走势（macrotrends.net）↗</a><br>
+              把它和上面两张图叠起来看：同一段时间，谁在稀释，谁在稀缺。</p>
+            </div>
+          </div>
+
+          <div class="explorer-box">
+            <div class="exp-header">
+              <span class="exp-title">📈 实验 2：了解全球货币供应量增长</span>
+            </div>
+            <div class="exp-result">
+              <p>货币不是凭空贬值的，它是被「印」出来的。去看原始数据：</p>
+              <p>① <a class="exp-link" href="https://data.worldbank.org/indicator/FM.LBL.BMNY.CN" target="_blank" rel="noopener">World Bank · Broad money（广义货币 M2 总量）↗</a><br>
+              切换国家，观察任意一个经济体近 30 年的 M2 曲线形状——几乎都是指数型。</p>
+              <p>② <a class="exp-link" href="https://data.worldbank.org/indicator/FM.LBL.BMNY.ZG" target="_blank" rel="noopener">World Bank · Broad money growth（M2 年增长率 %）↗</a><br>
+              把这个增长率减去你的年薪涨幅，得到的就是你「被动变穷」的速度。</p>
+              <p>③ <a class="exp-link" href="https://fred.stlouisfed.org/series/M2SL" target="_blank" rel="noopener">FRED · 美国 M2 货币存量（美联储官方数据）↗</a><br>
+              重点看 2020 年 3 月之后那一段近乎垂直的跳升。</p>
+              <p style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
+              💡 <strong>动手算一算</strong>：假设某国 M2 年均增长 12%，GDP 年均增长 6%，那么货币的「超发速度」约为每年 6%。持有现金 12 年，购买力大约只剩下 <span class="exp-out">0.94<sup>12</sup> ≈ 48%</span>——一半的财富在你什么都没做的情况下消失了。</p>
+            </div>
+          </div>
+
+          <div class="highlight-box">
+            <span class="label">💡 本章小结</span>
+            <span class="text">货币的本质是「信任的载体」。从贝壳到黄金，从纸币到法币，每一次演变都伴随着「信任对象」的转移。问题是：当我们把信任交给政府、央行、银行——我们真的可以无条件信任吗？<br><br>这就是比特币试图回答的核心问题。</span>
+          </div>
+
+          <div class="highlight-box">
+            <span class="label">🎯 关键观点</span>
+            <span class="text"><strong>货币最重要的三个属性：稀缺性、可分割性、可移植性。比特币在这三点上均优于黄金。</strong><br><br>
+            稀缺性：黄金每年增产约 1.5%，比特币在 2140 年后增量归零；<br>
+            可分割性：黄金难以切成一克以下，比特币天然可分到一亿分之一；<br>
+            可移植性：一吨黄金跨境需要飞机和武装押运，一亿美元的比特币只需要你记住 12 个单词。</span>
+          </div>
+
+          <h2>🔗 延伸思考</h2>
+
+          <ul>
+            <li>你存在银行里的钱，真的是「你的钱」吗？银行拿着你的钱去投资，亏了算谁的？</li>
+            <li>通货膨胀意味着什么？当物价涨了1倍，你的储蓄购买力就少了50%。谁有这个权力？他们经过你同意了吗？</li>
+            <li>如果明天政府宣布「为了国家安全，所有银行账户冻结一年」，你能做什么？</li>
+          </ul>
+
+          <div class="cta-box" style="text-align:left">
+            <h3>→ 下一篇：货币史的三大缺陷</h3>
+            <p>继续探讨：通胀稀释、法币超发、审查与没收——历史如何一次次证明「信任模型」的失败。</p>
+            <a href="01-02-three-flaws.html" class="btn btn-primary" style="display:inline-flex;margin-top:4px">继续阅读 →</a>
+            <a href="../00-overview.html" class="btn" style="display:inline-flex;margin-top:4px;margin-left:8px">← 返回哲学篇总览</a>
+          </div>
+        </section>
+
+      </div><!-- /article-body -->
+    </div><!-- /main-content -->
+  </div><!-- /two-col -->
+</main>
+
+<!-- 章节导航 -->
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center">
+    <a href="../00-overview.html" class="nav-prev" style="text-decoration:none">
+      <span class="nav-icon">←</span>
+      <div class="nav-text">
+        <div class="nav-label">返回</div>
+        <div class="nav-title">← 哲学篇总览</div>
+      </div>
+    </a>
+    <a href="01-02-three-flaws.html" class="nav-next" style="text-decoration:none">
+      <div class="nav-text">
+        <div class="nav-label">下一篇</div>
+        <div class="nav-title">货币史的三大缺陷 →</div>
+      </div>
+      <span class="nav-icon">→</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../../index.html">首页</a> · <a href="../00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+<script>
+// 保存静态面包屑（initNav 会重建它，这里恢复本页专属层级）
+const __crumbHTML = document.getElementById('page-breadcrumb').innerHTML;
+initNav();
+document.getElementById('page-breadcrumb').innerHTML = __crumbHTML;
+
+const PHASE = 'phil';
+const CHAPTER = '01-01-money';
+
+// 标记已读
+function markRead() {
+  try {
+    let read = JSON.parse(localStorage.getItem('btc-read-chapters') || '{}');
+    read[PHASE] = read[PHASE] || {};
+    read[PHASE][CHAPTER] = true;
+    localStorage.setItem('btc-read-chapters', JSON.stringify(read));
+    // 更新UI
+    document.getElementById('read-btn').classList.add('read');
+    document.getElementById('read-icon').textContent = '✅';
+    document.getElementById('read-text').textContent = '已读完';
+    // 通知其他页面更新进度
+    localStorage.setItem('btc-progress-update', Date.now().toString());
+  } catch(e) {}
+}
+
+// 初始化已读状态
+function initReadState() {
+  try {
+    let read = JSON.parse(localStorage.getItem('btc-read-chapters') || '{}');
+    if (read[PHASE] && read[PHASE][CHAPTER]) {
+      document.getElementById('read-btn').classList.add('read');
+      document.getElementById('read-icon').textContent = '✅';
+      document.getElementById('read-text').textContent = '已读完';
+    }
+  } catch(e) {}
+}
+initReadState();
+
+// 进度条
+function initScrollProgress() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    fill.style.width = (scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0) + '%';
+  }, { passive: true });
+}
+initScrollProgress();
+
+// 侧边栏锚点高亮（滚动监听）
+(function initTocSpy() {
+  const links = Array.from(document.querySelectorAll('#toc a'));
+  const sections = links
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+  if (!sections.length) return;
+  function onScroll() {
+    const y = window.scrollY + 120;
+    let idx = 0;
+    sections.forEach((s, i) => { if (s.offsetTop <= y) idx = i; });
+    links.forEach((a, i) => a.classList.toggle('active', i === idx));
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>

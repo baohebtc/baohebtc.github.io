@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>协议层：Ordinals / Runes / 稳定币 | 比特币学习地图</title>
+  <meta name="description" content="比特币协议层生态：Ordinals 协议给聪刻编号、BRC-20 可替代代币、Runes 协议、稳定币（USDT）与比特币链上协议 Liquid、Rootstock(RSK)。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 协议栈分层图 ---- */
+    .protocol-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 20px 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .stack-layer {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .stack-layer:last-child { border-bottom: none; }
+    .stack-layer.protocol  { background: rgba(139,92,246,0.08); }
+    .stack-layer.asset      { background: rgba(16,185,129,0.08); }
+    .stack-layer.settlement { background: rgba(59,130,246,0.08); }
+    .stack-layer.base       { background: rgba(247,147,26,0.08); }
+    .stack-layer .layer-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .stack-layer.protocol .layer-num { background: rgba(139,92,246,0.2); color: #8B5CF6; }
+    .stack-layer.asset .layer-num     { background: rgba(16,185,129,0.2); color: #10B981; }
+    .stack-layer.settlement .layer-num { background: rgba(59,130,246,0.2); color: #3B82F6; }
+    .stack-layer.base .layer-num      { background: rgba(247,147,26,0.2); color: #F7931A; }
+    .stack-layer .layer-info { flex: 1; }
+    .stack-layer .layer-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 2px; }
+    .stack-layer .layer-desc { font-size: 0.78rem; color: var(--text-secondary); }
+    .stack-layer .layer-examples { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+    /* ---- 铭文卡片 ---- */
+    .inscription-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .inscr-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .inscr-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+    .inscr-card .inscr-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .inscr-card .inscr-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+    .inscr-card .inscr-year {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .inscr-card .inscr-year.y2022 { background: rgba(16,185,129,0.12); color: #10B981; }
+    .inscr-card .inscr-year.y2023 { background: rgba(59,130,246,0.12); color: #3B82F6; }
+    .inscr-card .inscr-year.y2024 { background: rgba(139,92,246,0.12); color: #8B5CF6; }
+    .inscr-card .inscr-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ---- 稳定币卡片 ---- */
+    .stablecoin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .sc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 18px;
+      transition: all var(--transition);
+    }
+    .sc-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+    .sc-card .sc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .sc-card .sc-name { font-weight: 700; font-size: 1rem; }
+    .sc-card .sc-ticker { font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); }
+    .sc-card .sc-cap { font-size: 1.4rem; font-weight: 700; color: var(--orange); margin: 8px 0; }
+    .sc-card .sc-cap-label { font-size: 0.72rem; color: var(--text-muted); }
+    .sc-card .sc-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+    .sc-card .sc-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+    .sc-card .sc-tag.centralized { background: rgba(239,68,68,0.12); color: #EF4444; }
+    .sc-card .sc-tag.legal       { background: rgba(59,130,246,0.12); color: #3B82F6; }
+
+    /* ---- 争议框 ---- */
+    .debate-box {
+      background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02));
+      border: 1px solid rgba(239,68,68,0.2);
+      border-left: 4px solid #EF4444;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .debate-box .debate-title { font-weight: 700; font-size: 0.9rem; color: #EF4444; margin-bottom: 10px; }
+    .debate-box .debate-side { margin-bottom: 12px; }
+    .debate-box .debate-side-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .debate-box .debate-side-label.for  { color: #10B981; }
+    .debate-box .debate-side-label.against { color: #EF4444; }
+    .debate-box .debate-side p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0; }
+
+    /* ---- 其他协议快速览 ---- */
+    .protocol-quick {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .protocol-quick .pq-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+    .protocol-quick .pq-row:last-child { border-bottom: none; }
+    .protocol-quick .pq-row:hover { background: var(--bg-card-hover); }
+    .protocol-quick .pq-icon { font-size: 1.4rem; min-width: 40px; text-align: center; }
+    .protocol-quick .pq-info { flex: 1; }
+    .protocol-quick .pq-name { font-weight: 700; font-size: 0.88rem; margin-bottom: 2px; }
+    .protocol-quick .pq-desc { font-size: 0.75rem; color: var(--text-secondary); }
+    .protocol-quick .pq-tag {
+      flex-shrink: 0;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.65rem;
+      font-weight: 600;
+    }
+
+    /* ---- 实验室协议框 ---- */
+    .lab-box {
+      background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(16,185,129,0.02));
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .lab-box .lab-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #10B981; font-weight: 700; display: block; margin-bottom: 8px; }
+    .lab-box .lab-steps { display: flex; flex-direction: column; gap: 10px; }
+    .lab-box .lab-step { display: flex; align-items: flex-start; gap: 12px; }
+    .lab-box .lab-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.15);
+      color: #10B981;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .lab-box .lab-step-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+    .lab-box .lab-step-text a { color: var(--orange); text-decoration: none; }
+    .lab-box .lab-step-text a:hover { text-decoration: underline; }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .inscription-cards { grid-template-columns: 1fr; }
+      .stablecoin-grid { grid-template-columns: 1fr; }
+      .protocol-quick .pq-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="05-01-ecosystem-panorama.html">生态篇</a>
+        <span>›</span>
+        <span>协议层：Ordinals / 稳定币</span>
+      </div>
+
+      <h1>⛓ 协议层：Ordinals / Runes / 稳定币</h1>
+      <p class="page-subtitle">比特币不只是"电子现金"——链上还能"刻字"、发代币、锚定美元。Ordinals 协议、Runes、BRC-20、稳定币生态……比特币的协议层战争正在打响。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：中等偏高</span>
+        <span class="page-tag">📑 生态篇 7/7</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>生态篇进度</span>
+          <span>7 / 7 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">引言：链上刻字</a>
+          <a href="#ordinals">Ordinals 协议</a>
+          <a href="#brc20">BRC-20 代币</a>
+          <a href="#runes">Runes 协议</a>
+          <a href="#stablecoins">稳定币生态</a>
+          <a href="#other-protocols">其他链上协议</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 引言 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币不只是"电子现金"——它的区块链上可以<strong>刻字、画画、发代币</strong>。这听起来像是"比特币在干以太坊的事"，但这些创新都基于比特币自身的升级（SegWit 2017 + Taproot 2021），而非另起炉灶。</p>
+            <p style="margin-top:8px;">协议层之战，本质上是一场关于"比特币应该保守还是开放"的哲学战争。</p>
+          </div>
+
+          <!-- ============ 一、Ordinals 协议 ============ -->
+          <section id="ordinals">
+            <h2>一、Ordinals 协议：给每个"聪"刻上序号</h2>
+
+            <h3>1.1 谁是 Casey Rodarmor？</h3>
+            <p>2022 年 12 月，一位匿名开发者 <strong>Casey Rodarmor</strong> 提出了 Ordinals 协议。他给比特币最小的单位——<strong>聪（sat / satoshi）</strong>——赋予了唯一序号，把比特币变成了可以"追踪"每一个最小单位的系统。</p>
+            <p>Ordinals 协议的核心思想：把聪按挖出顺序编号，从第 1 个聪（#0）到第 2,100,000,000,000,000 个聪（#21 亿×1 亿-1），每个聪都有独一无二的"身份证号"。</p>
+
+            <h3>1.2 什么是"铭文"（Inscription）？</h3>
+            <p>Ordinals 协议允许将<strong>任意数据</strong>（文字、图片、音频、代码）通过"见证数据"（Witness）嵌入到单个聪上，这叫做<strong>铭文（Inscription）</strong>。</p>
+            <p>类比一下：</p>
+            <ul>
+              <li>中本聪的聪 = 一张白纸，上面写着比特币的金额"0.00000001 BTC"</li>
+              <li>Ordinals 的聪 = 在白纸上额外印了一张照片或一段文字</li>
+              <li>这张照片/文字被永远刻在比特币区块链上，任何人都可以在ordinals.com 浏览器里查看</li>
+            </ul>
+
+            <div class="highlight-box">
+              <span class="label">Ordinals 依赖的技术升级</span>
+              <div class="text">
+                <p><strong>SegWit（2017）</strong>：将见证数据从交易主体中分离，且见证数据按 1/4 权重计算——让更多数据可以塞入区块，降低了"链上刻字"的成本。</p>
+                <p><strong>Taproot（2021）</strong>：更高效的数据编码格式，让铭文的体积更小、花费的手续费更低；同时 Taproot 地址让 Ordinals 交易看起来与普通转账无异——增强了隐私性。</p>
+                <p>Ordinals 协议本身<strong>不需要对比特币共识层做任何修改</strong>——它是一种"利用规则，但不违反规则"的协议层创新。</p>
+              </div>
+            </div>
+
+            <h3>1.3 Ordinals 能做什么？</h3>
+            <div class="inscription-cards">
+              <div class="inscr-card">
+                <div class="inscr-icon">🖼️</div>
+                <div class="inscr-title">Bitcoin Punks</div>
+                <div class="inscr-year y2023">2023 年</div>
+                <div class="inscr-desc">将 1 万个像素头像铭刻在比特币上——模仿以太坊 CryptoPunks，是 Ordinals 最早出圈的应用之一。</div>
+              </div>
+              <div class="inscr-card">
+                <div class="inscr-icon">📜</div>
+                <div class="inscr-title">Taproot Wizards</div>
+                <div class="inscr-year y2023">2023 年</div>
+                <div class="inscr-desc">由 Taproot 先驱 Udi Wertheimer 主导的 Ordinals NFT 项目，社区驱动的比特币 NFT 文化运动。</div>
+              </div>
+              <div class="inscr-card">
+                <div class="inscr-icon">🖼️</div>
+                <div class="inscr-title">Bitcoin Rocks</div>
+                <div class="inscr-year y2023">2023 年</div>
+                <div class="inscr-desc">Ordinals 上的像素宝石 NFT 系列，展示了 Ordinals 作为"比特币原生 NFT"的潜力。</div>
+              </div>
+              <div class="inscr-card">
+                <div class="inscr-icon">📄</div>
+                <div class="inscr-title">序数铭文（文字）</div>
+                <div class="inscr-year y2022">2022 年</div>
+                <div class="inscr-desc">最简单的 Ordinals 应用：把一段文字（比如"你好，比特币"）刻在聪上——永久存储、永不删除。</div>
+              </div>
+            </div>
+
+            <h3>1.4 争议：最大化主义者的批评</h3>
+            <div class="debate-box">
+              <div class="debate-title">⚖️ Ordinals 之争：比特币最大化主义者的批评</div>
+              <div class="debate-side">
+                <div class="debate-side-label against">🔴 批评者（比特币最大化主义者）</div>
+                <p>Ordinals 和 BRC-20 代币实际上是在"滥用"比特币的见证数据空间——把本应用于金融验证的数据区域，变成了存储图片和 meme 的"垃圾场"。这推高了正常交易的手续费，让普通用户更难负担链上转账成本。</p>
+              </div>
+              <div class="debate-side">
+                <div class="debate-side-label for">🟢 支持者（协议创新派）</div>
+                <p>Ordinals 证明了比特币的见证数据空间可以被创造性地利用——它不需要修改共识层，只需利用现有规则。任何人都可以用低廉成本在比特币链上存储不可篡改的数据，这让比特币超越了单纯的"货币"，成为链上数据存储层。</p>
+              </div>
+            </div>
+
+            <div class="treasure-box">
+              <h3>💎 为什么 Ordinals 在 2023 年初突然爆发？</h3>
+              <p>Ordinals 协议在 2023 年 1 月正式推出后，用户开始意识到：<strong>你可以用几百美元把一张图片永久存在比特币链上</strong>——这对于习惯了 NFT 文化的加密社区来说是巨大吸引力。</p>
+              <p>关键节点：</p>
+              <ul>
+                <li><strong>2022 年 12 月</strong>：Casey Rodarmor 发布 Ordinals 理论论文</li>
+                <li><strong>2023 年 1 月</strong>：ordinals.com 铭刻工具上线，ordinals.io 浏览器发布</li>
+                <li><strong>2023 年 3 月</strong>：@domodata 推出 BRC-20（Ordinals 上的可替代代币），ORDI 代币瞬间暴涨</li>
+                <li><strong>2023 年 5-6 月</strong>：Ordinals 日铭刻数突破 10 万（比特币链上最繁忙的时期之一）</li>
+                <li><strong>2023 年 9 月</strong>：Casey Rodarmor 发布 Runes 协议提案，作为 BRC-20 的"改进版"</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 二、BRC-20 ============ -->
+          <section id="brc20">
+            <h2>二、BRC-20：Ordinals 上的"可替代代币"</h2>
+
+            <h3>2.1 什么是 BRC-20？</h3>
+            <p><strong>BRC-20</strong> = Bitcoin Request for Comment（比特币评论请求），灵感来自以太坊的 ERC-20 标准。</p>
+            <p>2023 年 3 月，匿名开发者 <strong>Domo（@domodata）</strong>提出：既然 Ordinals 可以给聪编号和铭刻数据，那我们能否用相同的技术发行<strong>可替代代币（fungible tokens）</strong>——类似以太坊的 ERC-20？</p>
+            <p>BRC-20 的工作方式非常"极简"：</p>
+            <ul>
+              <li>部署代币：发布一个 Ordinals 铭文，内容是一段 JSON，写明"代币名称（如 ORDI）、总量（如 2100 万）"</li>
+              <li>铸造代币：再发一条铭文，声明"我要铸造多少"</li>
+              <li>转账代币：再发一条铭文，声明"我要把这笔代币转给谁"</li>
+            </ul>
+            <p>链上浏览器（ordinalswallet.com、Dune Analytics）通过解析这些铭文的 JSON 内容，维护一个"链外账本"——这与以太坊的链上合约完全不同，BRC-20 本身没有智能合约。</p>
+
+            <h3>2.2 代表代币</h3>
+            <div class="inscription-cards">
+              <div class="inscr-card">
+                <div class="inscr-icon">🪙</div>
+                <div class="inscr-title">ORDI</div>
+                <div class="inscr-year y2023">2023 年</div>
+                <div class="inscr-desc">BRC-20 的"第一个代币"，总量 2100 万。2023 年 11 月一度涨至 42 美元，市值突破数亿美元。</div>
+              </div>
+              <div class="inscr-card">
+                <div class="inscr-icon">🪙</div>
+                <div class="inscr-title">SATS</div>
+                <div class="inscr-year y2023">2023 年</div>
+                <div class="inscr-desc">Satoshis 代币——总量 2100 万亿（100,000,000 × 21,000,000），致敬中本聪的名字。</div>
+              </div>
+              <div class="inscr-card">
+                <div class="inscr-icon">🐸</div>
+                <div class="inscr-title">PEPE（Ordinals 版）</div>
+                <div class="inscr-year y2023">2023 年</div>
+                <div class="inscr-desc">将 meme 文化的 PEPE 带入 BRC-20 代币生态，引发社区热炒。</div>
+              </div>
+            </div>
+
+            <h3>2.3 BRC-20 的核心问题：UTXO 碎片化</h3>
+            <div class="highlight-box">
+              <span class="label">BRC-20 的技术缺陷</span>
+              <div class="text">
+                <p>Casey Rodarmor 本人批评 BRC-20 的核心问题：<strong>BRC-20 代币会制造大量"垃圾 UTXO"</strong>。</p>
+                <p>以太坊代币转账由智能合约统一管理状态——持币人只有一个"余额数字"。BRC-20 则需要为每一笔代币转账创建新的 UTXO，这些微小 UTXO 会污染比特币的 UTXO 集（所有未花费输出的数据库），增加全节点的存储和验证负担。</p>
+                <p>这直接促成了 Runes 协议的设计动机。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、Runes ============ -->
+          <section id="runes">
+            <h2>三、Runes 协议：比特币上的"改进版代币"</h2>
+
+            <h3>3.1 Runes 的设计目标</h3>
+            <p>2023 年 9 月，Casey Rodarmor 在 BRC-20 的基础上提出了 <strong>Runes（符文）</strong>协议——一种专门为比特币设计的<strong>同质化代币（Fungible Token）</strong>发行标准，作为 BRC-20 的直接替代。</p>
+            <p>Runes 解决了 BRC-20 的 UTXO 碎片化问题：</p>
+            <ul>
+              <li>BRC-20：每笔代币转账都创建新 UTXO → UTXO 集合膨胀</li>
+              <li>Runes：代币绑定在特定 UTXO 上，通过 OP_RETURN 输出携带代币信息 → 不额外污染 UTXO 集</li>
+            </ul>
+
+            <h3>3.2 Runes 的特点</h3>
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔗</div>
+                <h4>不污染 UTXO</h4>
+                <p>Runes 通过 OP_RETURN 输出携带数据，不会在 UTXO 集中留下垃圾输出。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📦</div>
+                <h4>支持符文/代币 ID</h4>
+                <p>每个 Runes 代币有唯一 ID（按部署顺序），与比特币聪编号体系平行。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🛡️</div>
+                <h4>链上数据更少</h4>
+                <p>Runes 的协议格式更紧凑，数据量比 BRC-20 更精简，手续费效率更高。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📜</div>
+                <h4>符文石（Cenotaph）</h4>
+                <p>特殊的"墓碑"设计：若符文转账因格式错误而失败，符文被永久锁定——这避免了 BRC-20 中"幽灵代币"问题。</p>
+              </div>
+            </div>
+
+            <h3>3.3 Bitcoin 2.0 时代（2025）</h3>
+            <p>进入 2025 年，比特币协议层竞争进入新阶段，出现了多个创新协议：</p>
+            <div class="inscription-cards">
+              <div class="inscr-card">
+                <div class="inscr-icon">🔧</div>
+                <div class="inscr-title">BRC2.0</div>
+                <div class="inscr-year y2025">2025 年</div>
+                <div class="inscr-desc">BRC-20 官方升级版，引入 EVM 虚拟机，使 BRC-20 代币具有了真正的可编程性——终于可以在比特币上做 DeFi 了。</div>
+              </div>
+              <div class="inscr-card">
+                <div class="inscr-icon">🔧</div>
+                <div class="inscr-title">CAT20</div>
+                <div class="inscr-year y2025">2025 年</div>
+                <div class="inscr-desc">基于 OP_CAT 操作码（在 Fractal Bitcoin 上实验）的代币协议，由 sCrypt 团队主导，被视为比特币原生智能合约的重要里程碑。</div>
+              </div>
+              <div class="inscr-card">
+                <div class="inscr-icon">🛢️</div>
+                <div class="inscr-title">Alkanes</div>
+                <div class="inscr-year y2025">2025 年</div>
+                <div class="inscr-desc">一种利用比特币链上资源的创新协议（石油/液态隐喻），2025 年 5 月爆发，单日涨幅超 10 倍，引发新一波协议热潮。</div>
+              </div>
+            </div>
+
+            <!-- ============ 延伸探索（explorer-box 在大白话总结前） ============ -->
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+              </div>
+              <div class="exp-result">
+                <ul class="exp-links">
+                  <li><a href="https://ordinals.com" target="_blank" rel="noopener">ordinals.com — 查看 Ordinals 铭文浏览器，搜索任意铭文编号 <span class="exp-go">→</span></a></li>
+                  <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space — 查看链上实时数据，观察 BRC-20/Runes 时期的费率飙升 <span class="exp-go">→</span></a></li>
+                  <li><a href="https://tether.to" target="_blank" rel="noopener">tether.to — 了解 USDT 发行方 Tether 的透明度报告与储备构成 <span class="exp-go">→</span></a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、稳定币生态 ============ -->
+          <section id="stablecoins">
+            <h2>四、稳定币生态：比特币链上的"美元"</h2>
+
+            <h3>4.1 什么是稳定币？</h3>
+            <p><strong>稳定币（Stablecoin）</strong>是一种与美元、欧元等法币锚定价格的加密货币——1 USDT ≈ 1 美元，1 USDC ≈ 1 美元。</p>
+            <p>稳定币是加密货币世界最重要的"桥梁货币"：</p>
+            <ul>
+              <li>交易者把比特币换成 USDT，规避价格波动风险（类似"现金"）</li>
+              <li>在中心化交易所（CEX），USDT 是最重要的报价货币对基准</li>
+              <li>DeFi 借贷协议以 USDT/USDC 作为核心抵押品</li>
+            </ul>
+
+            <h3>4.2 USDT（Tether）：全球第一大稳定币</h3>
+            <div class="stablecoin-grid">
+              <div class="sc-card">
+                <div class="sc-header">
+                  <div>
+                    <div class="sc-name">Tether (USDT)</div>
+                    <div class="sc-ticker">ERC-20 / TRC-20 / Omni</div>
+                  </div>
+                </div>
+                <div class="sc-cap">≈ $1,890 亿</div>
+                <div class="sc-cap-label">市值（全球第三大加密货币）</div>
+                <div class="sc-desc">全球流通量最大的稳定币，由 Tether Limited 公司发行，声称每枚 USDT 有 1 美元储备支撑。</div>
+                <div class="sc-tag centralized">⚠️ 中心化管理</div>
+              </div>
+              <div class="sc-card">
+                <div class="sc-header">
+                  <div>
+                    <div class="sc-name">USDC (USD Coin)</div>
+                    <div class="sc-ticker">ERC-20 / 其他链</div>
+                  </div>
+                </div>
+                <div class="sc-cap">≈ $420 亿</div>
+                <div class="sc-cap-label">市值</div>
+                <div class="sc-desc">由 Circle 公司发行，定期接受美国持牌银行的审计，比 USDT 透明度更高（但规模仍小于 USDT）。</div>
+                <div class="sc-tag centralized">⚠️ 中心化管理</div>
+              </div>
+            </div>
+
+            <h3>4.3 USDT 的核心特性：中心化本质</h3>
+            <div class="highlight-box">
+              <span class="label">USDT 与去中心化资产的根本差异</span>
+              <div class="text">
+                <p><strong>Tether Limited</strong> 作为 USDT 的发行方，拥有对链上地址的<strong>冻结和销毁权限</strong>：</p>
+                <ul>
+                  <li><strong>冻结地址</strong>：Tether 可以将某个 USDT 地址列入黑名单，该地址的 USDT 将无法转账——被冻结的 USDT 相当于"作废"</li>
+                  <li><strong>链上监管</strong>：Tether 与美国监管机构（NYAG 等）有历史法律纠纷，曾被要求冻结涉及非法活动的地址</li>
+                  <li><strong>Omni 层的比特币</strong>：最早的 USDT 运行在比特币 Omni 层（Layer 2），后来扩展到以太坊、波场（TRON）等链</li>
+                </ul>
+                <p>这是稳定币与 BTC、ETH 等去中心化资产的根本区别：<strong>BTC 不可冻结，USDT 可以被发行方控制</strong>。</p>
+              </div>
+            </div>
+
+            <h3>4.4 法币上链：国家稳定币实验</h3>
+            <p>除了私人发行的 USDT，还有一些<strong>政府或法币锚定</strong>的链上尝试：</p>
+            <div class="protocol-quick">
+              <div class="pq-row" style="background:rgba(59,130,246,0.04);">
+                <div class="pq-icon">🇬🇪</div>
+                <div class="pq-info">
+                  <div class="pq-name">格鲁吉亚 GEL₮（2022 年试点）</div>
+                  <div class="pq-desc">格鲁吉亚国家银行与 Bityond 合作，在 Polygon 链上发行与格鲁吉亚拉里（GEL）1:1 锚定的国家稳定币，用于跨境汇款试点。</div>
+                </div>
+                <div class="pq-tag" style="background:rgba(59,130,246,0.12);color:#3B82F6;">法币上链</div>
+              </div>
+              <div class="pq-row">
+                <div class="pq-icon">🏛️</div>
+                <div class="pq-info">
+                  <div class="pq-name">多国 CBDC 研究</div>
+                  <div class="pq-desc">中国数字人民币（e-CNY）、尼日利亚 eNaira、巴哈马 Sand Dollar 等央行数字货币虽然技术上与 USDT 不同（中心化管理），但都是"法币数字化上链"的尝试。</div>
+                </div>
+                <div class="pq-tag" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">CBDC</div>
+              </div>
+              <div class="pq-row">
+                <div class="pq-icon">🪙</div>
+                <div class="pq-info">
+                  <div class="pq-name">Tether 推出 USAT（2025）</div>
+                  <div class="pq-desc">Tether 于 2025 年推出合规版美元稳定币 USAT，正式进军美国市场，对标 Circle 的 USDC。</div>
+                </div>
+                <div class="pq-tag" style="background:rgba(16,185,129,0.12);color:#10B981;">合规稳定币</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 五、其他链上协议 ============ -->
+          <section id="other-protocols">
+            <h2>五、比特币上的其他协议层</h2>
+
+            <h3>5.1 比特币协议栈全景</h3>
+            <div class="protocol-stack">
+              <div class="stack-layer protocol">
+                <div class="layer-num">4</div>
+                <div class="layer-info">
+                  <div class="layer-name">📜 协议层（Protocol Layer）</div>
+                  <div class="layer-desc">利用链上空间的各类应用协议</div>
+                  <div class="layer-examples">Ordinals / BRC-20 / Runes / Stacks</div>
+                </div>
+              </div>
+              <div class="stack-layer asset">
+                <div class="layer-num">3</div>
+                <div class="layer-info">
+                  <div class="layer-name">💰 资产层（Asset Layer）</div>
+                  <div class="layer-desc">在比特币链上发行数字资产（代币、稳定币、NFT）</div>
+                  <div class="layer-examples">USDT (Omni) / Ordinal NFTs / BRC-20 / Runes</div>
+                </div>
+              </div>
+              <div class="stack-layer settlement">
+                <div class="layer-num">2</div>
+                <div class="layer-info">
+                  <div class="layer-name">⚡ 结算层（settlement Layer）</div>
+                  <div class="layer-desc">高频/小额支付结算，快速、微成本</div>
+                  <div class="layer-examples">闪电网络 / Liquid Network</div>
+                </div>
+              </div>
+              <div class="stack-layer base">
+                <div class="layer-num">1</div>
+                <div class="layer-info">
+                  <div class="layer-name">⛓️ 基础层（Base Layer）</div>
+                  <div class="layer-desc">比特币共识层：区块、交易、PoW、UTXO</div>
+                  <div class="layer-examples">Bitcoin Core 协议 / SegWit / Taproot</div>
+                </div>
+              </div>
+            </div>
+
+            <h3>5.2 Liquid Network</h3>
+            <p><strong>Liquid Network</strong> 是由 Blockstream 主导的比特币侧链（Layer 2），采用<strong>联邦签名</strong>机制：多个交易所和机构（如 Bitfinex、BTC.com）共同管理一把"多签钥匙"，形成一种"半去中心化"的侧链。</p>
+            <p>核心功能：</p>
+            <ul>
+              <li><strong>机密交易（Confidential Transactions）</strong>：交易金额对外部不可见，但参与者可验证</li>
+              <li><strong>快速结算</strong>：1 分钟区块确认（而非比特币的 ~10 分钟）</li>
+              <li><strong>链上资产发行</strong>：在 Liquid 上可发行 Token（如稳定币），比比特币主网更高效</li>
+              <li><strong>BTC 双向锚定</strong>：用户可将 BTC 锁定在主网，在 Liquid 上等量"映射 BTC"使用</li>
+            </ul>
+
+            <h3>5.3 Rootstock（RSK）</h3>
+            <p><strong>Rootstock（RSK）</strong> 是另一条与比特币合并挖矿的侧链——矿工在同一挖矿过程中同时验证比特币和 RSK 区块，实现了<strong>比特币算力保护 RSK 安全</strong>的特殊架构。</p>
+            <p>RSK 的核心特点：</p>
+            <ul>
+              <li><strong>智能合约</strong>：RSK 支持 Solidity（以太坊语言），开发者可将以太坊 DApp 移植到 RSK</li>
+              <li><strong>比特币合并挖矿</strong>：矿工用同一算力同时挖 BTC + RSK，不需要额外的能源消耗</li>
+              <li><strong>双向锚定</strong>：BTC ⇄ RBTC（RSK 上的原生代币，1:1 兑换）</li>
+              <li><strong>Sovryn</strong>：RSK 上最著名的 DeFi 应用，去中心化借贷和交易协议</li>
+            </ul>
+
+            <h3>5.4 闪电网络（快速回顾）</h3>
+            <p>闪电网络（Lightning Network）是比特币最成熟的 Layer 2 支付协议，已在技术篇详细讲解。本章重点补充：</p>
+            <ul>
+              <li><strong>2024 年状态</strong>：闪电网络公开节点超过 12,000 个，通道数超过 70,000，容量约 5,000 BTC</li>
+              <li><strong>应用场景</strong>：比特币 2024 大会（纳什维尔）中，Marathon Digital 展示了用闪电网络进行跨境企业支付的案例——结算时间从 3-4 天降至<strong>几分钟</strong>，成本大幅降低</li>
+              <li><strong>与 Ordinals 的关系</strong>：Ordinals 的批评者认为，链上拥堵时普通用户应转向闪电网络，而非用 Ordinals 抢占主链空间</li>
+            </ul>
+          </section>
+
+          <!-- ============ 六、多视角重新解释 ============ -->
+          <section id="perspectives">
+            <h2>六、多视角重新解释</h2>
+
+            <!-- 多视角卡片 -->
+            <div class="perspective-card" id="protocol-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 协议层创新的六种解读</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="technology">👨‍💻 协议开发者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="business">🔍 产业分析师</button>
+                  <button class="p-tab" data-angle="finance">💰 经济学者</button>
+                  <button class="p-tab" data-angle="philosophy">👛 比特币信徒</button>
+                  <button class="p-tab" data-angle="security">🔒 安全研究者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <!-- 协议开发者 -->
+                <div class="p-content" data-angle="technology">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👨‍💻 协议开发者</div>
+                  <div class="p-quote">"Ordinals 的聪明之处在于：它不需要对比特币代码做任何改动——只是把现有的见证数据空间用到了极致。这是'利用规则而不是改变规则'的典范。"</div>
+                  <ul>
+                    <li><strong>SegWit + Taproot 的"意外礼物"</strong>：两个原本为金融目的设计的升级，为 Ordinals 铺平了道路——开发者社区没有预料到这种"溢出效应"</li>
+                    <li><strong>BRC-20 的技术债务</strong>：链外账本模式意味着 BRC-20 依赖第三方索引服务（ordinalswallet.com、Dune）来追踪余额——若索引器故障，代币"消失"</li>
+                    <li><strong>Runes 的进步</strong>：OP_RETURN 携带代币数据，不污染 UTXO 集，设计更干净</li>
+                    <li><strong>Bitcoin 2.0 新协议</strong>：BRC2.0（EVM 引入）、CAT20（OP_CAT）、Alkanes 代表了协议层创新的下一阶段：从"代币发行"向"原生 DeFi"演进</li>
+                    <li><strong>当前技术挑战</strong>：比特币无法执行任意代码——Ordinals 系协议只能在链上存储数据，无法像以太坊一样"执行逻辑"——这是根本性限制</li>
+                  </ul>
+                </div>
+                <!-- 历史学家 -->
+                <div class="p-content" data-angle="history">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</div>
+                  <div class="p-quote">"每一次比特币升级都会释放出意想不到的创造力——SegWit 解锁了闪电网络，Taproot 解锁了 Ordinals。比特币的灵活性藏在它的克制里。"</div>
+                  <ul>
+                    <li><strong>2017 年 SegWit</strong>：解决交易延展性问题，让闪电网络成为可能——同时，无意中为 Ordinals 打开了大门</li>
+                    <li><strong>2019 年稳定币元年</strong>：USDT 在 Omni 层运行，Tether 已成为加密世界最重要的美元代理——没有稳定币，就没有 DeFi 规模化的可能</li>
+                    <li><strong>2021 年 Taproot</strong>：Schnorr 签名 + MAST，让 Ordinals 成本大幅降低；同年 12 月比特币 NFT 概念首次出现</li>
+                    <li><strong>2022 年 12 月 Ordinals</strong>：Casey Rodarmor 的论文和工具让"比特币 NFT"从理论走向实践</li>
+                    <li><strong>2023 年 3 月 BRC-20</strong>：Ordinals 的最大"意外"——本来是 NFT 协议，被改造成代币发行标准，引发市场狂热</li>
+                    <li><strong>2024 年 Runes</strong>：Runes 在 Bitcoin 减半当天上线，首日交易额突破 1 亿美元——这是比特币协议史上最大的代币发行事件之一</li>
+                  </ul>
+                </div>
+                <!-- 产业分析师 -->
+                <div class="p-content" data-angle="business">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🔍 产业分析师</div>
+                  <div class="p-quote">"Ordinals/Runes 不只是'比特币版 NFT'——它们代表了一个事实：比特币链上有真实的商业需求（不可篡改存储、资产发行）。问题不是'应不应该'，而是'如何管理边界'。"</div>
+                  <ul>
+                    <li><strong>BRC-20 市场规模</strong>：截至 2025 年 4 月，50+ BRC-20 代币总市值约 3.26 亿美元（CoinGecko），ORDI（1.64 亿美元）和 SATS（9,800 万美元）领先</li>
+                    <li><strong>USDT 的商业帝国</strong>：Tether USDT 市值约 1,890 亿美元，是全球第三大加密货币，日均交易量超过 500 亿美元——BTC/ETH 的交易对大多以 USDT 计价</li>
+                    <li><strong>Ordinals 生态</strong>：ordinals.com、ordinalswallet.com、Gamma.io 等形成完整生态——从铭刻工具到市场到钱包</li>
+                    <li><strong>协议层淘金热</strong>：每个新协议（Ordinals→BRC-20→Runes→BRC2.0→CAT20）都创造"首轮红利"——早期参与者的财富效应吸引资本涌入</li>
+                    <li><strong>流动性挑战</strong>：BRC-20/Runes 的最大问题是没有链上交易所（DEX），流动性依赖中心化交易所和场外市场</li>
+                  </ul>
+                </div>
+                <!-- 经济学者 -->
+                <div class="p-content" data-angle="finance">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学者</div>
+                  <div class="p-quote">"USDT 的发行量与比特币价格高度相关——价格涨 → 持有 USDT 的需求增 → Tether 发行更多 USDT → 资金流入加密市场。这是一种'内生流动性'机制。"</div>
+                  <ul>
+                    <li><strong>USDT 的"货币乘数"</strong>：Tether 无需中央银行那样的准备金约束就能发行 USDT——批评者认为这存在"无储备发行"的系统性风险</li>
+                    <li><strong>Ordinals 的手续费经济学</strong>：2023 年 5-6 月 Ordinals 热潮期间，比特币平均手续费从 10-20 sat/vB 飙升至 200-400 sat/vB——ordi memecoin mint 期间一度突破 600 sat/vB</li>
+                    <li><strong>BRC-20 代币的"没有内在价值"</strong>：ORDI/SATS 等 BRC-20 代币本质上是"链上 meme"——没有现金流、没有治理权、没有任何传统意义上的价值支撑</li>
+                    <li><strong>比特币区块空间的价值发现</strong>：Ordinals 热潮让市场认识到：比特币的区块空间是稀缺资源，不同类型的交易对空间的价值评估不同</li>
+                    <li><strong>手续费 vs 区块奖励</strong>：Ordinals 热潮暂时性地提升了矿工收入——即使区块补贴继续减半，手续费市场也可能成为矿工新的收入来源</li>
+                  </ul>
+                </div>
+                <!-- 比特币信徒 -->
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">👛 比特币信徒</div>
+                  <div class="p-quote">"Ordinals 对比特币最大化主义者来说是一个哲学悖论：它是比特币的'用例扩张'，但同时也是比特币纯洁性的'污染'。最终，比特币社区必须回答：比特币到底是什么？"</div>
+                  <ul>
+                    <li><strong>"比特币应该只做一件事"</strong>（Store of Value / SoV）——Blockstream 的 Adam Back 等人认为，比特币的价值来自"绝对稀缺+共识"，增加协议复杂度会稀释这一价值</li>
+                    <li><strong>"比特币是工具箱"</strong>——Ordinals 证明了比特币的见证数据空间可以被创造性地使用，这符合中本聪设计比特币时的"通用平台"愿景</li>
+                    <li><strong>稳定币的"内在矛盾"</strong>：USDT 等中心化稳定币让比特币生态依赖一个可以被冻结的美元代理——这与比特币"抗审查"的价值观根本对立</li>
+                    <li><strong>Runes 的和解</strong>：Runes 解决了 UTXO 碎片化问题，让 Ordinals 系协议更"比特币友好"——这是最大化主义者和创新派之间的一个技术妥协</li>
+                    <li><strong>"协议层战争是好事"</strong>：比特币社区对 Ordinals 的激烈争论，正是比特币没有"中央权威"的体现——没有人可以单方面决定"比特币应该做什么"</li>
+                  </ul>
+                </div>
+                <!-- 安全研究者 -->
+                <div class="p-content" data-angle="security">
+                  <div class="p-angle-badge" style="background:rgba(239,68,68,0.12);color:#EF4444;">🔒 安全研究者</div>
+                  <div class="p-quote">"USDT 的可冻结性是一个被低估的安全风险——如果 Tether 被美国政府强制冻结所有 USDT，整个加密货币市场的美元流动性将瞬间蒸发。"</div>
+                  <ul>
+                    <li><strong>Tether 冻结历史</strong>：Tether 曾在 2017 年冻结多个与黑客攻击和勒索软件相关的地址，涉及数百万 USDT——这是 USDC 没有发生过的事情（Circle 选择完全合规化）</li>
+                    <li><strong>BRC-20 索引器风险</strong>：BRC-20 代币依赖链外索引器——如果 ordinalswallet.com 或 Dune 宕机，用户无法查询代币余额，也无法转账——这是"单点故障"（SPOF）</li>
+                    <li><strong>Runes 的 Cenotaph 设计</strong>：符文石机制确保失败的符文转账被永久锁定，而非"幽灵化"——这是对 BRC-20 安全漏洞的直接改进</li>
+                    <li><strong>Ordinals 隐私问题</strong>：Ordinals 铭文与特定聪绑定，通过聪的交易追踪理论上可以关联到链上地址——Ordinals 用户可能比想象中更可追踪</li>
+                    <li><strong>Liquid 的联邦多签风险</strong>：Liquid 的安全依赖于少数机构（Bitfinex、BTC.com 等）共同签名的多签钥匙——若多数签名者被胁迫或被攻击，侧链安全性崩溃</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、动手实验 ============ -->
+          <section id="labs">
+            <h2>七、动手实验区</h2>
+
+            <!-- 实验 1 -->
+            <h3>🔍 实验 1：在 ordinals.com 查看一个真实铭文</h3>
+            <div class="lab-box">
+              <span class="lab-label">🧪 实验室</span>
+              <div class="lab-steps">
+                <div class="lab-step">
+                  <div class="lab-step-num">1</div>
+                  <div class="lab-step-text">打开 <a href="https://ordinals.com" target="_blank" rel="noopener">ordinals.com</a>（Ordinals 官方浏览器）</div>
+                </div>
+                <div class="lab-step">
+                  <div class="lab-step-num">2</div>
+                  <div class="lab-step-text">在首页输入铭文编号（如 <code style="font-family:var(--font-mono);font-size:0.8rem;background:var(--bg);padding:1px 5px;border-radius:3px;">50,000</code>），点击搜索，查看铭文内容（图片/文字/代码）</div>
+                </div>
+                <div class="lab-step">
+                  <div class="lab-step-num">3</div>
+                  <div class="lab-step-text">点击铭文详情页，查看：这个聪（sat）的序号、铭刻时间、区块高度、所使用的协议类型（原生 Ordinals、BRC-20 等）</div>
+                </div>
+                <div class="lab-step">
+                  <div class="lab-step-num">4</div>
+                  <div class="lab-step-text">对比不同时期铭文的数量和类型（2023 年初 vs 2023 年中 vs 2024 年），观察 Ordinals 生态的演变</div>
+                </div>
+              </div>
+              <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+                <a href="https://ordinals.com" target="_blank" rel="noopener" class="btn btn-primary">🌐 打开 ordinals.com</a>
+                <a href="https://ordinalswallet.com" target="_blank" rel="noopener" class="btn">💼 ordinalswallet.com（BRC-20 代币管理）</a>
+              </div>
+            </div>
+
+            <!-- 实验 2 -->
+            <h3>📊 实验 2：观察 Ordinals 时期的链上手续费</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">比特币链上手续费数据</span>
+              </div>
+              <div class="exp-result" id="fee-result">
+                <div class="exp-empty">👆 点击按钮获取 mempool.space 当前费率数据，观察历史 Ordinals 时期的费率飙升</div>
+              </div>
+              <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="loadFeeStats()">📊 获取实时费率</button>
+                <a href="https://mempool.space" target="_blank" rel="noopener" class="btn">🌐 mempool.space 主页</a>
+              </div>
+              <div style="margin-top:10px;">
+                <p style="font-size:0.78rem;color:var(--text-muted);">
+                  💡 <strong>历史参考</strong>：2023 年 5-6 月 Ordinals/BRC-20 高峰期，平均费率约 <strong>200-600 sat/vB</strong>；
+                  2024 年 4 月减半日 + Runes 上线，费率短暂飙升约 <strong>300 sat/vB</strong>；
+                  而平时普通交易费率约 <strong>5-30 sat/vB</strong>。
+                </p>
+              </div>
+            </div>
+
+            <!-- 实验 3 -->
+            <h3>🔗 实验 3：查看 USDT 的链上发行数据</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">USDT（Omni 层）发行数据</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">数据来源：omniexplorer.info / blockchain.com</span>
+              </div>
+              <div class="exp-result" id="usdt-result">
+                <div class="exp-empty">👆 访问 Omni Explorer 或 blockchain.com 查询 USDT（Omni）在比特币链上的总发行量和交易记录</div>
+              </div>
+              <div style="margin-top:10px;">
+                <p style="font-size:0.78rem;color:var(--text-muted);">
+                  💡 <strong>提示</strong>：USDT 目前主要在以太坊（ERC-20）和波场（TRC-20）链上流通，比特币 Omni 层仅占一小部分。
+                  完整 USDT 发行数据可在 <a href="https://tether.to" target="_blank" rel="noopener" style="color:var(--orange);">tether.to</a> 查看透明度报告。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、大白话总结 ============ -->
+          <section id="summary">
+            <h2>八、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把这些复杂的放在日常场景中</span>
+              <p><strong>Ordinals = 在比特币区块链上"刻字"</strong></p>
+              <ul>
+                <li>想象一张 100 元人民币，上面印着"本币可兑换 1 美元"——这没有任何意义</li>
+                <li>但如果你能在人民币上"刻"一张照片或一段文字，而这照片/文字永远不会被擦掉，那就有意思了</li>
+                <li>Ordinals 就是"比特币区块链上的永久雕刻"——你把图片/文字刻在聪（sat）上，它永远存在于比特币网络里</li>
+                <li>就像在一本书的某一页"永久写入了内容"——无论谁拥有这一页，内容永远不变</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>BRC-20 / Runes = 比特币版的"发行股票"</strong></p>
+              <ul>
+                <li>公司要发行股票，需要交易所、结算系统——BRC-20/Runes 让"发行代币"也可以在比特币链上完成</li>
+                <li>ORDI = 第一个"BRC-20 股票"，发行量 2100 万股（致敬 BTC 总量 2100 万）</li>
+                <li>但 BRC-20 的"股票账本"不在链上——而是由 ordinalswallet.com 这样的"第三方券商"保管</li>
+                <li>Runes 改进了这一点，让"股票发行"的信息不污染比特币的"账户系统"（UTXO）</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>USDT = 比特币上的"美元"</strong></p>
+              <ul>
+                <li>BTC 是"数字黄金"（保值但不稳定），USDT 是"数字美元"（稳定但不保值）</li>
+                <li>USDT 就像一个"美元保管箱"——Tether 公司承诺：每发行 1 USDT，就存 1 美元</li>
+                <li>但这个保管箱的钥匙在 Tether 公司手里——他们可以随时冻结某个保管箱，让你的 USDT 变成"废纸"</li>
+                <li>BTC 不能被冻结（私钥即权利）；USDT 可以被冻结（发行方即权力）</li>
+                <li>这就是"去中心化资产"与"中心化稳定币"的根本区别</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>协议层 = 比特币的"增值服务"</strong></p>
+              <ul>
+                <li>比特币主链 = 五星级酒店的"基础房间"（安全、昂贵、但最可靠）</li>
+                <li>Ordinals/Runes = 在基础房间里增加了"迷你吧"（提供额外服务，额外收费）</li>
+                <li>闪电网络 = 酒店旁边的"咖啡厅"（快速、低成本，但安全保障弱一些）</li>
+                <li>Liquid/RSK = 同一栋楼里的"分酒店"（有自己的规则，但由同一个"酒店集团"（比特币）背书）</li>
+                <li>这些"增值服务"占用主链资源，推高基础费用——这就是 Ordinals 争议的核心</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>Ordinals</strong>：利用 SegWit + Taproot，给每个聪编号并铭刻数据（文字/图片）——永久存储，无需第三方</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>BRC-20</strong>：Ordinals 上的同质化代币标准（Domodata 2023-03），ORDI/SATS 为代表；但存在 UTXO 碎片化问题</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>Runes（2024）</strong>：Casey Rodarmor 设计的 BRC-20 替代协议，不污染 UTXO 集，支持符文石（Cenotaph）安全机制</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>USDT</strong>：约 1,890 亿美元市值、全球第一稳定币——但可被 Tether 冻结/销毁，与去中心化 BTC 本质不同</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">5️⃣</div>
+                <p><strong>Bitcoin 2.0</strong>：BRC2.0（EVM）、CAT20（OP_CAT）、Alkanes 等新协议将比特币协议层推向 DeFi 时代（2025）</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">6️⃣</div>
+                <p><strong>协议层之争</strong>：Ordinals 争议的本质是"比特币应该保守还是开放"——没有共识权威解决，市场最终用费率投票</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>恭喜你完成了生态篇的全部内容！你已经系统了解了比特币的矿业生态、开发者社区、协议层创新和稳定币生态。现在，可以回到学习地图总览，开启下一个篇章，或者用工具页探索更多实践内容：</p>
+            <a href="../00-overview.html" class="btn btn-primary">📍 返回学习地图总览 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="05-05-mining-industry.html" class="btn">← 回顾：矿业生态</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="05-05-mining-industry.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">矿业生态</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        生态篇 · 7 / 7
+      </div>
+      <a href="../00-overview.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">返回</span>
+          <span class="nav-title">学习地图总览</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+    });
+
+    // ===== 实时费率数据 =====
+    async function loadFeeStats() {
+      const el = document.getElementById('fee-result');
+      el.innerHTML = '<div class="exp-empty">⏳ 正在从 mempool.space 获取数据...</div>';
+      try {
+        const [feeRes, blocksRes] = await Promise.all([
+          fetch('https://mempool.space/api/v1/fees/recommended'),
+          fetch('https://mempool.space/api/blocks/tip/height')
+        ]);
+        const feeData = await feeRes.json();
+        const blockHeight = await blocksRes.text();
+
+        const html = `
+          <div class="exp-field"><span><strong>查询时间</strong></span><span>${new Date().toLocaleString('zh-CN')}</span></div>
+          <div class="exp-field"><span><strong>当前区块高度</strong></span><span style="font-family:var(--font-mono);">${blockHeight}</span></div>
+          <div class="exp-field"><span>🟢 经济费率（Economy）</span><span style="font-family:var(--font-mono);">${feeData.hourFee || '?'} sat/vB</span></div>
+          <div class="exp-field"><span>🟡 标准费率（Standard）</span><span style="font-family:var(--font-mono);">${feeData.fastestFee || '?'} sat/vB</span></div>
+          <div class="exp-field"><span>🔴 优先费率（Priority）</span><span style="font-family:var(--font-mono);">${feeData.minimumFee || '?'} sat/vB</span></div>
+          <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);">
+            💡 <strong>对比历史</strong>：正常时期约 5-30 sat/vB；Ordinals 高峰期 200-600 sat/vB。<br>
+            <a href="https://mempool.space" target="_blank" rel="noopener" style="color:var(--orange);">在 mempool.space 查看完整费率建议 ↗</a>
+          </div>
+        `;
+        el.innerHTML = html;
+      } catch(e) {
+        el.innerHTML = '<div class="exp-empty">查询失败：' + (e.message || '未知错误') + '<br><br>💡 建议：直接访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看实时数据</div>';
+      }
+    }
+
+    // ===== 已读标记 =====
+    window.toggleBookmark05_06 = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch05-06-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch05-06-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+  </script>
+</body>
+</html>

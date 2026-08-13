@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>比特币的货币政策 | 比特币学习地图</title>
+  <meta name="description" content="深入理解比特币的货币政策：2100万上限的由来、减半机制、发行曲线、稀缺性量化（S2F模型）。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ===== 发行曲线 SVG 区块 ===== */
+    .issuance-chart {
+      margin: 2rem 0;
+      background: #111;
+      border: 1.5px solid #2A2A2A;
+      border-radius: 18px;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .issuance-chart svg {
+      border-radius: 10px;
+    }
+
+    /* ===== 减半时间线卡片 ===== */
+    .halving-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .halving-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all var(--transition);
+    }
+    .halving-card:hover {
+      border-color: var(--orange);
+      transform: translateX(4px);
+    }
+    .halving-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--orange);
+      min-width: 40px;
+      text-align: center;
+    }
+    .halving-info {
+      flex: 1;
+    }
+    .halving-date {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .halving-reward {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+    .halving-reward .arrow {
+      color: var(--orange);
+      margin: 0 8px;
+    }
+    .halving-context {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .halving-price {
+      font-size: 0.75rem;
+      color: var(--orange);
+      margin-top: 4px;
+    }
+
+    /* ===== 区块奖励表格 ===== */
+    .reward-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 14px 0;
+    }
+    .reward-table th,
+    .reward-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .reward-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .reward-table td {
+      color: var(--text-secondary);
+    }
+    .reward-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .reward-table .num-cell {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ===== S2F 卡片 ===== */
+    .s2f-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .s2f-item {
+      flex: 1;
+      min-width: 150px;
+      text-align: center;
+    }
+    .s2f-item .s2f-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .s2f-item .s2f-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .s2f-item .s2f-unit {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .s2f-item .s2f-note {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ===== 视角卡片 ===== */
+    .perspective-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .perspective-header {
+      padding: 14px 18px;
+      background: rgba(247,147,26,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .ph-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .ph-label-icon { font-size: 1rem; }
+    .perspective-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .p-tab {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .p-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .p-tab.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .perspective-body { padding: 16px 18px; }
+    .p-content { display: none; }
+    .p-content.active { display: block; }
+    .p-angle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .p-quote {
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      margin: 10px 0;
+    }
+    .p-content ul {
+      padding-left: 20px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .perspective-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p-dot-indicator { display: flex; gap: 4px; }
+    .p-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .p-dot.active { background: var(--orange); }
+
+    /* ===== 实验区 ===== */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .lab-section .lab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .lab-section .lab-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .lab-section .lab-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .lab-section .lab-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .lab-section .lab-list li:last-child { border-bottom: none; }
+    .lab-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 700px) {
+      .halving-card { flex-direction: column; align-items: flex-start; }
+      .s2f-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="03-00-overview.html">经济学篇</a>
+        <span>›</span>
+        <span>货币政策</span>
+      </div>
+
+      <h1>📉 比特币的货币政策</h1>
+      <p class="page-subtitle">2100 万上限从哪来？减半机制为什么"不可篡改"？理解比特币最核心的经济设计——通缩型货币政策。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：中级</span>
+        <span class="page-tag">📑 经济学篇 3/8</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>3 / 8 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 37.5%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">2100万上限从哪来</a>
+          <a href="#curve">发行曲线</a>
+          <a href="#halvings">四次减半时间线</a>
+          <a href="#consensus">减半机制为何不可篡改</a>
+          <a href="#s2f">稀缺性量化 S2F</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 核心直觉 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币的货币政策不是写在法律里，而是<strong>写在代码里</strong>。2100 万上限、四年减半、2140 年归零——这些规则由数学保证，而非任何人或机构的承诺。</p>
+            <p style="margin-top:8px;">你可以把它想象成一台<strong>不会说谎的自动售货机</strong>：规则写死、人人可见、谁也无法偷偷多印。</p>
+          </div>
+
+          <!-- ============ 一、2100万上限从哪来 ============ -->
+          <section id="intro">
+            <h2>一、2100 万上限从哪来？</h2>
+
+            <h3>1.1 数学推导：每区块奖励 × 减半规则的总和</h3>
+            <p>比特币的总量上限不是拍脑袋决定的，而是<strong>等比数列求和</strong>的结果：</p>
+            <ul>
+              <li>创世区块（2009）奖励：<strong>50 BTC/块</strong></li>
+              <li>每 <strong>210,000 个区块</strong>（约 4 年）奖励减半</li>
+              <li>减半次数：<strong>34 次</strong>（到 2140 年左右）</li>
+            </ul>
+            <p>等比数列求和公式：</p>
+            <div class="highlight-box">
+              <span class="label">📐 数学公式</span>
+              <div class="text">
+                <p><code>总量 = 50 + 25 + 12.5 + 6.25 + ... + 0.00000001</code></p>
+                <p><code>= 50 × (1 + 1/2 + 1/4 + 1/8 + ...)</code></p>
+                <p><code>= 50 × 2 = 100 BTC（每个减半周期）</code></p>
+                <p><code>= 100 × 210,000 = 21,000,000 BTC</code></p>
+              </div>
+            </div>
+            <p>由于最小单位是 1 聪（0.00000001 BTC），最终总量略小于 2100 万，约为 <strong>20,999,999.9769 BTC</strong>。</p>
+
+            <h3>1.2 由共识维持，而非承诺</h3>
+            <p>2100 万上限不是中本聪的"承诺"，而是<strong>写在代码里的规则</strong>。这条规则能维持，靠的是：</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📜</div>
+                <h4>代码即宪法</h4>
+                <p>每条规则都写在共识代码里，任何节点都可以验证。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔐</div>
+                <h4>全节点共识</h4>
+                <p>改规则需要全网 100% 节点同意，实际上不可能。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">💰</div>
+                <h4>经济激励</h4>
+                <p>改上限 = 稀缺性丧失 = 现有持币者利益受损 → 没人有动机改。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、发行曲线 ============ -->
+          <section id="curve">
+            <h2>二、发行曲线：从 50 到 3.125 BTC</h2>
+
+            <p>比特币的发行曲线是<strong>最可预测的货币政策</strong>。以下是 2009-2140 年的发行量变化：</p>
+
+            <div class="issuance-chart">
+              <svg viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;font-family:-apple-system,'PingFang SC',sans-serif;">
+                <!-- 背景 -->
+                <rect x="0" y="0" width="900" height="360" rx="14" fill="#14161A"/>
+                
+                <!-- 标题 -->
+                <text x="40" y="32" fill="#F7931A" font-size="16" font-weight="700">比特币发行曲线（年新增 BTC）</text>
+                
+                <!-- Y 轴标签 -->
+                <text x="30" y="80" fill="#9CA3AF" font-size="10" text-anchor="end">~260万</text>
+                <text x="30" y="140" fill="#9CA3AF" font-size="10" text-anchor="end">~130万</text>
+                <text x="30" y="200" fill="#9CA3AF" font-size="10" text-anchor="end">~65万</text>
+                <text x="30" y="260" fill="#9CA3AF" font-size="10" text-anchor="end">~32万</text>
+                <text x="30" y="320" fill="#9CA3AF" font-size="10" text-anchor="end">0</text>
+                
+                <!-- X 轴标签 -->
+                <text x="80" y="340" fill="#9CA3AF" font-size="10">2009</text>
+                <text x="200" y="340" fill="#9CA3AF" font-size="10">2012</text>
+                <text x="320" y="340" fill="#9CA3AF" font-size="10">2016</text>
+                <text x="440" y="340" fill="#9CA3AF" font-size="10">2020</text>
+                <text x="560" y="340" fill="#9CA3AF" font-size="10">2024</text>
+                <text x="680" y="340" fill="#9CA3AF" font-size="10">2028</text>
+                <text x="800" y="340" fill="#9CA3AF" font-size="10">2140</text>
+                
+                <!-- 网格线 -->
+                <line x1="50" y1="80" x2="850" y2="80" stroke="#2A2A2A" stroke-width="1" stroke-dasharray="4,4"/>
+                <line x1="50" y1="140" x2="850" y2="140" stroke="#2A2A2A" stroke-width="1" stroke-dasharray="4,4"/>
+                <line x1="50" y1="200" x2="850" y2="200" stroke="#2A2A2A" stroke-width="1" stroke-dasharray="4,4"/>
+                <line x1="50" y1="260" x2="850" y2="260" stroke="#2A2A2A" stroke-width="1" stroke-dasharray="4,4"/>
+                <line x1="50" y1="320" x2="850" y2="320" stroke="#3A3F47" stroke-width="2"/>
+                
+                <!-- 减半标记线 -->
+                <line x1="200" y1="50" x2="200" y2="320" stroke="#F7931A" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="8,4"/>
+                <line x1="320" y1="50" x2="320" y2="320" stroke="#F7931A" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="8,4"/>
+                <line x1="440" y1="50" x2="440" y2="320" stroke="#F7931A" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="8,4"/>
+                <line x1="560" y1="50" x2="560" y2="320" stroke="#F7931A" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="8,4"/>
+                <line x1="680" y1="50" x2="680" y2="320" stroke="#F7931A" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="8,4"/>
+                
+                <!-- 减半标签 -->
+                <text x="200" y="45" fill="#F7931A" font-size="9" text-anchor="middle">第1次</text>
+                <text x="320" y="45" fill="#F7931A" font-size="9" text-anchor="middle">第2次</text>
+                <text x="440" y="45" fill="#F7931A" font-size="9" text-anchor="middle">第3次</text>
+                <text x="560" y="45" fill="#F7931A" font-size="9" text-anchor="middle">第4次</text>
+                <text x="680" y="45" fill="#F7931A" font-size="9" text-anchor="middle">第5次</text>
+                
+                <!-- 发行曲线（阶梯下降） -->
+                <path d="M 80 80 L 200 80 L 200 140 L 320 140 L 320 200 L 440 200 L 440 260 L 560 260 L 560 290 L 680 290 L 680 305 L 800 305 L 800 320" 
+                      stroke="#F7931A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                
+                <!-- 曲线下方填充 -->
+                <path d="M 80 80 L 200 80 L 200 140 L 320 140 L 320 200 L 440 200 L 440 260 L 560 260 L 560 290 L 680 290 L 680 305 L 800 305 L 800 320 L 80 320 Z" 
+                      fill="url(#gradOrange)" opacity="0.2"/>
+                
+                <!-- 渐变定义 -->
+                <defs>
+                  <linearGradient id="gradOrange" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#F7931A" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#F7931A" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                
+                <!-- 当前位置标记 -->
+                <circle cx="600" cy="275" r="6" fill="#F7931A"/>
+                <text x="620" y="270" fill="#F5F5F5" font-size="10">当前 (2026)</text>
+                <text x="620" y="284" fill="#9CA3AF" font-size="9">年新增约 32.8 万 BTC</text>
+              </svg>
+            </div>
+
+            <p>这条曲线的特点是<strong>可预测性</strong>——你可以在 2009 年就精确计算出 2026 年的发行量，误差为零。</p>
+
+            <h3>2.1 区块奖励演进表</h3>
+            <table class="reward-table">
+              <thead>
+                <tr>
+                  <th>时期</th>
+                  <th>区块奖励</th>
+                  <th>年新增 BTC</th>
+                  <th>累计发行</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2009-2012</td>
+                  <td class="num-cell">50 BTC</td>
+                  <td class="num-cell">~262.8万</td>
+                  <td class="num-cell">~1050万</td>
+                </tr>
+                <tr>
+                  <td>2012-2016</td>
+                  <td class="num-cell">25 BTC</td>
+                  <td class="num-cell">~131.4万</td>
+                  <td class="num-cell">~1575万</td>
+                </tr>
+                <tr>
+                  <td>2016-2020</td>
+                  <td class="num-cell">12.5 BTC</td>
+                  <td class="num-cell">~65.7万</td>
+                  <td class="num-cell">~1837.5万</td>
+                </tr>
+                <tr>
+                  <td>2020-2024</td>
+                  <td class="num-cell">6.25 BTC</td>
+                  <td class="num-cell">~32.8万</td>
+                  <td class="num-cell">~1968.75万</td>
+                </tr>
+                <tr style="background:rgba(247,147,26,0.08);">
+                  <td><strong>2024-2028</strong></td>
+                  <td class="num-cell"><strong>3.125 BTC</strong></td>
+                  <td class="num-cell"><strong>~16.4万</strong></td>
+                  <td class="num-cell"><strong>~2034.375万</strong></td>
+                </tr>
+                <tr>
+                  <td>...</td>
+                  <td class="num-cell">→ 0</td>
+                  <td class="num-cell">→ 0</td>
+                  <td class="num-cell">≈2100万 (2140)</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- ============ 三、四次减半时间线 ============ -->
+          <section id="halvings">
+            <h2>三、四次减半时间线</h2>
+
+            <p>截至 2026 年，比特币已经历<strong>四次减半</strong>。每次减半都带来供给收缩，与市场周期密切相关。</p>
+
+            <div class="halving-timeline">
+              <div class="halving-card">
+                <div class="halving-num">①</div>
+                <div class="halving-info">
+                  <div class="halving-date">2012-11-28</div>
+                  <div class="halving-reward">50 BTC <span class="arrow">→</span> 25 BTC</div>
+                  <div class="halving-context">第一次减半，比特币从极客玩具走向主流视野的开端。</div>
+                  <div class="halving-price">区块高度：210,000｜减半前价格约 $12</div>
+                </div>
+              </div>
+
+              <div class="halving-card">
+                <div class="halving-num">②</div>
+                <div class="halving-info">
+                  <div class="halving-date">2016-07-09</div>
+                  <div class="halving-reward">25 BTC <span class="arrow">→</span> 12.5 BTC</div>
+                  <div class="halving-context">减半后开启 2017 年大牛市，比特币首次突破 $1,000。</div>
+                  <div class="halving-price">区块高度：420,000｜减半前价格约 $650</div>
+                </div>
+              </div>
+
+              <div class="halving-card">
+                <div class="halving-num">③</div>
+                <div class="halving-info">
+                  <div class="halving-date">2020-05-11</div>
+                  <div class="halving-reward">12.5 BTC <span class="arrow">→</span> 6.25 BTC</div>
+                  <div class="halving-context">减半后一年内突破 $60,000，机构资金首次大规模入场。</div>
+                  <div class="halving-price">区块高度：630,000｜减半前价格约 $8,700</div>
+                </div>
+              </div>
+
+              <div class="halving-card">
+                <div class="halving-num">④</div>
+                <div class="halving-info">
+                  <div class="halving-date">2024-04-20</div>
+                  <div class="halving-reward">6.25 BTC <span class="arrow">→</span> 3.125 BTC</div>
+                  <div class="halving-context">现货 ETF 获批后首次减半，进入机构化新时代。</div>
+                  <div class="halving-price">区块高度：840,000｜减半前价格约 $64,000</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">⏭️ 下一次减半</span>
+              <div class="text">
+                <p><strong>预计时间：2028 年</strong></p>
+                <p>区块高度：1,050,000｜奖励：3.125 BTC → 1.5625 BTC</p>
+                <p>当前区块高度（2026-07）：约 <strong>959,616</strong>，距离下次减半约 <strong>90,384 个区块</strong>（约 1.7 年）。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、减半机制为何不可篡改 ============ -->
+          <section id="consensus">
+            <h2>四、减半机制为什么"不可篡改"？</h2>
+
+            <p>有人会问：<strong>既然比特币代码是人写的，人能不能改掉 2100 万上限？</strong></p>
+            <p>答案是：<strong>理论上可以，实际上不可能。</strong></p>
+
+            <h3>4.1 改规则需要全网共识</h3>
+            <div class="story-box blue">
+              <span class="story-label">🔐 软分叉 vs 硬分叉</span>
+              <ul>
+                <li><strong>软分叉（Soft Fork）</strong>：收紧规则，旧节点仍能验证新交易（如 SegWit）</li>
+                <li><strong>硬分叉（Hard Fork）</strong>：放宽规则，旧节点拒绝新交易（如 BCH 分叉）</li>
+                <li>改 2100 万上限 = <strong>硬分叉</strong>，需要 <strong>100% 节点升级</strong></li>
+              </ul>
+            </div>
+
+            <h3>4.2 为什么 100% 共识不可能？</h3>
+            <ul>
+              <li><strong>利益冲突</strong>：持币者（囤币党）希望保持稀缺性；矿工可能希望更多区块奖励</li>
+              <li><strong>去中心化</strong>：没有中央权威可以强制升级，每个人都是自己的银行</li>
+              <li><strong>经济博弈</strong>：改上限 = 稀缺性丧失 = 价格暴跌 → 所有持币者利益受损</li>
+            </ul>
+
+            <h3>4.3 矿工没有动机改</h3>
+            <p>有人担心"矿工会联手改规则"，但事实是：</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">💰</div>
+                <h4>矿工也持币</h4>
+                <p>大多数矿工持有大量比特币，改上限 = 自己资产贬值。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🏃</div>
+                <h4>矿工可被抛弃</h4>
+                <p>全节点可以拒绝矿工的"非法"区块，矿工无法强制改规则。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">⚔️</div>
+                <h4>硬分叉代价</h4>
+                <p>如果矿工硬分叉，原链继续存在，矿工可能失去社区支持。</p>
+              </div>
+            </div>
+
+            <div class="treasure-box">
+              <h3>💎 历史教训：BCH 分叉</h3>
+              <p>2017 年，部分社区试图通过硬分叉"扩大区块容量"（BCH）。结果：</p>
+              <ul>
+                <li>原链（BTC）继续运行，保持 1MB 区块限制</li>
+                <li>BCH 市值从 BTC 的 30% 跌至不到 2%</li>
+                <li>试图"改规则"的一方付出了惨痛代价</li>
+              </ul>
+              <p>这个案例证明了：<strong>任何试图改变核心规则的尝试，都会被市场惩罚。</strong></p>
+            </div>
+          </section>
+
+          <!-- ============ 五、稀缺性量化 S2F ============ -->
+          <section id="s2f">
+            <h2>五、稀缺性的量化：S2F 概念</h2>
+
+            <p><strong>存量流量比（Stock-to-Flow，S2F）</strong>是衡量稀缺性的经典指标：</p>
+            <div class="highlight-box">
+              <span class="label">📐 S2F 公式</span>
+              <div class="text">
+                <p><code>S2F = 存量（存量） / 流量（年新增）</code></p>
+                <ul>
+                  <li><strong>存量</strong>：当前总供应量</li>
+                  <li><strong>流量</strong>：年新增供应量</li>
+                </ul>
+                <p>S2F 越高 = 稀缺性越强</p>
+              </div>
+            </div>
+
+            <h3>5.1 黄金 vs 比特币 S2F 对比</h3>
+            <div class="s2f-card">
+              <div class="s2f-item">
+                <div class="s2f-label">黄金</div>
+                <div class="s2f-value">~62</div>
+                <div class="s2f-unit">年</div>
+                <div class="s2f-note">存量约 20 万吨，年新增约 3200 吨</div>
+              </div>
+              <div class="s2f-item">
+                <div class="s2f-label">比特币 (2024 减半后)</div>
+                <div class="s2f-value">~56</div>
+                <div class="s2f-unit">年</div>
+                <div class="s2f-note">存量约 1970 万，年新增约 35 万</div>
+              </div>
+              <div class="s2f-item">
+                <div class="s2f-label">比特币 (2028 减半后)</div>
+                <div class="s2f-value">~112</div>
+                <div class="s2f-unit">年</div>
+                <div class="s2f-note">S2F 超越黄金</div>
+              </div>
+              <div class="s2f-item">
+                <div class="s2f-label">白银</div>
+                <div class="s2f-value">~22</div>
+                <div class="s2f-unit">年</div>
+                <div class="s2f-note">稀缺性远低于黄金</div>
+              </div>
+            </div>
+
+            <div class="story-box purple">
+              <span class="story-label">📊 PlanB 的 S2F 模型（2019）</span>
+              <p>匿名分析师 PlanB 在 2019 年发表论文《Modeling Bitcoin's Value with Scarcity》，提出 S2F 与市值呈对数线性关系：</p>
+              <ul>
+                <li>每次减半，S2F 翻倍</li>
+                <li>S2F 翻倍 → 市值约增长 10 倍（历史拟合）</li>
+                <li>这个模型在过去三轮周期中有一定预测能力</li>
+              </ul>
+              <p style="margin-top:8px;font-size:0.8rem;color:var(--text-muted);">⚠️ 注意：S2F 模型是<strong>历史拟合</strong>，不是价格保证。2025 年走势已偏离模型预测。估值模型详见 03-08。</p>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">🔗 衔接</span>
+              <div class="text">
+                <p>S2F 只是稀缺性量化的起点。在 <strong>03-08 估值模型</strong>中，我们将深入探讨 S2F 模型的争议、Metcalfe 定律、幂律模型等更多估值框架。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>六、多视角解读</h2>
+
+            <div class="perspective-card" id="monetary-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>同一套货币政策，六种视角</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab active" data-angle="finance">💰 经济学家</button>
+                  <button class="p-tab" data-angle="business">🏢 投资者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="humanity">🧠 普通人</button>
+                  <button class="p-tab" data-angle="philosophy">🏛️ 哲学家</button>
+                  <button class="p-tab" data-angle="technology">⚙️ 开发者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="finance">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.15);color:#EAB308;">💰 经济学家</span>
+                  <p class="p-quote">"比特币是第一个供给完全非弹性的货币——这是货币经济学的一次受控实验。"</p>
+                  <ul>
+                    <li><strong>供给弹性</strong>：传统货币可由央行无限增发，比特币供给固定，是研究"货币数量论"的理想样本</li>
+                    <li><strong>可预测性</strong>：货币政策 100% 可预测，消除了"央行意外"的风险溢价</li>
+                    <li><strong>争议</strong>：固定供给是否会导致"通缩螺旋"？奥地利学派与凯恩斯主义的世纪辩论</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="business">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.15);color:#8B5CF6;">🏢 投资者</span>
+                  <p class="p-quote">"减半是供给冲击——需求不变时，价格必须上涨。但市场总是提前定价。"</p>
+                  <ul>
+                    <li><strong>四年周期</strong>：减半后 12-18 个月往往迎来牛市顶峰，这是历史规律还是自我实现？</li>
+                    <li><strong>入场时机</strong>：ahr999 指数结合 S2F，成为中文社区最流行的定投框架</li>
+                    <li><strong>风险</strong>：2025 年走势打破历史规律，"周期失效论"提醒我们历史不会简单重复</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.15);color:#10B981;">📜 历史学家</span>
+                  <p class="p-quote">"人类历史上第一次，货币发行规则被写进代码而非法律——这是制度创新的范式转移。"</p>
+                  <ul>
+                    <li><strong>对比</strong>：金本位由政府承诺维持，比特币由数学维持——后者更可靠吗？</li>
+                    <li><strong>演变</strong>：从贵金属 → 法币 → 加密货币，货币形态的演变从未停止</li>
+                    <li><strong>遗产</strong>：如果比特币成功，它将改变"货币是什么"的定义；如果失败，也将留下宝贵实验数据</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="humanity">
+                  <span class="p-angle-badge" style="background:rgba(236,72,153,0.15);color:#EC4899;">🧠 普通人</span>
+                  <p class="p-quote">"我不懂经济学，我只知道：政府可以无限印钱，比特币不能。"</p>
+                  <ul>
+                    <li><strong>直觉</strong>：稀缺性是比特币最易懂的卖点——"总量有限"比"通胀目标"好理解</li>
+                    <li><strong>风险</strong>：稀缺 ≠ 有价值，郁金香也稀缺</li>
+                    <li><strong>选择</strong>：把钱放在政府控制的法币里，还是放在"数学保证"的比特币里？这是个人选择</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.15);color:#F97316;">🏛️ 哲学家</span>
+                  <p class="p-quote">"规则写在代码里，意味着没有统治者——这是哈耶克货币非国家化的技术实现。"</p>
+                  <ul>
+                    <li><strong>去中心化哲学</strong>：2100 万上限不是某人的决定，而是"系统的意志"</li>
+                    <li><strong>社会契约</strong>：比特币的规则是社会契约的技术化——参与者自愿接受约束</li>
+                    <li><strong>政治意义</strong>：如果成功，比特币将证明"货币可以脱离国家存在"</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="technology">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.15);color:#3B82F6;">⚙️ 开发者</span>
+                  <p class="p-quote">"2100 万是共识规则，不是硬编码常量。理解这一点，才能真正理解比特币。"</p>
+                  <ul>
+                    <li><strong>代码位置</strong>：减半逻辑在 Bitcoin Core 的 consensus/params.h 中定义</li>
+                    <li><strong>验证机制</strong>：每个全节点独立验证区块奖励是否符合规则</li>
+                    <li><strong>不可变性</strong>：改规则需要改代码 + 改所有节点，实际上不可能</li>
+                    <li><strong>安全模型</strong>：经济激励（稀缺性）是比特币安全的基石</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角 · 同一事实，不同透镜</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、动手实验 ============ -->
+          <section id="labs">
+            <h2>七、动手实验区</h2>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">实验清单</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">🔍</span>
+                  <div>
+                    <strong>实验 1：查看当前区块高度</strong><br>
+                    打开 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 或 <a href="https://blockchain.info" target="_blank" style="color:var(--orange);">blockchain.info</a>，查看当前区块高度。<br>
+                    <span style="font-size:0.75rem;color:var(--text-muted);">参考数据（2026-07）：区块高度约 959,616，难度约 127.17 万亿。</span>
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">⏱️</span>
+                  <div>
+                    <strong>实验 2：估算下次减半时间</strong><br>
+                    下次减半区块高度 = 当前高度 + (1050000 - 当前高度) ≈ 剩余区块数<br>
+                    剩余区块数 × 10 分钟 ≈ 剩余天数<br>
+                    <span style="font-size:0.75rem;color:var(--text-muted);">提示：当前约需 90,384 个区块，约 627 天（约 1.7 年）。</span>
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📊</span>
+                  <div>
+                    <strong>实验 3：计算当前 S2F</strong><br>
+                    S2F = 当前存量 / 年新增量<br>
+                    当前存量 ≈ 1970 万 BTC，年新增 ≈ 32.8 万 BTC<br>
+                    计算：19700000 / 328000 ≈ <strong>60 年</strong>
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📈</span>
+                  <div>
+                    <strong>实验 4：查看历史减半价格</strong><br>
+                    在 <a href="https://coinmarketcap.com" target="_blank" style="color:var(--orange);">CoinMarketCap</a> 或 <a href="https://www.coingecko.com" target="_blank" style="color:var(--orange);">CoinGecko</a> 查看 2012、2016、2020、2024 年减半前后的价格走势。
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+              <!-- ============ 延伸探索 ============ -->
+    <section id="explore">
+      <div class="explorer-box">
+        <div class="exp-header">
+          <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+        </div>
+        <div class="exp-result">
+          <ul class="exp-links">
+        <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space · 实时区块高度/减半倒计时 <span class="exp-go">→</span></a></li>
+        <li><a href="https://ccaf.io/cbns" target="_blank" rel="noopener">剑桥比特币耗电指数 CCAF <span class="exp-go">→</span></a></li>
+        <li><a href="https://planbtc.com" target="_blank" rel="noopener">PlanB S2F 模型站 <span class="exp-go">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- ============ 八、大白话总结 ============ -->
+          <section id="summary">
+            <h2>八、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把复杂概念放回日常</span>
+              <p><strong>比特币的货币政策 = 一台不会说谎的自动售货机</strong></p>
+              <ul>
+                <li><strong>规则写死</strong>：总量 2100 万，每 4 年产量砍一半，写在代码里，人人可见</li>
+                <li><strong>没人能改</strong>：改规则需要 100% 节点同意，实际上不可能</li>
+                <li><strong>数学保证</strong>：不是"我承诺不超发"，而是"数学上无法超发"</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>对比法币</strong>：</p>
+              <ul>
+                <li>法币：央行决定印多少 → 你只能相信它"不会乱印"</li>
+                <li>比特币：代码决定印多少 → 你可以自己验证"确实不能多印"</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>稀缺性不是价值</strong>：</p>
+              <ul>
+                <li>2100 万上限只保证"稀缺"，不保证"值钱"</li>
+                <li>值不值钱，取决于有没有人愿意为这个"数学保证"付费</li>
+                <li>这就是为什么经济学篇需要一整章讲"价值存储"（03-04）</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>2100 万上限</strong>来自等比数列求和，是数学推导的结果，不是随意设定</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>减半机制</strong>每 4 年执行一次，已发生 4 次（2012/2016/2020/2024）</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>不可篡改性</strong>来自共识机制，改规则需要 100% 节点同意</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>S2F 模型</strong>量化稀缺性，比特币 S2F 将在 2028 年超越黄金</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">5️⃣</div>
+                <p><strong>稀缺 ≠ 有价值</strong>，值不值钱取决于市场需求，下一章深入探讨</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>2100 万上限保证了稀缺性，但稀缺性本身不等于价值。下一章，我们深入探讨比特币作为"价值存储"的论据与争议——它到底是数字黄金，还是数字郁金香？</p>
+            <a href="03-04-store-of-value.html" class="btn btn-primary">继续学习：价值存储 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="03-02-austrian-hayek.html" class="btn">← 回顾：奥地利学派与哈耶克</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="03-02-austrian-hayek.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">奥地利学派与哈耶克</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 3 / 8
+      </div>
+      <a href="03-04-store-of-value.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">价值存储</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+    });
+
+    // ===== 已读标记 =====
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-03-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-03-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // ===== 多视角卡片 =====
+    function initMonetaryPerspectives() {
+      const card = document.getElementById('monetary-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      // 触摸滑动
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+  </script>
+</body>
+</html>

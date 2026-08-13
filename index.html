@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="比特币学习地图。六个视角理解比特币，交互工具+精选资料，帮你打开财富宝盒的第一把钥匙。">
+<title>比特币学习地图 · 开宝盒的钥匙</title>
+<link rel="stylesheet" href="shared/style.css">
+<style>
+/* 首页专属样式 */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-section) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(247,147,26,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-icon { font-size: 4rem; margin-bottom: 16px; display: block; }
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 900;
+  margin-bottom: 14px;
+  letter-spacing: -1px;
+  line-height: 1.15;
+}
+.hero h1 .accent {
+  background: linear-gradient(135deg, var(--orange), var(--orange-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero .subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 620px;
+  margin: 0 auto 16px;
+  line-height: 1.65;
+}
+.hero .tagline {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+}
+.hero .tagline strong { color: var(--orange); }
+
+/* 统计数字 */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 780px;
+  margin: 0 auto 40px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 12px;
+  text-align: center;
+  transition: all var(--transition);
+}
+.stat-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+.stat-card .n { font-size: 1.6rem; font-weight: 800; color: var(--orange); display: block; line-height: 1.1; }
+.stat-card .l { font-size: 0.7rem; color: var(--text-muted); display: block; margin-top: 4px; }
+
+/* 模式选择区 */
+.mode-section {
+  padding: 0 0 56px;
+}
+.mode-intro {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.mode-intro h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+.mode-intro p { font-size: 0.9rem; color: var(--text-secondary); }
+.mode-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.mode-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.mode-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--orange), var(--orange-light));
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.mode-card:hover { transform: translateY(-4px); border-color: var(--orange); box-shadow: var(--shadow); }
+.mode-card:hover::before, .mode-card.active::before { opacity: 1; }
+.mode-card.active { border-color: var(--orange); background: rgba(247,147,26,0.05); }
+.mode-card .icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+.mode-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.mode-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+/* 学习路线图 */
+.roadmap-section { padding: 56px 0; background: var(--bg-section); }
+.section-title {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.section-title h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+.section-title p { font-size: 0.9rem; color: var(--text-secondary); }
+
+.roadmap-timeline {
+  position: relative;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.roadmap-timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--orange), var(--border));
+  transform: translateX(-50%);
+}
+
+.roadmap-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin-bottom: 32px;
+  position: relative;
+}
+.roadmap-item:nth-child(odd) { flex-direction: row; }
+.roadmap-item:nth-child(even) { flex-direction: row-reverse; }
+
+.roadmap-dot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--orange);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--orange);
+  z-index: 1;
+  top: 16px;
+}
+.roadmap-content {
+  width: calc(50% - 30px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all var(--transition);
+}
+.roadmap-content:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: var(--shadow); }
+.roadmap-item:nth-child(odd) .roadmap-content { margin-right: auto; }
+.roadmap-item:nth-child(even) .roadmap-content { margin-left: auto; }
+.roadmap-phase { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); font-weight: 700; margin-bottom: 4px; }
+.roadmap-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.roadmap-content p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+.roadmap-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 10px; }
+
+/* 核心概念卡片 */
+.concepts-section { padding: 56px 0; }
+.concepts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.concept-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  text-align: center;
+  transition: all var(--transition);
+}
+.concept-card:hover { border-color: var(--border-light); transform: translateY(-3px); box-shadow: var(--shadow); }
+.concept-card .emoji { font-size: 2rem; margin-bottom: 10px; display: block; }
+.concept-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+.concept-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+
+/* 工具展示 */
+.tools-preview { padding: 56px 0; background: var(--bg-section); }
+.tools-showcase {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.tool-preview-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  text-align: center;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+.tool-preview-card:hover { border-color: var(--orange); transform: translateY(-3px); box-shadow: var(--shadow); }
+.tool-preview-card .icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+.tool-preview-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+.tool-preview-card p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; }
+.tool-preview-card .btn-sm { margin-top: 4px; }
+
+/* 开始行动 */
+.cta-section { padding: 64px 0; text-align: center; }
+.cta-section h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; }
+.cta-section p { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 28px; max-width: 540px; margin-left: auto; margin-right: auto; }
+.cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.btn-primary:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(247,147,26,0.3); }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
+
+/* 响应式 */
+@media (max-width: 900px) {
+  .hero h1 { font-size: 2.2rem; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .mode-cards { grid-template-columns: 1fr; max-width: 400px; }
+  .roadmap-timeline::before { left: 20px; }
+  .roadmap-item { flex-direction: column !important; padding-left: 50px; }
+  .roadmap-content { width: 100% !important; margin: 0 !important; }
+  .roadmap-dot { left: 20px; transform: translateX(-50%); }
+  .concepts-grid { grid-template-columns: repeat(2, 1fr); }
+  .tools-showcase { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 50px 0 40px; }
+  .hero h1 { font-size: 1.7rem; }
+  .hero .subtitle { font-size: 0.95rem; }
+  .stats-row { gap: 8px; }
+  .stat-card { padding: 12px 8px; }
+  .stat-card .n { font-size: 1.3rem; }
+  .concepts-grid { grid-template-columns: 1fr; }
+  .cta-section h2 { font-size: 1.4rem; }
+  .cta-buttons { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; max-width: 300px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<nav class="top-nav" role="navigation" aria-label="主导航">
+  <div class="nav-inner container">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active" data-section="home">🏠 首页</a>
+        <a href="learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <!-- 语言切换 -->
+      <div class="lang-toggle" role="group" aria-label="语言切换">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <!-- 主题切换 -->
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <span class="hero-icon">₿</span>
+    <h1><span class="accent">比特币</span>学习地图</h1>
+    <p class="subtitle">不是教你炒币，而是帮你建立对 Bitcoin <strong>真正准确的心智模型</strong>。从零到专家，按自己的节奏探索。</p>
+    <p class="tagline"><strong>🧠 数学担保的财富所有权</strong> — 不依赖任何人的许可</p>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="n">5</span>
+        <span class="l" data-i18n-static="stat.phases">学习阶段</span>
+      </div>
+      <div class="stat-card">
+        <span class="n">37</span>
+        <span class="l" data-i18n-static="stat.chapters">核心章节</span>
+      </div>
+      <div class="stat-card">
+        <span class="n">3</span>
+        <span class="l" data-i18n-static="stat.modes">阅读模式</span>
+      </div>
+      <div class="stat-card">
+        <span class="n">3</span>
+        <span class="l" data-i18n-static="stat.tools">交互工具</span>
+      </div>
+    </div>
+
+    <div class="cta-buttons">
+      <a href="learning/00-overview.html" class="btn-primary">🚀 开始学习 →</a>
+      <a href="learning/01-philosophy/01-01-money.html" class="btn-secondary">先读：哲学篇</a>
+    </div>
+  </div>
+
+
+<!-- 学习金字塔可视化 -->
+<div style="text-align:center; margin: 32px auto; max-width:800px;">
+  <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; font-family: var(--font-sans);">
+    <defs>
+      <linearGradient id="grad-orange" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#F7931A;stop-opacity:0.8"/>
+        <stop offset="100%" style="stop-color:#FFA940;stop-opacity:0.8"/>
+      </linearGradient>
+      <linearGradient id="grad-purple" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:0.7"/>
+        <stop offset="100%" style="stop-color:#A78BFA;stop-opacity:0.7"/>
+      </linearGradient>
+      <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.7"/>
+        <stop offset="100%" style="stop-color:#60A5FA;stop-opacity:0.7"/>
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- 阶段5: 生态行动 (顶部) -->
+    <rect x="280" y="10" width="140" height="36" rx="18" fill="url(#grad-orange)" filter="url(#glow)"/>
+    <text x="350" y="33" text-anchor="middle" fill="white" font-size="12" font-weight="700">🚀 生态与行动</text>
+    <!-- 阶段4: 技术深处 -->
+    <rect x="220" y="58" width="260" height="36" rx="8" fill="url(#grad-purple)"/>
+    <text x="350" y="81" text-anchor="middle" fill="white" font-size="12" font-weight="700">🔐 技术深处 (9章)</text>
+    <!-- 阶段3: 经济学 -->
+    <rect x="160" y="106" width="380" height="36" rx="8" fill="url(#grad-blue)"/>
+    <text x="350" y="129" text-anchor="middle" fill="white" font-size="12" font-weight="700">📊 经济学篇 · 周期与稀缺性</text>
+    <!-- 阶段2: 入门 -->
+    <rect x="100" y="154" width="500" height="36" rx="8" fill="#1A1A1A" stroke="#F7931A" stroke-width="2"/>
+    <text x="350" y="177" text-anchor="middle" fill="#F7931A" font-size="12" font-weight="700">⚙️ 入门篇 · 技术直觉 (8章)</text>
+    <!-- 阶段1: 哲学 -->
+    <rect x="40" y="202" width="620" height="36" rx="8" fill="#1A1A1A" stroke="#8B5CF6" stroke-width="2"/>
+    <text x="350" y="225" text-anchor="middle" fill="#A78BFA" font-size="12" font-weight="700">💭 哲学篇 · 认知觉醒 (4章)</text>
+    <!-- 连接线 -->
+    <line x1="350" y1="46" x2="350" y2="58" stroke="#F7931A" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.5"/>
+    <line x1="350" y1="94" x2="350" y2="106" stroke="#8B5CF6" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.5"/>
+    <line x1="350" y1="142" x2="350" y2="154" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.5"/>
+    <line x1="350" y1="190" x2="350" y2="202" stroke="#666" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.5"/>
+  </svg>
+  <p style="color:var(--text-muted); font-size:0.82rem; margin-top:8px;">从下往上逐层深入 · 总计 37 核心章节 · 约 8-12 小时掌握全貌</p>
+</div>
+
+</section>
+
+<!-- 模式选择 -->
+<section class="mode-section">
+  <div class="container">
+    <div class="mode-intro">
+      <h2>🎯 选择你的阅读模式</h2>
+      <p>三种入口，适应不同背景的学习者</p>
+    </div>
+    <div class="mode-cards">
+      <div class="mode-card active" onclick="selectMode(this, 'beginner')">
+        <span class="icon">🌱</span>
+        <h3>🌱 小白入门</h3>
+        <p>从零开始，不需要任何背景知识。用最通俗的语言，建立对比特币的准确认知。</p>
+        <div class="roadmap-tags" style="margin-top:12px">
+          <span class="tag tag-green">适合所有人</span>
+          <span class="tag tag-orange">推荐起点</span>
+        </div>
+      </div>
+      <div class="mode-card" onclick="selectMode(this, 'depth')">
+        <span class="icon">🔬</span>
+        <h3>🔬 技术+经济学</h3>
+        <p>深入技术原理和经济学逻辑。适合有理工科背景，或想理解比特币「为什么这样设计」的人。</p>
+        <div class="roadmap-tags" style="margin-top:12px">
+          <span class="tag tag-blue">技术深度</span>
+          <span class="tag">经济学</span>
+        </div>
+      </div>
+      <div class="mode-card" onclick="selectMode(this, 'investor')">
+        <span class="icon">🏦</span>
+        <h3>🏦 投资+囤币</h3>
+        <p>注重实战策略、资产配置和长期心态。包含九神（ahr999）的周期理论与定投方法。</p>
+        <div class="roadmap-tags" style="margin-top:12px">
+          <span class="tag tag-orange">实战</span>
+          <span class="tag">心态</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 学习路线图 -->
+<section class="roadmap-section">
+  <div class="container-wide">
+    <div class="section-title">
+      <h2>🗺️ 学习路线图</h2>
+      <p>从「为什么」到「怎么做」，5个阶段建立完整认知</p>
+    </div>
+
+    <div class="roadmap-timeline">
+      <!-- Phase 1 -->
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">阶段一 · 哲学篇</div>
+          <h3>💭 认知觉醒</h3>
+          <p>比特币为什么会存在？货币的本质是什么？为什么「信任」是传统货币体系的致命弱点？</p>
+          <div class="roadmap-tags">
+            <span class="tag tag-orange">🌱 ALL</span>
+            <span class="tag">4章节</span>
+          </div>
+          <a href="learning/01-philosophy/01-01-money.html" class="btn btn-sm" style="margin-top:12px;display:inline-flex">开始阅读 →</a>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">阶段二 · 入门篇</div>
+          <h3>⚙️ 技术直觉</h3>
+          <p>私钥、公钥、地址、区块链、挖矿……不需要懂代码，但需要懂原理。理解「为什么私钥=所有权」。</p>
+          <div class="roadmap-tags">
+            <span class="tag tag-green">🌱</span>
+            <span class="tag tag-blue">🔬</span>
+            <span class="tag">8章节</span>
+          </div>
+          <a href="learning/02-basics/02-01-one-sentence.html" class="btn btn-sm" style="margin-top:12px;display:inline-flex">开始阅读 →</a>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">阶段三 · 经济学篇</div>
+        <h3>📊 稀缺性与周期</h3>
+        <p>2100万上限、减半周期、数字黄金论、定投策略、穿越牛熊心态。这是比特币与其他所有资产最不同的核心。</p>
+        <div class="roadmap-tags">
+          <span class="tag tag-green">🌱</span>
+          <span class="tag tag-blue">🔬</span>
+          <span class="tag tag-orange">🏦</span>
+          <span class="tag">9章节</span>
+        </div>
+        <a href="learning/03-economics/03-00-overview.html" class="btn btn-sm" style="margin-top:12px;display:inline-flex">开始阅读 →</a>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">阶段四 · 技术篇</div>
+          <h3>🔐 技术深处</h3>
+          <p>椭圆曲线密码学、Merkel树、SegWit、BIP标准、闪电网络。对于想深入理解「比特币为什么安全」的人。</p>
+          <div class="roadmap-tags">
+            <span class="tag tag-blue">🔬</span>
+            <span class="tag">9章节</span>
+          </div>
+          <a href="learning/04-technology/04-00-overview.html" class="btn btn-sm" style="margin-top:12px;display:inline-flex">开始阅读 →</a>
+        </div>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">阶段五 · 行动篇</div>
+        <h3>🚀 生态与行动</h3>
+        <p>生态系统全景、钱包与密钥、交易所托管、机构 ETF、矿业与协议层——从理解到行动。</p>
+        <div class="roadmap-tags">
+          <span class="tag tag-green">🌱</span>
+          <span class="tag tag-orange">🏦</span>
+          <span class="tag">7章节</span>
+        </div>
+        <a href="learning/05-ecosystem/05-00-overview.html" class="btn btn-sm" style="margin-top:12px;display:inline-flex">开始阅读 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 核心概念 -->
+<section class="concepts-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>💡 你将理解的核心概念</h2>
+      <p>不是背名词，而是真正建立直觉</p>
+    </div>
+    <div class="concepts-grid">
+      <div class="concept-card">
+        <span class="emoji">🔐</span>
+        <h3>私钥即所有权</h3>
+        <p>「谁拥有私钥，谁就拥有比特币」——这是比特币世界唯一重要的事。没有客服，没有找回。</p>
+      </div>
+      <div class="concept-card">
+        <span class="emoji">⛓️</span>
+        <h3>不可篡改的账本</h3>
+        <p>每个区块包含前一区块的指纹。要篡改历史？你得比全世界矿工加起来都快，数学上不可能。</p>
+      </div>
+      <div class="concept-card">
+        <span class="emoji">🔢</span>
+        <h3>2100万的稀缺性</h3>
+        <p>总量写死在代码里，任何人都可以验证。真正的稀缺性是可以被数学证明的。</p>
+      </div>
+      <div class="concept-card">
+        <span class="emoji">⏱️</span>
+        <h3>四年减半周期</h3>
+        <p>每4年挖矿奖励减半，新供应量减少50%。理解这个周期，就理解了比特币价格行为的核心逻辑。</p>
+      </div>
+      <div class="concept-card">
+        <span class="emoji">⚡</span>
+        <h3>能量即安全</h3>
+        <p>比特币用真实物理能量换取数学安全性。要攻击？你得拥有数十亿美元设备和每年数十亿美元电费。</p>
+      </div>
+      <div class="concept-card">
+        <span class="emoji">🌐</span>
+        <h3>无许可的协议</h3>
+        <p>不需要申请，不需要批准，任何人可以在任何地方运行比特币节点。这是互联网时代的货币协议。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 工具预览 -->
+
+<!-- Bitcoin 三大原则可视化 -->
+<div style="text-align:center; margin: 40px auto; max-width:800px;">
+  <h3 style="color:var(--text-muted); font-size:0.9rem; font-weight:400; margin-bottom:20px;">比特币的三大支柱</h3>
+  <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; font-family: var(--font-sans);">
+    <defs>
+      <linearGradient id="grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:0.8"/>
+        <stop offset="100%" style="stop-color:#67E8F9;stop-opacity:0.8"/>
+      </linearGradient>
+      <linearGradient id="grad-green" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.8"/>
+        <stop offset="100%" style="stop-color:#6EE7B7;stop-opacity:0.8"/>
+      </linearGradient>
+      <linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#EF4444;stop-opacity:0.8"/>
+        <stop offset="100%" style="stop-color:#FCA5A5;stop-opacity:0.8"/>
+      </linearGradient>
+    </defs>
+    <!-- 三个支柱 -->
+    <!-- 去中心化 -->
+    <circle cx="120" cy="90" r="60" fill="url(#grad-cyan)" opacity="0.15"/>
+    <circle cx="120" cy="90" r="45" fill="none" stroke="#06B6D4" stroke-width="1.5"/>
+    <text x="120" y="78" text-anchor="middle" fill="#67E8F9" font-size="22">🌐</text>
+    <text x="120" y="98" text-anchor="middle" fill="#06B6D4" font-size="11" font-weight="700">去中心化</text>
+    <text x="120" y="112" text-anchor="middle" fill="#67E8F9" font-size="9">无单一控制者</text>
+    <!-- 连线到中心 -->
+    <line x1="175" y1="75" x2="300" y2="90" stroke="#333" stroke-width="1" stroke-dasharray="3,2"/>
+    <line x1="175" y1="105" x2="300" y2="90" stroke="#333" stroke-width="1" stroke-dasharray="3,2"/>
+    <!-- 开放协议 -->
+    <circle cx="350" cy="90" r="60" fill="url(#grad-green)" opacity="0.15"/>
+    <circle cx="350" cy="90" r="45" fill="none" stroke="#10B981" stroke-width="1.5"/>
+    <text x="350" y="78" text-anchor="middle" fill="#6EE7B7" font-size="22">📖</text>
+    <text x="350" y="98" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">开放协议</text>
+    <text x="350" y="112" text-anchor="middle" fill="#6EE7B7" font-size="9">代码即法律</text>
+    <!-- 连线 -->
+    <line x1="410" y1="75" x2="525" y2="90" stroke="#333" stroke-width="1" stroke-dasharray="3,2"/>
+    <line x1="410" y1="105" x2="525" y2="90" stroke="#333" stroke-width="1" stroke-dasharray="3,2"/>
+    <!-- 抗审查 -->
+    <circle cx="580" cy="90" r="60" fill="url(#grad-red)" opacity="0.15"/>
+    <circle cx="580" cy="90" r="45" fill="none" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="580" y="78" text-anchor="middle" fill="#FCA5A5" font-size="22">🛡️</text>
+    <text x="580" y="98" text-anchor="middle" fill="#EF4444" font-size="11" font-weight="700">抗审查</text>
+    <text x="580" y="112" text-anchor="middle" fill="#FCA5A5" font-size="9">不可没收</text>
+    <!-- 中心 Bitcoin -->
+    <circle cx="350" cy="90" r="28" fill="#F7931A"/>
+    <text x="350" y="95" text-anchor="middle" fill="white" font-size="16" font-weight="900">₿</text>
+    <!-- 底部标注 -->
+    <text x="350" y="170" text-anchor="middle" fill="#666" font-size="10">三者缺一不可，共同构成比特币的价值基础</text>
+  </svg>
+</div>
+
+<section class="tools-preview">
+  <div class="container">
+    <div class="section-title">
+      <h2>🧰 交互工具</h2>
+      <p>动手算一算，比读十遍更清晰</p>
+    </div>
+    <div class="tools-showcase">
+      <div class="tool-preview-card" onclick="location.href='tools/dca-calculator.html'">
+        <span class="icon">📈</span>
+        <h3>定投 vs 一次性买入</h3>
+        <p>对比两种策略的长期收益差异，理解 DCA 的心理优势和数学原理</p>
+        <button class="btn btn-sm btn-primary">打开计算器</button>
+      </div>
+      <div class="tool-preview-card" onclick="location.href='tools/supply-calculator.html'">
+        <span class="icon">🔢</span>
+        <h3>比特币总量理解器</h3>
+        <p>输入日期或区块高度，看比特币已产出多少、占 2100 万上限百分之几，理解「数字稀缺」</p>
+        <button class="btn btn-sm btn-primary">打开计算器</button>
+      </div>
+      <div class="tool-preview-card" onclick="location.href='tools/hodl-simulator.html'">
+        <span class="icon">📉</span>
+        <h3>HODL 穿越周期模拟</h3>
+        <p>如果你在历史某个时点买入并持有到现在，收益如何？一次性 vs 定投，用真实数据说话</p>
+        <button class="btn btn-sm btn-primary">开始模拟</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 行动召唤 -->
+<section class="cta-section">
+  <div class="container">
+    <h2>准备好开始了吗？</h2>
+    <p>从「货币的起源」开始，这是理解比特币最正确的起点。不需要任何基础，只需要一颗好奇的心。</p>
+    <div class="cta-buttons">
+      <a href="learning/01-philosophy/01-01-money.html" class="btn-primary">🚀 从第一篇开始 →</a>
+      <a href="learning/00-overview.html" class="btn-secondary">📋 查看完整学习路径</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span>₿ 比特币学习地图</span> · 
+        <a href="index.html">首页</a> · 
+        <a href="learning/00-overview.html">学习区</a> · 
+        <a href="tools/index.html">工具</a> · 
+        <a href="reference/index.html">参考</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://bitcoin.org" target="_blank" rel="noopener">Bitcoin.org</a>
+        <a href="https://learnmeabitcoin.com" target="_blank" rel="noopener">Learn Me A Bitcoin</a>
+        <a href="https://river.com/learn" target="_blank" rel="noopener">River Learn</a>
+      </div>
+    </div>
+    <p style="margin-top:16px;font-size:0.75rem;color:var(--text-muted)">
+      🧠 心智模型优先 · AI 时代的学习方式 · 开放、免费、中立<br>
+      ⚠️ 教育目的，不构成投资建议。比特币有风险，请自行研究。
+    </p>
+  </div>
+</footer>
+
+<script src="shared/nav.js"></script>
+<script>
+initNav();
+
+// 模式选择逻辑
+function selectMode(card, mode) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+  // 保存模式
+  localStorage.setItem('btc-mode', mode);
+  // 跳转到对应章节
+  const routes = {
+    beginner: 'learning/00-overview.html',
+    depth: 'learning/00-overview.html',
+    investor: 'learning/03-economics/03-06-cycles-narrative.html',
+  };
+  setTimeout(() => {
+    location.href = routes[mode] || 'learning/00-overview.html';
+  }, 200);
+}
+
+// 首页语言切换后更新静态文本
+document.addEventListener('DOMContentLoaded', function() {
+  // 初始化语言按钮状态
+  const lang = localStorage.getItem('btc-lang') || 'zh';
+  document.querySelectorAll('[data-lang]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+});
+</script>
+</body>
+</html>

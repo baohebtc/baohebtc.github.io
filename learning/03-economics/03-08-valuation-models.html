@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>估值模型 | 比特币学习地图</title>
+  <meta name="description" content="比特币估值模型全景：S2F稀缺性模型、梅特卡夫网络定律、幂律模型、能量价值模型——四种尺子量同一个东西。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ===== 模型对比表 ===== */
+    .model-compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 14px 0;
+    }
+    .model-compare-table th,
+    .model-compare-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    .model-compare-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .model-compare-table td {
+      color: var(--text-secondary);
+    }
+    .model-compare-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .model-compare-table .col-s2f { background: rgba(247,147,26,0.04); }
+    .model-compare-table .col-mc { background: rgba(59,130,246,0.04); }
+    .model-compare-table .col-pl { background: rgba(139,92,246,0.04); }
+    .model-compare-table .col-energy { background: rgba(16,185,129,0.04); }
+    .table-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ===== S2F 进度条可视化 ===== */
+    .s2f-bar-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin: 12px 0;
+    }
+    .s2f-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .s2f-bar-row:last-child { margin-bottom: 0; }
+    .s2f-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      min-width: 80px;
+      color: var(--text-secondary);
+    }
+    .s2f-bar-track {
+      flex: 1;
+      height: 14px;
+      background: var(--bg);
+      border-radius: 7px;
+      overflow: hidden;
+      position: relative;
+    }
+    .s2f-bar-fill {
+      height: 100%;
+      border-radius: 7px;
+      transition: width 1s ease;
+    }
+    .s2f-bar-val {
+      font-size: 0.75rem;
+      font-weight: 700;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    /* ===== Power Law SVG ===== */
+    .powerlaw-wrap {
+      background: #111;
+      border: 1.5px solid #2A2A2A;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 14px 0;
+      overflow: hidden;
+    }
+    .powerlaw-wrap svg { border-radius: 8px; display: block; width: 100%; }
+
+    /* ===== 能量模型框 ===== */
+    .energy-box {
+      background: linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(16,185,129,0.02) 100%);
+      border: 1.5px solid rgba(16,185,129,0.3);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+    .energy-box .energy-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #10B981;
+      margin-bottom: 8px;
+    }
+
+    /* ===== 模型卡片 ===== */
+    .model-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .model-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .model-card:hover {
+      transform: translateY(-2px);
+    }
+    .model-card .mc-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .model-card .mc-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .model-card .mc-author {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .model-card .mc-formula {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 8px 0;
+      color: var(--orange);
+    }
+    .model-card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ===== Feature Cards ===== */
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .feature-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .feature-card .feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
+    .feature-card h4 { font-size: 0.88rem; margin-bottom: 6px; }
+    .feature-card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ===== 视角卡片 ===== */
+    .perspective-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .perspective-header {
+      padding: 14px 18px;
+      background: rgba(247,147,26,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .ph-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .ph-label-icon { font-size: 1rem; }
+    .perspective-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .p-tab {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .p-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .p-tab.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+    .perspective-body { padding: 16px 18px; }
+    .p-content { display: none; }
+    .p-content.active { display: block; }
+    .p-angle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .p-quote {
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      margin: 10px 0;
+    }
+    .p-content ul {
+      padding-left: 20px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .perspective-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p-dot-indicator { display: flex; gap: 4px; }
+    .p-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .p-dot.active { background: var(--orange); }
+
+    /* ===== 实验区 ===== */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .lab-section .lab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .lab-section .lab-title { font-size: 0.9rem; font-weight: 700; }
+    .lab-section .lab-list { list-style: none; padding: 0; margin: 0; }
+    .lab-section .lab-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+    }
+    .lab-section .lab-list li:last-child { border-bottom: none; }
+    .lab-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 700px) {
+      .perspective-tabs { gap: 4px; }
+      .p-tab { font-size: 0.65rem; padding: 4px 7px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html">经济学篇</a>
+        <span>›</span>
+        <span>估值模型</span>
+      </div>
+
+      <h1>📐 估值模型：用什么尺子量比特币？</h1>
+      <p class="page-subtitle">传统资产用现金流贴现，比特币没有现金流。S2F稀缺性、梅特卡夫网络定律、幂律轨迹、能量成本底部——四种思路，四把不同的尺子。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 20 分钟</span>
+        <span class="page-tag">📊 难度：中高</span>
+        <span class="page-tag">📑 经济学篇 8/8 · 完结</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>8 / 8 页 · 完结 🎉</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#why">为什么需要估值模型</a>
+          <a href="#s2f">S2F 模型</a>
+          <a href="#metcalfe">梅特卡夫定律</a>
+          <a href="#powerlaw">幂律模型</a>
+          <a href="#energy">能量价值模型</a>
+          <a href="#compare">四模型对比</a>
+          <a href="#limits">估值 ≠ 预测</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 引言 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>给股票估值，有现金流贴现（DCF）；给债券估值，有到期收益率。比特币<strong>没有分红、没有利息、没有现金流</strong>——传统估值方法全部失效。</p>
+            <p style="margin-top:8px;">那怎么知道BTC「应该」值多少钱？这就是估值模型存在的意义：<strong>找代理指标</strong>——用稀缺性、网络规模、时间轨迹、挖矿成本来间接度量价值。</p>
+            <p style="margin-top:8px;">四种模型，各有各的尺子，量的是同一个东西。没有一把是完美的，但多把尺子交叉看，比赤手空拳强。</p>
+          </div>
+
+          <!-- ============ 一、为什么需要估值模型 ============ -->
+          <section id="why">
+            <h2>一、为什么比特币的估值如此困难？</h2>
+
+            <p>传统资产估值依赖「现金流」：</p>
+            <ul>
+              <li>🏢 股票 = 未来所有股息现金流贴现到今天</li>
+              <li>🏦 债券 = 未来所有息票 + 本金贴现到今天</li>
+              <li>🏠 房产 = 未来租金现金流 + 终值贴现</li>
+            </ul>
+            <p>但比特币不产生任何现金流：</p>
+
+            <div class="highlight-box">
+              <span class="label">💡 那BTC的价值从哪里来？</span>
+              <div class="text">
+                <p>BTC持有者的「收益」= 卖出价格 - 买入价格。这是一个<strong>零和博弈</strong>——有人赚的钱，就是另一个人亏的钱。</p>
+                <p>但这不意味着BTC「没有价值」——它提供了<strong>效用价值</strong>（跨境支付、抗审查、可分割性），只是这种效用无法折算成精确的现金流数字。</p>
+                <p>因此，比特币的「估值」本质上是：<strong>找到某个与价格高度相关的代理指标</strong>，用它来推断BTC「大概值多少钱」。</p>
+              </div>
+            </div>
+
+            <div class="feature-cards">
+              <div class="feature-card">
+                <div class="feature-icon">💎</div>
+                <h4>稀缺性代理</h4>
+                <p>如果「稀缺」驱动价值，用「存量和流量比」度量稀缺程度 → <strong>S2F模型</strong></p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h4>网络效应代理</h4>
+                <p>如果「用户网络」驱动价值，用「用户数或地址数」度量网络规模 → <strong>梅特卡夫定律</strong></p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h4>时间轨迹代理</h4>
+                <p>如果BTC遵循某种长期演化规律，用「幂律通道」度量轨迹偏离 → <strong>幂律模型</strong></p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h4>成本锚定代理</h4>
+                <p>如果挖矿成本构成价格底部，用「电力和算力成本」度量价值下限 → <strong>能量价值模型</strong></p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、S2F 模型 ============ -->
+          <section id="s2f">
+            <h2>二、S2F 模型：稀缺性度量</h2>
+
+            <h3>2.1 什么是 Stock-to-Flow（存量流量比）？</h3>
+            <p><strong>Stock（存量）</strong>= 现有总储量 / 库存；<strong>Flow（流量）</strong>= 每年新增产量。</p>
+            <p>S2F 比值越高，意味着「需要多少年才能获得当前存量」——也就是稀缺程度。</p>
+
+            <div class="s2f-bar-wrap">
+              <div class="s2f-bar-row">
+                <div class="s2f-label">🥇 黄金</div>
+                <div class="s2f-bar-track">
+                  <div class="s2f-bar-fill" style="width:100%;background:linear-gradient(90deg,#EAB308,#FDE047);"></div>
+                </div>
+                <div class="s2f-bar-val" style="color:#EAB308;">S2F ≈ 62</div>
+              </div>
+              <div class="s2f-bar-row">
+                <div class="s2f-label">🪙 白银</div>
+                <div class="s2f-bar-track">
+                  <div class="s2f-bar-fill" style="width:35%;background:linear-gradient(90deg,#9CA3AF,#D1D5DB);"></div>
+                </div>
+                <div class="s2f-bar-val" style="color:#9CA3AF;">S2F ≈ 22</div>
+              </div>
+              <div class="s2f-bar-row">
+                <div class="s2f-label">₿ BTC（减半前）</div>
+                <div class="s2f-bar-track">
+                  <div class="s2f-bar-fill" style="width:14.5%;background:linear-gradient(90deg,#F7931A,#FCD299);"></div>
+                </div>
+                <div class="s2f-bar-val" style="color:#F7931A;">S2F ≈ 53</div>
+              </div>
+              <div class="s2f-bar-row">
+                <div class="s2f-label">₿ BTC（减半后，2024）</div>
+                <div class="s2f-bar-track">
+                  <div class="s2f-bar-fill" style="width:28.5%;background:linear-gradient(90deg,#F7931A,#FCD299);"></div>
+                </div>
+                <div class="s2f-bar-val" style="color:#F7931A;">S2F ≈ 111</div>
+              </div>
+            </div>
+            <p class="table-note">注：BTC减半前（矿工日产出约1,800 BTC）S2F≈53；2024年4月减半后（产出约900 BTC/日）S2F≈111，超过了黄金。</p>
+
+            <h3>2.2 PlanB 模型：2019年的开创性研究</h3>
+            <p>匿名量化分析师 <strong>PlanB</strong>（@100trillionUSD）于2019年发表《Modeling Bitcoin's Value with Scarcity》，首次将S2F与BTC市值的对数进行线性回归：</p>
+
+            <div class="model-cards">
+              <div class="model-card" style="border-color:rgba(247,147,26,0.3);">
+                <div class="mc-header">
+                  <span style="font-size:1.2rem;">📐</span>
+                  <div>
+                    <div class="mc-name">S2F 模型</div>
+                    <div class="mc-author">PlanB · 2019</div>
+                  </div>
+                </div>
+                <div class="mc-formula">市值 = e^(14.6 + 3.3 × log(S2F))</div>
+                <p>在双对数坐标上，BTC市值与S2F呈线性关系，R²（决定系数）超过0.95——拟合优度极高。</p>
+                <p style="margin-top:6px;color:var(--orange);font-size:0.75rem;">
+                  ⚠️ 预测值（标注）：2021年底约10万美元/枚；2024年底约28.8万美元/枚。
+                </p>
+              </div>
+            </div>
+
+            <h3>2.3 学术检验</h3>
+            <p>后续研究者用更严格的方法检验了S2F模型：</p>
+            <ul>
+              <li><strong>Nick @ btconometrics</strong>（2021-2023）：对比了多种时间序列模型，发现「大多数统计检验无法拒绝S2F假设」——即数据与S2F预测的差异不具有统计显著性。但也指出：无法拒绝≠证明假设为真。</li>
+              <li><strong>时间序列文献</strong>：BTC价格序列的非线性、非平稳特性使传统统计检验效力降低——检验结果需谨慎解读。</li>
+            </ul>
+
+            <h3>2.4 批评与局限性</h3>
+            <div class="highlight-box">
+              <span class="label">⚠️ S2F 模型的三大局限</span>
+              <div class="text">
+                <ul>
+                  <li><strong>局限1：相关性 ≠ 因果性</strong> — S2F与价格的双对数线性关系可能是巧合（spurious correlation），在金融数据中这种陷阱很常见。黄金S2F=62，但金价由无数其他因素驱动，并非S2F本身。</li>
+                  <li><strong>局限2：2022年的模型危机</strong> — 2022年熊市，BTC价格从约6.9万美元跌至约1.6万美元，远低于S2F模型预测。PlanB坚持「模型没失败，是市场暂时偏离」；批评者认为这是模型失效的信号。</li>
+                  <li><strong>局限3：供应冲击的时间效应</strong> — 减半造成的供应减半会在当天立即发生，但需求侧的变化完全不同步——模型假设供需同步调整，但现实中需求弹性远大于供给刚性。</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、梅特卡夫定律 ============ -->
+          <section id="metcalfe">
+            <h2>三、梅特卡夫定律：网络效应度量</h2>
+
+            <h3>3.1 什么是梅特卡夫定律？</h3>
+            <p>1993年，以太网发明人<strong>罗伯特·梅特卡夫（Robert Metcalfe）</strong>提出：<strong>网络的价值与用户数的平方成正比</strong>。</p>
+            <p>直觉：如果一个网络有n个用户，每对用户之间都有可能产生连接，连接数 = n×(n-1)/2 ≈ n²/2。因此：</p>
+            <div class="model-card" style="max-width:400px;border-color:rgba(59,130,246,0.3);">
+              <div class="mc-formula" style="text-align:center;">网络价值 ∝ n²（用户数的平方）</div>
+              <p style="text-align:center;font-size:0.78rem;color:var(--text-secondary);">
+                n=10用户 → 100个潜在连接<br>
+                n=100用户 → 10,000个潜在连接（10倍用户，100倍价值）
+              </p>
+            </div>
+
+            <h3>3.2 BTC的梅特卡夫定律研究</h3>
+            <p>《Metcalfe's law and log-period power laws in the cryptocurrencies market》(ResearchGate, 2019) 以及后续研究（广义梅特卡夫定律）发现：</p>
+            <ul>
+              <li>BTC价格的对数 ~ 2 × log(活跃地址数) 的线性关系成立，R² ≈ 0.8-0.9</li>
+              <li>活跃地址数（Active Addresses）是BTC网络使用情况的代理指标——更多用户 = 更高网络价值</li>
+              <li>2020-2024年：BTC市值增长约10倍，同期活跃地址数增长约3-4倍，符合超线性关系</li>
+            </ul>
+
+            <h3>3.3 批评与局限</h3>
+            <ul>
+              <li><strong>「用户」的定义有争议</strong>：一个用户可能有多个地址，多个用户可能共享一个地址（交易所热钱包）；活跃地址 ≠ 真实用户</li>
+              <li><strong>网络效应的边际递减</strong>：随着网络变大，每新增一个用户的边际价值贡献可能下降，而非永远呈平方增长</li>
+              <li><strong>BTC与社交网络不同</strong>：微信用户越多，聊天价值越高；但BTC的价值更多来自「稀缺性+安全性」，而非「能与多少BTC用户互动」</li>
+            </ul>
+          </section>
+
+          <!-- ============ 四、幂律模型 ============ -->
+          <section id="powerlaw">
+            <h2>四、幂律模型：长期轨迹度量</h2>
+
+            <h3>4.1 什么是幂律模型？</h3>
+            <p>幂律（Power Law）是一种数学关系：<strong>价格 ~ time^α</strong>（价格与时间的幂次成正比）。</p>
+            <p>在双对数坐标（log-log plot）上，幂律表现为一条直线——如果BTC价格遵循幂律，那么无论短期波动多大，它会始终围绕一条「幂律中心线」上下波动。</p>
+
+            <div class="powerlaw-wrap">
+              <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:-apple-system,'PingFang SC',sans-serif;">
+                <rect width="700" height="300" rx="10" fill="#14161A"/>
+                <!-- 标题 -->
+                <text x="24" y="28" fill="#F7931A" font-size="13" font-weight="700">BTC价格幂律通道（2010-2030，log-log视图）</text>
+                <!-- 坐标轴 -->
+                <line x1="60" y1="240" x2="670" y2="240" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="60" y1="50" x2="60" y2="240" stroke="#2A2A2A" stroke-width="1.5"/>
+                <!-- Y轴标签 -->
+                <text x="8" y="248" fill="#6B7280" font-size="9">$100</text>
+                <text x="8" y="196" fill="#6B7280" font-size="9">$1K</text>
+                <text x="8" y="144" fill="#6B7280" font-size="9">$10K</text>
+                <text x="8" y="92" fill="#6B7280" font-size="9">$100K</text>
+                <text x="8" y="40" fill="#6B7280" font-size="9">$1M</text>
+                <!-- X轴标签 -->
+                <text x="80" y="256" fill="#6B7280" font-size="9">2010</text>
+                <text x="168" y="256" fill="#6B7280" font-size="9">2013</text>
+                <text x="256" y="256" fill="#6B7280" font-size="9">2016</text>
+                <text x="344" y="256" fill="#6B7280" font-size="9">2019</text>
+                <text x="432" y="256" fill="#6B7280" font-size="9">2022</text>
+                <text x="520" y="256" fill="#6B7280" font-size="9">2025</text>
+                <text x="608" y="256" fill="#6B7280" font-size="9">2028</text>
+                <!-- 幂律上限（蓝色虚线） -->
+                <path d="M 80,232 Q 300,100 520,20 L 670,20" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4" fill="none" opacity="0.6"/>
+                <!-- 幂律中心线（橙色实线） -->
+                <path d="M 80,234 Q 320,130 540,55 L 670,55" stroke="#F7931A" stroke-width="2" fill="none"/>
+                <!-- 幂律下限（蓝色虚线） -->
+                <path d="M 80,236 Q 340,170 560,90 L 670,90" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4" fill="none" opacity="0.6"/>
+                <!-- 区间填充 -->
+                <path d="M 80,232 Q 300,100 520,20 L 670,20 L 670,90 L 560,90 Q 340,170 80,236 Z" fill="#F7931A" fill-opacity="0.05"/>
+                <!-- 散点：历史价格 -->
+                <circle cx="88" cy="234" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="105" cy="232" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="130" cy="228" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="155" cy="200" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="168" cy="150" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="185" cy="210" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="220" cy="130" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="256" cy="150" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="290" cy="110" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="310" cy="160" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="344" cy="100" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="370" cy="130" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="390" cy="80" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="432" cy="40" r="4" fill="#F7931A" opacity="0.9"/>
+                <circle cx="460" cy="130" r="3" fill="#F7931A" opacity="0.7"/>
+                <circle cx="490" cy="160" r="3" fill="#F7931A" opacity="0.7"/>
+                <!-- 图例 -->
+                <line x1="510" y1="265" x2="540" y2="265" stroke="#F7931A" stroke-width="2"/>
+                <text x="548" y="268" fill="#F5F5F5" font-size="10">幂律中心</text>
+                <line x1="510" y1="280" x2="540" y2="280" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <text x="548" y="283" fill="#F5F5F5" font-size="10">±通道</text>
+                <circle cx="625" cy="270" r="3" fill="#F7931A" opacity="0.8"/>
+                <text x="635" y="273" fill="#F5F5F5" font-size="10">历史价格</text>
+              </svg>
+            </div>
+
+            <h3>4.2 bitcoinfairprice.com：幂律公平价计算器</h3>
+            <p><strong>bitcoinfairprice.com</strong> 是一个基于幂律模型的BTC公允价值网站，核心逻辑：</p>
+            <ul>
+              <li>BTC历史价格在对数坐标上，长期围绕幂律趋势线上下波动</li>
+              <li>当价格显著偏离「幂律中心」太远（上方或下方），存在均值回归倾向</li>
+              <li>该网站提供「当前幂律公平价」和「偏离度」指标</li>
+            </ul>
+
+            <h3>4.3 局限</h3>
+            <ul>
+              <li><strong>无预测能力</strong>：幂律描述的是「历史轨迹」，不保证未来继续遵循——BTC的演化规律可能改变</li>
+              <li><strong>区间宽度问题</strong>：幂律通道有时很宽（上下相差10倍），在实际操作中「偏离」信号意义有限</li>
+              <li><strong>模型选择自由度</strong>：幂指数α的拟合有相当大的自由度，不同研究得出的α值差异较大</li>
+            </ul>
+          </section>
+
+          <!-- ============ 五、能量价值模型 ============ -->
+          <section id="energy">
+            <h2>五、能量价值模型：成本锚定</h2>
+
+            <h3>5.1 核心思想</h3>
+            <p>能量价值模型（Energy Value Model）的核心论点是：<strong>比特币的价值底线，由挖矿所需消耗的能量成本决定</strong>。</p>
+
+            <div class="energy-box">
+              <div class="energy-title">⚡ 能量价值定理</div>
+              <p style="font-size:0.83rem;color:var(--text-secondary);line-height:1.6;margin:0;">
+                「比特币的价值度量，是用于挖它的能量。」<br>
+                <span style="font-size:0.75rem;color:var(--text-muted);">— Springer 论文《Integrated Power Plant and Bitcoin Mining Economics》(2023)</span>
+              </p>
+            </div>
+
+            <h3>5.2 逻辑链</h3>
+            <div class="feature-cards">
+              <div class="feature-card">
+                <div class="feature-icon">🔋</div>
+                <h4>能源成本 = 价格底部</h4>
+                <p>如果BTC价格跌破挖矿成本（电力+设备折旧），理性矿工会关机止损；关机导致算力下降→难度下调→成本下降→市场重新平衡。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📉</div>
+                <h4>矿机关机价</h4>
+                <p>每个矿工有不同的「关机价」——使用最新矿机、电费最低的矿工关机价最低。当全网价格跌破最低成本矿工的关机价，理论上全网关机。实际中矿工可以降频、迁移到低电价区。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h4>效率平台期</h4>
+                <p>矿机效率（每焦耳算力）存在物理极限——芯片制程接近摩尔定律末端后，边际效率提升递减。这意味着挖矿的能源成本底线有长期支撑。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h4>能源价格差异</h4>
+                <p>全球电价从$0.01/kWh（伊朗/某些水电站）到$0.30+/kWh（工业用户）不等，导致「合理价格区间」相当宽泛。能源约束是软约束而非硬约束。</p>
+              </div>
+            </div>
+
+            <h3>5.3 批评与局限</h3>
+            <ul>
+              <li><strong>成本 ≠ 价值</strong>：商品的价值不由生产成本决定（钻石比水贵得多，但生产成本接近零）。能量成本只能作为价格下界的粗略参考，而非精确估值。</li>
+              <li><strong>能源结构变化</strong>：随着全球能源转向可再生，电力成本长期下降，能量价值模型的「底部」会随之下移。</li>
+              <li><strong>POW vs POS之争</strong>：以太坊已转向PoS（几乎零能耗），而BTC坚守PoW。能量消耗的「正当性」本身是价值观问题，无法通过经济学回答。</li>
+            </ul>
+          </section>
+
+          <!-- ============ 六、四模型对比 ============ -->
+          <section id="compare">
+            <h2>六、四种估值模型对比</h2>
+
+            <table class="model-compare-table">
+              <thead>
+                <tr>
+                  <th style="width:14%">模型</th>
+                  <th style="width:16%" class="col-s2f">S2F（PlanB）</th>
+                  <th style="width:16%" class="col-mc">梅特卡夫定律</th>
+                  <th style="width:16%" class="col-pl">幂律模型</th>
+                  <th style="width:16%" class="col-energy">能量价值</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>量什么？</strong></td>
+                  <td class="col-s2f">稀缺性</td>
+                  <td class="col-mc">网络规模</td>
+                  <td class="col-pl">时间轨迹</td>
+                  <td class="col-energy">挖矿成本</td>
+                </tr>
+                <tr>
+                  <td><strong>核心指标</strong></td>
+                  <td class="col-s2f">存量(Stock) / 流量(Flow)</td>
+                  <td class="col-mc">活跃地址数 / 用户数</td>
+                  <td class="col-pl">时间（天/月/从创世起）</td>
+                  <td class="col-energy">电力成本 + 矿机效率</td>
+                </tr>
+                <tr>
+                  <td><strong>历史拟合</strong></td>
+                  <td class="col-s2f">R² ≈ 0.95（2010-2019，双对数）</td>
+                  <td class="col-mc">R² ≈ 0.8-0.9（活跃地址 vs 价格）</td>
+                  <td class="col-pl">在 log-log 图上长期贴近幂律线</td>
+                  <td class="col-energy">价格底部与算力成本高度相关</td>
+                </tr>
+                <tr>
+                  <td><strong>核心优点</strong></td>
+                  <td class="col-s2f">直觉强：S2F越高越稀缺；与黄金对比框架清晰</td>
+                  <td class="col-mc">网络效应的标准理论；直觉强</td>
+                  <td class="col-pl">描述长期边界；提供「偏离」参考信号</td>
+                  <td class="col-energy">提供价格「绝对底部」锚点；与实体能源经济挂钩</td>
+                </tr>
+                <tr>
+                  <td><strong>核心局限</strong></td>
+                  <td class="col-s2f">相关性非因果；2022年熊市大幅偏离；减半后S2F急升但价格未跟上</td>
+                  <td class="col-mc">用户数难定义；BTC价值不完全来自网络效应</td>
+                  <td class="col-pl">通道宽度大；无精确预测力；依赖历史外推</td>
+                  <td class="col-energy">成本≠价值；矿机可迁移/降频；POW能耗争议</td>
+                </tr>
+                <tr>
+                  <td><strong>适合用途</strong></td>
+                  <td class="col-s2f">稀缺性叙事；与黄金对比；长期粗略量级判断</td>
+                  <td class="col-mc">用户增长趋势分析；网络健康度监测</td>
+                  <td class="col-pl">判断当前价格是否「严重偏高/偏低」</td>
+                  <td class="col-energy">熊市底部判断；矿工经济学分析</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- ============ 七、估值 ≠ 预测 ============ -->
+          <section id="limits">
+            <h2>七、估值 ≠ 预测：所有模型都是错的，有些有用</h2>
+
+            <div class="highlight-box">
+              <span class="label">📊 George Box 的名言</span>
+              <div class="text">
+                <p style="font-size:0.92rem;font-style:italic;color:var(--text);margin:0;">
+                  「所有模型都是错的，有些是有用的。」（"All models are wrong, some are useful."）<br>
+                  <span style="font-size:0.78rem;color:var(--text-muted);">— George Box，统计学家（1976）</span>
+                </p>
+              </div>
+            </div>
+
+            <p>理解这四种模型的本质：</p>
+            <div class="feature-cards">
+              <div class="feature-card">
+                <div class="feature-icon">🧭</div>
+                <h4>思维工具，不是水晶球</h4>
+                <p>估值模型帮你回答「当前价格相对于某个指标是高是低」，但无法告诉你「明天/下个月/明年价格是多少」。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h4>交叉验证比单模可靠</h4>
+                <p>如果S2F、Metcalfe和幂律模型都显示「当前价格偏低」——这个判断比任何一个单一模型的信号更可信。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⏰</div>
+                <h4>时间尺度决定有效性</h4>
+                <p>S2F更适合4年+的时间尺度；幂律模型更适合1-10年；能量价值模型更适合熊市底部判断。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⚠️</div>
+                <h4>黑天鹅不可预测</h4>
+                <p>任何模型都无法预测：监管禁令、量子计算威胁、技术漏洞、竞争币取代——这些「模型外」事件才是真正的风险。</p>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">🔴 风险提示</span>
+              <div class="text">
+                <p>历史拟合不等于未来有效。BTC的高波动性和监管不确定性意味着：<strong>不要基于任何单一模型做出投资决策</strong>。估值模型的价值在于帮助你形成「认知框架」，而不是「买入/卖出信号」。</p>
+                <p>如果有人告诉你「我的模型显示BTC将在某年某月涨到X万美元」——请保持警惕。这是预测，不是估值。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>八、多视角解读：估值模型的六个底色</h2>
+
+            <div class="perspective-card" id="valuation-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>同一套模型，六个视角</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab active" data-angle="quant">📊 量化分析师</button>
+                  <button class="p-tab" data-angle="investor">🏢 投资者</button>
+                  <button class="p-tab" data-angle="economist">💰 经济学者</button>
+                  <button class="p-tab" data-angle="miner">⛏️ 矿工</button>
+                  <button class="p-tab" data-angle="philosopher">🧠 哲学家</button>
+                  <button class="p-tab" data-angle="skeptic">🔍 怀疑论者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="quant">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.15);color:#3B82F6;">📊 量化分析师</span>
+                  <p class="p-quote">「BTC是最有趣的量化实验场——数据丰富但噪声极高，模型可以拟合得很好，但样本外预测几乎不可能。」</p>
+                  <ul>
+                    <li><strong>S2F</strong>：从统计角度，R²=0.95极具诱惑，但金融时间序列的高度非线性意味着「过拟合」风险极高——2022年的偏离正是样本外失效的典型</li>
+                    <li><strong>Metcalfe</strong>：指数β（用户数的幂次）≈2是理论值，实证中β通常在1.5-2.5之间变动，说明网络效应强度随规模变化</li>
+                    <li><strong>组合框架</strong>：用贝叶斯方法给四种模型分配概率权重，动态调整——这是更成熟的量化方法，但需要持续更新先验</li>
+                    <li><strong>波动率建模</strong>：BTC的高波动性使任何精确点位预测几乎无意义；区间预测（±30%）比单点预测更有参考价值</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="investor">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.15);color:#8B5CF6;">🏢 投资者</span>
+                  <p class="p-quote">「模型是思考框架，不是买卖信号。懂S2F的人比不懂的人更能在别人恐惧时保持淡定。」</p>
+                  <ul>
+                    <li><strong>估值锚定心态</strong>：知道BTC的「大致合理价区间」，在极度低估时加仓，在极度高估时分批止盈——这是估值模型的实践价值</li>
+                    <li><strong>DCA + 估值辅助</strong>：定投策略基础上，在「S2F显示低估+链上数据健康」时适度加大仓位，而非机械每月固定金额</li>
+                    <li><strong>ahr999指数</strong>（中文社区常用）：结合BTC价格、200日定投成本、指数增长系数——不是估值模型，但是实践中的择时工具</li>
+                    <li><strong>尾部风险对冲</strong>：理解能量价值模型后，知道「币价底部在哪里」——可以在熊市接近关机价时，将部分法币换成BTC（有限追跌）</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="economist">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.15);color:#EAB308;">💰 经济学者</span>
+                  <p class="p-quote">「BTC的估值难题，其实揭示了一个更深刻的问题：什么才是'货币的价值'？」</p>
+                  <ul>
+                    <li><strong>货币的内在价值之谜</strong>：法币有价值是因为大家都接受，BTC有价值是因为同样原因——货币的「内在价值」本身是个哲学问题，经济学只描述「为什么人们信任它」</li>
+                    <li><strong>S2F vs 货币数量论</strong>：传统MV=PQ（货币数量方程）衡量货币价值；S2F是MV=PQ的「供给侧版本」——BTC市值 = 流量 × 价格，而流量固定</li>
+                    <li><strong>Metcalfe vs 梅特卡夫原始论文</strong>：梅特卡夫本人后来修正了其定律——网络价值随节点数线性增长，而非平方（因为连接有异质性价值差异）。BTC的「用户」并非同质</li>
+                    <li><strong>模型局限的根本原因</strong>：BTC的价值本质上是「信念的自我实现」——大家都相信它值多少，它就值多少，这使任何基于客观指标的模型注定是不完整的</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="miner">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.15);color:#10B981;">⛏️ 矿工</span>
+                  <p class="p-quote">「能量价值模型不是'估值'——它是我们的运营手册。」</p>
+                  <ul>
+                    <li><strong>关机价 = 生存底线</strong>：矿工每天计算「在哪价格以下我的机器必须关机」——这与BTC的「估值」无关，但影响市场抛压</li>
+                    <li><strong>减半=成本翻倍</strong>：每4年区块奖励减半，矿工每BTC的收入减半——如果不裁员/升级机器，必须依靠BTC升值来维持利润（S2F模型的隐含逻辑之一）</li>
+                    <li><strong>难度调整的自我平衡</strong>：价格下跌→低效矿工退出→算力下降→难度下调→全网成本下降→价格底部支撑——这是能量价值模型的实际运作机制</li>
+                    <li><strong>S2F对矿工的意义</strong>：减半后S2F翻倍，理论上意味着「同等资金流入下，BTC价格应该上涨」——这是矿工「四年周期」信念的经济学依据</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosopher">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.15);color:#F97316;">🧠 哲学家</span>
+                  <p class="p-quote">「试图给BTC估值，本身是一个哲学错误——BTC的价值不在于数字，而在于它证明了一种可能。」</p>
+                  <ul>
+                    <li><strong>货币的价值是涌现的</strong>：BTC的价值不是由S2F、Metcalfe或挖矿成本「决定」的——它是从数十亿人的集体决策中涌现的，就像语言的意义不在字典里，而在使用中</li>
+                    <li><strong>尺子比喻的局限</strong>：用S2F量BTC，就像「用温度量天气」——温度是天气的有用指标，但它不是天气本身</li>
+                    <li><strong>BTC的真正价值</strong>：证明了一种可能——货币可以不需要政府背书、数学可以替代信任、规则可以写得不可篡改——这种「证明」的价值无法量化</li>
+                    <li><strong>四种模型的哲学统一性</strong>：稀缺性、网络效应、时间轨迹、能源锚——都是人类赋予BTC价值的不同叙事维度，没有哪一个是「真相」</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="skeptic">
+                  <span class="p-angle-badge" style="background:rgba(239,68,68,0.15);color:#EF4444;">🔍 怀疑论者</span>
+                  <p class="p-quote">「四种模型都犯了一个根本错误：把相关性当因果，把历史当未来。」</p>
+                  <ul>
+                    <li><strong>S2F的根本问题</strong>：黄金S2F=62，白银S2F=22——但白银价格远低于黄金。「稀缺性」只是价值的一个维度，不能单独解释价格</li>
+                    <li><strong>Metcalfe的问题</strong>：互联网用户从1亿增到40亿，产生了巨大价值；但这是因为互联网有无数种不同用户（消费者、企业、政府）——BTC的用户「同质性」极强，Metcalfe假设不成立</li>
+                    <li><strong>幂律的问题</strong>：人类文明史的所有指数增长曲线最终都会「撞墙」或转入平稳期——BTC不会永远指数增长</li>
+                    <li><strong>能量模型的问题</strong>：商品价格围绕成本波动——但BTC不是商品，是货币。货币的价格由「愿意持有它的人数」决定，与挖矿成本没有必然联系</li>
+                    <li><strong>最根本的质疑</strong>：BTC目前没有竞争对手吗？ETH（PoS）、CBDC、黄金ETF——都在蚕食BTC的市场。模型假设BTC将持续独占鳌头，这个假设本身就不可靠</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角 · 同一事实，不同透镜</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 九、动手实验 ============ -->
+          <section id="labs">
+            <h2>九、动手实验区</h2>
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">三种模型的亲手计算</span>
+              </div>
+              <ul class="lab-list">
+                <li><span class="lab-icon">📐</span><div>
+                  <strong>实验1：计算当前BTC的S2F</strong><br>
+                  数据获取：<br>
+                  (1) 当前BTC总流通量（查询 coinmarketcap.com，2025年约1980-1990万枚）<br>
+                  (2) 2025年日均挖矿产出（区块奖励3.125 BTC × 144区块/天 ≈ 450 BTC/天，年化 ≈ 164,000 BTC/年）<br>
+                  (3) S2F = 总流通量 ÷ 年化新增 = 约 1980万 ÷ 16.4万 ≈ <strong>120-125</strong><br>
+                  对比：黄金S2F≈62，白银S2F≈22 → BTC的S2F在2024年减半后已超过黄金。
+                </div></li>
+                <li><span class="lab-icon">🌐</span><div>
+                  <strong>实验2：访问幂律公平价计算器</strong><br>
+                  打开 <a href="https://bitcoinfairprice.com" target="_blank" style="color:var(--orange);">bitcoinfairprice.com</a>，查看当前价格相对于幂律中心线的偏离程度。<br>
+                  观察：当前价格是高于还是低于「幂律公平价」？偏离了多少？2022年熊市底部时，偏离了多少？
+                </div></li>
+                <li><span class="lab-icon">🥇</span><div>
+                  <strong>实验3：黄金S2F对比</strong><br>
+                  黄金数据：全球地上存量约21万吨，年产量约3,500吨。<br>
+                  S2F = 210,000,000 kg ÷ 3,500,000 kg ≈ 62。<br>
+                  BTC（2024年）S2F ≈ 111 → 是黄金的约1.8倍。但「稀缺≠有价值」——白银S2F=22，为什么白银没有BTC值钱？思考：稀缺性是BTC价值的必要条件，但不是充分条件。
+                </div></li>
+                <li><span class="lab-icon">⛏️</span><div>
+                  <strong>实验4：计算矿工关机价</strong><br>
+                  假设：矿机算力100TH/s，功耗3,000W，电费$0.08/kWh，BTC当前价格。<br>
+                  日耗电 = 3kW × 24h = 72 kWh → 日电费 = 72 × $0.08 = $5.76/天<br>
+                  日均挖矿收益（以当前算力1.5EH/s为基准，100TH/s占比）：<br>
+                  日均BTC = (100TH/s ÷ 1,500,000TH/s) × 144块 × 3.125BTC ≈ 0.00003 BTC/天（简化估算）<br>
+                  关机价 ≈ 日电费 ÷ 日均BTC = $5.76 ÷ 0.00003 ≈ <strong>$192,000/BTC</strong>（此为简化模型，实际矿机效率差异巨大）
+                </div></li>
+                <li><span class="lab-icon">📈</span><div>
+                  <strong>实验5：多模型交叉验证</strong><br>
+                  在 <a href="https://coinmarketcap.com" target="_blank" style="color:var(--orange);">CoinMarketCap</a> 查询当前BTC价格，然后：<br>
+                  (1) 用S2F估算「当前合理市值」<br>
+                  (2) 用 bitcoinfairprice.com 看幂律偏离<br>
+                  (3) 查链上活跃地址趋势（mempool.space / glassnode）<br>
+                  综合三个指标，判断当前属于「高估」「低估」还是「合理区间」。
+                </div></li>
+              </ul>
+              <p class="table-note" style="margin-top:12px;">
+                ⚠️ 以上计算为简化模型，用于学习理解。真实矿业运营和估值远比公式复杂，请勿作为投资依据。
+              </p>
+            </div>
+          </section>
+
+              <!-- ============ 延伸探索 ============ -->
+    <section id="explore">
+      <div class="explorer-box">
+        <div class="exp-header">
+          <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+        </div>
+        <div class="exp-result">
+          <ul class="exp-links">
+        <li><a href="https://planbtc.com" target="_blank" rel="noopener">PlanB S2F 模型站 <span class="exp-go">→</span></a></li>
+        <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space · 实时 S2F 与费率 <span class="exp-go">→</span></a></li>
+        <li><a href="https://ccaf.io/cbns" target="_blank" rel="noopener">剑桥比特币耗电指数 CCAF <span class="exp-go">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- ============ 十、大白话总结 ============ -->
+          <section id="summary">
+            <h2>十、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把这些复杂的放在日常场景中</span>
+              <p><strong>估值模型 = 不同的尺子，量同一个东西</strong></p>
+              <ul>
+                <li>一个人身高，可以用卷尺量，可以用影子长度推算，可以用水深来间接测量——各种方法都有误差，但比「瞎猜」好得多</li>
+                <li>BTC的价值，也可以用不同尺子量：S2F量稀缺性、Metcalfe量网络、幂律量轨迹、能量量成本</li>
+                <li>没有一把尺子是绝对的——但多把尺子交叉看，比赤手空拳强很多</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>S2F 量「有多稀缺」</strong></p>
+              <ul>
+                <li>黄金稀缺，但BTC（2024年后）比黄金更稀缺（S2F从53→111）</li>
+                <li>但稀缺≠值钱——空气最稀缺（免费），钻石不稀缺（工业用途很少）但很贵</li>
+                <li>S2F是「必要条件」，还需要配合其他因素（安全性、网络效应、需求）</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>Metcalfe 量「网络有多大」</strong></p>
+              <ul>
+                <li>微信用户越多，微信越有用——BTC用户越多，BTC越难被杀死</li>
+                <li>但BTC用户不是「同质」的：炒作者、储值者、矿工、商家——他们的行为模式完全不同</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>幂律 量「是否偏离轨道」</strong></p>
+              <ul>
+                <li>BTC长期价格在对数坐标上沿着一条幂律线往上走，偏离太远最终会回来</li>
+                <li>就像河流有堤岸——洪水期可以冲出很远，但最终还是会回到河道</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>能量 量「底部在哪」</strong></p>
+              <ul>
+                <li>BTC跌到「没人愿意挖矿」时，矿工会关机——但他们可以换地方、降频、关空调</li>
+                <li>能量价值是软底部，不是硬底部；但熊市接近这个底部时，性价比往往最好</li>
+              </ul>
+            </div>
+
+            <div class="story-box orange">
+              <span class="story-label">🎉 经济学篇完结：关键收获</span>
+              <p>读完经济学篇（03-01 到 03-08），你应该能够：</p>
+              <ul>
+                <li>✅ 理解「钱为什么会通胀」——货币超发是法币体系的内在特性</li>
+                <li>✅ 了解奥地利学派与哈耶克思想——比特币的思想源头</li>
+                <li>✅ 掌握BTC货币政策——2100万上限与减半周期的经济学含义</li>
+                <li>✅ 评估BTC的价值存储叙事——与黄金对比，各有优劣</li>
+                <li>✅ 理解手续费市场——区块空间稀缺定价的未来</li>
+                <li>✅ 看懂BTC周期——减半、供需、LTH/STH博弈</li>
+                <li>✅ 正面回应「BTC=郁金香」等批评</li>
+                <li>✅ 使用四种估值模型的思维工具——但不被任何单一模型绑架</li>
+              </ul>
+            </div>
+
+            <div class="cta-box" style="margin-top:40px;">
+              <h3>🚀 经济学篇完结！下一步去哪？</h3>
+              <p>你已经理解了比特币「为什么值钱」和「值多少钱」的问题。接下来可以：</p>
+              <a href="../04-technology/04-00-overview.html" class="btn btn-primary">🛠️ 进入技术篇：理解 BTC 如何做到 →</a>
+              <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+              <a href="03-07-fiat-vs-btc.html" class="btn">← 回顾：法币 vs 比特币</a>
+            </div>
+          </section>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="03-07-fiat-vs-btc.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">法币 vs 比特币</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 8 / 8 · 完结 🎉
+      </div>
+      <a href="../04-technology/04-00-overview.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一步</span>
+          <span class="nav-title">技术篇总览</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+    });
+
+    function initValuationPerspectives() {
+      const card = document.getElementById('valuation-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-08-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-08-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+  </script>
+</body>
+</html>

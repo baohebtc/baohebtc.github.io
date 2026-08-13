@@ -1,0 +1,9 @@
+# macOS 系统文件
+.DS_Store
+*.fileloc
+
+# 依赖（仅本地开发用，非站点内容）
+node_modules/
+
+# qclaw 早期内容修复脚本（已移出发布目录，单独归档）
+_qclaw_dev_scripts/

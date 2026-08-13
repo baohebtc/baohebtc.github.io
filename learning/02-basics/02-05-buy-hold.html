@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入门篇 05 · 买币·入金·持币 | 比特币学习地图</title>
+<meta name="description" content="比特币学习地图 · 新手第一步完整指南：如何买比特币、入金、出金、选择交易所、安全持币。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+:root { --primary: #F7931A; --orange: #F7931A; }
+body { background: #0a0806; color: #FFF3E0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+.basics-page { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* Top nav */
+.top-bar { display:flex; align-items:center; gap:12px; padding:20px 0 32px; font-size:0.78rem; color:rgba(255,243,224,0.35); }
+.top-bar a { color:rgba(255,243,224,0.4); text-decoration:none; transition:color 0.2s; }
+.top-bar a:hover { color:#F7931A; }
+.top-bar span { color:rgba(255,243,224,0.2); }
+
+/* Hero */
+.page-hero { padding: 48px 0 44px; border-bottom: 1px solid rgba(247,147,26,0.12); margin-bottom: 44px; }
+.page-eyebrow { font-size:0.65rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#F7931A; margin-bottom:14px; }
+.page-hero h1 { font-size:clamp(1.8rem,4vw,2.6rem); font-weight:800; letter-spacing:-0.02em; line-height:1.15; margin-bottom:14px; }
+.page-hero h1 .accent { color:#F7931A; }
+.page-hero .subtitle { font-size:1rem; color:rgba(255,243,224,0.55); line-height:1.75; max-width:620px; }
+
+/* Chapter tag */
+.chapter-tag { display:inline-flex; align-items:center; gap:8px; background:rgba(247,147,26,0.08); border:1px solid rgba(247,147,26,0.2); padding:5px 14px; border-radius:100px; font-size:0.72rem; font-weight:600; color:#F7931A; margin-bottom:24px; }
+
+/* Key rule banner */
+.key-rule {
+  background: linear-gradient(135deg, #1a1000 0%, #251400 100%);
+  border: 1px solid rgba(247,147,26,0.3);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin: 28px 0 36px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.key-rule .emoji { font-size: 2rem; flex-shrink: 0; }
+.key-rule h3 { font-size: 0.95rem; font-weight: 700; color: #F7931A; margin-bottom: 6px; }
+.key-rule p { font-size: 0.88rem; color: rgba(255,243,224,0.7); line-height: 1.75; }
+
+/* Sections */
+.section { margin-bottom: 52px; }
+.section h2 { font-size: 1.3rem; font-weight: 700; color: #FFF3E0; margin-bottom: 8px; letter-spacing: -0.01em; }
+.section h2 .num { color: #F7931A; margin-right: 10px; font-size: 1.1em; }
+.section .section-intro { font-size: 0.9rem; color: rgba(255,243,224,0.5); line-height: 1.8; margin-bottom: 24px; }
+
+/* Step cards */
+.step-list { display: flex; flex-direction: column; gap: 16px; }
+.step-card {
+  background: rgba(247,147,26,0.04);
+  border: 1px solid rgba(247,147,26,0.12);
+  border-radius: 14px;
+  padding: 22px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: border-color 0.3s;
+}
+.step-card:hover { border-color: rgba(247,147,26,0.3); }
+.step-num {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #F7931A, #FF9B2F);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1a0a00;
+  flex-shrink: 0;
+}
+.step-content h3 { font-size: 0.98rem; font-weight: 600; color: #FFF3E0; margin-bottom: 6px; }
+.step-content p { font-size: 0.85rem; color: rgba(255,243,224,0.55); line-height: 1.75; margin-bottom: 8px; }
+.step-content p:last-child { margin-bottom: 0; }
+.step-content strong { color: rgba(255,243,224,0.85); }
+
+/* Warning / Alert */
+.alert-box {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin: 16px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.alert-box .icon { font-size: 1.3rem; flex-shrink: 0; }
+.alert-box h4 { font-size: 0.88rem; font-weight: 600; color: #FCA5A5; margin-bottom: 4px; }
+.alert-box p { font-size: 0.82rem; color: rgba(255,243,224,0.5); line-height: 1.65; }
+.alert-box.warning { background: rgba(234,179,8,0.08); border-color: rgba(234,179,8,0.2); }
+.alert-box.warning h4 { color: #FCD34D; }
+.alert-box.success { background: rgba(74,222,128,0.08); border-color: rgba(74,222,128,0.2); }
+.alert-box.success h4 { color: #86EFAC; }
+
+/* Exchange comparison table */
+.ex-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.83rem; }
+.ex-table th { background: rgba(247,147,26,0.1); color: #F7931A; font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 1px solid rgba(247,147,26,0.15); }
+.ex-table td { padding: 10px 14px; border-bottom: 1px solid rgba(247,147,26,0.06); color: rgba(255,243,224,0.6); vertical-align: top; line-height: 1.55; }
+.ex-table tr:last-child td { border-bottom: none; }
+.ex-table td:first-child { color: rgba(255,243,224,0.9); font-weight: 600; }
+.ex-table .tag { display: inline-block; font-size: 0.68rem; padding: 2px 8px; border-radius: 100px; font-weight: 600; margin-top: 3px; }
+.tag-green { background: rgba(74,222,128,0.1); color: #86EFAC; }
+.tag-yellow { background: rgba(234,179,8,0.1); color: #FCD34D; }
+.tag-orange { background: rgba(247,147,26,0.1); color: #F7931A; }
+
+/* Flow diagram */
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 28px 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.flow-node {
+  background: rgba(247,147,26,0.06);
+  border: 1px solid rgba(247,147,26,0.2);
+  border-radius: 12px;
+  padding: 14px 18px;
+  text-align: center;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+.flow-node .flow-icon { font-size: 1.5rem; margin-bottom: 6px; }
+.flow-node .flow-label { font-size: 0.78rem; font-weight: 600; color: #FFF3E0; }
+.flow-node .flow-sub { font-size: 0.68rem; color: rgba(255,243,224,0.4); margin-top: 2px; }
+.flow-arrow { color: rgba(247,147,26,0.3); font-size: 1.2rem; flex-shrink: 0; padding: 0 4px; }
+
+/* Hold strategy */
+.hold-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0; }
+.hold-card {
+  background: rgba(247,147,26,0.04);
+  border: 1px solid rgba(247,147,26,0.12);
+  border-radius: 14px;
+  padding: 20px;
+}
+.hold-card h3 { font-size: 0.95rem; font-weight: 700; color: #FFF3E0; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.hold-card p { font-size: 0.82rem; color: rgba(255,243,224,0.55); line-height: 1.7; margin-bottom: 10px; }
+.hold-card ul { list-style: none; padding: 0; margin: 0; }
+.hold-card ul li { font-size: 0.78rem; color: rgba(255,243,224,0.45); line-height: 1.6; padding: 3px 0 3px 14px; position: relative; }
+.hold-card ul li::before { content: '→'; position: absolute; left: 0; color: #F7931A; font-size: 0.75rem; }
+
+/* Page nav */
+.page-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 52px; padding-top: 32px; border-top: 1px solid rgba(247,147,26,0.1); }
+.page-nav a { display: flex; flex-direction: column; padding: 18px 20px; background: rgba(247,147,26,0.04); border: 1px solid rgba(247,147,26,0.15); border-radius: 14px; text-decoration: none; transition: all 0.3s; }
+.page-nav a:hover { border-color: rgba(247,147,26,0.35); background: rgba(247,147,26,0.08); }
+.page-nav a.next { text-align: right; }
+.nav-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,243,224,0.3); margin-bottom: 5px; }
+.nav-title { font-size: 0.9rem; font-weight: 600; color: #F7931A; }
+@media (max-width: 500px) { .page-nav { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="basics-page">
+  <!-- Top nav -->
+  <nav class="top-bar">
+    <a href="../../index.html">首页</a>
+    <span>›</span>
+    <a href="02-00-overview.html">入门篇</a>
+    <span>›</span>
+    <span style="color:#F7931A;">买币·入金·持币</span>
+  </nav>
+
+  <!-- Hero -->
+  <header class="page-hero">
+    <div class="page-eyebrow">入门篇 · Chapter 05</div>
+    <h1>买币 · <span class="accent">入金</span> · 持币</h1>
+    <p class="subtitle">比特币学习路上，真正的第一步：把你的第一笔钱换成比特币，然后安全地持有它。这一章手把手带你从零开始。</p>
+  </header>
+
+  <!-- Key rule -->
+  <div class="key-rule">
+    <div class="emoji">⚡</div>
+    <div>
+      <h3>入门篇核心铁律</h3>
+      <p>比特币不是存在"账户"里，是存在"地址"里。私钥 = 地址上所有资产的全部权限。没有私钥，就没有比特币。选择交易所、入金、买币，只是第一步；真正重要的是：把币提到自己的钱包，用自己的私钥保管。</p>
+    </div>
+  </div>
+
+  <!-- SECTION 1: 为什么需要买币 -->
+  
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p><strong>比特币不能"充值"，只能"兑换"</strong>——这是理解比特币金融体系的关键区别。你无法把人民币"充进"比特币网络，只能通过交易所用法币"买入"比特币。买到后，比特币就在你自己的钱包里，不是存在交易所。</p>
+            <p style="margin-top:8px;">HODL（长期持有）是比特币世界最简单也最有效的策略——不需要择时，不需要盯盘，只需要理解为什么比特币值得长期持有。</p>
+          </div>
+    <section class="section">
+    <div class="chapter-tag">📍 第1步</div>
+    <h2><span class="num">🔄</span> 比特币不能"充值"，只能"兑换"</h2>
+    <p class="section-intro">和人民币存银行不同，比特币没有"充值"这个概念。你只能用法币（人民币、美元）从交易所"买入"比特币。理解这一点，是后续所有操作的基础。</p>
+
+    <!-- Flow -->
+    <div class="flow-diagram">
+      <div class="flow-node">
+        <div class="flow-icon">🏦</div>
+        <div class="flow-label">银行转账</div>
+        <div class="flow-sub">人民币充值</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-icon">💵</div>
+        <div class="flow-label">买入 USDT</div>
+        <div class="flow-sub">稳定币中介</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-icon">₿</div>
+        <div class="flow-label">买入 BTC</div>
+        <div class="flow-sub">核心操作</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="flow-icon">🔐</div>
+        <div class="flow-label">提到钱包</div>
+        <div class="flow-sub">自持</div>
+      </div>
+    </div>
+
+    <div class="alert-box warning">
+      <div class="icon">⚠️</div>
+      <div>
+        <h4>为什么不能直接买 BTC？</h4>
+        <p>人民币（CNY）不能直接购买比特币，因为加密货币交易所的法币通道在很多国家受到严格限制。大多数情况下，你需要先买 USDT（与美元 1:1 锚定的稳定币），再用 USDT 买 BTC。USDT = 数字世界的美元。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: 选择交易所 -->
+  <section class="section">
+    <div class="chapter-tag">🏛️ 第2步</div>
+    <h2><span class="num">🏪</span> 选择交易所：币安 vs 欧易 vs Coinbase</h2>
+    <p class="section-intro">全球有数十家加密货币交易所，但对中国用户来说，可靠的选择主要是这三家。选择时要重点看：安全性、手续费、是否支持CNY出入金。</p>
+
+    <table class="ex-table">
+      <thead>
+        <tr>
+          <th>交易所</th>
+          <th>特点</th>
+          <th>适合人群</th>
+          <th>CNY出入金</th>
+          <th>手续费</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🟡 币安 Binance</td>
+          <td>全球最大，交易对最多，功能最全，合规运营</td>
+          <td>有经验的用户，进阶交易者</td>
+          <td><span class="tag-yellow">需要C2C</span></td>
+          <td>Maker 0.1% / Taker 0.1%</td>
+        </tr>
+        <tr>
+          <td>🟠 欧易 OKX</td>
+          <td>界面友好，新手友好，出金入金流程最顺畅</td>
+          <td>中国用户首选，新手入门</td>
+          <td><span class="tag-green">✅ 支持</span></td>
+          <td>Maker 0.08% / Taker 0.1%</td>
+        </tr>
+        <tr>
+          <td>🔵 Coinbase</td>
+          <td>美国最大，监管最严，安全性最高</td>
+          <td>美国用户，长期持有者</td>
+          <td><span class="tag-orange">美元通道</span></td>
+          <td>0.5%–0.6%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert-box">
+      <div class="icon">🔒</div>
+      <div>
+        <h4>C2C 交易是什么？</h4>
+        <p>C2C（Customer-to-Customer）= 点对点交易。交易所提供平台，买家和卖家直接匹配，由交易所托管资金保障安全。这是在中国购买 USDT / BTC 最常用的方式。操作流程和闲鱼类似，但资金由平台托管，无需担心对方欺诈。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: KYC -->
+  <section class="section">
+    <div class="chapter-tag">🪪 第3步</div>
+    <h2><span class="num">🪪</span> 注册与身份验证（KYC）</h2>
+    <p class="section-intro">所有正规交易所都要求完成身份验证（KYC，Know Your Customer）。这是监管要求，也保护你的账户安全。</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>注册账号</h3>
+          <p>用手机号或邮箱注册，设置<strong>强密码</strong>（大小写+数字+符号，12位以上）。</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>完成身份认证</h3>
+          <p>上传身份证（正反面）+ 手持证件照。审核通常在几分钟到24小时内完成。部分平台支持护照或驾照。</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>开启双重验证（2FA）</h3>
+          <p><strong>这是最重要的安全步骤！</strong>强烈建议使用 Google Authenticator（应用）而非短信验证。Google Authenticator 生成6位动态验证码，每30秒更换一次。即使密码泄露，攻击者没有验证码也无法登录。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4:入金买币 -->
+  <section class="section">
+    <div class="chapter-tag">💰 第4步</div>
+    <h2><span class="num">💰</span> 入金 · 买币 · 提到钱包</h2>
+    <p class="section-intro">完成注册和认证后，你有了入场门票。接下来三步走：把钱充进交易所 → 换成 BTC → 提现到自己的钱包。</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">①</div>
+        <div class="step-content">
+          <h3>充值法币（入金）</h3>
+          <p>在交易所找到<strong>「充币」或「C2C」</strong>入口，用人民币买入 USDT（稳定币）。选一个认证商家（注册时间长、成交率高），通过银行转账或支付宝/微信支付完成付款。</p>
+          <p><strong>金额建议：</strong>首次建议小额尝试（500–1000元），熟悉流程后再加大投入。</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">②</div>
+        <div class="step-content">
+          <h3>用 USDT 买入 BTC</h3>
+          <p>进入<strong>「行情/交易」</strong>页面，选择 <strong>BTC/USDT</strong> 交易对。用市价单（立即按当前价格成交）或限价单（设置你希望的价格，达标后自动成交）。</p>
+          <p><strong>最小单位：</strong>BTC 最小可买 0.00001 BTC（约几块钱），不需要买"一整个"比特币。</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">③</div>
+        <div class="step-content">
+          <h3>提到自己的钱包（提币）</h3>
+          <p>这是最关键的一步！进入<strong>「提币」</strong>，输入你的比特币地址（从你的钱包复制），选择提币数量，确认。区块链确认通常需要 <strong>10–60 分钟</strong>（1–6个区块确认）。</p>
+          <p><strong>手续费：</strong>提币手续费由比特币网络决定，交易所只收取少量固定费用（约0.0002–0.0005 BTC）。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert-box warning">
+      <div class="icon">🚨</div>
+      <div>
+        <h4>永远不要把币长期存在交易所</h4>
+        <p>交易所是中心化平台，可能被黑客攻击、面临监管关停、或者直接跑路（Mt.Gox、FTX都是真实案例）。超过你正在交易的币，建议全部提到自己的钱包。私钥在手，比特币才是你的。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: 持币策略 -->
+  <section class="section">
+    <div class="chapter-tag">📈 第5步</div>
+    <h2><span class="num">📈</span> 持币策略：长期囤 vs 定期投</h2>
+    <p class="section-intro">买币之后怎么持有？不同策略适合不同人群。选择适合自己的方式，比选对时机更重要。</p>
+
+    <div class="hold-grid">
+      <div class="hold-card">
+        <h3>🏆 HODL（长期持有）</h3>
+        <p>不管价格涨跌，买了就不动，5年10年不卖。这是比特币历史上胜率最高的策略。</p>
+        <ul>
+          <li>忽略短期波动</li>
+          <li>定期备份助记词</li>
+          <li>适合真正相信比特币的人</li>
+          <li>历史数据：任何5年周期均正收益</li>
+        </ul>
+      </div>
+      <div class="hold-card">
+        <h3>📅 DCA（定期定额）</h3>
+        <p>每月固定金额买入（比如每月500元），不择时，长期平均成本。</p>
+        <ul>
+          <li>规避"一次性买在高点"风险</li>
+          <li>不需要研究市场</li>
+          <li>自动化执行（设置定投计划）</li>
+          <li>年均收益率显著优于择时操作</li>
+        </ul>
+      </div>
+      <div class="hold-card">
+        <h3>⚖️ 核心+卫星</h3>
+        <p>大部分仓位长期持有（核心），小部分仓位做交易（卫星）。</p>
+        <ul>
+          <li>核心仓位 = 比特币不动</li>
+          <li>卫星仓位 = 学习交易成本</li>
+          <li>保持好心态</li>
+          <li>适合有一定经验后</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="alert-box success">
+      <div class="icon">✅</div>
+      <div>
+        <h4>DCA 的数学力量</h4>
+        <p>即使在2017年高点开始每月定投500美元买入BTC，到2024年仍是正收益。熊市时同样金额买更多币，牛市积累的仓位让收益成倍放大。DCA的本质是：时间是你的朋友。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: DCA Calculator -->
+  <section class="section">
+    <div class="chapter-tag">🧮 工具</div>
+    <h2><span class="num">🧮</span> DCA 效果计算器</h2>
+    <p class="section-intro">输入每月定投金额和周期，估算你的长期平均成本与预期收益区间。</p>
+
+    <div style="background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.15);border-radius:16px;padding:28px;margin:16px 0;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div>
+          <label style="font-size:0.78rem;color:rgba(255,243,224,0.5);display:block;margin-bottom:6px;">每月定投金额（CNY）</label>
+          <input type="number" id="dca-monthly" value="500" min="10" step="10" style="width:100%;padding:10px 14px;background:rgba(247,147,26,0.08);border:1px solid rgba(247,147,26,0.2);border-radius:10px;color:#FFF3E0;font-size:1rem;outline:none;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:0.78rem;color:rgba(255,243,224,0.5);display:block;margin-bottom:6px;">定投时长（月）</label>
+          <input type="number" id="dca-months" value="24" min="1" max="120" style="width:100%;padding:10px 14px;background:rgba(247,147,26,0.08);border:1px solid rgba(247,147,26,0.2);border-radius:10px;color:#FFF3E0;font-size:1rem;outline:none;box-sizing:border-box;">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+        <div style="background:rgba(247,147,26,0.08);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,243,224,0.4);margin-bottom:6px;">累计投入</div>
+          <div id="dca-total" style="font-size:1.3rem;font-weight:800;color:#F7931A;">¥12,000</div>
+        </div>
+        <div style="background:rgba(247,147,26,0.08);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,243,224,0.4);margin-bottom:6px;">估算累计 BTC</div>
+          <div id="dca-btc" style="font-size:1.3rem;font-weight:800;color:#FFF3E0;">≈ 0.10 BTC</div>
+        </div>
+        <div style="background:rgba(247,147,26,0.08);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,243,224,0.4);margin-bottom:6px;">均价估算</div>
+          <div id="dca-avg" style="font-size:1.3rem;font-weight:800;color:#86EFAC;">≈ ¥400,000</div>
+        </div>
+      </div>
+      <p style="font-size:0.72rem;color:rgba(255,243,224,0.3);line-height:1.6;">⚠️ 以上为简化估算，基于 BTC ¥500,000 均价假设。实际价格波动剧烈，结果仅供参考，不构成投资建议。</p>
+    </div>
+  </section>
+
+  <!-- ============ 多视角卡片 ============ -->
+    <div class="perspective-card" id="main-perspectives">
+      <div class="persp-tabs">
+        <button class="p-tab active" data-angle="technology">🔧 技术</button>
+        <button class="p-tab" data-angle="history">📜 历史</button>
+        <button class="p-tab" data-angle="humanity">👥 人性</button>
+        <button class="p-tab" data-angle="finance">💰 金融</button>
+        <button class="p-tab" data-angle="business">🏪 商业</button>
+        <button class="p-tab" data-angle="philosophy">🧠 哲学</button>
+      </div>
+      <div class="persp-contents">
+        <div class="p-content active" data-angle="technology">
+          <p>【技术视角】买币、持币的核心操作都依赖密码学与分布式网络。USDT 锚定美元需要审计机制，BTC 通过 PoW 保障不可双花，私钥的椭圆曲线签名（secp256k1）是比特币地址的唯一凭证。从技术上说，持币 = 持有私钥的签名权。</p>
+        </div>
+        <div class="p-content" data-angle="history">
+          <p>【历史视角】HODL 一词诞生于 2013 年 BitcoinTalk 论坛的一次拼写错误（"I AM HODLING"），后来演变成比特币社区最重要的文化符号。历史上每一次减半周期（2012、2016、2020）都伴随着价格大幅上涨，早期持有者的财富故事激励了后来的参与者。</p>
+        </div>
+        <div class="p-content" data-angle="humanity">
+          <p>【人性视角】炒币最常见的悲剧是：在 FOMO 中追高买入，在恐慌中割肉卖出。行为经济学告诉我们，人类天生厌恶损失、对短期波动过度反应。DCA（定期定额）本质上是用纪律对抗人性弱点——不择时，不盯盘，让时间去平滑一切。</p>
+        </div>
+        <div class="p-content" data-angle="finance">
+          <p>【金融视角】比特币的稀缺性（2100万枚上限）使其成为类似黄金的通胀对冲工具。MicroStrategy 将比特币纳入资产负债表，BlackRock 推出 BTC ETF，标志着比特币正从投机品向机构级储值资产演进。定投策略的数学优势在长期复利效应下尤为显著。</p>
+        </div>
+        <div class="p-content" data-angle="business">
+          <p>【商业视角】交易所是比特币商业生态的核心节点，币安、OKX、Coinbase 通过交易手续费盈利。钱包服务商、OTC 交易商、KYC/AML 服务商构成了完整的买币-持币产业链。CoinGecko 数据显示，2025 年加密货币交易所日交易量峰值超 1000 亿美元。</p>
+        </div>
+        <div class="p-content" data-angle="philosophy">
+          <p>【哲学视角】持币是一种对去中心化货币体系的信念表达。比特币的出现是对国家信用货币超发、资本管制的根本性回应。HODL 主义者相信：持有比特币不仅是投资行为，更是对"个人财产神圣不可侵犯"这一理念的身体力行。</p>
+        </div>
+      </div>
+      <div class="persp-dots">
+        <span class="p-dot active" data-angle="technology"></span>
+        <span class="p-dot" data-angle="history"></span>
+        <span class="p-dot" data-angle="humanity"></span>
+        <span class="p-dot" data-angle="finance"></span>
+        <span class="p-dot" data-angle="business"></span>
+        <span class="p-dot" data-angle="philosophy"></span>
+      </div>
+    </div>
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 区块浏览器 · 查看实时未确认交易<span class="exp-go">→</span></a></li>
+          <li><a href="https://planbtc.com" target="_blank" rel="noopener">PlanBTC 定投计算器 · 估算你的长期收益<span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+  <!-- Page nav -->
+  <nav class="page-nav">
+    <a href="02-04-mining.html" class="prev">
+      <span class="nav-label">← 上一章</span>
+      <span class="nav-title">挖矿与共识</span>
+    </a>
+    <a href="02-06-security.html" class="next">
+      <span class="nav-label">下一章 →</span>
+      <span class="nav-title">安全存储</span>
+    </a>
+  </nav>
+
+
+          <!-- Feature Cards: 交易所对比 -->
+          <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:24px 0;">
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">🏆</div>
+              <h4>币安 (Binance)</h4>
+              <p>全球最大交易所。币种最全，深度好，手续费低。支持CNY出入金。</p>
+              <span class="tag" style="margin-top:8px;display:inline-block;background:rgba(247,147,26,0.1);color:var(--orange);font-size:0.72rem;padding:3px 10px;border-radius:100px;">适合：深度交易</span>
+            </div>
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">🛡️</div>
+              <h4>欧易 (OKX)</h4>
+              <p>全球头部交易所，界面友好，对中文用户友好。</p>
+              <span class="tag" style="margin-top:8px;display:inline-block;background:rgba(16,185,129,0.1);color:#10B981;font-size:0.72rem;padding:3px 10px;border-radius:100px;">适合：新手友好</span>
+            </div>
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">🌍</div>
+              <h4>Coinbase</h4>
+              <p>美国最大交易所，监管最严，合规性最强。</p>
+              <span class="tag" style="margin-top:8px;display:inline-block;background:rgba(59,130,246,0.1);color:#3B82F6;font-size:0.72rem;padding:3px 10px;border-radius:100px;">适合：合规安全</span>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <span class="label">📈 入门篇最佳策略：HODL</span>
+            <div class="text">
+              <p><strong>HODL</strong> = Hold On for Dear Life（为命而持）。买入了就长期持有，不频繁操作。历史上每次减半周期（4年）都创出历史新高。</p>
+              <p>理由：比特币价格波动剧烈，频繁操作往往在波动中亏损，持有反而收益最高。</p>
+            </div>
+          </div>
+          <div class="explorer-box" style="margin-top:20px;">
+            <div class="exp-header"><span style="font-weight:700;">🔍 入门实验：了解当前行情</span></div>
+            <div style="padding:12px 0;">
+              <ul style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;padding-left:20px;">
+                <li>📊 区块浏览器：<a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a></li>
+                <li>💹 实时价格：<a href="https://www.coingecko.com/zh/" target="_blank" style="color:var(--orange);">CoinGecko</a>（无需账户）</li>
+                <li>📰 减半倒计时：<a href="https://www.theblock.co/data/on-chain-metrics/bitcoin/halving-countdown" target="_blank" style="color:var(--orange);">The Block</a></li>
+                <li>⚠️ <strong>警告</strong>：价格波动剧烈，不要投入超过承受得起的资金</li>
+              </ul>
+            </div>
+          </div>
+    </div>
+
+<footer style="text-align:center;padding:32px 20px;color:rgba(255,243,224,0.2);font-size:0.75rem;border-top:1px solid rgba(247,147,26,0.08);margin-top:40px;">
+  © 2026 比特币学习地图 · Bitcoin Learning Map
+</footer>
+
+<script>
+// DCA Calculator
+const btcPrice = 500000; // CNY per BTC
+function updateDCA() {
+  const monthly = parseFloat(document.getElementById('dca-monthly').value) || 500;
+  const months = parseInt(document.getElementById('dca-months').value) || 24;
+  const total = monthly * months;
+  const btc = total / btcPrice;
+  document.getElementById('dca-total').textContent = '¥' + total.toLocaleString('zh-CN');
+  document.getElementById('dca-btc').textContent = '≈ ' + btc.toFixed(btc < 0.001 ? 6 : 4) + ' BTC';
+  document.getElementById('dca-avg').textContent = '≈ ¥' + btcPrice.toLocaleString('zh-CN');
+}
+document.getElementById('dca-monthly').addEventListener('input', updateDCA);
+document.getElementById('dca-months').addEventListener('input', updateDCA);
+updateDCA();
+</script>
+
+</body>
+</html>

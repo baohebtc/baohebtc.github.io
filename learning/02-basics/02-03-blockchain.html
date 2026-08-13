@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>区块链原理 · 比特币学习地图</title>
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+.article-wrap { padding: 40px 0 60px; }
+.reading-progress { position:fixed; top:58px; left:0; right:0; height:3px; background:var(--border); z-index:99; }
+.reading-progress .fill { height:100%; background:linear-gradient(90deg,var(--orange),var(--purple)); width:0%; transition:width 0.2s linear; }
+.article-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
+.article-header h1 .emoji { font-size: 1.8rem; margin-right: 8px; }
+.article-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; }
+.article-body { max-width: 740px; }
+.article-body p { font-size: 0.97rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.85; }
+.article-body h2 { font-size: 1.3rem; font-weight: 700; margin: 36px 0 14px; color: var(--text); }
+.article-body h3 { font-size: 1.05rem; font-weight: 600; margin: 22px 0 10px; color: var(--text); }
+.article-body ul, .article-body ol { padding-left: 22px; margin-bottom: 16px; }
+.article-body li { font-size: 0.94rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.7; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body blockquote { border-left: 3px solid var(--orange); padding: 12px 16px; margin: 20px 0; background: rgba(247,147,26,0.06); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; color: var(--text-secondary); }
+.chapter-label { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: linear-gradient(135deg, rgba(247,147,26,0.1), rgba(139,92,246,0.1)); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.72rem; font-weight: 600; color: var(--orange); margin-bottom: 16px; }
+
+/* 区块可视化 */
+.block-visual { display: flex; align-items: center; gap: 6px; margin: 20px 0; overflow-x: auto; padding: 4px 0; }
+.block { background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; min-width: 110px; flex-shrink: 0; transition: all var(--transition); }
+.block:hover { border-color: var(--orange); transform: translateY(-3px); }
+.block.genesis { border-color: var(--orange); background: rgba(247,147,26,0.06); }
+.block .block-num { font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.block .block-hash { font-family: var(--font-mono); font-size: 0.65rem; color: var(--orange); word-break: break-all; line-height: 1.4; }
+.block .block-txs { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+.block-arrow { color: var(--orange); font-size: 1.2rem; flex-shrink: 0; }
+.genesis-tag { background: var(--orange); color: #fff; font-size: 0.6rem; font-weight: 700; padding: 2px 5px; border-radius: 4px; margin-left: 4px; text-transform: uppercase; }
+
+/* 哈希链条可视化 */
+.hash-chain { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin: 16px 0; font-family: var(--font-mono); font-size: 0.78rem; overflow-x: auto; }
+.hash-chain .chain-label { color: var(--orange); font-weight: 700; margin-bottom: 8px; display: block; }
+.hash-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.hash-label { color: var(--text-muted); min-width: 60px; font-size: 0.72rem; }
+.hash-val { color: var(--text); word-break: break-all; }
+.hash-val.modified { color: #EF4444; text-decoration: line-through; }
+.hash-val .corrupt { background: rgba(239,68,68,0.15); color: #EF4444; padding: 1px 4px; border-radius: 3px; }
+.hash-arrow { color: var(--orange); font-size: 0.85rem; }
+
+/* 比较卡片 */
+.compare-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 20px 0; }
+.compare-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px 20px; }
+.compare-card .cc-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.compare-card .cc-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+.compare-card.good { border-color: rgba(16,185,129,0.2); }
+.compare-card.good .cc-title { color: #10B981; }
+.compare-card.bad { border-color: rgba(239,68,68,0.2); }
+.compare-card.bad .cc-title { color: #EF4444; }
+
+/* 特性亮点 */
+.feature-highlight { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0; }
+.feature-chip { background: var(--bg-gem); border: 1px solid rgba(247,147,26,0.15); border-radius: var(--radius-sm); padding: 14px 16px; text-align: center; }
+.feature-chip .fc-icon { font-size: 1.4rem; margin-bottom: 6px; display: block; }
+.feature-chip .fc-title { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.feature-chip .fc-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; }
+@media(max-width:600px) { .feature-highlight { grid-template-columns: 1fr 1fr; } .block-visual { flex-wrap: wrap; } }
+
+.reading-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(247,147,26,0.1); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.75rem; color: var(--orange); cursor: pointer; transition: all var(--transition); }
+.reading-indicator:hover { background: rgba(247,147,26,0.15); }
+.reading-indicator.read { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #10B981; }
+</style>
+</head>
+<body>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../00-overview.html" class="nav-link active" data-section="learning">📚 学习区</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../index.html">首页</a><span>›</span>
+      <a href="../00-overview.html">学习区</a><span>›</span>
+      <span>入门篇</span><span>›</span>
+      <span>02-03</span>
+    </div>
+
+    <header class="article-header">
+      <div class="chapter-label">⚙️ 入门篇 · Chapter 03</div>
+      <h1><span class="emoji">⛓️</span> 区块链原理</h1>
+      <p class="page-subtitle" style="color:var(--text-secondary);font-size:0.95rem;margin-bottom:14px">区块链是比特币的「账本」——一个由数学和密码学保护、任何人可以验证、没有人可以篡改的共享数据库。</p>
+      <div class="article-meta">
+        <span class="page-tag">⚙️ 入门篇</span>
+        <span>🌱 适合所有人</span>
+        <span>预计阅读 14 分钟</span>
+        <button class="reading-indicator" id="read-btn" onclick="handleMarkRead()">
+          <span id="read-icon">⬜</span>
+          <span id="read-text">标记为已读</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <!-- 多视角卡片 -->
+      <div class="perspective-card" id="p-card">
+        <div class="perspective-header">
+          <div class="ph-label"><span class="ph-label-icon">💎</span><span>一句话 · 六个视角</span></div>
+          <div class="perspective-tabs">
+            <button class="p-tab active" data-angle="philosophy" onclick="switchTab(this)">🏛️ 哲学</button>
+            <button class="p-tab" data-angle="technology" onclick="switchTab(this)">⚙️ 技术</button>
+            <button class="p-tab" data-angle="history" onclick="switchTab(this)">📜 历史</button>
+            <button class="p-tab" data-angle="humanity" onclick="switchTab(this)">🧠 人性</button>
+            <button class="p-tab" data-angle="finance" onclick="switchTab(this)">💰 金融</button>
+            <button class="p-tab" data-angle="business" onclick="switchTab(this)">🏢 商业</button>
+          </div>
+        </div>
+        <div class="perspective-body" style="position:relative">
+          <div class="p-content active" data-angle="philosophy">
+            <span class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;border:1px solid rgba(249,115,22,0.3)">🏛️ 哲学视角</span>
+            <div class="p-quote">"区块链是用『数学链条』替代『人为链条』——每个区块都是一个『历史证人』，而链条把它们串联成不可篡改的证词链。篡改历史？除非你能同时让全球数万个证人闭嘴。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#F97316"></span>核心：用证人网络取代权威机构</div>
+          </div>
+          <div class="p-content" data-angle="technology">
+            <span class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;border:1px solid rgba(59,130,246,0.3)">⚙️ 技术视角</span>
+            <div class="p-quote">"区块链是一个由哈希指针串联的区块链表：每个区块包含前一个区块的哈希值（数字指纹），使得任何对历史的篡改都会导致后续所有哈希断裂——被网络立即发现。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#3B82F6"></span>核心：哈希指针 = 时间戳 + 篡改检测器</div>
+          </div>
+          <div class="p-content" data-angle="history">
+            <span class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;border:1px solid rgba(16,185,129,0.3)">📜 历史视角</span>
+            <div class="p-quote">"人类记录历史的方式经历了三次革命：口头传承（易失）、文字书写（可篡改）、数字存储（可删除）——区块链开启了第四次：分布式共识记录（无法篡改）。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#10B981"></span>核心：人类记录史上的「防伪革命」</div>
+          </div>
+          <div class="p-content" data-angle="humanity">
+            <span class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;border:1px solid rgba(236,72,153,0.3)">🧠 人性视角</span>
+            <div class="p-quote">"区块链是人类第一次在技术层面实现了『永久诚信』——它不依赖人的道德，不依赖监管的威慑，而是把『不篡改历史』变成一个数学上不可能做到的事情。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#EC4899"></span>核心：把「诚信」变成一种技术约束</div>
+          </div>
+          <div class="p-content" data-angle="finance">
+            <span class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;border:1px solid rgba(234,179,8,0.3)">💰 金融视角</span>
+            <div class="p-quote">"区块链实现了『三式账本』之外的第四式：分布式实时同步账本——交易双方和见证人网络同时持有相同账本，任何一笔转账都被网络即时验证和永久记录，消除了对账成本。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#EAB308"></span>核心：实时对账 = 消除金融中介的核心理由</div>
+          </div>
+          <div class="p-content" data-angle="business">
+            <span class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;border:1px solid rgba(139,92,246,0.3)">🏢 商业视角</span>
+            <div class="p-quote">"区块链是一个『信任基础设施』——就像互联网传输数据不需要中间ISP批准，区块链传输价值也不需要中间机构批准。这为全新商业模式打开了大门：无需信任第三方的商业合作。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#8B5CF6"></span>核心：「无需许可」是商业创新的基础</div>
+          </div>
+perspective-footer">
+          <div class="p-dot-indicator">
+            <span class="p-dot active" onclick="goDot(0)"></span>
+            <span class="p-dot" onclick="goDot(1)"></span>
+            <span class="p-dot" onclick="goDot(2)"></span>
+            <span class="p-dot" onclick="goDot(3)"></span>
+            <span class="p-dot" onclick="goDot(4)"></span>
+            <span class="p-dot" onclick="goDot(5)"></span>
+                  <span class="p-dot"></span>
+
+          </div>
+          <div class="p-footer-right" style="font-size:0.72rem;color:var(--text-muted)">⏱️ 自动播放中</div>
+        </div>
+      </div>
+
+      <h2>💎 宝盒比喻：区块链 = 不可撕毁的账本</h2>
+      <p>想象一本永远无法撕掉任何一页、也无法修改已写内容的账本：</p>
+
+      <div class="feature-highlight">
+        <div class="feature-chip">
+          <span class="fc-icon">🔗</span>
+          <div class="fc-title">每页连着上一页</div>
+          <div class="fc-desc">撕掉或修改任何一页，后面所有页都脱落</div>
+        </div>
+        <div class="feature-chip">
+          <span class="fc-icon">👥</span>
+          <div class="fc-title">全球同时持有副本</div>
+          <div class="fc-desc">全球100,000+台电脑同时保存相同账本</div>
+        </div>
+        <div class="feature-chip">
+          <span class="fc-icon">📍</span>
+          <div class="fc-title">任何人可验证</div>
+          <div class="fc-desc">不信任任何人？自己下载账本验证</div>
+        </div>
+      </div>
+
+      <h2>⛓️ 区块链的直观结构</h2>
+
+      <!-- 区块可视化 -->
+      <p>比特币区块链由一系列「区块」组成，每个区块像一张账页：</p>
+
+      <div class="block-visual">
+        <div class="block genesis">
+          <div class="block-num">Block #0 <span class="genesis-tag">创世</span></div>
+          <div class="block-hash">00000000...sha256</div>
+          <div class="block-txs">1笔交易（中本聪→Hal Finney）</div>
+        </div>
+        <span class="block-arrow">→</span>
+        <div class="block">
+          <div class="block-num">Block #1</div>
+          <div class="block-hash">引用 #0 的哈希</div>
+          <div class="block-txs">2笔交易</div>
+        </div>
+        <span class="block-arrow">→</span>
+        <div class="block">
+          <div class="block-num">Block #2</div>
+          <div class="block-hash">引用 #1 的哈希</div>
+          <div class="block-txs">3笔交易</div>
+        </div>
+        <span class="block-arrow">→</span>
+        <div class="block">
+          <div class="block-num">Block #3</div>
+          <div class="block-hash">引用 #2 的哈希</div>
+          <div class="block-txs">...</div>
+        </div>
+        <span class="block-arrow">→</span>
+        <div class="block">
+          <div class="block-num">Block #4</div>
+          <div class="block-hash">引用 #3 的哈希</div>
+          <div class="block-txs">当前区块</div>
+        </div>
+        <span class="block-arrow">→</span>
+        <div class="block" style="border-color:var(--purple);background:rgba(139,92,246,0.05)">
+          <div class="block-num" style="color:var(--purple)">Block #?</div>
+          <div class="block-hash" style="color:var(--purple)">下一个区块<br>待产生</div>
+          <div class="block-txs">...</div>
+        </div>
+      </div>
+
+      <!-- 哈希链条 -->
+      <h3>🔐 哈希链条：篡改为何不可能？</h3>
+
+      <div class="hash-chain">
+        <span class="chain-label">🔗 区块哈希链条示意（简化）</span>
+
+        <div class="hash-row">
+          <span class="hash-label">Block #0</span>
+          <span class="hash-val">哈希: 0A3B7C... <span style="color:var(--purple)">（创世哈希，写死）</span></span>
+        </div>
+        <div class="hash-arrow" style="margin:2px 0 8px 70px">↓ 引用 #0 的哈希</div>
+        <div class="hash-row">
+          <span class="hash-label">Block #1</span>
+          <span class="hash-val">哈希: 7F9E2D... <span style="color:var(--purple)">（包含前哈希0A3B7C...）</span></span>
+        </div>
+        <div class="hash-arrow" style="margin:2px 0 8px 70px">↓ 引用 #1 的哈希</div>
+        <div class="hash-row">
+          <span class="hash-label">Block #2</span>
+          <span class="hash-val">哈希: 4C8A1B... <span style="color:var(--purple)">（包含前哈希7F9E2D...）</span></span>
+        </div>
+        <div class="hash-arrow" style="margin:2px 0 8px 70px">↓ 引用 #2 的哈希</div>
+        <div class="hash-row">
+          <span class="hash-label">Block #3</span>
+          <span class="hash-val">哈希: E2D5F8... <span style="color:var(--purple)">（包含前哈希4C8A1B...）</span></span>
+        </div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px dashed var(--border-light)">
+          <span class="chain-label" style="color:#EF4444">💀 如果篡改 Block #1 会发生什么？</span>
+          <div class="hash-row">
+            <span class="hash-label">Block #1</span>
+            <span class="hash-val modified">旧哈希: 7F9E2D... <span class="corrupt">→ 新哈希: X9K2M5...（内容变了，哈希必然变）</span></span>
+          </div>
+          <div class="hash-arrow" style="margin:2px 0 8px 70px;color:#EF4444">❌ Block #2 的「引用哈希」不匹配！</div>
+          <div class="hash-row">
+            <span class="hash-label">Block #2</span>
+            <span class="hash-val" style="color:#EF4444">期望: 7F9E2D... <span style="color:var(--text-muted)"> 实际: X9K2M5... <span class="corrupt">→ 链断裂！</span></span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <span class="label">💎 关键理解</span>
+        <span class="text">
+          <strong>哈希 = 数据的「数字指纹」。</strong>数据变，指纹必变。<br><br>
+          篡改 Block #1 → Block #1 的哈希变了 → Block #2 的「引用哈希」对不上 → Block #3 也对不上 → 整条链断裂。<br><br>
+          <strong>要修复？必须重写 Block #1 之后的所有区块。而重写需要控制超过全网 50% 的算力——这在数学上和经济上都不可行。</strong>
+        </span>
+      </div>
+
+      <h2>👥 分布式网络：为什么需要这么多人？</h2>
+      <p>比特币网络由全球超过 100,000 个独立运行的全节点组成。每个节点保存完整的区块链副本，实时验证所有新交易和新区块。</p>
+
+      <div class="compare-row">
+        <div class="compare-card good">
+          <div class="cc-title">✅ 去中心化 = 无单点故障</div>
+          <div class="cc-desc">关闭 90% 的节点，剩余 10% 仍然完整运行。没有「核心服务器」可以被攻击或关闭。</div>
+        </div>
+        <div class="compare-card good">
+          <div class="cc-title">✅ 抗审查 = 没有人能阻止</div>
+          <div class="cc-desc">没有一个实体可以单方面决定哪些交易可以被包含。只要互联网在，比特币就在。</div>
+        </div>
+        <div class="compare-card good">
+          <div class="cc-title">✅ 可验证 = 消除信任假设</div>
+          <div class="cc-desc">任何人都可以下载并运行全节点，验证每一笔交易、每一个区块是否正确。不需要信任任何人。</div>
+        </div>
+      </div>
+
+      <h2>🔢 区块数据：每个区块里面装了什么？</h2>
+
+      <div class="table-wrap">
+        <table class="compare-table">
+          <tr>
+            <th>字段</th>
+            <th>内容</th>
+            <th>类比</th>
+          </tr>
+          <tr>
+            <td><strong>区块高度</strong></td>
+            <td>这是第几个区块（创世=0）</td>
+            <td>账本页码</td>
+          </tr>
+          <tr>
+            <td><strong>前一个区块哈希</strong></td>
+            <td>指向前一个区块的「数字指纹」</td>
+            <td>上一页的编码/防伪标</td>
+          </tr>
+          <tr>
+            <td><strong>默克尔根</strong></td>
+            <td>该区块内所有交易的「汇总指纹」</td>
+            <td>本页所有条目的总校验码</td>
+          </tr>
+          <tr>
+            <td><strong>时间戳</strong></td>
+            <td>区块被创建的大致时间</td>
+            <td>记账日期</td>
+          </tr>
+          <tr>
+            <td><strong>难度目标</strong></td>
+            <td>这道数学难题的「难度值」</td>
+            <td>「挖矿」竞技场的入场门槛</td>
+          </tr>
+          <tr>
+            <td><strong>随机数 Nonce</strong></td>
+            <td>矿工用来求解的「试错数」</td>
+            <td>开锁的试错钥匙</td>
+          </tr>
+          <tr>
+            <td><strong>交易列表</strong></td>
+            <td>该区块包含的所有交易</td>
+            <td>本页记录的所有收支条目</td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>📊 区块链 vs 传统数据库</h2>
+
+      <div class="table-wrap">
+        <table class="compare-table">
+          <tr>
+            <th>维度</th>
+            <th>传统数据库</th>
+            <th>比特币区块链</th>
+          </tr>
+          <tr>
+            <td>管理者</td>
+            <td>一家公司/机构（单点控制）</td>
+            <td>全球分布式网络（无单一控制者）</td>
+          </tr>
+          <tr>
+            <td>修改历史</td>
+            <td>管理员可以直接修改</td>
+            <td>数学上不可行（需重写整条链）</td>
+          </tr>
+          <tr>
+            <td>验证方式</td>
+            <td>信任管理员的数据库</td>
+            <td>任何人都可以独立验证</td>
+          </tr>
+          <tr>
+            <td>停机风险</td>
+            <td>服务器宕机=服务中断</td>
+            <td>永远在线（只要互联网在）</td>
+          </tr>
+          <tr>
+            <td>适用场景</td>
+            <td>私密数据、需要快速修改的业务</td>
+            <td>需要公开透明、不可篡改的记录</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="highlight-box">
+        <span class="label">💎 本章小结</span>
+        <span class="text">
+          区块链的核心是三个技术特性：<strong>哈希指针链（不可篡改的历史）</strong>、<strong>分布式网络（无需信任单一机构）</strong>、<strong>共识机制（所有人对同一历史达成一致）</strong>。<br><br>
+          这三者合在一起，让区块链成为一个「不可篡改的共享账本」——就像一个永远无法撕页、全球同时持有副本、任何人都可以验证的超级账本。<br><br>
+          <strong>这是人类历史上第一次，用技术手段实现了「永久诚信」。</strong>
+        </span>
+      </div>
+
+      <div class="cta-box" style="text-align:left">
+        <h3>→ 下一篇：挖矿原理</h3>
+        <p>理解了账本结构，下一个问题：谁来写这本账？新区块是怎么产生的？「挖矿」到底在挖什么？</p>
+        <a href="02-04-mining.html" class="btn btn-primary" style="display:inline-flex;margin-top:4px">继续阅读 →</a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 实时区块浏览器 <span class="exp-go">→</span></a></li>
+          <li><a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener">Blockchain.com 区块浏览器 <span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="02-02-keys-ownership.html" class="nav-prev" style="text-decoration:none">
+      <span class="nav-icon">←</span>
+      <div class="nav-text">
+        <div class="nav-label">入门篇 · 02-02</div>
+        <div class="nav-title">← 私钥与所有权</div>
+      </div>
+    </a>
+    <a href="02-04-mining.html" class="nav-next" style="text-decoration:none">
+      <div class="nav-text" style="text-align:right">
+        <div class="nav-label">入门篇 · 02-04</div>
+        <div class="nav-title">挖矿原理 →</div>
+      </div>
+      <span class="nav-icon">→</span>
+    </a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left"><a href="../../index.html">首页</a> · <a href="../00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a></div>
+      <div class="footer-links"><span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span></div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+<script>
+initNav();
+const PHASE = 'basics';
+const CHAPTER = '02-03-blockchain';
+const card = document.getElementById('p-card');
+
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+function handleMarkRead() { BTCMap.markChapterRead(PHASE, CHAPTER); }
+(function() {
+  const btn = document.getElementById('read-btn');
+  if (btn && BTCMap.isChapterRead(PHASE, CHAPTER)) {
+    btn.classList.add('read');
+    document.getElementById('read-icon').textContent = '✅';
+    document.getElementById('read-text').textContent = '已读完';
+  }
+})();
+window.addEventListener('storage', function(e) {
+  if (e.key === 'btc-progress-update') {
+    const btn = document.getElementById('read-btn');
+    if (btn && BTCMap.isChapterRead(PHASE, CHAPTER)) {
+      btn.classList.add('read');
+      document.getElementById('read-icon').textContent = '✅';
+      document.getElementById('read-text').textContent = '已读完';
+    }
+  }
+});
+
+(function() {
+  if (!card) return;
+  const tabs = card.querySelectorAll('.p-tab');
+  const contents = card.querySelectorAll('.p-content');
+  const dots = card.querySelectorAll('.p-dot');
+  const INTERVAL = 5000;
+  let idx = 0, timer = null;
+
+  function show(i) {
+    idx = ((i % tabs.length) + tabs.length) % tabs.length;
+    tabs.forEach((t, j) => {
+      const cfg = BTCMap.PERSPECTIVE_CONFIG[t.dataset.angle] || {};
+      t.classList.toggle('active', j === idx);
+      t.style.borderColor = j === idx ? (cfg.color || 'var(--orange)') : '';
+    });
+    contents.forEach((c, j) => c.classList.toggle('active', j === idx));
+    dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+    const bar = card.querySelector('.p-bar');
+    if (bar) { bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth; bar.style.transition=`width ${INTERVAL}ms linear`; bar.style.width='100%'; }
+  }
+
+  function start() { clearInterval(timer); timer = setInterval(() => show(idx + 1), INTERVAL); }
+  card.addEventListener('mouseenter', () => clearInterval(timer));
+  card.addEventListener('mouseleave', start);
+  tabs.forEach((t, i) => t.addEventListener('click', () => { show(i); start(); }));
+  dots.forEach((d, i) => d.addEventListener('click', () => { show(i); start(); }));
+  start(); show(0);
+})();
+
+function switchTab(btn) {
+  const card = document.getElementById('p-card');
+  if (!card) return;
+  const tabs = card.querySelectorAll('.p-tab');
+  const contents = card.querySelectorAll('.p-content');
+  const dots = card.querySelectorAll('.p-dot');
+  const idx = Array.from(tabs).indexOf(btn);
+  tabs.forEach((t, j) => {
+    const cfg = BTCMap.PERSPECTIVE_CONFIG[t.dataset.angle] || {};
+    t.classList.toggle('active', j === idx);
+    t.style.borderColor = j === idx ? (cfg.color || 'var(--orange)') : '';
+  });
+  contents.forEach((c, j) => c.classList.toggle('active', j === idx));
+  dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+  const bar = card.querySelector('.p-bar');
+  if (bar) { bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth; bar.style.transition='width 5000ms linear'; bar.style.width='100%'; }
+}
+
+function goDot(i) {
+  switchTab(document.querySelectorAll('.p-tab')[i]);
+}
+</script>
+</body>
+</html>

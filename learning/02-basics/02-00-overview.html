@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入门篇 · 比特币新手启航 | 比特币学习地图</title>
+<meta name="description" content="比特币学习地图 · 入门篇。从私钥到区块，从挖矿到交易，用最少的知识让你真正入门比特币。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+/* Override shared theme for this page */
+:root { --primary: #F7931A; --orange: #F7931A; }
+body { background: #0a0806; color: #FFF3E0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+/* Hero */
+.basics-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  overflow: hidden;
+}
+.basics-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% -5%, rgba(247,147,26,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(247,147,26,0.08) 0%, transparent 55%);
+  pointer-events: none;
+}
+.basics-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 200px;
+  background: linear-gradient(to top, #0a0806, transparent);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #F7931A;
+  background: rgba(247,147,26,0.1);
+  border: 1px solid rgba(247,147,26,0.25);
+  padding: 6px 18px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px;
+  background: #F7931A;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+.hero-title {
+  font-size: clamp(2.4rem, 7vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+.hero-title .gold { color: #F7931A; }
+.hero-title .white { color: #FFF8EE; }
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255,243,224,0.6);
+  max-width: 560px;
+  line-height: 1.75;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Chapter pills */
+.chapter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  max-width: 700px;
+  margin-bottom: 60px;
+  position: relative;
+  z-index: 1;
+}
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(247,147,26,0.07);
+  border: 1px solid rgba(247,147,26,0.18);
+  border-radius: 14px;
+  padding: 14px 20px;
+  text-decoration: none;
+  transition: all 0.3s;
+  min-width: 180px;
+}
+.pill:hover {
+  background: rgba(247,147,26,0.13);
+  border-color: rgba(247,147,26,0.4);
+  transform: translateY(-2px);
+}
+.pill-num {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(247,147,26,0.5);
+  background: rgba(247,147,26,0.1);
+  padding: 3px 8px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+.pill-info { text-align: left; }
+.pill-title { font-size: 0.88rem; font-weight: 600; color: #FFF3E0; line-height: 1.3; }
+.pill-desc { font-size: 0.72rem; color: rgba(255,243,224,0.5); margin-top: 2px; }
+.pill-arrow { color: rgba(247,147,26,0.4); font-size: 1.1rem; margin-left: auto; }
+.pill:hover .pill-arrow { color: #F7931A; }
+
+/* Key insight box */
+.key-insight {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  background: linear-gradient(135deg, #1a1000 0%, #2a1800 100%);
+  border: 1px solid rgba(247,147,26,0.25);
+  border-radius: 20px;
+  padding: 36px 40px;
+  margin-bottom: 60px;
+  text-align: left;
+}
+.key-insight::before {
+  content: '💡';
+  position: absolute;
+  top: -16px;
+  left: 28px;
+  font-size: 1.6rem;
+  background: #0a0806;
+  padding: 0 10px;
+}
+.key-insight h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #F7931A;
+  margin-bottom: 12px;
+}
+.key-insight p {
+  font-size: 0.93rem;
+  color: rgba(255,243,224,0.7);
+  line-height: 1.85;
+  margin-bottom: 10px;
+}
+.key-insight p:last-child { margin-bottom: 0; }
+.key-insight strong { color: #FFF3E0; }
+
+/* Start CTA */
+.start-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #F7931A, #FF9B2F);
+  color: #1a0a00;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 16px 36px;
+  border-radius: 100px;
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s;
+  box-shadow: 0 4px 30px rgba(247,147,26,0.3);
+}
+.start-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(247,147,26,0.45);
+}
+
+/* Progress indicator */
+.progress-ring-wrap {
+  position: relative;
+  z-index: 1;
+  margin-top: 48px;
+}
+.progress-ring-wrap p {
+  font-size: 0.75rem;
+  color: rgba(255,243,224,0.35);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Divider */
+.divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(247,147,26,0.4), transparent);
+  margin: 0 auto 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Bottom nav */
+.bottom-nav {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.bottom-nav a {
+  font-size: 0.82rem;
+  color: rgba(255,243,224,0.4);
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.bottom-nav a:hover { color: #F7931A; border-color: rgba(247,147,26,0.2); }
+
+/* Floating particles */
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(247,147,26,0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+  50% { transform: translateY(-30px) rotate(180deg); opacity: 0.7; }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .basics-hero { padding: 60px 16px 40px; }
+  .pill { min-width: 140px; padding: 12px 14px; }
+  .key-insight { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="basics-hero">
+  <!-- Particles -->
+  <div class="particle" style="top:20%;left:15%;animation-delay:0s;"></div>
+  <div class="particle" style="top:60%;left:75%;animation-delay:1.5s;width:2px;height:2px;"></div>
+  <div class="particle" style="top:35%;left:85%;animation-delay:3s;"></div>
+  <div class="particle" style="top:70%;left:25%;animation-delay:0.8s;width:4px;height:4px;opacity:0.15;"></div>
+  <div class="particle" style="top:15%;left:55%;animation-delay:2.2s;"></div>
+
+  <div class="hero-badge">
+    <span class="dot"></span>
+    <span>入门篇 · Basics</span>
+  </div>
+
+  <h1 class="hero-title">
+    用<span class="gold">最少的时间</span><br>
+    <span class="white">真正入门比特币</span>
+  </h1>
+
+  <p class="hero-subtitle">
+    入门篇是你的比特币第一课。我们只教你真正必要的东西——<br>
+    不多不少，够你安全持有、自如交易、理解本质。
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- Key insight -->
+  <div class="key-insight">
+    <h2>入门篇的核心问题</h2>
+    <p>
+      <strong>比特币是什么？</strong>它不是股票，不是公司，不靠任何人信用背书——它是一套<strong>点对点的数字现金协议</strong>，任何人下载软件即可参与，无需许可。
+    </p>
+    <p>
+      <strong>入门需要多久？</strong>认真学完本篇约需 <strong>30–60 分钟</strong>。学完之后，你将能够：自己保管比特币、理解每一笔交易在做什么、清楚什么是挖矿以及为什么它让比特币安全。
+    </p>
+    <p>
+      <strong>记住一条铁律：</strong>比特币的安全边界是<strong>你的私钥</strong>。泄漏私钥 = 失去一切；保管好私钥 = 比特币永远是你的。
+    </p>
+  </div>
+
+  <!-- Chapter pills -->
+  <div class="chapter-pills">
+    <a href="02-01-one-sentence.html" class="pill">
+      <span class="pill-num">01</span>
+      <div class="pill-info">
+        <div class="pill-title">一句话理解比特币</div>
+        <div class="pill-desc">6个视角 · 30秒入门</div>
+      </div>
+      <span class="pill-arrow">→</span>
+    </a>
+    <a href="02-02-keys-ownership.html" class="pill">
+      <span class="pill-num">02</span>
+      <div class="pill-info">
+        <div class="pill-title">私钥·公钥·地址</div>
+        <div class="pill-desc">所有权原理</div>
+      </div>
+      <span class="pill-arrow">→</span>
+    </a>
+    <a href="02-03-blockchain.html" class="pill">
+      <span class="pill-num">03</span>
+      <div class="pill-info">
+        <div class="pill-title">区块链原理</div>
+        <div class="pill-desc">账本如何工作</div>
+      </div>
+      <span class="pill-arrow">→</span>
+    </a>
+    <a href="02-04-mining.html" class="pill">
+      <span class="pill-num">04</span>
+      <div class="pill-info">
+        <div class="pill-title">挖矿与共识</div>
+        <div class="pill-desc">去中心化安全</div>
+      </div>
+      <span class="pill-arrow">→</span>
+    </a>
+    <a href="02-05-buy-hold.html" class="pill">
+      <span class="pill-num">05</span>
+      <div class="pill-info">
+        <div class="pill-title">买币·入金·持币</div>
+        <div class="pill-desc">第一步完整指南</div>
+      </div>
+      <span class="pill-arrow">→</span>
+    </a>
+    <a href="02-06-security.html" class="pill">
+      <span class="pill-num">06</span>
+      <div class="pill-info">
+        <div class="pill-title">安全存储</div>
+        <div class="pill-desc">助记词·钱包·防盗</div>
+      </div>
+      <span class="pill-arrow">→</span>
+    </a>
+    <a href="02-07-payment.html" class="pill">
+      <span class="pill-num">07</span>
+      <div class="pill-info">
+        <div class="pill-title">支付与闪电网络</div>
+        <div class="pill-desc">比特币怎么花</div>
+      </div>
+      <span class="pill-arrow">→</span>
+    </a>
+  </div>
+
+  <a href="02-01-one-sentence.html" class="start-cta">
+    🚀 开始学习
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+
+  <div class="progress-ring-wrap">
+    <p>共 7 章节 · 建议学习时间 30–60 分钟</p>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="../01-philosophy/01-04-cypherpunk.html">← 哲学篇</a>
+    <a href="02-01-one-sentence.html">第1章</a>
+    <a href="../04-technology/04-01-cryptography.html">技术篇 →</a>
+  </div>
+</section>
+
+
+
+<!-- 章节卡片总览 -->
+<section style="background:var(--bg);padding:60px 0 80px;">
+  <div class="container" style="max-width:900px;">
+    <div style="text-align:center;margin-bottom:40px;">
+      <h2 style="font-size:1.6rem;font-weight:800;margin-bottom:12px;">📚 入门篇 · 完整章节导览</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem;">点击任意章节跳转，或按顺序学习</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:40px;">
+      <a href="02-01-one-sentence.html" style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px;">第 1 章</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px;">📖 一句话理解比特币</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">用 6 种方式说清楚"比特币是什么"。30 秒入门，6 个视角，彻底理解本质。</p>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--orange);">6 分钟阅读 →</div>
+      </a>
+
+      <a href="02-02-keys-ownership.html" style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px;">第 2 章</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px;">🔑 私钥·公钥·地址</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">比特币所有权的数学原理。私钥 = 密码，公钥 = 用户名，地址 = 收款二维码。</p>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--orange);">8 分钟阅读 →</div>
+      </a>
+
+      <a href="02-03-blockchain.html" style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px;">第 3 章</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px;">⛓️ 区块链原理</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">区块结构、Merkle 树、链式验证——为什么区块链不可篡改？</p>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--orange);">8 分钟阅读 →</div>
+      </a>
+
+      <a href="02-04-mining.html" style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px;">第 4 章</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px;">⛏️ 挖矿与共识</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">工作量证明（PoW）如何让去中心化网络达成共识，并确保安全。</p>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--orange);">10 分钟阅读 →</div>
+      </a>
+
+      <a href="02-05-buy-hold.html" style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px;">第 5 章</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px;">💰 买币·入金·持币</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">从注册交易所到 BTC 到账的完整流程，以及 HODL 的心理建设。</p>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--orange);">10 分钟阅读 →</div>
+      </a>
+
+      <a href="02-06-security.html" style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px;">第 6 章</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px;">🔐 安全存储</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">助记词保管、热/冷钱包选择、防钓鱼实践。安全是持有比特币的第一课。</p>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--orange);">12 分钟阅读 →</div>
+      </a>
+
+      <a href="02-07-payment.html" style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+        <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px;">第 7 章</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px;">⚡ 支付与闪电网络</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">链上交易 vs 闪电通道，秒级到账、零手续费的原理与体验。</p>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--orange);">10 分钟阅读 →</div>
+      </a>
+
+      <a href="../01-philosophy/01-01-money.html" style="display:block;background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--radius);padding:20px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='rgba(247,147,26,0.2)'">
+        <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px;">拓展阅读</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:8px;">🧠 哲学篇</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">在动手之前，先理解比特币为什么重要：货币哲学、哈耶克、中本聪的愿景。</p>
+        <div style="margin-top:10px;font-size:0.72rem;color:var(--orange);">探索哲学篇 →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币白皮书 (Bitcoin.org) <span class="exp-go">→</span></a></li>
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 实时浏览器 <span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+<footer style="text-align:center;padding:24px;color:rgba(255,243,224,0.2);font-size:0.75rem;border-top:1px solid rgba(247,147,26,0.08);">
+  © 2026 比特币学习地图 · Bitcoin Learning Map
+</footer>
+
+</body>
+</html>

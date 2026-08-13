@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>私钥与所有权 · 比特币学习地图</title>
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+.article-wrap { padding: 40px 0 60px; }
+.reading-progress { position:fixed; top:58px; left:0; right:0; height:3px; background:var(--border); z-index:99; }
+.reading-progress .fill { height:100%; background:linear-gradient(90deg,var(--orange),var(--purple)); width:0%; transition:width 0.2s linear; }
+.article-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
+.article-header h1 .emoji { font-size: 1.8rem; margin-right: 8px; }
+.article-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; }
+.article-body { max-width: 740px; }
+.article-body p { font-size: 0.97rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.85; }
+.article-body h2 { font-size: 1.3rem; font-weight: 700; margin: 36px 0 14px; color: var(--text); }
+.article-body h3 { font-size: 1.05rem; font-weight: 600; margin: 22px 0 10px; color: var(--text); }
+.article-body ul, .article-body ol { padding-left: 22px; margin-bottom: 16px; }
+.article-body li { font-size: 0.94rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.7; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body blockquote { border-left: 3px solid var(--orange); padding: 12px 16px; margin: 20px 0; background: rgba(247,147,26,0.06); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; color: var(--text-secondary); }
+.article-body code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--orange); }
+.chapter-label { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: linear-gradient(135deg, rgba(247,147,26,0.1), rgba(139,92,246,0.1)); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.72rem; font-weight: 600; color: var(--orange); margin-bottom: 16px; }
+.analogy-box { background: var(--bg-gem); border: 1px solid rgba(247,147,26,0.15); border-radius: var(--radius); padding: 24px; margin: 24px 0; }
+.analogy-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.analogy-box p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+.key-flow { display: flex; align-items: stretch; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+.key-step { flex: 1; min-width: 120px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; position: relative; }
+.key-step::after { content: '→'; position: absolute; right: -18px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; color: var(--orange); }
+.key-step:last-child::after { display: none; }
+.key-step .ks-icon { font-size: 1.6rem; margin-bottom: 8px; display: block; }
+.key-step .ks-title { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.key-step .ks-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; }
+.warning-box { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15); border-left: 4px solid #EF4444; border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; }
+.warning-box .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: #EF4444; font-weight: 700; display: block; margin-bottom: 6px; }
+.warning-box .text { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
+.seed-phrase { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; margin: 16px 0; font-family: var(--font-mono); font-size: 0.88rem; color: var(--text-secondary); text-align: center; letter-spacing: 1px; }
+.seed-phrase .seed-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 10px; display: block; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-sans); }
+.reading-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(247,147,26,0.1); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.75rem; color: var(--orange); cursor: pointer; transition: all var(--transition); }
+.reading-indicator:hover { background: rgba(247,147,26,0.15); }
+.reading-indicator.read { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #10B981; }
+</style>
+</head>
+<body>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../00-overview.html" class="nav-link active" data-section="learning">📚 学习区</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../index.html">首页</a><span>›</span>
+      <a href="../00-overview.html">学习区</a><span>›</span>
+      <span>入门篇</span><span>›</span>
+      <span>02-02</span>
+    </div>
+
+    <header class="article-header">
+      <div class="chapter-label">⚙️ 入门篇 · Chapter 02</div>
+      <h1><span class="emoji">🔐</span> 私钥与所有权</h1>
+      <p class="page-subtitle" style="color:var(--text-secondary);font-size:0.95rem;margin-bottom:14px">比特币世界最重要的铁律：谁拥有私钥，谁就拥有比特币。没有例外，没有客服，没有找回。</p>
+      <div class="article-meta">
+        <span class="page-tag">⚙️ 入门篇</span>
+        <span>🌱 适合所有人</span>
+        <span>预计阅读 12 分钟</span>
+        <button class="reading-indicator" id="read-btn" onclick="handleMarkRead()">
+          <span id="read-icon">⬜</span>
+          <span id="read-text">标记为已读</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <!-- 多视角一句话卡片 -->
+      <div class="perspective-card" id="p-card">
+        <div class="perspective-header">
+          <div class="ph-label"><span class="ph-label-icon">💎</span><span>一句话 · 六个视角</span></div>
+          <div class="perspective-tabs">
+            <button class="p-tab active" data-angle="philosophy" onclick="switchTab(this)">🏛️ 哲学</button>
+            <button class="p-tab" data-angle="technology" onclick="switchTab(this)">⚙️ 技术</button>
+            <button class="p-tab" data-angle="history" onclick="switchTab(this)">📜 历史</button>
+            <button class="p-tab" data-angle="humanity" onclick="switchTab(this)">🧠 人性</button>
+            <button class="p-tab" data-angle="finance" onclick="switchTab(this)">💰 金融</button>
+            <button class="p-tab" data-angle="business" onclick="switchTab(this)">🏢 商业</button>
+          </div>
+        </div>
+        <div class="perspective-body" style="position:relative">
+          <div class="p-content active" data-angle="philosophy">
+            <span class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;border:1px solid rgba(249,115,22,0.3)">🏛️ 哲学视角</span>
+            <div class="p-quote">"私钥是比特币世界里的『绝对权力』——持有私钥意味着你对自己的财富拥有完全的所有权，不需要任何人的批准，也没有任何人可以撤销它。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#F97316"></span>核心：所有权从「制度」回归「个人」</div>
+          </div>
+          <div class="p-content" data-angle="technology">
+            <span class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;border:1px solid rgba(59,130,246,0.3)">⚙️ 技术视角</span>
+            <div class="p-quote">"私钥是一个256位的随机数（大约10⁷⁷种可能性），用椭圆曲线数学从它导出公钥，再用公钥生成地址——这个过程不可逆，永远无法从地址反推私钥。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#3B82F6"></span>核心：数学上的单向性 = 物理上的不可伪造</div>
+          </div>
+          <div class="p-content" data-angle="history">
+            <span class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;border:1px solid rgba(16,185,129,0.3)">📜 历史视角</span>
+            <div class="p-quote">"从古罗马的『所有权』到银行的『账户体系』，人类花了两千年才从『信任保管人』进化到『自己掌握钥匙』——比特币私钥把这一切浓缩到了一个字符串里。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#10B981"></span>核心：第一次实现了「真正的个人所有权」</div>
+          </div>
+          <div class="p-content" data-angle="humanity">
+            <span class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;border:1px solid rgba(236,72,153,0.3)">🧠 人性视角</span>
+            <div class="p-quote">"私钥是比特币世界最诚实的存在——它不会说谎，不会背叛，不会遗忘。你给它，它就认你；你丢了它，它就不认你——无论你是总统还是平民。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#EC4899"></span>核心：代码面前人人平等，人性弱点无处遁形</div>
+          </div>
+          <div class="p-content" data-angle="finance">
+            <span class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;border:1px solid rgba(234,179,8,0.3)">💰 金融视角</span>
+            <div class="p-quote">"在传统金融里，你的资产是银行的负债（『账户余额』只是他们欠你的数字）。比特币私钥让资产回归『绝对持有』——你持有的是资产本身，不是对任何人的债权。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#EAB308"></span>核心：消除交易对手风险</div>
+          </div>
+          <div class="p-content" data-angle="business">
+            <span class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;border:1px solid rgba(139,92,246,0.3)">🏢 商业视角</span>
+            <div class="p-quote">"私钥是比特币商业生态的『身份证明』——用它可以对交易签名，证明你授权了这笔付款，就像银行签名一样，但不需要银行，也不可能被伪造。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#8B5CF6"></span>核心：数字时代的「亲笔签名」</div>
+          </div>
+perspective-footer">
+          <div class="p-dot-indicator">
+            <span class="p-dot active" onclick="goDot(0)"></span>
+            <span class="p-dot" onclick="goDot(1)"></span>
+            <span class="p-dot" onclick="goDot(2)"></span>
+            <span class="p-dot" onclick="goDot(3)"></span>
+            <span class="p-dot" onclick="goDot(4)"></span>
+            <span class="p-dot" onclick="goDot(5)"></span>
+                  <span class="p-dot"></span>
+
+          </div>
+          <div class="p-footer-right" style="font-size:0.72rem;color:var(--text-muted)">⏱️ 自动播放中</div>
+        </div>
+      </div>
+
+      <h2>🔑 宝盒比喻：私钥就是那把钥匙</h2>
+
+      <div class="analogy-box">
+        <h3>💎 私钥 = 宝盒的钥匙</h3>
+        <p>想象你有一个真正的宝盒：</p>
+        <ul style="padding-left:20px;margin-top:10px">
+          <li>🏦 传统银行：银行帮你保管宝盒，给了你一张「存取凭证」。银行随时可以没收宝盒，或告诉你「凭证无效」</li>
+          <li>💎 比特币私钥：你持有宝盒，同时持有唯一的钥匙。没有人能没收宝盒，因为钥匙在你手里</li>
+        </ul>
+        <p style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.88rem"><strong>⚠️ 区别在于：</strong>如果你丢失了传统银行的凭证，银行可以帮你补办。如果你丢失了比特币私钥，没有人可以帮你补办——没有客服，没有找回，没有例外。</p>
+      </div>
+
+      <h2>⚙️ 私钥 → 公钥 → 地址：钥匙的诞生过程</h2>
+      <p>比特币的密码学体系用了一个优雅的数学链条，把一个「随机数」变成「全球唯一地址」：</p>
+
+      <div class="key-flow">
+        <div class="key-step">
+          <span class="ks-icon">🎲</span>
+          <div class="ks-title">1. 私钥</div>
+          <div class="ks-desc">256位随机数<br>≈宇宙原子数</div>
+        </div>
+        <div class="key-step">
+          <span class="ks-icon">🔄</span>
+          <div class="ks-title">2. 公钥</div>
+          <div class="ks-desc">椭圆曲线运算<br>单向，不可逆</div>
+        </div>
+        <div class="key-step">
+          <span class="ks-icon">📍</span>
+          <div class="ks-title">3. 地址</div>
+          <div class="ks-desc">公钥哈希<br>公开接收用</div>
+        </div>
+        <div class="key-step">
+          <span class="ks-icon">💰</span>
+          <div class="ks-title">4. 比特币</div>
+          <div class="ks-desc">发送到地址<br>由私钥签名取出</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="compare-table">
+          <tr>
+            <th></th>
+            <th>私钥</th>
+            <th>公钥</th>
+            <th>地址</th>
+          </tr>
+          <tr>
+            <td>格式</td>
+            <td>64位十六进制字符串，或256位二进制数</td>
+            <td>65字节（未压缩）或33字节（压缩）</td>
+            <td>26-35位字母数字，如 bc1q...</td>
+          </tr>
+          <tr>
+            <td>可见性</td>
+            <td>⚠️ 绝密！只有你自己知道</td>
+            <td>可公开（但建议隐藏）</td>
+            <td>公开，用于接收比特币</td>
+          </tr>
+          <tr>
+            <td>能否反推</td>
+            <td>无法反推（数学单向）</td>
+            <td>无法反推私钥</td>
+            <td>无法反推公钥或私钥</td>
+          </tr>
+          <tr>
+            <td>比喻</td>
+            <td>保险柜密码</td>
+            <td>锁的机械结构</td>
+            <td>锁孔（别人可以往里塞东西）</td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>🔐 签名：用私钥「授权」转账</h2>
+      <p>当你发送比特币时，实际上发生了什么？</p>
+
+      <ol>
+        <li><strong>构建交易</strong>：你说"我要把 X 个BTC从地址A转移到地址B"</li>
+        <li><strong>用私钥签名</strong>：你的钱包用私钥对这个交易请求进行数字签名——这证明"地址A的私钥持有者授权了这笔交易"</li>
+        <li><strong>广播网络</strong>：签名后的交易发送到比特币网络，矿工验证签名有效后，将交易打包进区块</li>
+        <li><strong>确认完成</strong>：6个区块确认后，交易永久写入账本，无法撤销</li>
+      </ol>
+
+      <div class="analogy-box">
+        <h3>📝 类比：签名就像「支票背书」</h3>
+        <p>想象你开了一张支票：</p>
+        <ul style="padding-left:20px;margin-top:10px">
+          <li>🔏 <strong>私钥签名</strong> = 你在支票上签字，授权这笔钱转出</li>
+          <li>📋 <strong>公钥验证</strong> = 银行核对你的签名是否真实（通过你的公开信息）</li>
+          <li>💰 <strong>转账完成</strong> = 银行执行转账，收款人收到钱</li>
+        </ul>
+        <p style="margin-top:10px;font-size:0.82rem;color:var(--text-muted)">关键区别：比特币的签名验证由数学保证，不需要银行——任何人运行比特币软件都可以验证签名的真实性。</p>
+      </div>
+
+      <h2>⚠️ 私钥安全：比特币最常被误解的事</h2>
+
+      <div class="warning-box">
+        <span class="label">🚨 最高风险警告</span>
+        <span class="text">
+          <strong>99%的比特币丢失，都不是因为黑客攻击，而是因为：</strong><br>
+          ① 私钥丢失（硬盘损坏、忘记存储位置）<br>
+          ② 助记词丢失（12/24个单词备份丢失）<br>
+          ③ 被钓鱼（向骗子地址转账）<br>
+          ④ 骗子帮你「保管」（朋友、家人、或自称帮你投资的人）
+        </span>
+      </div>
+
+      <h3>助记词（Seed Phrase）：私钥的人类友好版本</h3>
+      <p>256位私钥太难记，于是比特币社区发明了BIP39标准：用12或24个常见英文单词来表示私钥。</p>
+
+      <div class="seed-phrase">
+        <span class="seed-label">12词助记词示例（真实的助记词列表共2048个词）</span>
+        abandon ability able about above absorb ...<br>
+        <span style="font-size:0.72rem;color:var(--text-muted);display:block;margin-top:8px">* 这不是真实的私钥，仅供示例格式</span>
+      </div>
+
+      <div class="analogy-box">
+        <h3>💎 助记词 = 宝盒的「密码本」</h3>
+        <p>想象你把宝盒藏在深海里，只有你知道密码。密码本损坏 = 宝盒永远无法打开。</p>
+        <ul style="padding-left:20px;margin-top:10px">
+          <li>✅ <strong>正确做法</strong>：把助记词写在纸上，多份存放在不同安全地点</li>
+          <li>✅ <strong>进阶做法</strong>：用金属助记词板（防火防水防锈），刻在不锈钢上</li>
+          <li>❌ <strong>错误做法</strong>：截图存手机、存在云盘、告诉朋友、放在钱包夹里</li>
+          <li>❌ <strong>致命错误</strong>：把助记词放在联网设备上（任何联网设备都可能被黑客攻击）</li>
+        </ul>
+      </div>
+
+      <h2>🏛️ 为什么「私钥=所有权」是比特币的核心创新？</h2>
+      <p>在传统金融体系中，「所有权」是一个法律概念——法律保护你持有资产的权利。但在比特币中，「所有权」是一个数学概念——密码学保证你持有资产的权利。</p>
+
+      <div class="table-wrap">
+        <table class="compare-table">
+          <tr>
+            <th>对比维度</th>
+            <th>传统银行账户</th>
+            <th>比特币私钥</th>
+          </tr>
+          <tr>
+            <td>所有权证明</td>
+            <td>身份证+账户密码（可被冻结）</td>
+            <td>私钥（数学保证，无法被撤销）</td>
+          </tr>
+          <tr>
+            <td>资产控制者</td>
+            <td>银行（他们可以拒绝服务）</td>
+            <td>你自己（只要私钥在手）</td>
+          </tr>
+          <tr>
+            <td>转移条件</td>
+            <td>需要银行审核、政府批准</td>
+            <td>只需要私钥签名，任何人无法阻止</td>
+          </tr>
+          <tr>
+            <td>抗审查性</td>
+            <td>❌ 政府可以冻结账户</td>
+            <td>✅ 数学上无法冻结（但物理设备可被没收）</td>
+          </tr>
+          <tr>
+            <td>丢失找回</td>
+            <td>身份证+证明材料=可能找回</td>
+            <td>❌ 私钥丢失=永久丧失，无法找回</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="highlight-box">
+        <span class="label">💎 本章小结</span>
+        <span class="text">
+          比特币用密码学重新定义了「所有权」：不是法律赋予的权利，而是数学保证的持有。<br><br>
+          <strong>私钥 = 你拥有比特币的唯一证明。</strong><br>
+          持有私钥，你就是比特币的绝对主人。没有客服，没有监管机构，没有法院可以撤销这一点。<br><br>
+          <strong>这既是比特币最大的力量，也是最大的责任。</strong>
+        </span>
+      </div>
+
+      <div class="cta-box" style="text-align:left">
+        <h3>→ 下一篇：区块链原理</h3>
+        <p>理解了所有权，下一个问题：比特币账本（区块链）是如何工作的？为什么历史记录不可篡改？</p>
+        <a href="02-03-blockchain.html" class="btn btn-primary" style="display:inline-flex;margin-top:4px">继续阅读 →</a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币白皮书 (Bitcoin.org) <span class="exp-go">→</span></a></li>
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 实时浏览器 <span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="02-01-one-sentence.html" class="nav-prev" style="text-decoration:none">
+      <span class="nav-icon">←</span>
+      <div class="nav-text">
+        <div class="nav-label">入门篇 · 02-01</div>
+        <div class="nav-title">← 一句话理解比特币</div>
+      </div>
+    </a>
+    <a href="02-03-blockchain.html" class="nav-next" style="text-decoration:none">
+      <div class="nav-text" style="text-align:right">
+        <div class="nav-label">入门篇 · 02-03</div>
+        <div class="nav-title">区块链原理 →</div>
+      </div>
+      <span class="nav-icon">→</span>
+    </a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left"><a href="../../index.html">首页</a> · <a href="../00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a></div>
+      <div class="footer-links"><span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span></div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+<script>
+initNav();
+const PHASE = 'basics';
+const CHAPTER = '02-02-keys-ownership';
+const card = document.getElementById('p-card');
+
+// 进度条
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+// 已读
+function handleMarkRead() { BTCMap.markChapterRead(PHASE, CHAPTER); }
+(function() {
+  const btn = document.getElementById('read-btn');
+  if (btn && BTCMap.isChapterRead(PHASE, CHAPTER)) {
+    btn.classList.add('read');
+    document.getElementById('read-icon').textContent = '✅';
+    document.getElementById('read-text').textContent = '已读完';
+  }
+})();
+window.addEventListener('storage', function(e) {
+  if (e.key === 'btc-progress-update') {
+    const btn = document.getElementById('read-btn');
+    if (btn && BTCMap.isChapterRead(PHASE, CHAPTER)) {
+      btn.classList.add('read');
+      document.getElementById('read-icon').textContent = '✅';
+      document.getElementById('read-text').textContent = '已读完';
+    }
+  }
+});
+
+// 多视角自动播放
+(function() {
+  if (!card) return;
+  const tabs = card.querySelectorAll('.p-tab');
+  const contents = card.querySelectorAll('.p-content');
+  const dots = card.querySelectorAll('.p-dot');
+  const INTERVAL = 5000;
+  let idx = 0, timer = null;
+
+  function show(i) {
+    idx = ((i % tabs.length) + tabs.length) % tabs.length;
+    tabs.forEach((t, j) => {
+      const angle = t.dataset.angle;
+      const cfg = BTCMap.PERSPECTIVE_CONFIG[angle] || {};
+      t.classList.toggle('active', j === idx);
+      t.style.borderColor = j === idx ? (cfg.color || 'var(--orange)') : '';
+    });
+    contents.forEach((c, j) => c.classList.toggle('active', j === idx));
+    dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+    // 重置进度条
+    const bar = card.querySelector('.p-bar');
+    if (bar) { bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth; bar.style.transition=`width ${INTERVAL}ms linear`; bar.style.width='100%'; }
+  }
+
+  function start() { stop(); timer = setInterval(() => show(idx + 1), INTERVAL); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  function reset() { stop(); start(); }
+
+  card.addEventListener('mouseenter', stop);
+  card.addEventListener('mouseleave', start);
+
+  tabs.forEach((t, i) => t.addEventListener('click', () => { show(i); reset(); }));
+  dots.forEach((d, i) => d.addEventListener('click', () => { show(i); reset(); }));
+
+  start();
+  show(0);
+})();
+
+function switchTab(btn) {
+  const card = document.getElementById('p-card');
+  if (!card) return;
+  const tabs = card.querySelectorAll('.p-tab');
+  const contents = card.querySelectorAll('.p-content');
+  const dots = card.querySelectorAll('.p-dot');
+  const angle = btn.dataset.angle;
+  const idx = Array.from(tabs).findIndex(t => t === btn);
+  tabs.forEach((t, j) => {
+    const cfg = BTCMap.PERSPECTIVE_CONFIG[t.dataset.angle] || {};
+    t.classList.toggle('active', j === idx);
+    t.style.borderColor = j === idx ? (cfg.color || 'var(--orange)') : '';
+  });
+  contents.forEach((c, j) => c.classList.toggle('active', j === idx));
+  dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+  const bar = card.querySelector('.p-bar');
+  if (bar) { bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth; bar.style.transition='width 5000ms linear'; bar.style.width='100%'; }
+}
+
+function goDot(i) {
+  const card = document.getElementById('p-card');
+  if (!card) return;
+  const tabs = card.querySelectorAll('.p-tab');
+  const contents = card.querySelectorAll('.p-content');
+  const dots = card.querySelectorAll('.p-dot');
+  tabs.forEach((t, j) => {
+    const cfg = BTCMap.PERSPECTIVE_CONFIG[t.dataset.angle] || {};
+    t.classList.toggle('active', j === i);
+    t.style.borderColor = j === i ? (cfg.color || 'var(--orange)') : '';
+  });
+  contents.forEach((c, j) => c.classList.toggle('active', j === i));
+  dots.forEach((d, j) => d.classList.toggle('active', j === i));
+  const bar = card.querySelector('.p-bar');
+  if (bar) { bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth; bar.style.transition='width 5000ms linear'; bar.style.width='100%'; }
+}
+</script>
+</body>
+</html>

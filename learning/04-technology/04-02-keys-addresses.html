@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>密钥、地址与钱包工程 | 比特币学习地图</title>
+  <meta name="description" content="深入比特币密钥、地址与钱包工程：secp256k1椭圆曲线、ECDSA/Schnorr签名、BIP39助记词、BIP32 HD钱包、地址类型演进Legacy→SegWit→Taproot。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ====== 页面专属样式 ====== */
+    .secp-flow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 12px 0; font-family: var(--font-mono); font-size: 0.82rem; }
+    .secp-flow .step { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 90px; }
+    .secp-flow .step-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 8px 12px; text-align: center; min-width: 90px; }
+    .secp-flow .step-box .s-label { font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-sans); display: block; margin-bottom: 2px; }
+    .secp-flow .step-box .s-val { color: var(--orange); word-break: break-all; }
+    .secp-flow .arrow { color: var(--text-muted); font-size: 1.2rem; }
+    .secp-flow .note { font-family: var(--font-sans); font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+    .sig-compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .sig-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .sig-card-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .sig-card-header .sig-icon { font-size: 1.4rem; }
+    .sig-card-header h4 { font-size: 0.9rem; font-weight: 700; }
+    .sig-card-header .sig-badge { font-size: 0.65rem; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+    .sig-badge-old { background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
+    .sig-badge-new { background: rgba(16,185,129,0.1); color: #10B981; border: 1px solid rgba(16,185,129,0.2); }
+    .sig-card-body { padding: 14px 16px; }
+    .sig-card-body ul { list-style: none; padding: 0; margin: 0; }
+    .sig-card-body li { font-size: 0.83rem; color: var(--text-secondary); padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
+    .sig-card-body li:last-child { border-bottom: none; }
+    .sig-card-body li .li-icon { flex-shrink: 0; }
+    .sig-card-body .sig-len { font-family: var(--font-mono); color: var(--orange); font-size: 0.8rem; }
+    .sig-card-body .sig-len-new { color: #10B981; }
+
+    .bip39-flow { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; margin: 16px 0; }
+    .bip39-row { display: flex; align-items: stretch; gap: 12px; margin-bottom: 12px; }
+    .bip39-step { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 12px; min-width: 0; }
+    .bip39-step .b-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+    .bip39-step .b-val { font-family: var(--font-mono); font-size: 0.75rem; color: var(--orange); word-break: break-all; }
+    .bip39-step .b-desc { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; }
+    .bip39-arrow { display: flex; align-items: center; color: var(--text-muted); font-size: 1.1rem; }
+    .bip39-words-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .bip39-word-chip { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 3px 7px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+    .bip39-word-chip .chip-num { color: var(--text-muted); font-size: 0.62rem; }
+    .bip39-word-chip .chip-word { color: var(--orange); }
+    .bip39-sentence { background: rgba(247,147,26,0.06); border: 1px solid rgba(247,147,26,0.15); border-radius: var(--radius-xs); padding: 10px 14px; font-size: 0.82rem; color: var(--text-secondary); margin-top: 10px; font-style: italic; }
+
+    .path-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+    .path-table th, .path-table td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+    .path-table th { background: var(--bg); color: var(--orange); font-weight: 600; font-size: 0.75rem; }
+    .path-table td { color: var(--text-secondary); }
+    .path-table .path-cell { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text); }
+    .path-table .path-cell.hardened { color: var(--orange); }
+    .path-table .path-cell.normal { color: #3B82F6; }
+    .path-table tr:hover td { background: var(--bg-card-hover); }
+    .path-table .current-row td { background: rgba(247,147,26,0.06); font-weight: 600; color: var(--text); }
+
+    .address-evolution { display: flex; flex-direction: column; gap: 0; margin: 20px 0; position: relative; }
+    .addr-evolution-step { display: flex; gap: 0; position: relative; }
+    .addr-ev-label { width: 110px; flex-shrink: 0; padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+    .addr-ev-label .ev-year { font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono); }
+    .addr-ev-label .ev-name { font-size: 0.78rem; font-weight: 700; color: var(--text); }
+    .addr-ev-label .ev-abbr { font-size: 0.7rem; color: var(--text-secondary); }
+    .addr-ev-bar { flex: 1; padding: 10px 16px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-left: none; border-radius: 0 var(--radius-xs) var(--radius-xs) 0; position: relative; }
+    .addr-ev-bar.bar-legacy { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); }
+    .addr-ev-bar.bar-p2sh { background: rgba(234,179,8,0.06); border-color: rgba(234,179,8,0.2); }
+    .addr-ev-bar.bar-segwit { background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.2); }
+    .addr-ev-bar.bar-taproot { background: rgba(139,92,246,0.06); border-color: rgba(139,92,246,0.2); }
+    .addr-ev-bar .ev-prefix { font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+    .ev-prefix-legacy { background: rgba(239,68,68,0.15); color: #EF4444; }
+    .ev-prefix-p2sh { background: rgba(234,179,8,0.15); color: #EAB308; }
+    .ev-prefix-segwit { background: rgba(16,185,129,0.15); color: #10B981; }
+    .ev-prefix-taproot { background: rgba(139,92,246,0.15); color: #8B5CF6; }
+    .addr-ev-bar .ev-desc { font-size: 0.78rem; color: var(--text-secondary); }
+    .addr-ev-bar .ev-size { font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono); }
+    .addr-ev-connector { width: 110px; display: flex; justify-content: center; padding: 4px 0; }
+    .addr-ev-connector::after { content: '↓'; color: var(--text-muted); font-size: 1rem; }
+    .addr-ev-connector.last { display: none; }
+
+    .addr-samples { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+    .addr-sample-row { display: flex; gap: 10px; align-items: center; }
+    .addr-sample-label { width: 80px; flex-shrink: 0; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-align: right; }
+    .addr-sample-val { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 5px 10px; word-break: break-all; flex: 1; }
+    .addr-sample-val.copyable { cursor: pointer; }
+    .addr-sample-val.copyable:hover { border-color: var(--orange); color: var(--orange); }
+
+    .wallet-tree { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; margin: 16px 0; font-family: var(--font-mono); }
+    .wallet-tree-node { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+    .wt-level { display: inline-block; width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; margin-top: 2px; }
+    .wt-m { background: var(--orange); color: #fff; }
+    .wt-hardened { background: rgba(247,147,26,0.2); color: var(--orange); border: 1px solid rgba(247,147,26,0.3); }
+    .wt-normal { background: rgba(59,130,246,0.15); color: #3B82F6; border: 1px solid rgba(59,130,246,0.3); }
+    .wt-leaf { background: rgba(139,92,246,0.15); color: #8B5CF6; border: 1px solid rgba(139,92,246,0.3); }
+    .wt-label { font-size: 0.8rem; }
+    .wt-desc { font-size: 0.72rem; color: var(--text-muted); margin-left: 26px; }
+    .wallet-tree .tree-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .tree-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--text-muted); }
+    .tree-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+    .lab-section { background: var(--bg-gem); border: 1px solid rgba(247,147,26,0.15); border-radius: var(--radius); padding: 20px 24px; margin: 24px 0; }
+    .lab-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .lab-icon { font-size: 1.3rem; }
+    .lab-title { font-size: 1rem; font-weight: 700; }
+    .lab-tag { font-size: 0.65rem; padding: 2px 7px; border-radius: 10px; background: rgba(247,147,26,0.15); color: var(--orange); border: 1px solid rgba(247,147,26,0.2); font-weight: 600; }
+    .lab-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; }
+    .lab-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .lab-controls label { font-size: 0.82rem; color: var(--text-secondary); flex-shrink: 0; }
+    .lab-controls input { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 6px 12px; color: var(--text); font-size: 0.82rem; font-family: var(--font-mono); outline: none; transition: border-color var(--transition); }
+    .lab-controls input:focus { border-color: var(--orange); }
+    .lab-controls select { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 6px 10px; color: var(--text); font-size: 0.82rem; outline: none; }
+    .btn-lab { background: var(--orange); color: #fff; border: none; border-radius: var(--radius-xs); padding: 7px 16px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+    .btn-lab:hover { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(247,147,26,0.3); }
+    .btn-lab:active { transform: translateY(0); }
+    .lab-result { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 12px 14px; margin-bottom: 12px; }
+    .lab-result-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .lab-result-val { font-family: var(--font-mono); font-size: 0.78rem; color: var(--orange); word-break: break-all; line-height: 1.5; }
+    .lab-tips { font-size: 0.78rem; color: var(--text-muted); }
+    .lab-tips p { margin-bottom: 6px; }
+    .lab-tips ul { padding-left: 18px; }
+    .lab-tips li { margin-bottom: 4px; }
+    .lab-tips strong { color: var(--text-secondary); }
+    .mnemonic-display { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .mnemonic-word { display: flex; align-items: center; gap: 4px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 5px 10px; min-width: 110px; }
+    .mnemonic-word .word-num { font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono); }
+    .mnemonic-word .word-text { font-size: 0.82rem; color: var(--orange); font-weight: 600; }
+
+    .derivation-tree-viz { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin: 10px 0; overflow-x: auto; }
+    .dtree { display: flex; flex-direction: column; gap: 4px; font-family: var(--font-mono); font-size: 0.8rem; }
+    .dtree-node { display: flex; align-items: center; gap: 8px; }
+    .dtree-indent { display: flex; gap: 2px; }
+    .dtree-pipe { width: 1px; background: var(--border); margin: 0 9px; }
+    .dtree-spacer { width: 20px; flex-shrink: 0; }
+    .dtree-label { display: flex; align-items: center; gap: 6px; }
+    .dtree-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dtree-dot.root { background: var(--orange); }
+    .dtree-dot.hard { background: var(--orange); opacity: 0.7; }
+    .dtree-dot.norm { background: #3B82F6; opacity: 0.8; }
+    .dtree-dot.leaf { background: #8B5CF6; }
+    .dtree-name { color: var(--text); }
+    .dtree-path { color: var(--text-muted); font-size: 0.72rem; }
+    .dtree-desc { font-family: var(--font-sans); font-size: 0.72rem; color: var(--text-muted); margin-left: 28px; }
+
+    .addr-compare-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 10px 0; }
+    .addr-compare-table th, .addr-compare-table td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+    .addr-compare-table th { background: var(--bg); color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .addr-compare-table td { color: var(--text-secondary); vertical-align: middle; }
+    .addr-compare-table .addr-type-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+    .badge-legacy { background: rgba(239,68,68,0.12); color: #EF4444; }
+    .badge-p2sh { background: rgba(234,179,8,0.12); color: #EAB308; }
+    .badge-segwit { background: rgba(16,185,129,0.12); color: #10B981; }
+    .badge-taproot { background: rgba(139,92,246,0.12); color: #8B5CF6; }
+    .addr-compare-table .mono { font-family: var(--font-mono); font-size: 0.72rem; word-break: break-all; }
+    .addr-compare-table tr:hover td { background: var(--bg-card-hover); }
+
+    .privacy-warn { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-left: 3px solid #EF4444; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 14px 18px; margin: 16px 0; }
+    .privacy-warn .warn-title { font-size: 0.82rem; font-weight: 700; color: #EF4444; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .privacy-warn p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+    .utxo-merge-box { background: rgba(234,179,8,0.06); border: 1px solid rgba(234,179,8,0.2); border-radius: var(--radius-sm); padding: 14px 18px; margin: 12px 0; }
+    .utxo-merge-box .um-title { font-size: 0.82rem; font-weight: 700; color: #EAB308; margin-bottom: 8px; }
+    .utxo-merge-box ul { padding-left: 18px; }
+    .utxo-merge-box li { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 5px; }
+
+    @media (max-width: 640px) {
+      .sig-compare-grid { grid-template-columns: 1fr; }
+      .bip39-row { flex-direction: column; }
+      .bip39-arrow { display: none; }
+      .addr-evolution-step { flex-direction: column; }
+      .addr-ev-label { width: 100%; flex-direction: row; gap: 8px; align-items: center; }
+      .addr-ev-bar { border-left: 1px solid; border-radius: 0 0 var(--radius-xs) var(--radius-xs); }
+      .addr-ev-connector { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <nav class="top-nav">
+    <div class="nav-inner">
+      <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="04-00-overview.html" class="nav-link active" data-section="learning">技术篇</a>
+          <a href="04-03-transactions.html" class="nav-link" data-section="learning">交易与脚本</a>
+          <a href="04-04-blockchain-structure.html" class="nav-link" data-section="learning">区块链结构</a>
+          <a href="04-05-mining-consensus.html" class="nav-link" data-section="learning">挖矿共识</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="mode-selector">
+          <button class="mode-btn" data-action="toggle-theme">🌓</button>
+          <div class="lang-toggle">
+            <button class="btn btn-sm active" data-lang="zh">中</button>
+            <button class="btn btn-sm" data-lang="en">EN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度 -->
+  <div class="reading-progress"><div class="fill" id="readingFill"></div></div>
+
+  <!-- 面包屑 -->
+  <div class="breadcrumb container" style="padding-top:12px;padding-bottom:0"></div>
+
+  <!-- 页面Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-meta" style="margin-bottom:14px">
+        <span class="page-tag">⚙️ 技术篇 · 第2章</span>
+        <span class="page-tag" style="background:rgba(59,130,246,0.1);color:#3B82F6;border-color:rgba(59,130,246,0.2)">🔐 密钥与密码学</span>
+      </div>
+      <h1>密钥、地址与钱包工程</h1>
+      <p class="page-subtitle">从随机数到助记词，从种子到无限地址——比特币钱包的完整数学之旅。一个12词短语，如何掌管你所有的财富？</p>
+      <div class="page-meta">
+        <span style="font-size:0.78rem;color:var(--text-muted)">⏱ 阅读约18分钟</span>
+        <span style="font-size:0.78rem;color:var(--text-muted)">📊 难度：中级</span>
+        <span id="read-indicator" class="reading-indicator" onclick="toggleRead()">
+          <span id="read-icon">○</span>
+          <span id="read-text">标记已读</span>
+        </span>
+      </div>
+      <div class="progress-wrap" style="margin-top:16px">
+        <div class="progress-label"><span>技术篇进度</span><span>2/9</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:22%"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div class="container" style="padding-top:0">
+
+      <!-- 引言卡片 -->
+      <div class="gem-quote" style="margin-top:32px">
+        <blockquote>"不是你的密钥，就不是你的比特币。"<br><em style="color:var(--text-muted);font-size:0.88rem">——这句比特币世界最著名的信条，背后是一套精密的数学工程。</em></blockquote>
+      </div>
+
+      <!-- ===================== -->
+      <!-- 第一节：椭圆曲线 secp256k1 -->
+      <!-- ===================== -->
+      <section class="article-body" style="margin-top:8px">
+        <h2>一、椭圆曲线 secp256k1：私钥的数学舞台</h2>
+
+        <p>比特币使用的椭圆曲线叫 <strong>secp256k1</strong>，它是 ECDSA（椭圆曲线数字签名算法）的基石。私钥是一个 256 位的随机数，而公钥是私钥在椭圆曲线上的"数学投影"——这个投影无法反向计算。</p>
+
+        <div class="highlight-box">
+          <span class="label">核心参数</span>
+          <div class="secp-flow">
+            <div class="step">
+              <div class="step-box">
+                <span class="s-label">曲线方程</span>
+                <span class="s-val">y² = x³ + 7</span>
+              </div>
+            </div>
+            <span class="arrow">→</span>
+            <div class="step">
+              <div class="step-box">
+                <span class="s-label">有限域素数 p</span>
+                <span class="s-val">2²⁵⁶ − 2³² − 2⁹ − 2⁸ − 2⁷ − 2⁶ − 2⁴ − 1</span>
+              </div>
+            </div>
+            <span class="arrow">→</span>
+            <div class="step">
+              <div class="step-box">
+                <span class="s-label">基点 G</span>
+                <span class="s-val">固定生成元</span>
+              </div>
+            </div>
+            <span class="arrow">→</span>
+            <div class="step">
+              <div class="step-box">
+                <span class="s-label">阶 n</span>
+                <span class="s-val">≈1.15×10⁷⁷</span>
+              </div>
+            </div>
+          </div>
+          <div class="note">* 所有运算在 mod p（素数域）下进行，产生了"离散对数难题"——这是比特币安全性的数学根基</div>
+        </div>
+
+        <p>私钥本质上是一个 <strong>256 位的随机整数</strong>（范围：1 到 n-1）。这个数字的总数约等于宇宙中原子总数的平方——暴力搜索在物理上不可能。</p>
+
+        <h3>1.1 私钥 → 公钥：单向数学变换</h3>
+        <p>公钥 = 私钥 × G（基点），即在椭圆曲线上做 <em>n-1 次"点加法"</em>：</p>
+        <div class="diagram-box" style="text-align:left">
+          <span class="d-label">🔢 公钥派生流程</span>
+          私钥 k（256位随机数）
+             ↓  [k × G = (x, y)]
+          公钥 K（椭圆曲线上的一个点，512位 = x + y 各256位）
+             ↓  [可选：压缩格式，仅存 x + 奇偶位 = 33字节]
+          公钥 K（压缩格式，33字节）
+        </div>
+
+        <h3>1.2 为什么不直接用公钥当地址？</h3>
+        <p>因为公钥在交易中暴露——一旦用公钥签过名，公钥就公开了。如果直接用公钥作为地址，<strong>同一公钥的所有历史交易都相互关联</strong>，隐私归零。所以比特币对公钥做了两次哈希（SHA-256 → RIPEMD-160）才生成地址。</p>
+      </section>
+
+      <!-- ===================== -->
+      <!-- 第二节：ECDSA vs Schnorr -->
+      <!-- ===================== -->
+      <section class="article-body">
+        <h2>二、签名算法：ECDSA → Schnorr</h2>
+
+        <p>签名是私钥"使用证明"的方式。比特币从诞生起使用 <strong>ECDSA</strong>（椭圆曲线数字签名算法），2021年 Taproot 升级后引入了 <strong>Schnorr 签名</strong>。</p>
+
+        <div class="sig-compare-grid">
+          <div class="sig-card">
+            <div class="sig-card-header">
+              <span class="sig-icon">📝</span>
+              <h4>ECDSA 签名</h4>
+              <span class="sig-badge sig-badge-old">2009–2021 主力</span>
+            </div>
+            <div class="sig-card-body">
+              <ul>
+                <li><span class="li-icon">⬜</span>签名长度：<span class="sig-len">72 字节（通常）</span></li>
+                <li><span class="li-icon">🔗</span>签名聚合：<strong>不支持</strong>（每笔输入独立签名）</li>
+                <li><span class="li-icon">🔍</span>可塑性：存在，签名可被第三方修改</li>
+                <li><span class="li-icon">💡</span>特点：成熟、广泛兼容、比特币用了12年</li>
+                <li><span class="li-icon">⚠️</span>多签交易：每参与方产生独立签名，体积大</li>
+              </ul>
+            </div>
+          </div>
+          <div class="sig-card">
+            <div class="sig-card-header">
+              <span class="sig-icon">✍️</span>
+              <h4>Schnorr 签名</h4>
+              <span class="sig-badge sig-badge-new">Taproot 2021+</span>
+            </div>
+            <div class="sig-card-body">
+              <ul>
+                <li><span class="li-icon">⬜</span>签名长度：<span class="sig-len sig-len-new">64 字节（固定）</span></li>
+                <li><span class="li-icon">🔗</span>签名聚合：<strong>原生支持</strong>（多签可合并为一个签名）</li>
+                <li><span class="li-icon">🔍</span>可塑性：<strong>无</strong>（数学上不可改）</li>
+                <li><span class="li-icon">💡</span>特点：更小、更快、支持密钥聚合、隐私更好</li>
+                <li><span class="li-icon">🌳</span>默克尔树：Taproot 支出条件可用聚合签名隐藏</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="treasure-box">
+          <h3>💎 为什么 Schnorr 更重要？</h3>
+          <p>Schnorr 的核心突破是<strong>签名聚合</strong>：10个人多签，原本需要10个签名，聚合后只需1个。这对闪电网络、Batch RBF、复杂智能合约的体积压缩和隐私保护意义重大。Taproot 的所有优势都建立在 Schnorr 之上。</p>
+        </div>
+      </section>
+
+      <!-- ===================== -->
+      <!-- 第三节：助记词 BIP39 -->
+      <!-- ===================== -->
+      <section class="article-body">
+        <h2>三、助记词 BIP39：用人类语言备份密码</h2>
+
+        <p>直接备份 256 位的十六进制种子（64个字符）？人类大脑记不住，打印也容易出错。2013年 BIP39 标准诞生：用 <strong>12 或 24 个英文单词</strong> 来表示这 256 位随机数。</p>
+
+        <h3>3.1 BIP39 工作原理</h3>
+        <div class="bip39-flow">
+          <div class="bip39-row" style="align-items:center">
+            <div class="bip39-step">
+              <div class="b-label">① 随机熵 ENT</div>
+              <div class="b-val">128位（12词）或 256位（24词）</div>
+              <div class="b-desc">由 CSPRNG（加密安全随机数生成器）产生</div>
+            </div>
+            <div class="bip39-arrow">→</div>
+            <div class="bip39-step">
+              <div class="b-label">② 计算校验和 CS</div>
+              <div class="b-val">ENT/32 位（4或8位）</div>
+              <div class="b-desc">取熵的 SHA-256 哈希的前 ENT/32 位</div>
+            </div>
+            <div class="bip39-arrow">→</div>
+            <div class="bip39-step">
+              <div class="b-label">③ 拼接 + 分组</div>
+              <div class="b-val">ENT + CS = 132位或264位</div>
+              <div class="b-desc">每 11 位映射一个词（2¹¹=2048词表）</div>
+            </div>
+            <div class="bip39-arrow">→</div>
+            <div class="bip39-step" style="background:rgba(247,147,26,0.08);border-color:rgba(247,147,26,0.25)">
+              <div class="b-label">④ 助记词输出</div>
+              <div class="b-val">12 或 24 个单词</div>
+              <div class="b-desc">2048词标准词表（英语）</div>
+            </div>
+          </div>
+          <div class="bip39-sentence">
+            💡 计算：12词 = (128 + 4) = 132位 ÷ 11 = <strong>12词</strong>；24词 = (256 + 8) = 264位 ÷ 11 = <strong>24词</strong>
+          </div>
+        </div>
+
+        <h3>3.2 BIP39 词表的特点</h3>
+        <ul>
+          <li><strong>2048 个词</strong>，每个词都是 4-8 个字母的常见英文单词（第11位字母固定提示）</li>
+          <li>首 4 个字母唯一确定单词（输入辅助、错误容忍）</li>
+          <li>最后一个词包含前 11 个词的<strong>校验和</strong>，可检测部分错误</li>
+          <li>词表经过精心设计，避免语义相似词（如 "ability" 和 "ability"），减少记忆错误</li>
+        </ul>
+
+        <div class="privacy-warn">
+          <div class="warn-title">⚠️ 助记词 ≠ 私钥，但它就是私钥</div>
+          <p>助记词通过 PBKDF2（2048次 SHA-512 迭代）转换为 512 位的 <strong>种子</strong>，种子再通过 BIP32 派生所有子密钥。<strong>拿到助记词 = 拿到所有密钥</strong>。所以：</p>
+          <ul style="margin-top:8px;padding-left:18px">
+            <li>永远不要截图或截图保存</li>
+            <li>不要通过邮件、微信、短信传输</li>
+            <li>使用专用硬件钱包的屏幕确认</li>
+            <li>建议 BIP39 Passphrase（额外密码）作为"第25个词"防暴力破解</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===================== -->
+      <!-- 第四节：HD 钱包 BIP32 -->
+      <!-- ===================== -->
+      <section class="article-body">
+        <h2>四、HD 钱包 BIP32：分层确定性</h2>
+
+        <p>想象一下：如果每个收款地址都需要单独备份一个私钥，管理 1000 个地址就需要备份 1000 个密钥。HD 钱包（分层确定性钱包）用 <strong>一个种子生成无限个私钥</strong>，只需备份一个。</p>
+
+        <h3>4.1 BIP32 核心概念</h3>
+        <p>从种子通过 HMAC-SHA512 派生出 <strong>主密钥</strong>（m）和 <strong>链码</strong>，然后用主密钥和链码通过 CKD（子密钥派生）函数生成子密钥。</p>
+
+        <div class="wallet-tree">
+          <div class="wallet-tree-node">
+            <span class="wt-level wt-m">m</span>
+            <span class="wt-label" style="color:var(--orange);font-weight:700">Master Key（主密钥）</span>
+          </div>
+          <div class="wt-desc">种子经 PBKDF2 → HMAC-SHA512 → 主私钥 m + 主链码</div>
+          <div class="wallet-tree-node" style="margin-top:8px">
+            <span class="wt-level wt-hardened">'</span>
+            <span class="wt-label">m/44'</span>
+            <span style="color:var(--text-muted);font-size:0.75rem">= Purse 用途（比特币）</span>
+          </div>
+          <div class="wallet-tree-node">
+            <span class="wt-level wt-hardened">'</span>
+            <span class="wt-label">m/44'/0'</span>
+            <span style="color:var(--text-muted);font-size:0.75rem">= Bitcoin Coin Type</span>
+          </div>
+          <div class="wallet-tree-node">
+            <span class="wt-level wt-hardened">'</span>
+            <span class="wt-label">m/44'/0'/0'</span>
+            <span style="color:var(--text-muted);font-size:0.75rem">= External（收款地址）</span>
+          </div>
+          <div class="wallet-tree-node">
+            <span class="wt-level wt-normal">0</span>
+            <span class="wt-label">m/44'/0'/0'/0</span>
+            <span style="color:var(--text-muted);font-size:0.75rem">= Account 0</span>
+          </div>
+          <div class="wallet-tree-node">
+            <span class="wt-level wt-normal">0</span>
+            <span class="wt-label">m/44'/0'/0'/0/0</span>
+            <span style="color:var(--text-muted);font-size:0.75rem">= 第一个外部收款地址（change=false）</span>
+          </div>
+          <div class="wallet-tree-node">
+            <span class="wt-level wt-normal">1</span>
+            <span class="wt-label">m/44'/0'/0'/0/1</span>
+            <span style="color:var(--text-muted);font-size:0.75rem">= 第二个外部收款地址 ...</span>
+          </div>
+          <div class="wallet-tree-node">
+            <span class="wt-level wt-normal">0</span>
+            <span class="wt-label">m/44'/0'/0'/1/0</span>
+            <span style="color:var(--text-muted);font-size:0.75rem">= 找零地址（change=true）</span>
+          </div>
+          <div class="tree-legend">
+            <div class="tree-legend-item"><div class="tree-legend-dot" style="background:var(--orange)"></div>m = 主密钥</div>
+            <div class="tree-legend-item"><div class="tree-legend-dot" style="background:rgba(247,147,26,0.4);border:1px solid rgba(247,147,26,0.5)"></div>' = 硬化派生（私钥安全隔离）</div>
+            <div class="tree-legend-item"><div class="tree-legend-dot" style="background:rgba(59,130,246,0.4);border:1px solid rgba(59,130,246,0.5)"></div>无' = 正常派生（可从父公钥派生子公钥）</div>
+            <div class="tree-legend-item"><div class="tree-legend-dot" style="background:#8B5CF6"></div>= 地址层级</div>
+          </div>
+        </div>
+
+        <h3>4.2 硬化派生 vs 正常派生</h3>
+        <div class="table-wrap">
+          <table class="path-table">
+            <thead>
+              <tr>
+                <th>类型</th>
+                <th>符号</th>
+                <th>数学运算</th>
+                <th>安全性</th>
+                <th>使用场景</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>硬化派生 Hardened</strong></td>
+                <td class="path-cell hardened">m/44'/0'/<span style="color:#EF4444">5'</span></td>
+                <td>私钥 + 链码 → 子私钥</td>
+                <td>高（父私钥不暴露）</td>
+                <td>账户以上层级（防父公钥泄露导致子密钥泄漏）</td>
+              </tr>
+              <tr class="current-row">
+                <td><strong>正常派生 Normal</strong></td>
+                <td class="path-cell normal">m/44'/0'/0'/0/<span style="color:#3B82F6">5</span></td>
+                <td>父公钥 + 链码 → 子公钥</td>
+                <td>中（冷钱包可用父公钥派生观察子公钥）</td>
+                <td>地址层级（收款地址生成，不需要私钥参与）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===================== -->
+      <!-- 第五节：派生路径标准 BIP44/49/84/86 -->
+      <!-- ===================== -->
+      <section class="article-body">
+        <h2>五、派生路径标准： BIP44 / 49 / 84 / 86</h2>
+
+        <p>BIP32 定义了"如何派生"，但没有规定"每个数字代表什么含义"。BIP44/49/84/86 依次填补了这个空白，让所有钱包能互相兼容。</p>
+
+        <div class="table-wrap">
+          <table class="path-table">
+            <thead>
+              <tr>
+                <th>BIP</th>
+                <th>派生路径</th>
+                <th>地址类型</th>
+                <th>格式</th>
+                <th>示例前缀</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-red">BIP44</span></td>
+                <td class="path-cell hardened">m/44'/0'/0'/0/0</td>
+                <td>Legacy (P2PKH)</td>
+                <td>Base58Check</td>
+                <td style="font-family:var(--font-mono);font-size:0.78rem">1A1zP1eP5QGefi2...</td>
+                <td>最兼容，最古老，体积最大</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-yellow">BIP49</span></td>
+                <td class="path-cell hardened">m/49'/0'/0'/0/0</td>
+                <td>P2SH-SegWit</td>
+                <td>Base58Check</td>
+                <td style="font-family:var(--font-mono);font-size:0.78rem">3J98t1WpEZ73CNmQ...</td>
+                <td>兼容旧节点 + 更低手续费</td>
+              </tr>
+              <tr class="current-row">
+                <td><span class="tag tag-green">BIP84</span></td>
+                <td class="path-cell hardened">m/84'/0'/0'/0/0</td>
+                <td>Native SegWit (P2WPKH)</td>
+                <td>Bech32</td>
+                <td style="font-family:var(--font-mono);font-size:0.78rem">bc1qar0srrr7xf...</td>
+                <td>⚡ 手续费最低，最现代</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-purple">BIP86</span></td>
+                <td class="path-cell hardened">m/86'/0'/0'/0/0</td>
+                <td>Taproot (P2TR)</td>
+                <td>Bech32m</td>
+                <td style="font-family:var(--font-mono);font-size:0.78rem">bc1p...</td>
+                <td>最佳隐私 + 最低体积（2021+）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>5.1 BIP44 路径结构解析</h3>
+        <p>以 <code>m/44'/0'/0'/0/5</code> 为例：</p>
+        <div class="diagram-box" style="text-align:left">
+<span class="d-label">🔢 BIP44 路径五层含义</span>
+m / 44' / 0' / 0' / 0 / 5
+│   │    │    │   │  └── index（地址索引，从0开始）
+│   │    │    │  └────── change（0=外部收款，1=找零）
+│   │    │    └───────── account（账户编号，从0开始）
+│   │    └────────────── coin_type（0=比特币，1=测试网）
+└────────────────────── purpose（44= BIP44 标准）
+</div>
+      </section>
+
+      <!-- ===================== -->
+      <!-- 第六节：地址类型演进 -->
+      <!-- ===================== -->
+      <section class="article-body">
+        <h2>六、地址类型演进：一部技术进化史</h2>
+
+        <p>比特币地址格式经历了四次重大演进，每一代都解决了前一代的特定问题：手续费、隐私、体积、安全性。</p>
+
+        <div class="address-evolution">
+          <div class="addr-evolution-step">
+            <div class="addr-ev-label">
+              <span class="ev-year">2009</span>
+              <span class="ev-name">Legacy</span>
+              <span class="ev-abbr">P2PKH</span>
+            </div>
+            <div class="addr-ev-bar bar-legacy">
+              <span class="ev-prefix ev-prefix-legacy">1...</span>
+              <div>
+                <div class="ev-desc">公钥哈希（Pay to Public Key Hash），最原始格式</div>
+                <div class="ev-size">交易体积：~226 vbytes</div>
+              </div>
+            </div>
+          </div>
+          <div class="addr-ev-connector"></div>
+          <div class="addr-evolution-step">
+            <div class="addr-ev-label">
+              <span class="ev-year">2012</span>
+              <span class="ev-name">P2SH</span>
+              <span class="ev-abbr">Pay to Script Hash</span>
+            </div>
+            <div class="addr-ev-bar bar-p2sh">
+              <span class="ev-prefix ev-prefix-p2sh">3...</span>
+              <div>
+                <div class="ev-desc">脚本哈希，支持多签、闪电网络通道等复杂条件</div>
+                <div class="ev-size">交易体积：~141 vbytes</div>
+              </div>
+            </div>
+          </div>
+          <div class="addr-ev-connector"></div>
+          <div class="addr-evolution-step">
+            <div class="addr-ev-label">
+              <span class="ev-year">2017</span>
+              <span class="ev-name">SegWit</span>
+              <span class="ev-abbr">P2WPKH / P2WSH</span>
+            </div>
+            <div class="addr-ev-bar bar-segwit">
+              <span class="ev-prefix ev-prefix-segwit">bc1q...</span>
+              <div>
+                <div class="ev-desc">隔离见证，签名数据从主区块剥离，区块容量扩大 4x，手续费降低 40-70%</div>
+                <div class="ev-size">交易体积：~104 vbytes</div>
+              </div>
+            </div>
+          </div>
+          <div class="addr-ev-connector"></div>
+          <div class="addr-evolution-step">
+            <div class="addr-ev-label">
+              <span class="ev-year">2021</span>
+              <span class="ev-name">Taproot</span>
+              <span class="ev-abbr">P2TR</span>
+            </div>
+            <div class="addr-ev-bar bar-taproot">
+              <span class="ev-prefix ev-prefix-taproot">bc1p...</span>
+              <div>
+                <div class="ev-desc">Schnorr 签名 + MAST，所有支出条件聚合为一个公钥，隐私最佳，体积最小</div>
+                <div class="ev-size">交易体积：~93 vbytes</div>
+              </div>
+            </div>
+          </div>
+          <div class="addr-ev-connector last"></div>
+        </div>
+
+        <h3>6.1 Bech32 vs Bech32m：Taproot 修复了一个 bug</h3>
+        <p>SegWit 地址使用 Bech32 编码（以 <code>bc1q</code> 开头），但 Bech32 对某些输入存在<strong>校验和弱点</strong>。2021年 Taproot 使用了修正版 <strong>Bech32m</strong>（以 <code>bc1p</code> 开头），修复了这个问题。</p>
+
+        <div class="addr-samples">
+          <div class="addr-sample-row">
+            <span class="addr-sample-label">P2PKH</span>
+            <span class="addr-sample-val copyable" onclick="copyAddr(this)" title="点击复制">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+          </div>
+          <div class="addr-sample-row">
+            <span class="addr-sample-label">P2SH</span>
+            <span class="addr-sample-val copyable" onclick="copyAddr(this)" title="点击复制">3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy</span>
+          </div>
+          <div class="addr-sample-row">
+            <span class="addr-sample-label">P2WPKH</span>
+            <span class="addr-sample-val copyable" onclick="copyAddr(this)" title="点击复制">bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq</span>
+          </div>
+          <div class="addr-sample-row">
+            <span class="addr-sample-label">P2TR</span>
+            <span class="addr-sample-val copyable" onclick="copyAddr(this)" title="点击复制">bc1p0d7r0m7hzd9e3l5y5z9k9k8j7h6g5f4e3d2c1b0a9z8y7x6w5v4u3</span>
+          </div>
+        </div>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:-8px">💡 点击地址可复制（仅演示格式，非真实地址）</p>
+      </section>
+
+      <!-- ===================== -->
+      <!-- 大白话比喻 -->
+      <!-- ===================== -->
+      <section class="article-body">
+        <h2>七、大白话比喻：把钱包工程讲成人话</h2>
+
+        <div class="story-box orange">
+          <span class="story-label">🏠 保险箱比喻</span>
+          <ul>
+            <li><strong>私钥</strong> = 保险箱的物理钥匙。只有持有它才能打开保险箱、取走里面的比特币。</li>
+            <li><strong>助记词</strong> = 用 12 个英文单词写成的"钥匙模具"。模具本身不能开锁，但用它可以复制出钥匙（私钥）。</li>
+            <li><strong>派生路径</strong> = 钥匙上的"房间号"。同一个模具（种子）能复制出无数把钥匙，分别打开不同房间（不同地址）的保险箱。</li>
+            <li><strong>地址</strong> = 保险箱的编号。别人知道编号可以往里面存钱，但只有持有钥匙才能取钱。</li>
+          </ul>
+        </div>
+
+        <div class="story-box blue">
+          <span class="story-label">🏗️ 工厂比喻</span>
+          <p>HD 钱包就像一座<strong>工厂</strong>：工厂有一个保密的"总配方"（种子），有了这个配方，工厂可以<strong>源源不断地生产</strong>新的钥匙（私钥）和保险箱编号（地址）。你只需要备份总配方，整个工厂的产出都可以复现。</p>
+          <ul>
+            <li>工厂的"总配方" = 助记词（12/24个词）</li>
+            <li>工厂的"生产规则" = BIP32 派生算法</li>
+            <li>不同车间 = BIP44（普通地址）、BIP49（隔离见证兼容）、BIP84（原生隔离见证）、BIP86（Taproot）</li>
+            <li>每个车间的房间号 = 地址索引（0, 1, 2, 3...）</li>
+          </ul>
+        </div>
+
+        <div class="story-box green">
+          <span class="story-label">📜 族谱比喻</span>
+          <p>HD 钱包的密钥结构就像一本<strong>族谱</strong>：</p>
+          <ul>
+            <li>族谱的起点（祖先）= 主密钥 m</li>
+            <li>每生一代 = 一次密钥派生</li>
+            <li>加「'」的派生 = 秘密生育（硬化派生，子女的出生证不被公开）</li>
+            <li>不加「'」的派生 = 公开生育（正常派生，子女的出生证可以公开）</li>
+            <li>族谱的最后一代（叶子）= 具体的地址对应的私钥</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===================== -->
+      <!-- 多视角卡片 -->
+      <!-- ===================== -->
+      <section style="margin: 8px 0 0">
+        <div class="perspective-card" id="mainPerspective">
+          <div class="perspective-header">
+            <div class="ph-label">
+              <span class="ph-label-icon">🎭</span>
+              <span>多视角重新解释</span>
+            </div>
+            <div class="perspective-tabs">
+              <button class="p-tab active" data-angle="technology">⚙️ 技术</button>
+              <button class="p-tab" data-angle="history">📜 历史</button>
+              <button class="p-tab" data-angle="humanity">🧠 普通用户</button>
+              <button class="p-tab" data-angle="finance">💰 经济</button>
+              <button class="p-tab" data-angle="philosophy">🏛️ 哲学</button>
+              <button class="p-tab" data-angle="business">🏢 安全</button>
+            </div>
+          </div>
+          <div class="perspective-body" style="min-height:160px">
+            <!-- 技术视角 -->
+            <div class="p-content active" data-angle="technology">
+              <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;border:1px solid rgba(59,130,246,0.2)">⚙️ 技术视角</div>
+              <p class="p-quote">"HD 钱包的核心是：一个种子 → 无限地址。派生路径实现了地址空间的分层管理，BIP44/49/84/86 则让每种地址类型有标准可循。"</p>
+              <p>钱包软件（如 Electrum、BlueWallet）需要实现 BIP32 的 CKD函数 来派生子密钥。硬化派生（通过私钥）用于高安全层级，正常派生（通过公钥）用于低安全层级——这样冷钱包可以只暴露父公钥，就能生成观察子公钥，完全不需要联网的私钥。</p>
+              <div class="p-author"><span class="p-dot" style="color:#3B82F6"></span>实现要点：HMAC-SHA512 → 主密钥+链码 → 递归派生 + 防泄漏设计</div>
+            </div>
+            <!-- 历史视角 -->
+            <div class="p-content" data-angle="history">
+              <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;border:1px solid rgba(16,185,129,0.2)">📜 历史视角</div>
+              <p class="p-quote">"2009年：中本聪用最原始的 P2PKH 地址。2012年：P2SH 让多签成为可能。2017年：SegWit 解决了区块容量战争。2021年：Taproot 把比特币带向现代密码学。"</p>
+              <p>每一次地址升级，都对应比特币社区的一次重大争论：P2SH 背后是关于多签钱包的实用性讨论；SegWit 引发了著名的区块大小战争（Bitcoin Cash 分叉）；Taproot 通过了 Bitcoin Core 的 BIP341/342 流程，是近年来最顺利的协议升级。</p>
+              <div class="p-author"><span class="p-dot" style="color:#10B981"></span>历史逻辑：地址格式的演进 = 比特币功能需求 + 社区博弈 + 技术进步</div>
+            </div>
+            <!-- 普通用户视角 -->
+            <div class="p-content" data-angle="humanity">
+              <div class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;border:1px solid rgba(236,72,153,0.2)">🧠 普通用户视角</div>
+              <p class="p-quote">"我只需要保管好 12 个英文单词，就能控制所有比特币。钱包会自动帮我生成新地址，每次收款都用不同的地址。"</p>
+              <p>用户不需要理解 secp256k1，只需要记住：<strong>助记词就是一切</strong>。建议使用硬件钱包，亲自在设备屏幕确认助记词，从不在联网设备上输入。备份时，建议将助记词抄写在防潮防火的金属板上（Cryptosteel 等），而非纸质（火灾/水灾易损）。</p>
+              <div class="p-author"><span class="p-dot" style="color:#EC4899"></span>记住：一个种子管所有币；不要触网；多备份（防火防盗防遗忘）</div>
+            </div>
+            <!-- 经济视角 -->
+            <div class="p-content" data-angle="finance">
+              <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;border:1px solid rgba(234,179,8,0.2)">💰 经济视角</div>
+              <p class="p-quote">"地址类型的选择，直接影响交易手续费。UTXO 合并策略，是在比特币网络上做'资产管理'。"</p>
+              <p>在链上手续费高企时（2021年 Mempool 拥堵期），Legacy 地址每笔交易手续费可能是 Taproot 的 2-3 倍。同时，UTXO 的合并（将多个小UTXO合并为一个）和拆分（在价格高时拆分为多个便于后续花费）都是比特币链上资产管理策略，影响实际的手续费支出。</p>
+              <div class="utxo-merge-box">
+                <div class="um-title">💡 手续费优化策略</div>
+                <ul>
+                  <li><strong>优先使用 Taproot 地址</strong>（bc1p），手续费最低</li>
+                  <li><strong>高峰期避免大额转账</strong>，用闪电网络代替链上</li>
+                  <li><strong>UTXO 合并</strong>：低手续费时将多个小UTXO合并（注意隐私权衡）</li>
+                  <li><strong>CoinJoin</strong>：利用隐私协议混淆 UTXO 来源，同时优化数量</li>
+                </ul>
+              </div>
+              <div class="p-author"><span class="p-dot" style="color:#EAB308"></span>经济核心：地址类型 = 链上手续费成本；UTXO管理 = 资产管理效率</div>
+            </div>
+            <!-- 哲学视角 -->
+            <div class="p-content" data-angle="philosophy">
+              <div class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;border:1px solid rgba(249,115,22,0.2)">🏛️ 哲学视角</div>
+              <p class="p-quote">"私钥的数学本质，是宇宙中一个只有你知道的秘密。'你的密钥'，在数学上是一个只有你才能解开的方程的解。"</p>
+              <p>这背后是密码学的一个深刻思想：<strong>知识即权力</strong>。在比特币里，"知道私钥"= "拥有比特币"，没有任何第三方可以撤销这个数学事实。这与银行系统的"账户余额 + 密码 + 身份验证"多层信任体系形成根本性对比——比特币把信任压缩到了数学本身。</p>
+              <div class="p-author"><span class="p-dot" style="color:#F97316"></span>哲学核心：私钥所有权 = 数学上的绝对控制权；无第三方可撤销</div>
+            </div>
+            <!-- 安全视角 -->
+            <div class="p-content" data-angle="business">
+              <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;border:1px solid rgba(139,92,246,0.2)">🏢 安全视角</div>
+              <p class="p-quote">"地址复用是隐私的坟墓，也是安全的隐患。每一个地址就像一个一次性面具——用完即弃，才能最大化保护。"</p>
+              <p>HD 钱包的隐私设计要求：<strong>每个收款地址只用一次</strong>（或每个交易场景用不同地址）。原因：一旦用某地址签名交易，其公钥公开，所有来自该地址的比特币都可被追踪。攻击者可以通过链上分析关联同一地址的所有交易，甚至推断用户资产总量。</p>
+              <div class="privacy-warn" style="margin:10px 0">
+                <div class="warn-title">🔴 密钥轮换策略</div>
+                <ul style="padding-left:18px">
+                  <li>日常小额：频繁更换地址，每次收款用新地址</li>
+                  <li>大额存储：冷钱包隔离，定期轮换（每月/每季度）</li>
+                  <li>绝不使用：同一私钥签名多笔关联交易</li>
+                  <li>BIP39 Passphrase：添加第25个词，即便助记词泄露也有保护</li>
+                </ul>
+              </div>
+              <div class="p-author"><span class="p-dot" style="color:#8B5CF6"></span>安全核心：一次性地址原则；密钥永不触网；BIP39 passphrase 是最后防线</div>
+            </div>
+            <div class="p-auto-progress"><div class="p-bar"></div></div>
+          </div>
+          <div class="perspective-footer">
+            <div class="p-footer-left">
+              <div class="p-dot-indicator" id="dots1"></div>
+            </div>
+            <div class="p-footer-right">
+              <span class="auto-badge">⏱️ <span data-i18n="persp.auto">自动播放 ·</span> <span data-i18n="persp.click">点击切换视角</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== -->
+      <!-- 动手实验区 -->
+      <!-- ===================== -->
+
+      <!-- 实验一：助记词生成器 -->
+      <div class="lab-section">
+        <div class="lab-header">
+          <span class="lab-icon">🔧</span>
+          <h3 class="lab-title">动手实验一：助记词生成器（演示 BIP39 流程）</h3>
+          <span class="lab-tag">浏览器运行</span>
+        </div>
+        <div class="lab-box">
+          <div class="lab-controls">
+            <label for="entropySelect">熵位数：</label>
+            <select id="entropySelect">
+              <option value="128">128 位（12词，推荐）</option>
+              <option value="256">256 位（24词，高安全）</option>
+            </select>
+            <button class="btn-lab" onclick="generateMnemonic()">🎲 生成新助记词</button>
+            <button class="btn-lab" style="background:var(--bg-card);color:var(--text);border:1px solid var(--border)" onclick="copyMnemonic()">📋 复制</button>
+          </div>
+          <div class="lab-result">
+            <div class="lab-result-label">BIP39 助记词</div>
+            <div id="mnemonicOutput" class="mnemonic-display" style="font-size:0.82rem;color:var(--text-muted)">点击"生成新助记词"开始演示...</div>
+          </div>
+          <div class="lab-result" id="entropyDetailBox" style="display:none">
+            <div class="lab-result-label">熵值详情</div>
+            <div id="entropyDetail" class="lab-result-val" style="font-size:0.75rem"></div>
+          </div>
+          <div class="lab-tips">
+            <p><strong>💡 原理说明</strong>：BIP39 助记词生成过程：</p>
+            <ul>
+              <li>第一步：CSPRNG 生成 <span id="entropyBitDisplay">128</span> 位随机熵</li>
+              <li>第二步：计算熵的 SHA-256 哈希，取前 <span id="checksumBitDisplay">4</span> 位作为校验和</li>
+              <li>第三步：拼接后每 11 位映射到 2048 词表的一个词</li>
+              <li><strong>⚠️ 注意</strong>：这是演示页面，真正生成助记词时请使用硬件钱包的离线随机数生成器</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 实验二：派生路径可视化 -->
+      <div class="lab-section">
+        <div class="lab-header">
+          <span class="lab-icon">🌳</span>
+          <h3 class="lab-title">动手实验二：派生路径可视化</h3>
+          <span class="lab-tag">交互演示</span>
+        </div>
+        <div class="lab-box">
+          <div class="lab-controls">
+            <label for="pathSelect">地址类型：</label>
+            <select id="pathSelect" onchange="renderDerivationTree()">
+              <option value="p2pkh">BIP44 — Legacy (P2PKH)</option>
+              <option value="p2sh-wrapped">BIP49 — P2SH-SegWit</option>
+              <option value="native-segwit">BIP84 — Native SegWit (推荐)</option>
+              <option value="taproot">BIP86 — Taproot</option>
+            </select>
+            <label for="accountInput">账户号：</label>
+            <input type="number" id="accountInput" value="0" min="0" max="100" style="width:60px" onchange="renderDerivationTree()">
+            <label for="changeSelect">用途：</label>
+            <select id="changeSelect" onchange="renderDerivationTree()">
+              <option value="0">外部收款 (0)</option>
+              <option value="1">找零 (1)</option>
+            </select>
+            <label for="addressIndex">地址索引：</label>
+            <input type="number" id="addressIndex" value="0" min="0" max="1000" style="width:70px" onchange="renderDerivationTree()">
+          </div>
+          <div class="derivation-tree-viz" id="derivationTreeViz"></div>
+          <div class="lab-result">
+            <div class="lab-result-label">完整派生路径</div>
+            <div id="fullPathOutput" class="lab-result-val"></div>
+          </div>
+          <div class="lab-tips">
+            <p><strong>💡 理解要点</strong>：</p>
+            <ul>
+              <li><span style="color:var(--orange);font-family:var(--font-mono)">m/44'</span>、<span style="color:var(--orange);font-family:var(--font-mono)">m/49'</span> 等是<strong>硬化派生</strong>（用私钥派生，安全性高）</li>
+              <li>最后的 <span style="color:#3B82F6;font-family:var(--font-mono)">0</span>、<span style="color:#3B82F6;font-family:var(--font-mono)">1</span> 是<strong>正常派生</strong>（可用公钥派生，可用于观察钱包）</li>
+              <li>不同地址类型（BIP44/49/84/86）的区别在于 purpose 字段不同（44/49/84/86）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 实验三：地址格式对比器 -->
+      <div class="lab-section">
+        <div class="lab-header">
+          <span class="lab-icon">🔍</span>
+          <h3 class="lab-title">动手实验三：地址格式对比器</h3>
+          <span class="lab-tag">交互演示</span>
+        </div>
+        <div class="lab-box">
+          <div class="lab-controls">
+            <label for="pubkeyInput">输入公钥（十六进制，66字节压缩格式）：</label>
+            <input type="text" id="pubkeyInput" placeholder="02 或 03 开头，66个十六进制字符" style="width:400px;font-size:0.75rem" value="02dde1c58d32c5c2ac55c0d2c0e0e7e5c5e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0">
+            <button class="btn-lab" onclick="compareAddresses()">⚡ 生成地址对比</button>
+          </div>
+          <div class="lab-result" id="addrCompareResult">
+            <div class="lab-result-label">地址格式对比（基于输入公钥的模拟哈希）</div>
+            <div style="overflow-x:auto">
+              <table class="addr-compare-table" id="addrTable">
+                <thead>
+                  <tr>
+                    <th>地址类型</th>
+                    <th>格式</th>
+                    <th>前缀</th>
+                    <th>地址示例（模拟）</th>
+                    <th>交易体积</th>
+                  </tr>
+                </thead>
+                <tbody id="addrTableBody">
+                  <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px">点击"生成地址对比"查看结果</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="lab-tips">
+            <p><strong>💡 实际生成流程</strong>：</p>
+            <ul>
+              <li>P2PKH：<code>SHA256(公钥) → RIPEMD160(结果)</code> → 加上版本前缀 → Base58Check 编码</li>
+              <li>P2SH：脚本哈希（redeemScript 的哈希）→ Base58Check（以 3 开头）</li>
+              <li>P2WPKH：<code>SHA256(公钥) → RIPEMD160(结果)</code> → Bech32 编码（以 bc1q 开头）</li>
+              <li>P2TR：<code>Tweaked 公钥 = 公钥 + 叶节点哈希</code> → Bech32m 编码（以 bc1p 开头）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.container -->
+  </main>
+
+  <!-- ===================== -->
+  <!-- 章节导航 -->
+  <!-- ===================== -->
+  <section class="chapter-nav">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <a href="04-01-cryptography.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <div class="nav-text">
+          <span class="nav-label">← 上一篇</span>
+          <span class="nav-title">密码学基石</span>
+        </div>
+      </a>
+      <div style="text-align:center;font-size:0.75rem;color:var(--text-muted)">技术篇 2/9</div>
+      <a href="04-03-transactions.html" class="nav-next">
+        <div class="nav-text">
+          <span class="nav-label">下一篇 →</span>
+          <span class="nav-title">交易与脚本</span>
+        </div>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <a href="../../index.html">₿ 比特币学习地图</a> · 开宝盒的钥匙
+        </div>
+        <div class="footer-links">
+          <a href="04-00-overview.html">技术篇总览</a>
+          <a href="04-01-cryptography.html">密码学</a>
+          <a href="04-03-transactions.html">交易与脚本</a>
+          <a href="04-04-blockchain-structure.html">区块链结构</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../../shared/nav.js"></script>
+  <script>
+  // ======================================================
+  // 初始化
+  // ======================================================
+  document.addEventListener('DOMContentLoaded', () => {
+    initNav();
+    renderDerivationTree();
+    initReadState();
+    initPerspectiveDots();
+
+    // 阅读进度
+    const fill = document.getElementById('readingFill');
+    if (fill) {
+      window.addEventListener('scroll', () => {
+        const doc = document.documentElement;
+        const st = doc.scrollTop || document.body.scrollTop;
+        const sh = doc.scrollHeight - doc.clientHeight;
+        fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+      }, { passive: true });
+    }
+  });
+
+  // ======================================================
+  // 多视角卡片 dots 初始化
+  // ======================================================
+  function initPerspectiveDots() {
+    const card = document.getElementById('mainPerspective');
+    if (!card) return;
+    const tabs = card.querySelectorAll('.p-tab');
+    const dotsEl = document.getElementById('dots1');
+    if (!dotsEl) return;
+    dotsEl.innerHTML = '';
+    tabs.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'p-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => {
+        const tabs2 = card.querySelectorAll('.p-tab');
+        const contents = card.querySelectorAll('.p-content');
+        const dotsAll = dotsEl.querySelectorAll('.p-dot');
+        const total = tabs2.length;
+        const currentIdx = i;
+        tabs2.forEach((t, j) => {
+          t.classList.toggle('active', j === currentIdx);
+          const angle = t.dataset.angle;
+          t.style.borderColor = j === currentIdx ? (PERSPECTIVE_CONFIG[angle]?.color || 'var(--orange)') : '';
+        });
+        contents.forEach((c, j) => c.classList.toggle('active', j === currentIdx));
+        dotsAll.forEach((d, j) => d.classList.toggle('active', j === currentIdx));
+        // 重置进度条
+        const bar = card.querySelector('.p-auto-progress .p-bar');
+        if (bar) {
+          bar.style.transition = 'none';
+          bar.style.width = '0%';
+          void bar.offsetWidth;
+          bar.style.transition = 'width 5000ms linear';
+          bar.style.width = '100%';
+        }
+      });
+      dotsEl.appendChild(dot);
+    });
+  }
+
+  // ======================================================
+  // 标记已读
+  // ======================================================
+  function initReadState() {
+    const key = '03-02-keys-addresses';
+    if (window.BTCMap && BTCMap.isChapterRead && BTCMap.isChapterRead('04-technology', key)) {
+      markReadDone();
+    }
+  }
+
+  function toggleRead() {
+    const key = '03-02-keys-addresses';
+    const indicator = document.getElementById('read-indicator');
+    if (!indicator.classList.contains('read')) {
+      if (window.BTCMap && BTCMap.markChapterRead) {
+        BTCMap.markChapterRead('04-technology', key);
+      }
+      markReadDone();
+    }
+  }
+
+  function markReadDone() {
+    const indicator = document.getElementById('read-indicator');
+    const icon = document.getElementById('read-icon');
+    const text = document.getElementById('read-text');
+    indicator.classList.add('read');
+    if (icon) icon.textContent = '✅';
+    if (text) text.textContent = '已读完';
+  }
+
+  // ======================================================
+  // 复制地址
+  // ======================================================
+  function copyAddr(el) {
+    const text = el.textContent.trim();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = el.textContent;
+        el.textContent = '✅ 已复制';
+        el.style.borderColor = '#10B981';
+        el.style.color = '#10B981';
+        setTimeout(() => {
+          el.textContent = orig;
+          el.style.borderColor = '';
+          el.style.color = '';
+        }, 1500);
+      });
+    }
+  }
+
+  // ======================================================
+  // 实验一：助记词生成器
+  // ======================================================
+  const BIP39_WORDLIST = [
+    "abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse",
+    "access","accident","account","accuse","achieve","acid","acoustic","acquire","across","act",
+    "action","actor","actress","actual","adapt","add","addict","address","adjust","admit",
+    "adult","advance","advice","aerobic","affair","afford","afraid","again","age","agent",
+    "agree","ahead","aim","air","airport","aisle","alarm","album","alcohol","alert",
+    "alien","all","alley","allow","almost","alone","alpha","already","also","alter",
+    "always","amateur","amazing","among","amount","amused","analyst","anchor","ancient","anger",
+    "angle","angry","animal","ankle","announce","annual","another","answer","antenna","antique",
+    "anxiety","any","apart","apology","appear","apple","approve","april","arch","arctic",
+    "area","arena","argue","arm","armed","armor","army","around","arrange","arrest",
+    "arrive","arrow","art","artefact","artist","artwork","ask","aspect","assault","asset",
+    "assist","assume","asthma","athlete","atom","attack","attend","attitude","attract","auction",
+    "audit","august","aunt","author","auto","autumn","average","avocado","avoid","awake",
+    "aware","away","awesome","awful","awkward","axis","baby","bachelor","bacon","badge",
+    "bag","balance","balcony","ball","bamboo","banana","banner","bar","barely","bargain",
+    "barrel","base","basic","basket","battle","beach","bean","beauty","because","become",
+    "beef","before","begin","behave","behind","believe","below","belt","bench","benefit",
+    "best","betray","better","between","beyond","bicycle","bid","bike","bind","biology",
+    "bird","birth","bitter","black","blade","blame","blanket","blast","bleak","bless",
+    "blind","blood","blossom","blouse","blue","blur","blush","board","boat","body",
+    "boil","bomb","bone","bonus","book","boost","border","boring","borrow","boss",
+    "bottom","bounce","box","boy","bracket","brain","brand","brass","brave","bread",
+    "breeze","brick","bridge","brief","bright","bring","brisk","broccoli","broken","bronze",
+    "broom","brother","brown","brush","bubble","buddy","budget","buffalo","build","bulb",
+    "bulk","bullet","bundle","bunker","burden","burger","burst","bus","business","busy",
+    "butter","buyer","buzz","cabbage","cabin","cable","cactus","cage","cake","call",
+    "calm","camera","camp","can","canal","cancel","candy","cannon","canoe","canvas",
+    "canyon","capable","capital","captain","car","carbon","card","cargo","carpet","carry",
+    "cart","case","cash","casino","castle","casual","cat","catalog","catch","category",
+    "cattle","caught","cause","caution","cave","ceiling","celery","cement","census","century",
+    "cereal","certain","chair","chalk","champion","change","chaos","chapter","charge","chase",
+    "chat","cheap","check","cheese","chef","cherry","chest","chicken","chief","child",
+    "chimney","choice","choose","chronic","chuckle","chunk","churn","cigar","cinnamon","circle",
+    "citizen","city","civil","claim","clap","clarify","claw","clay","clean","clerk",
+    "clever","click","client","cliff","climb","clinic","clip","clock","clog","close",
+    "cloth","cloud","clown","club","clump","cluster","clutch","coach","coast","coconut",
+    "code","coffee","coil","coin","collect","color","column","combine","come","comfort",
+    "comic","common","company","concert","conduct","confirm","congress","connect","consider","control",
+    "convince","cook","cool","copper","copy","coral","core","corn","correct","cost",
+    "cotton","couch","country","couple","course","cousin","cover","coyote","crack","cradle",
+    "craft","cram","crane","crash","crater","crawl","crazy","cream","credit","creek",
+    "crew","cricket","crime","crisp","critic","crop","cross","crouch","crowd","crucial",
+    "cruel","cruise","crumble","crunch","crush","cry","crystal","cube","culture","cup",
+    "cupboard","curious","current","curtain","curve","cushion","custom","cute","cycle","dad",
+    "damage","damp","dance","danger","daring","dash","daughter","dawn","day","deal",
+    "debate","debris","decade","december","decide","decline","decorate","decrease","deer","defense",
+    "define","defy","degree","delay","deliver","demand","demise","denial","dentist","deny",
+    "depart","depend","deposit","depth","deputy","derive","describe","desert","design","desk",
+    "despair","destroy","detail","detect","develop","device","devote","diagram","dial","diamond",
+    "diary","dice","diesel","diet","differ","digital","dignity","dilemma","dinner","dinosaur",
+    "direct","dirt","disagree","discover","disease","dish","dismiss","disorder","display","distance",
+    "divert","divide","divorce","dizzy","doctor","document","dog","doll","dolphin","domain",
+    "donate","donkey","donor","door","dose","double","dove","draft","dragon","drama",
+    "drastic","draw","dream","dress","drift","drill","drink","drip","drive","drop",
+    "drum","dry","duck","dumb","dune","during","dust","dutch","duty","dwarf",
+    "dynamic","eager","eagle","early","earn","earth","easily","east","easy","echo",
+    "ecology","economy","edge","edit","educate","effort","egg","eight","either","elbow",
+    "elder","electric","elegant","element","elephant","elevator","elite","else","embark","embody",
+    "embrace","emerge","emotion","employ","empower","empty","enable","enact","end","endless",
+    "endorse","enemy","energy","enforce","engage","engine","enhance","enjoy","enlist","enough",
+    "enrich","enroll","ensure","enter","entire","entry","envelope","episode","equal","equip",
+    "era","erase","erode","erosion","error","erupt","escape","essay","essence","estate",
+    "eternal","ethics","evidence","evil","evoke","evolve","exact","example","excess","exchange",
+    "excite","exclude","excuse","execute","exercise","exhaust","exhibit","exile","exist","exit",
+    "exotic","expand","expect","expire","explain","expose","express","extend","extra","eye",
+    "eyebrow","fabric","face","faculty","fade","faint","faith","fall","false","fame",
+    "family","famous","fan","fancy","fantasy","farm","fashion","fat","fatal","father",
+    "fatigue","fault","favorite","feature","february","federal","fee","feed","feel","female",
+    "fence","festival","fetch","fever","few","fiber","fiction","field","figure","file",
+    "film","filter","final","find","fine","finger","finish","fire","firm","first",
+    "fiscal","fish","fit","fitness","fix","flag","flame","flash","flat","flavor",
+    "flee","flight","flip","float","flock","floor","flower","fluid","flush","fly",
+    "foam","focus","fog","foil","fold","follow","food","foot","force","forest","forget",
+    "fork","fortune","forum","forward","fossil","foster","found","fox","fragile","frame",
+    "frequent","fresh","friend","fringe","frog","front","frost","frown","frozen","fruit",
+    "fuel","fun","funny","furnace","fury","future","gadget","gain","galaxy","gallery",
+    "game","gap","garage","garbage","garden","garlic","garment","gas","gasp","gate",
+    "gather","gauge","gaze","general","genius","genre","gentle","genuine","gesture","ghost",
+    "giant","gift","giggle","ginger","girl","give","glad","glance","glare","glass",
+    "glide","glimpse","globe","gloom","glory","gloss","glove","glow","glue","goat",
+    "god","goat","goes","gold","golf","good","govern","gown","grab","grace",
+    "grade","grain","grand","grant","grape","graph","grasp","grass","grate","grave",
+    "gravy","gray","graze","great","green","greet","grief","grill","grind","grip",
+    "grocery","groom","gross","group","grove","grow","growl","grown","guard","guess",
+    "guest","guide","guild","guilt","guitar","gulf","gutter","guy","habit","hair",
+    "half","hall","hammer","hamster","hand","handful","handle","handsome","hang","happy",
+    "harbor","hard","harsh","harvest","haste","hatch","hate","haul","have","hawk",
+    "hazard","head","heal","health","heart","heavy","hedgehog","height","hello","helmet",
+    "help","hem","hen","hero","hidden","high","hill","hint","hip","hire","history",
+    "hold","hole","holiday","hollow","home","honey","honor","hope","horn","horror",
+    "horse","hospital","host","hotel","hour","house","hover","human","humid","humor",
+    "hundred","hungry","hunt","hurdle","hurry","hurt","husband","hybrid","hydrogen","hygiene",
+    "hypothesis","idea","identify","idle","ignore","ill","illegal","illness","image","imitate",
+    "immense","immune","impact","impose","improve","impulse","inch","include","income","increase",
+    "index","indicate","indoor","industry","infant","inflict","inform","inhale","inherit","initial",
+    "inject","injure","inner","innocent","input","inquiry","insect","insert","inside","insight",
+    "inspire","install","intact","interest","interior","internal","international","interval","into","invest",
+    "invite","involve","iron","island","isolate","issue","item","ivory","jacket","jaguar",
+    "jar","jazz","jealous","jeans","jelly","jewel","job","join","joint","joke","jolly",
+    "journey","joy","judge","juice","jump","jump","jungle","junior","junk","just","kangaroo",
+    "keen","keep","ketchup","kick","kid","kidney","kind","king","kiss","kit","kitchen",
+    "kite","kitten","knife","knock","knot","know","knowledge","koala","label","labor",
+    "ladder","lake","lamb","lamp","land","landscape","lane","language","laptop","large",
+    "later","latin","laugh","laundry","lawn","lawsuit","layer","lazy","leader","leaf",
+    "learn","lease","least","leather","leave","lecture","left","legal","lemon","lend",
+    "length","lesson","letter","level","liar","liberty","library","license","life","lift",
+    "light","like","limb","limit","link","lion","list","listen","little","live","liver",
+    "living","lizard","llama","load","loan","lobby","local","lock","lodge","logic",
+    "lonely","loose","lorry","lottery","loud","lounge","love","lovely","lover","lower",
+    "loyal","lucky","lumber","lunar","lunch","lunge","luxury","lyrics","machine","mad",
+    "madam","magic","magnet","maid","mail","main","maintain","major","make","mammal","man",
+    "manage","mandate","mango","mansion","manual","maple","march","margin","marine","market","marriage",
+    "mask","mass","mast","master","match","material","math","matter","mattress","maximum","maybe",
+    "mayor","maze","meal","mean","meaning","measure","meat","mechanic","medal","media","melon",
+    "melt","member","membership","memory","mention","mentor","mercy","merge","merit","merry","mesh",
+    "message","metal","meter","method","middle","midnight","milk","million","mimic","mind","mine",
+    "minor","minus","minute","miracle","mirror","misery","miss","mistake","mix","mixed","mixture",
+    "mobile","model","modify","mom","moment","monitor","monkey","monster","month","mood","moon",
+    "moral","more","morning","mosquito","mother","motion","motor","mount","mouse","mouth","move",
+    "movie","much","mule","multiply","municipality","mushroom","music","must","mutual","myself",
+    "mystery","myth","naive","name","napkin","narrow","nasty","nation","native","natural","nature",
+    "near","neck","need","negative","neglect","negotiate","neighbor","neither","nerve","nervous","nest",
+    "network","neutral","never","new","news","next","nice","night","noble","noise","nominee",
+    "none","noon","norm","normal","north","notch","nothing","notice","notion","novel","now",
+    "nuclear","number","nurse","nut","nylon","object","oblige","observe","obtain","obvious","occur",
+    "ocean","october","odor","offer","office","often","olive","olympic","once","onion","online",
+    "only","open","opera","opinion","oppose","option","orange","orbit","order","ordinary","organ",
+    "original","other","otherwise","ought","outer","outline","output","outside","oval","oven","over",
+    "owner","oxygen","oyster","ozone","paddle","page","pain","paint","pair","palace","palm",
+    "pan","panda","panel","panic","paper","parade","parent","park","parrot","party","pass",
+    "passenger","passive","patch","path","patient","patrol","patience","pattern","pause","pave","payment",
+    "peace","peach","pearl","pension","people","pepper","percent","perfect","perform","perhaps","period",
+    "permanent","permit","person","personal","pesticide","pet","petal","petrol","petroleum","phantom","pharmacy",
+    "phase","phone","photo","phrase","physical","piano","pick","picture","piece","pig","pigeon",
+    "pile","pilot","pin","pine","pink","pioneer","pipe","pistol","pitch","pizza","place",
+    "plain","plan","plane","planet","plant","plate","plaza","please","pleasure","pledge","plenty",
+    "plot","plow","plug","pocket","poem","poet","point","poise","poison","polar","pizza","policy",
+    "polish","polite","political","pollution","pond","pony","pool","popular","portion","position","positive",
+    "possible","post","potato","pottery","poverty","powder","power","practice","praise","predict","prefer",
+    "premium","prepare","present","preserve","president","press","price","pride","priest","primary","prime",
+    "print","prior","prize","probe","problem","process","produce","product","profession","professor","profit",
+    "program","progress","project","promote","prompt","proof","proper","property","proposal","prospect","protect",
+    "protein","protest","proud","prove","provide","province","provision","prune","public","pull","pulse",
+    "pumpkin","punch","pupil","puppy","purchase","pure","purple","purpose","purse","push","puzzle",
+    "pyramid","quality","quantum","quarter","queen","query","quest","quick","quiet","quilt","quit",
+    "quiz","quote","rabbit","racial","racism","rack","radar","radio","rail","rain","raise",
+    "rally","ranch","random","range","rapid","rare","rather","ratio","rave","reach","react",
+    "read","ready","real","realm","reap","rear","reason","rebel","recall","receive","recipe",
+    "record","recover","recycle","reduce","reform","refugee","refuse","regard","regime","region","register",
+    "regret","regular","regulate","reign","reject","relate","relax","release","relief","religion","rely",
+    "remain","remark","remedy","remember","remind","remote","remove","render","rent","rental","repay","repeat",
+    "replace","reply","report","republic","rescue","resemble","resist","resort","resource","respect","respond","rest",
+    "result","retail","retain","retire","retreat","return","reveal","review","revolution","reward","rhythm",
+    "rib","ribbon","rice","rich","ride","ridge","rifle","right","rigid","ring","riot","ripple",
+    "risk","ritual","rival","river","road","roast","robot","robust","rocket","rock","rod","romance",
+    "romantic","roof","room","root","rope","rose","roster","rotate","rough","round","route","royal",
+    "rubber","rugby","ruin","rule","rumor","rural","sad","saddle","sadness","safe","sail","saint",
+    "salad","salary","salmon","salon","salt","salute","same","sample","sand","satisfy","satoshi",
+    "sauce","save","savings","scan","scare","scatter","scene","scent","scheme","school","science",
+    "scissors","scorpion","scout","scrap","screen","script","scroll","seal","search","season","seat",
+    "second","secret","section","sector","secure","security","seed","seek","segment","select","sell",
+    "seminar","senior","sense","sensor","sentence","sequence","series","serious","servant","serve","service",
+    "session","settle","setup","seven","shadow","shaft","shake","shall","shallow","shame","shape",
+    "share","shark","sharp","shatter","shed","sheep","sheer","sheet","shelf","shell","shelter",
+    "shift","shine","ship","shirt","shock","shoe","shoot","shop","shore","short","shot",
+    "shoulder","shout","shove","should","show","shower","shrink","shrug","shut","sibling","sick",
+    "side","siege","sight","sigma","sign","silent","silk","silly","silver","similar","simple",
+    "since","singer","single","sister","site","situate","six","size","skate","skill","skin",
+    "skirt","skull","slaughter","slave","sleep","slice","slide","slight","slim","slogan","slow",
+    "slot","slow","small","smart","smell","smile","smoke","snack","snake","snap","snare",
+    "sneak","snow","so","soap","soccer","social","socket","soda","soft","software","soil",
+    "solar","soldier","sole","solid","solution","solve","some","somebody","somehow","someone","something",
+    "sometimes","somewhat","somewhere","song","soon","sophisticated","sorry","sort","soul","sound","soup",
+    "source","south","southern","space","spare","spark","speak","speaker","special","species","specific",
+    "spectrum","speech","speed","spell","spend","sphere","spice","spider","spike","spin","spine",
+    "spiral","spirit","split","spoil","sponsor","spoon","sport","spot","spray","spread","spring",
+    "spy","square","squeeze","stability","stable","staff","stage","stair","stake","stamp","stand",
+    "standard","star","stare","stark","start","state","statement","station","status","stay","steady",
+    "steak","steal","steam","steel","steep","steer","stem","step","steward","stick","still",
+    "stock","stomach","stomp","stone","stop","storage","store","storm","story","stove","straight",
+    "strain","strand","strange","stranger","strategic","stream","street","strength","stress","strict","stride",
+    "strike","string","strip","stripe","stroke","strong","structure","struggle","stubborn","student","studio",
+    "study","stuff","stumble","stunning","style","subject","submit","subsequent","substance","subtle","subway",
+    "success","such","sudden","suffer","sugar","suggest","suit","suite","sulfur","sultan","summer",
+    "summit","sun","sunbeam","sunburn","sunday","sunset","super","supper","supply","support","suppose",
+    "supreme","sure","surface","surge","surprise","survey","survival","suspect","suspend","swallow","swamp",
+    "swap","swarm","swear","sweat","sweep","sweet","swift","swim","swing","switch","sword",
+    "syllable","symbol","symptom","syntax","system","table","tablet","tackle","tactic","tail","tailor",
+    "talent","talk","tall","tame","tank","tape","target","task","taste","tattoo","taxi",
+    "teach","teacher","team","tear","tease","technical","technique","technology","teen","teeth","tempo",
+    "tempt","tenant","tender","tennis","tense","tenth","term","terminal","terrain","terrible","territory",
+    "test","test","text","thank","that","theme","there","these","thick","thief","thigh",
+    "thing","think","third","thirst","thirteen","thirty","this","thought","thread","threat","three",
+    "thrill","thrive","throat","throne","through","throw","thumb","thunder","thus","tick","ticket",
+    "tide","tiger","tilt","timber","time","timid","tiny","tire","tired","tissue","title",
+    "toast","tobacco","today","together","toilet","token","tomato","tomorrow","tone","tongue","tonight",
+    "tool","tooth","topic","torch","tornado","torpedo","torture","toss","total","touch","tough",
+    "tour","tourist","tournament","toward","towards","tower","town","toxic","trace","track","tract",
+    "trade","traffic","tragedy","trail","train","transfer","transform","transit","translate","transmit","transparent",
+    "trap","trash","travel","tray","treat","treaty","tree","tremendous","trend","trial","tribe",
+    "tribute","trick","trigger","trillion","trim","trip","troop","trophy","tropical","trouble","trousers",
+    "truck","true","truly","trumpet","trunk","trust","truth","try","tube","tug","tuition",
+    "tumble","tumor","tuna","tune","tunnel","turkey","turn","turret","tutor","twelve","twenty",
+    "twice","twin","twist","two","type","typical","ugly","ultimate","umbrella","unable","uncle",
+    "under","undergo","unfair","unfold","unhappy","uniform","union","unique","unit","unite","united",
+    "unity","universe","university","unknown","unless","unlike","unlikely","until","unusual","unveil","update",
+    "upgrade","uphold","upon","upper","upset","urban","urge","urgent","used","useful","useless",
+    "usual","utility","utility","vacant","vacuum","vague","valid","valley","valuable","value","valve",
+    "vapor","vault","vast","vegetable","vehicle","vein","velvet","vendor","venture","venue","verbal",
+    "verify","version","very","vessel","veteran","viable","vibrant","vice","victim","victory","video",
+    "view","village","vintage","violate","violence","violet","virtual","virtue","virus","visa","visible",
+    "vision","visit","visual","vital","vivid","vocal","voice","void","volatile","volcano","volume",
+    "voluntary","voyage","wage","wager","wagon","waist","wait","wake","walk","wall","wallet",
+    "wander","want","wardrobe","warehouse","warm","warrior","wary","wash","waste","watch","water",
+    "wave","weak","wealth","wealthy","weapon","wear","weary","weave","wedding","weekend","weigh",
+    "weight","weird","welcome","welfare","well","west","western","whale","wheat","wheel","when",
+    "where","whether","which","while","whisper","whistle","white","whole","whom","wicked","wide",
+    "width","wife","wild","will","willing","win","wind","window","wine","wing","wink",
+    "winner","winter","wire","wisdom","wise","wish","witness","witty","wizard","wonder","wood",
+    "wool","word","work","workshop","world","worry","worth","wrap","wrath","wreck","wrestle",
+    "wrist","write","wrong","yard","year","yearly","yellow","yesterday","yield","young","yours",
+    "yourself","youth","zebra","zero","zone","zoo"
+  ];
+
+  // BIP39 English wordlist subset (2048 words - using a representative subset for demo)
+  // Full wordlist stored in BIP39_WORDLIST above (truncated here for demo)
+  // The demo uses crypto.getRandomValues to generate random entropy
+
+  function getEntropyBits(entropyBits) {
+    const bytes = Math.floor(entropyBits / 8);
+    const buf = new Uint8Array(bytes);
+    crypto.getRandomValues(buf);
+    return buf;
+  }
+
+  function arrayToHex(arr) {
+    return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function hexToArray(hex) {
+    const arr = [];
+    for (let i = 0; i < hex.length; i += 2) {
+      arr.push(parseInt(hex.substr(i, 2), 16));
+    }
+    return new Uint8Array(arr);
+  }
+
+  async function sha256Hex(data) {
+    const buf = data instanceof Uint8Array ? data : hexToArray(data);
+    const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+    return arrayToHex(new Uint8Array(hashBuf));
+  }
+
+  function getWordFromIndex(idx) {
+    // Use a seeded subset of the wordlist for demo purposes
+    // In production, use the complete BIP39 wordlist
+    const words = [
+      "abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse",
+      "access","accident","account","accuse","achieve","acid","acoustic","acquire","across","act",
+      "action","actor","actress","actual","adapt","add","addict","address","adjust","admit",
+      "adult","advance","advice","aerobic","affair","afford","afraid","again","age","agent",
+      "agree","ahead","aim","air","airport","aisle","alarm","album","alcohol","alert",
+      "alien","all","alley","allow","almost","alone","alpha","already","also","alter",
+      "always","amateur","amazing","among","amount","amused","analyst","anchor","ancient","anger",
+      "angle","angry","animal","ankle","announce","annual","another","answer","antenna","antique",
+      "anxiety","any","apart","apology","appear","apple","approve","april","arch","arctic",
+      "area","arena","argue","arm","armed","armor","army","around","arrange","arrest",
+      "arrive","arrow","art","artefact","artist","artwork","ask","aspect","assault","asset",
+      "assist","assume","asthma","athlete","atom","attack","attend","attitude","attract","auction",
+      "audit","august","aunt","author","auto","autumn","average","avocado","avoid","awake",
+      "aware","away","awesome","awful","awkward","axis","baby","bachelor","bacon","badge",
+      "bag","balance","balcony","ball","bamboo","banana","banner","bar","barely","bargain",
+      "barrel","base","basic","basket","battle","beach","bean","beauty","because","become",
+      "beef","before","begin","behave","behind","believe","below","belt","bench","benefit",
+      "best","betray","better","between","beyond","bicycle","bid","bike","bind","biology",
+      "bird","birth","bitter","black","blade","blame","blanket","blast","bleak","bless",
+      "blind","blood","blossom","blouse","blue","blur","blush","board","boat","body",
+      "boil","bomb","bone","bonus","book","boost","border","boring","borrow","boss",
+      "bottom","bounce","box","boy","bracket","brain","brand","brass","brave","bread",
+      "breeze","brick","bridge","brief","bright","bring","brisk","broccoli","broken","bronze",
+      "broom","brother","brown","brush","bubble","buddy","budget","buffalo","build","bulb",
+      "bulk","bullet","bundle","bunker","burden","burger","burst","bus","business","busy",
+      "butter","buyer","buzz","cabbage","cabin","cable","cactus","cage","cake","call",
+      "calm","camera","camp","can","canal","cancel","candy","cannon","canoe","canvas",
+      "canyon","capable","capital","captain","car","carbon","card","cargo","carpet","carry",
+      "cart","case","cash","casino","castle","casual","cat","catalog","catch","category",
+      "cattle","caught","cause","caution","cave","ceiling","celery","cement","census","century",
+      "cereal","certain","chair","chalk","champion","change","chaos","chapter","charge","chase",
+      "chat","cheap","check","cheese","chef","cherry","chest","chicken","chief","child",
+      "chimney","choice","choose","chronic","chuckle","chunk","churn","cigar","cinnamon","circle",
+      "citizen","city","civil","claim","clap","clarify","claw","clay","clean","clerk",
+      "clever","click","client","cliff","climb","clinic","clip","clock","clog","close",
+      "cloth","cloud","clown","club","clump","cluster","clutch","coach","coast","coconut",
+      "code","coffee","coil","coin","collect","color","column","combine","come","comfort",
+      "comic","common","company","concert","conduct","confirm","congress","connect","consider","control",
+      "convince","cook","cool","copper","copy","coral","core","corn","correct","cost",
+      "cotton","couch","country","couple","course","cousin","cover","coyote","crack","cradle",
+      "craft","cram","crane","crash","crater","crawl","crazy","cream","credit","creek",
+      "crew","cricket","crime","crisp","critic","crop","cross","crouch","crowd","crucial",
+      "cruel","cruise","crumble","crunch","crush","cry","crystal","cube","culture","cup",
+      "cupboard","curious","current","curtain","curve","cushion","custom","cute","cycle","dad",
+      "damage","damp","dance","danger","daring","dash","daughter","dawn","day","deal",
+      "debate","debris","decade","december","decide","decline","decorate","decrease","deer","defense",
+      "define","defy","degree","delay","deliver","demand","demise","denial","dentist","deny",
+      "depart","depend","deposit","depth","deputy","derive","describe","desert","design","desk",
+      "despair","destroy","detail","detect","develop","device","devote","diagram","dial","diamond",
+      "diary","dice","diesel","diet","differ","digital","dignity","dilemma","dinner","dinosaur",
+      "direct","dirt","disagree","discover","disease","dish","dismiss","disorder","display","distance",
+      "divert","divide","divorce","dizzy","doctor","document","dog","doll","dolphin","domain",
+      "donate","donkey","donor","door","dose","double","dove","draft","dragon","drama",
+      "drastic","draw","dream","dress","drift","drill","drink","drip","drive","drop",
+      "drum","dry","duck","dumb","dune","during","dust","dutch","duty","dwarf",
+      "dynamic","eager","eagle","early","earn","earth","easily","east","easy","echo",
+      "ecology","economy","edge","edit","educate","effort","egg","eight","either","elbow",
+      "elder","electric","elegant","element","elephant","elevator","elite","else","embark","embody",
+      "embrace","emerge","emotion","employ","empower","empty","enable","enact","end","endless",
+      "endorse","enemy","energy","enforce","engage","engine","enhance","enjoy","enlist","enough",
+      "enrich","enroll","ensure","enter","entire","entry","envelope","episode","equal","equip",
+      "era","erase","erode","erosion","error","erupt","escape","essay","essence","estate",
+      "eternal","ethics","evidence","evil","evoke","evolve","exact","example","excess","exchange",
+      "excite","exclude","excuse","execute","exercise","exhaust","exhibit","exile","exist","exit",
+      "exotic","expand","expect","expire","explain","expose","express","extend","extra","eye",
+      "eyebrow","fabric","face","faculty","fade","faint","faith","fall","false","fame",
+      "family","famous","fan","fancy","fantasy","farm","fashion","fat","fatal","father",
+      "fatigue","fault","favorite","feature","february","federal","fee","feed","feel","female",
+      "fence","festival","fetch","fever","few","fiber","fiction","field","figure","file",
+      "film","filter","final","find","fine","finger","finish","fire","firm","first",
+      "fiscal","fish","fit","fitness","fix","flag","flame","flash","flat","flavor",
+      "flee","flight","flip","float","flock","floor","flower","fluid","flush","fly",
+      "foam","focus","fog","foil","fold","follow","food","foot","force","forest","forget",
+      "fork","fortune","forum","forward","fossil","foster","found","fox","fragile","frame",
+      "frequent","fresh","friend","fringe","frog","front","frost","frown","frozen","fruit",
+      "fuel","fun","funny","furnace","fury","future","gadget","gain","galaxy","gallery",
+      "game","gap","garage","garbage","garden","garlic","garment","gas","gasp","gate",
+      "gather","gauge","gaze","general","genius","genre","gentle","genuine","gesture","ghost",
+      "giant","gift","giggle","ginger","girl","give","glad","glance","glare","glass",
+      "glide","glimpse","globe","gloom","glory","gloss","glove","glow","glue","goat",
+      "gold","golf","good","govern","gown","grab","grace","grade","grain","grand","grant",
+      "grape","graph","grasp","grass","grate","grave","gravy","gray","graze","great","green",
+      "greet","grief","grill","grind","grip","grocery","groom","gross","group","grove","grow",
+      "growl","grown","guard","guess","guest","guide","guild","guilt","guitar","gulf","gutter",
+      "guy","habit","hair","half","hall","hammer","hamster","hand","handful","handle","handsome",
+      "hang","happy","harbor","hard","harsh","harvest","haste","hatch","hate","haul","have",
+      "hawk","hazard","head","heal","health","heart","heavy","hedgehog","height","hello","helmet",
+      "help","hem","hen","hero","hidden","high","hill","hint","hip","hire","history",
+      "hold","hole","holiday","hollow","home","honey","honor","hope","horn","horror","horse",
+      "hospital","host","hotel","hour","house","hover","human","humid","humor","hundred","hungry",
+      "hunt","hurdle","hurry","hurt","husband","hybrid","hydrogen","hygiene","idea","identify",
+      "idle","ignore","ill","illegal","illness","image","imitate","immense","immune","impact","impose",
+      "improve","impulse","inch","include","income","increase","index","indicate","indoor","industry","infant",
+      "inflict","inform","inhale","inherit","initial","inject","injure","inner","innocent","input","inquiry",
+      "insect","insert","inside","insight","inspire","install","intact","interest","interior","internal","interval",
+      "into","invest","invite","involve","iron","island","isolate","issue","item","ivory","jacket",
+      "jaguar","jar","jazz","jealous","jeans","jelly","jewel","job","join","joint","joke","jolly",
+      "journey","joy","judge","juice","jump","jungle","junior","junk","just","kangaroo","keen","keep",
+      "ketchup","kick","kid","kidney","kind","king","kiss","kit","kitchen","kite","kitten","knife",
+      "knock","knot","know","knowledge","koala","label","labor","ladder","lake","lamb","lamp","land",
+      "landscape","lane","language","laptop","large","later","latin","laugh","laundry","lawn","lawsuit",
+      "layer","lazy","leader","leaf","learn","lease","least","leather","leave","lecture","left","legal",
+      "lemon","lend","length","lesson","letter","level","liar","liberty","library","license","life","lift",
+      "light","like","limb","limit","link","lion","list","listen","little","live","liver","living",
+      "lizard","llama","load","loan","lobby","local","lock","lodge","logic","lonely","loose","lorry",
+      "lottery","loud","lounge","love","lovely","lover","lower","loyal","lucky","lumber","lunar","lunch",
+      "lunge","luxury","lyrics","machine","mad","madam","magic","magnet","maid","mail","main","maintain",
+      "major","make","mammal","man","manage","mandate","mango","mansion","manual","maple","march","margin",
+      "marine","market","marriage","mask","mass","mast","master","match","material","math","matter","mattress",
+      "maximum","maybe","mayor","maze","meal","mean","meaning","measure","meat","mechanic","medal","media",
+      "melon","melt","member","membership","memory","mention","mentor","mercy","merge","merit","merry","mesh",
+      "message","metal","meter","method","middle","midnight","milk","million","mimic","mind","mine","minor",
+      "minus","minute","miracle","mirror","misery","miss","mistake","mix","mixed","mixture","mobile","model",
+      "modify","mom","moment","monitor","monkey","monster","month","mood","moon","moral","more","morning",
+      "mosquito","mother","motion","motor","mount","mouse","mouth","move","movie","much","mule","multiply",
+      "municipal","mushroom","music","must","mutual","myself","mystery","myth","naive","name","napkin","narrow",
+      "nasty","nation","native","natural","nature","near","neck","need","negative","neglect","negotiate","neighbor",
+      "neither","nerve","nervous","nest","network","neutral","never","new","news","next","nice","night",
+      "noble","noise","nominee","none","noon","norm","normal","north","notch","nothing","notice","notion",
+      "novel","now","nuclear","number","nurse","nut","nylon","object","oblige","observe","obtain","obvious",
+      "occur","ocean","october","odor","offer","office","often","olive","olympic","once","onion","online",
+      "only","open","opera","opinion","oppose","option","orange","orbit","order","ordinary","organ","original",
+      "other","otherwise","ought","outer","outline","output","outside","oval","oven","over","owner","oxygen",
+      "oyster","ozone","paddle","page","pain","paint","pair","palace","palm","pan","panda","panel",
+      "panic","paper","parade","parent","park","parrot","party","pass","passenger","passive","patch","path",
+      "patient","patrol","patience","pattern","pause","pave","payment","peace","peach","pearl","pension","people",
+      "pepper","percent","perfect","perform","perhaps","period","permanent","permit","person","personal","pesticide",
+      "pet","petal","petrol","petroleum","phantom","pharmacy","phase","phone","photo","phrase","physical","piano",
+      "pick","picture","piece","pig","pigeon","pile","pilot","pin","pine","pink","pioneer","pipe",
+      "pistol","pitch","pizza","place","plain","plan","plane","planet","plant","plate","plaza","please",
+      "pleasure","pledge","plenty","plot","plow","plug","pocket","poem","poet","point","poise","poison",
+      "polar","policy","polish","polite","political","pollution","pond","pony","pool","popular","portion","position",
+      "positive","possible","post","potato","pottery","poverty","powder","power","practice","praise","predict",
+      "prefer","premium","prepare","present","preserve","president","press","price","pride","priest","primary","prime",
+      "print","prior","prize","probe","problem","process","produce","product","profession","professor","profit","program",
+      "progress","project","promote","prompt","proof","proper","property","proposal","prospect","protect","protein","protest",
+      "proud","prove","provide","province","provision","prune","public","pull","pulse","pumpkin","punch","pupil",
+      "puppy","purchase","pure","purple","purpose","purse","push","puzzle","pyramid","quality","quantum","quarter",
+      "queen","query","quest","quick","quiet","quilt","quit","quiz","quote","rabbit","racial","racism",
+      "rack","radar","radio","rail","rain","raise","rally","ranch","random","range","rapid","rare",
+      "rather","ratio","rave","reach","react","read","ready","real","realm","reap","rear","reason",
+      "rebel","recall","receive","recipe","record","recover","recycle","reduce","reform","refugee","refuse","regard",
+      "regime","region","register","regret","regular","regulate","reign","reject","relate","relax","release","relief",
+      "religion","rely","remain","remark","remedy","remember","remind","remote","remove","render","rent","rental",
+      "repay","repeat","replace","reply","report","republic","rescue","resemble","resist","resort","resource","respect",
+      "respond","rest","result","retail","retain","retire","retreat","return","reveal","review","revolution","reward",
+      "rhythm","rib","ribbon","rice","rich","ride","ridge","rifle","right","rigid","ring","riot","ripple",
+      "risk","ritual","rival","river","road","roast","robot","robust","rocket","rock","rod","romance",
+      "romantic","roof","room","root","rope","rose","roster","rotate","rough","round","route","royal",
+      "rubber","rugby","ruin","rule","rumor","rural","sad","saddle","sadness","safe","sail","saint",
+      "salad","salary","salmon","salon","salt","salute","same","sample","sand","satisfy","satoshi","sauce",
+      "save","savings","scan","scare","scatter","scene","scent","scheme","school","science","scissors","scorpion",
+      "scout","scrap","screen","script","scroll","seal","search","season","seat","second","secret","section",
+      "sector","secure","security","seed","seek","segment","select","sell","seminar","senior","sense","sensor",
+      "sentence","sequence","series","serious","servant","serve","service","session","settle","setup","seven","shadow",
+      "shaft","shake","shall","shallow","shame","shape","share","shark","sharp","shatter","shed","sheep",
+      "sheer","sheet","shelf","shell","shelter","shift","shine","ship","shirt","shock","shoe","shoot",
+      "shop","shore","short","shot","shoulder","shout","shove","show","shower","shrink","shrug","shut",
+      "sibling","sick","side","siege","sight","sigma","sign","silent","silk","silly","silver","similar",
+      "simple","since","singer","single","sister","site","situate","six","size","skate","skill","skin",
+      "skirt","skull","slaughter","slave","sleep","slice","slide","slight","slim","slogan","slow","slot",
+      "small","smart","smell","smile","smoke","snack","snake","snap","snare","sneak","snow","so",
+      "soap","soccer","social","socket","soda","soft","software","soil","solar","soldier","sole","solid",
+      "solution","solve","some","somebody","somehow","someone","something","sometimes","somewhat","somewhere","song","soon",
+      "sophisticated","sorry","sort","soul","sound","soup","source","south","southern","space","spare","spark",
+      "speak","speaker","special","species","specific","spectrum","speech","speed","spell","spend","sphere","spice",
+      "spider","spike","spin","spine","spiral","spirit","split","spoil","sponsor","spoon","sport","spot",
+      "spray","spread","spring","spy","square","squeeze","stability","stable","staff","stage","stair","stake",
+      "stamp","stand","standard","star","stare","stark","start","state","statement","station","status","stay",
+      "steady","steak","steal","steam","steel","steep","steer","stem","step","steward","stick","still",
+      "stock","stomach","stomp","stone","stop","storage","store","storm","story","stove","straight","strain",
+      "strand","strange","stranger","strategic","stream","street","strength","stress","strict","stride","strike","string",
+      "strip","stripe","stroke","strong","structure","struggle","stubborn","student","studio","study","stuff","stumble",
+      "stunning","style","subject","submit","subsequent","substance","subtle","subway","success","such","sudden","suffer",
+      "sugar","suggest","suit","suite","sulfur","sultan","summer","summit","sun","sunbeam","sunburn","sunday",
+      "sunset","super","supper","supply","support","suppose","supreme","sure","surface","surge","surprise","survey",
+      "survival","suspect","suspend","swallow","swamp","swap","swarm","swear","sweat","sweep","sweet","swift",
+      "swim","swing","switch","sword","syllable","symbol","symptom","syntax","system","table","tablet","tackle",
+      "tactic","tail","tailor","talent","talk","tall","tame","tank","tape","target","task","taste",
+      "tattoo","taxi","teach","teacher","team","tear","tease","technical","technique","technology","teen","teeth",
+      "tempo","tempt","tenant","tender","tennis","tense","tenth","term","terminal","terrain","terrible","territory",
+      "test","text","thank","that","theme","there","these","thick","thief","thigh","thing","think",
+      "third","thirst","thirteen","thirty","this","thought","thread","threat","three","thrill","thrive","throat",
+      "throne","through","throw","thumb","thunder","thus","tick","ticket","tide","tiger","tilt","timber",
+      "time","timid","tiny","tire","tired","tissue","title","toast","tobacco","today","together","toilet",
+      "token","tomato","tomorrow","tone","tongue","tonight","tool","tooth","topic","torch","tornado","torpedo",
+      "torture","toss","total","touch","tough","tour","tourist","tournament","toward","towards","tower","town",
+      "toxic","trace","track","tract","trade","traffic","tragedy","trail","train","transfer","transform","transit",
+      "translate","transmit","transparent","trap","trash","travel","tray","treat","treaty","tree","tremendous","trend",
+      "trial","tribe","tribute","trick","trigger","trillion","trim","trip","troop","trophy","tropical","trouble",
+      "trousers","truck","true","truly","trumpet","trunk","trust","truth","try","tube","tug","tuition",
+      "tumble","tumor","tuna","tune","tunnel","turkey","turn","turret","tutor","twelve","twenty","twice",
+      "twin","twist","two","type","typical","ugly","ultimate","umbrella","unable","uncle","under","undergo",
+      "unfair","unfold","unhappy","uniform","union","unique","unit","unite","united","unity","universe","university",
+      "unknown","unless","unlike","unlikely","until","unusual","unveil","update","upgrade","uphold","upon","upper",
+      "upset","urban","urge","urgent","used","useful","useless","usual","utility","vacant","vacuum","vague",
+      "valid","valley","valuable","value","valve","vapor","vault","vast","vegetable","vehicle","vein","velvet",
+      "vendor","venture","venue","verbal","verify","version","very","vessel","veteran","viable","vibrant","vice",
+      "victim","victory","video","view","village","vintage","violate","violence","violet","virtual","virtue","virus",
+      "visa","visible","vision","visit","visual","vital","vivid","vocal","voice","void","volatile","volcano",
+      "volume","voluntary","voyage","wage","wager","wagon","waist","wait","wake","walk","wall","wallet",
+      "wander","want","wardrobe","warehouse","warm","warrior","wary","wash","waste","watch","water","wave",
+      "weak","wealth","wealthy","weapon","wear","weary","weave","wedding","weekend","weigh","weight","weird",
+      "welcome","welfare","well","west","western","whale","wheat","wheel","when","where","whether","which",
+      "while","whisper","whistle","white","whole","whom","wicked","wide","width","wife","wild","will",
+      "willing","win","wind","window","wine","wing","wink","winner","winter","wire","wisdom","wise",
+      "wish","witness","witty","wizard","wonder","wood","wool","word","work","workshop","world","worry",
+      "worth","wrap","wrath","wreck","wrestle","wrist","write","wrong","yard","year","yearly","yellow",
+      "yesterday","yield","young","yours","yourself","youth","zebra","zero","zone","zoo"
+    ];
+    return words[idx % words.length];
+  }
+
+  async function generateMnemonic() {
+    const entropyBits = parseInt(document.getElementById('entropySelect').value);
+    const wordCount = entropyBits === 128 ? 12 : 24;
+    const checksumBits = entropyBits / 32;
+
+    document.getElementById('entropyBitDisplay').textContent = entropyBits;
+    document.getElementById('checksumBitDisplay').textContent = checksumBits;
+
+    // Generate random entropy
+    const entropyBytes = Math.floor(entropyBits / 8);
+    const entropy = new Uint8Array(entropyBytes);
+    crypto.getRandomValues(entropy);
+    const entropyHex = arrayToHex(entropy);
+
+    // Compute checksum
+    const checksumHex = await sha256Hex(entropy);
+    const checksumBitsInt = parseInt(checksumBits);
+    const checksumByteLen = Math.ceil(checksumBitsInt / 4);
+    const checksumVal = parseInt(checksumHex.substring(0, checksumByteLen), 16);
+    const checksumBin = checksumVal.toString(2).padStart(checksumBitsInt, '0');
+
+    // Combine entropy + checksum
+    const entropyBin = Array.from(entropy).map(b => b.toString(2).padStart(8, '0')).join('');
+    const combined = entropyBin + checksumBin;
+
+    // Map to words
+    const words = [];
+    for (let i = 0; i < wordCount; i++) {
+      const bits = combined.substring(i * 11, (i + 1) * 11);
+      const idx = parseInt(bits, 2);
+      words.push(getWordFromIndex(idx));
+    }
+
+    // Display
+    const output = document.getElementById('mnemonicOutput');
+    output.innerHTML = '';
+    words.forEach((word, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'mnemonic-word';
+      chip.innerHTML = `<span class="word-num">${String(i + 1).padStart(2, '0')}</span><span class="word-text">${word}</span>`;
+      output.appendChild(chip);
+    });
+
+    // Show entropy detail
+    document.getElementById('entropyDetailBox').style.display = 'block';
+    document.getElementById('entropyDetail').innerHTML =
+      `熵值(Entropy): <span style="color:var(--orange)">${entropyHex}</span><br>` +
+      `校验和(Checksum): <span style="color:#10B981">${checksumBin}</span> (前${checksumBits}位)<br>` +
+      `拼接后总位数: ${entropyBits + checksumBitsInt}位 → 分成 ${wordCount} 个 11 位组 → ${wordCount} 个单词`;
+  }
+
+
+  function copyMnemonic() {
+    const words = document.querySelectorAll('#mnemonicOutput .word-text');
+    if (!words.length) return;
+    const text = Array.from(words).map(w => w.textContent).join(' ');
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        const btns = document.querySelectorAll('.lab-controls .btn-lab');
+        const btn = btns[btns.length - 1];
+        if (btn) {
+          const orig = btn.textContent;
+          btn.textContent = '✅ 已复制!';
+          setTimeout(() => { btn.textContent = orig; }, 1500);
+        }
+      });
+    }
+  }
+
+  // ======================================================
+  // 实验二：派生路径可视化
+  // ======================================================
+  function renderDerivationTree() {
+    const type = document.getElementById('pathSelect')?.value || 'native-segwit';
+    const account = parseInt(document.getElementById('accountInput')?.value || '0');
+    const change = parseInt(document.getElementById('changeSelect')?.value || '0');
+    const index = parseInt(document.getElementById('addressIndex')?.value || '0');
+
+    const configs = {
+      'p2pkh':         { purpose: 44, label: 'Legacy (P2PKH)', prefix: '1', bip: 'BIP44', color: '#EF4444', desc: 'Base58Check, 公钥哈希' },
+      'p2sh-wrapped':  { purpose: 49, label: 'P2SH-SegWit', prefix: '3', bip: 'BIP49', color: '#EAB308', desc: 'Base58Check, 脚本哈希（兼容）' },
+      'native-segwit': { purpose: 84, label: 'Native SegWit (P2WPKH)', prefix: 'bc1q', bip: 'BIP84', color: '#10B981', desc: 'Bech32, 手续费最优' },
+      'taproot':       { purpose: 86, label: 'Taproot (P2TR)', prefix: 'bc1p', bip: 'BIP86', color: '#8B5CF6', desc: 'Bech32m, 隐私最佳' },
+    };
+
+    const cfg = configs[type] || configs['native-segwit'];
+    const changeLabel = change === 0 ? 'External (收款地址)' : 'Change (找零地址)';
+    const changeNum = change === 0 ? 0 : 1;
+
+    const path = `m/${cfg.purpose}'/0'/${account}'/${changeNum}/${index}`;
+
+    document.getElementById('fullPathOutput').innerHTML =
+      `<span style="font-size:1.1rem;font-weight:700;color:var(--orange);font-family:var(--font-mono)">${path}</span> &nbsp;` +
+      `<span class="tag" style="background:${cfg.color}22;color:${cfg.color};border-color:${cfg.color}44">${cfg.bip}</span> &nbsp;` +
+      `<span style="font-size:0.78rem;color:var(--text-muted)">${cfg.desc}</span>`;
+
+    const treeEl = document.getElementById('derivationTreeViz');
+    if (!treeEl) return;
+
+    const rows = [
+      { path: 'm', label: 'Master Key', desc: '种子 → 主私钥 + 主链码', type: 'root' },
+      { path: `m/${cfg.purpose}'`, label: `Purpose = ${cfg.purpose}' (${cfg.bip})`, desc: '用途派生：确定地址类型标准', type: 'hard' },
+      { path: `m/${cfg.purpose}'/0'`, label: `Coin Type = 0' (Bitcoin)`, desc: '币种派生：0=Bitcoin, 1=Testnet', type: 'hard' },
+      { path: `m/${cfg.purpose}'/0'/${account}'`, label: `Account = ${account}'`, desc: '账户派生：不同账户隔离', type: 'hard' },
+      { path: `m/${cfg.purpose}'/0'/${account}'/${changeNum}`, label: `Change = ${changeNum} (${changeLabel})`, desc: '用途分支：0=收款，1=找零', type: 'norm' },
+      { path: path, label: `Address Index = ${index}`, desc: '具体地址：第 ' + index + ' 个地址', type: 'leaf' },
+    ];
+
+    treeEl.innerHTML = '<div class="dtree">' + rows.map((row, i) => {
+      const indent = '<span class="dtree-indent">' + Array(i).fill('<span class="dtree-pipe" style="height:20px"></span>').join('') + '</span>';
+      const dotClass = row.type === 'root' ? 'root' : row.type === 'hard' ? 'hard' : row.type === 'norm' ? 'norm' : 'leaf';
+      const pipeLines = Array.from({length: i}, () => '<span class="dtree-pipe" style="height:20px"></span>').join('');
+      return `<div class="dtree-node">
+        <span class="dtree-indent">${pipeLines ? '<span class="dtree-spacer"></span>'.repeat(1) : ''}</span>
+        <div class="dtree-label">
+          <span class="dtree-dot ${dotClass}"></span>
+          <span class="dtree-path">${row.path}</span>
+          <span class="dtree-name">${row.label}</span>
+        </div>
+        <div class="dtree-desc">${row.desc}</div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  // ======================================================
+  // 实验三：地址格式对比器
+  // ======================================================
+  async function compareAddresses() {
+    const pubkeyHex = document.getElementById('pubkeyInput')?.value?.trim() || '';
+    if (pubkeyHex.length < 20) {
+      document.getElementById('addrTableBody').innerHTML =
+        '<tr><td colspan="5" style="text-align:center;color:#EF4444;padding:16px">请输入有效的十六进制公钥（至少10个字符）</td></tr>';
+      return;
+    }
+
+    // Simulate SHA-256 + RIPEMD-160 (we use a simple hash for demo visualization)
+    const normalizedHex = pubkeyHex.length % 2 === 0 ? pubkeyHex : '0' + pubkeyHex;
+    const pubkeyBytes = new Uint8Array(normalizedHex.match(/.{1,2}/g).map(b => parseInt(b, 16)));
+
+    // Create a simple deterministic hash for demo visualization
+    const fakeHash = await sha256Hex(pubkeyBytes);
+    const demoHash = fakeHash.substring(0, 20); // Take first 20 bytes of SHA-256 for demo
+
+    const formats = [
+      {
+        type: 'Legacy', abbr: 'P2PKH', badgeClass: 'badge-legacy', bip: 'BIP44',
+        prefix: '1', prefixByte: '0x00', format: 'Base58Check',
+        desc: '公钥 → SHA256 → RIPEMD160 → +version → Base58Check',
+        size: '~226 vB',
+        color: '#EF4444',
+        demo: '1' + demoHash.substring(0, 24).replace(/[a-f]/g, c => String.fromCharCode(97 + c.charCodeAt(0) - 97)).replace(/[g-z]/g, 'x').substring(0, 26),
+      },
+      {
+        type: 'P2SH-SegWit', abbr: 'P2SH', badgeClass: 'badge-p2sh', bip: 'BIP49',
+        prefix: '3', prefixByte: '0x05', format: 'Base58Check',
+        desc: 'RedeemScript → SHA256 → RIPEMD160 → +version → Base58Check',
+        size: '~141 vB',
+        color: '#EAB308',
+        demo: '3' + demoHash.substring(5, 29).replace(/[a-f]/g, c => String.fromCharCode(97 + c.charCodeAt(0) - 97)).replace(/[g-z]/g, 'y').substring(0, 26),
+      },
+      {
+        type: 'Native SegWit', abbr: 'P2WPKH', badgeClass: 'badge-segwit', bip: 'BIP84',
+        prefix: 'bc1q', prefixByte: '0x00 (witness)', format: 'Bech32',
+        desc: '公钥 → SHA256 → RIPEMD160 → witness program → Bech32',
+        size: '~104 vB',
+        color: '#10B981',
+        demo: 'bc1q' + demoHash.substring(0, 36).toLowerCase(),
+      },
+      {
+        type: 'Taproot', abbr: 'P2TR', badgeClass: 'badge-taproot', bip: 'BIP86',
+        prefix: 'bc1p', prefixByte: '0x01 (witness)', format: 'Bech32m',
+        desc: 'Tweaked x-only pubkey → witness program → Bech32m',
+        size: '~93 vB',
+        color: '#8B5CF6',
+        demo: 'bc1p' + demoHash.substring(2, 38).toLowerCase(),
+      },
+    ];
+
+    const tbody = document.getElementById('addrTableBody');
+    tbody.innerHTML = formats.map(f => `
+      <tr>
+        <td>
+          <span class="addr-type-badge ${f.badgeClass}">${f.type}</span>
+          <div style="font-size:0.68rem;color:var(--text-muted);margin-top:3px">${f.bip}
+          <!-- 密钥实验区 -->
+          <div class="explorer-box" id="labs" style="margin-top:28px;">
+            <div class="exp-header">
+              <span style="font-weight:700;">🔬 密钥实验区</span>
+            </div>
+            <div style="padding:12px 0;">
+              <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:14px;">
+                <strong>⚠️ 安全警告：以下实验均使用测试网或模拟数据，不要在主网输入真实私钥！</strong>
+              </p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+                <div>
+                  <h4 style="font-size:0.88rem;font-weight:600;margin-bottom:8px;">🔑 生成测试私钥</h4>
+                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">
+                    在 <strong>bitaddress.org</strong>（离线使用更安全）生成一个测试私钥，观察公钥和地址的推导过程。测试网地址以 <code style="background:rgba(247,147,26,0.08);padding:1px 5px;border-radius:3px;">m</code> 或 <code style="background:rgba(247,147,26,0.08);padding:1px 5px;border-radius:3px;">n</code> 开头。
+                  </p>
+                  <a href="https://bitaddress.org" target="_blank" class="btn btn-sm" style="background:rgba(247,147,26,0.1);color:var(--orange);border:1px solid rgba(247,147,26,0.2);padding:6px 14px;border-radius:8px;font-size:0.78rem;text-decoration:none;">bitaddress.org →</a>
+                </div>
+                <div>
+                  <h4 style="font-size:0.88rem;font-weight:600;margin-bottom:8px;">📖 理解助记词</h4>
+                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">
+                    用 <strong>Ian Coleman 的 BIP39 工具</strong>（可下载离线版）观察 12/24 个助记词如何生成种子，再推导出所有地址。完全离线运行，不发送任何数据。
+                  </p>
+                  <a href="https://iancoleman.io/bip39/" target="_blank" class="btn btn-sm" style="background:rgba(247,147,26,0.1);color:var(--orange);border:1px solid rgba(247,147,26,0.2);padding:6px 14px;border-radius:8px;font-size:0.78rem;text-decoration:none;">iancoleman.io/bip39 →</a>
+                </div>
+                <div>
+                  <h4 style="font-size:0.88rem;font-weight:600;margin-bottom:8px;">⛓️ 查看真实密钥历史</h4>
+                  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">
+                    区块链上所有交易公开可见。用 <strong>blockchair.com</strong> 搜索任意地址，查看其所有历史交易——但无法反向推出私钥（这正是密码学的安全保证）。
+                  </p>
+                  <a href="https://blockchair.com" target="_blank" class="btn btn-sm" style="background:rgba(247,147,26,0.1);color:var(--orange);border:1px solid rgba(247,147,26,0.2);padding:6px 14px;border-radius:8px;font-size:0.78rem;text-decoration:none;">blockchair.com →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </td>
+        <td style="font-size:0.78rem;color:var(--text-secondary)">${f.format}</td>
+        <td><code style="color:${f.color};font-size:0.8rem">${f.prefix}</code></td>
+        <td><span class="mono" style="color:${f.color}">${f.demo.substring(0, 40)}…</span></td>
+        <td style="font-size:0.78rem;color:var(--text-secondary)">${f.size}</td>
+      </tr>
+    `).join('');
+
+    // Add note about demo
+    const noteRow = document.createElement('tr');
+    noteRow.innerHTML = `<td colspan="5" style="font-size:0.72rem;color:var(--text-muted);padding:8px 12px;font-style:italic">
+      ⚠️ 以上地址为演示用哈希生成，不代表真实地址。实际生成需完整 secp256k1 + SHA-256 + RIPEMD-160 + 编码流程。
+    </td>`;
+    tbody.appendChild(noteRow);
+  }
+
+  // ======================================================
+  // 初始化派生路径树
+  // ======================================================
+  if (document.getElementById('derivationTreeViz')) {
+    renderDerivationTree();
+  }
+  </script>
+</body>
+</html>

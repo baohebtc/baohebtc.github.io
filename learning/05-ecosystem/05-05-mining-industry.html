@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>矿业生态 | 比特币学习地图</title>
+  <meta name="description" content="深入比特币矿业生态：PoW 共识原理、矿池集中度、算力分布、2021 中国清退、能源争议与绿色挖矿。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 矿业算力分布图 ---- */
+    .hashrate-ring {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      margin: 20px auto;
+    }
+    .hashrate-ring svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .hashrate-ring .ring-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .hashrate-ring .ring-center .rc-num {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--orange);
+    }
+    .hashrate-ring .ring-center .rc-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .hashrate-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+    .hashrate-legend .leg-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+    .hashrate-legend .leg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ---- 难度调整图 ---- */
+    .difficulty-chart {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .difficulty-chart .chart-title {
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 14px;
+      color: var(--orange);
+    }
+    .diff-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 100px;
+      overflow: hidden;
+    }
+    .diff-bar {
+      flex: 1;
+      min-width: 4px;
+      background: var(--orange);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      position: relative;
+    }
+    .diff-bar:hover { opacity: 1; }
+    .diff-bar::after {
+      content: attr(data-diff);
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      display: none;
+    }
+    .diff-bars:hover .diff-bar::after { display: block; }
+
+    /* ---- 矿业时间线 ---- */
+    .mining-timeline {
+      border-left: 2px solid var(--border);
+      padding-left: 24px;
+      margin: 20px 0;
+    }
+    .mining-timeline .tl-item {
+      position: relative;
+      margin-bottom: 24px;
+      padding-left: 16px;
+    }
+    .mining-timeline .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -29px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: 3px solid var(--bg);
+    }
+    .mining-timeline .tl-year {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .mining-timeline .tl-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .mining-timeline .tl-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ---- 矿机卡片 ---- */
+    .miner-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .miner-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .miner-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .miner-card .miner-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .miner-card .miner-share {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--orange);
+    }
+    .miner-card .miner-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+    .miner-card .miner-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+    .miner-card .miner-tag.top { background: rgba(247,147,26,0.15); color: var(--orange); }
+    .miner-card .miner-tag.warning { background: rgba(239,68,68,0.1); color: #EF4444; }
+
+    /* ---- 能源矩阵 ---- */
+    .energy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .energy-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+    }
+    .energy-item .e-pct {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--orange);
+    }
+    .energy-item .e-label {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ---- 51% 攻击图解 ---- */
+    .attack-viz {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .attack-viz .av-title {
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 14px;
+      color: #EF4444;
+    }
+    .attack-stages {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .attack-stage {
+      flex: 1;
+      min-width: 140px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .attack-stage .as-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .attack-stage .as-text {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .attack-stage.danger {
+      border-color: rgba(239,68,68,0.4);
+      background: rgba(239,68,68,0.05);
+    }
+    .attack-stage.danger .as-text { color: #EF4444; }
+    .attack-arrow {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    /* ---- 关机价计算器 ---- */
+    .shutdown-calc {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .shutdown-calc .calc-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .shutdown-calc .calc-row label {
+      min-width: 110px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .shutdown-calc .calc-row input {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+    .shutdown-calc .calc-row input:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+    .shutdown-calc .calc-result {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin-top: 12px;
+    }
+    .shutdown-calc .calc-result .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.88rem;
+    }
+    .shutdown-calc .calc-result .result-item .r-label { color: var(--text-secondary); }
+    .shutdown-calc .calc-result .result-item .r-value { font-weight: 600; color: var(--text); }
+    .shutdown-calc .calc-result .result-item .r-value.highlight { color: var(--orange); font-size: 1rem; }
+    .shutdown-calc .calc-result .result-item .r-value.danger { color: #EF4444; font-size: 1rem; }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .miner-cards { grid-template-columns: 1fr; }
+      .energy-grid { grid-template-columns: 1fr 1fr; }
+      .attack-stages { flex-direction: column; }
+      .attack-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html">生态篇</a>
+        <span>›</span>
+        <span>矿业生态</span>
+      </div>
+
+      <h1>⛏ 矿业生态</h1>
+      <p class="page-subtitle">矿工是比特币网络的"武警"——他们用算力守卫账本，同时也在进行一场没有终点的能源竞赛。谁在挖矿？怎么挖？为什么中国清退后算力反而更集中了？</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：中等</span>
+        <span class="page-tag">📑 生态篇 5/7</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>生态篇进度</span>
+          <span>5 / 7 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 71%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#pow-intro">PoW 共识原理</a>
+          <a href="#mining-economics">矿工经济学</a>
+          <a href="#mining-pools">矿池与集中度</a>
+          <a href="#china-ban">2021 中国清退</a>
+          <a href="#energy">能源与绿色挖矿</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 引言 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币网络没有警察，没有法院，也没有服务器管理员——那谁来维护账本的安全？谁来决定哪笔交易先录入？</p>
+            <p style="margin-top:8px;">答案是：<strong>矿工</strong>。他们用真实世界的电费换取竞争记账权，用"工作量证明"（Proof of Work）来代替中心化授权。这套机制让比特币在完全开放、无需许可的环境中运行了 16 年。</p>
+            <p style="margin-top:8px;">矿工 = 比特币网络的「武警」，用算力捍卫账本，用电力换取安全。</p>
+          </div>
+
+          <!-- ============ 一、PoW 共识原理 ============ -->
+          <section id="pow-intro">
+            <h2>一、PoW 共识原理：数学竞赛决定记账权</h2>
+
+            <h3>1.1 什么是工作量证明？</h3>
+            <p><strong>工作量证明（Proof of Work，PoW）</strong>本质上是做一道<strong>无法作弊的数学题</strong>：</p>
+            <ul>
+              <li>题目是公开的：已知区块头信息（包含前一区块哈希、Merkle 根、时间戳等），求一个随机数（nonce）</li>
+              <li>条件是固定的：使得 SHA-256 双重哈希后，数值前 N 位为 0（N 越大越难）</li>
+              <li>解法只有一种：<strong>穷举随机数</strong>，猜中为止</li>
+              <li>验证极简单：算一次哈希即可判断对错</li>
+            </ul>
+            <div class="highlight-box">
+              <span class="label">类比：彩票摇奖</span>
+              <div class="text">
+                <p>想象一个彩票系统：每张彩票 1 美元，每 10 分钟开奖一次。</p>
+                <ul>
+                  <li><strong>买得越多，中奖概率越高</strong>——这对应"算力越大，赢得记账权概率越高"</li>
+                  <li><strong>你无法走后门</strong>——SHA-256 哈希输出完全随机，不可预测</li>
+                  <li><strong>中奖证明你有买过彩票</strong>——找到符合条件的哈希值 = 证明你消耗了算力（电力）</li>
+                  <li><strong>验证真伪只需 1 秒</strong>——任何人验一次哈希即可</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>1.2 区块奖励：矿工的收入来源</h3>
+            <p>比特币规定：每找到一个合法区块，矿工获得一笔<strong>区块奖励（Block Subsidy）</strong>，最初是 50 BTC，目前是 3.125 BTC（2024 年 4 月第四次减半后）。</p>
+            <p>这个奖励每 4 年减半，大约在 2140 年左右奖励将趋近于零，届时矿工收入将完全依赖<strong>交易手续费</strong>。</p>
+
+            <div class="mining-timeline">
+              <div class="tl-item">
+                <div class="tl-year">2009</div>
+                <div class="tl-title">比特币主网上线</div>
+                <div class="tl-desc">中本聪独自挖矿，区块奖励 50 BTC，用普通 CPU 即可参与。</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">2012-11-28</div>
+                <div class="tl-title">第一次减半：50 → 25 BTC</div>
+                <div class="tl-desc">区块 #210,000，GPU 矿机开始普及。</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">2016-07-09</div>
+                <div class="tl-title">第二次减半：25 → 12.5 BTC</div>
+                <div class="tl-desc">区块 #420,000，ASIC 矿机成为主流，家庭挖矿时代结束。</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">2020-05-11</div>
+                <div class="tl-title">第三次减半：12.5 → 6.25 BTC</div>
+                <div class="tl-desc">区块 #630,000，矿池格局初步形成，中国矿工约占全球 65%。</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">2024-04-19</div>
+                <div class="tl-title">第四次减半：6.25 → 3.125 BTC</div>
+                <div class="tl-desc">区块 #840,000，矿工收入结构加速从区块奖励向手续费转型。</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">~2028</div>
+                <div class="tl-title">第五次减半：3.125 → 1.5625 BTC</div>
+                <div class="tl-desc">区块奖励继续减半，矿工经济模型面临更大考验。</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">~2140</div>
+                <div class="tl-title">区块奖励归零</div>
+                <div class="tl-desc">最后一个 satoshi 被挖出，此后矿工收入完全来自手续费。</div>
+              </div>
+            </div>
+
+            <h3>1.3 难度调整：自动调节的"水温"</h3>
+            <p>比特币网络有一个精妙的<strong>自我调节机制</strong>——每 2016 个区块（约 14 天），全网根据实际出块速度调整题目难度：</p>
+            <ul>
+              <li>出块太快（平均 &lt; 10 分钟）→ 提高难度（更多前导零）</li>
+              <li>出块太慢（平均 &gt; 10 分钟）→ 降低难度</li>
+            </ul>
+            <p>这就是为什么比特币能<strong>稳定保持每 10 分钟出一个区块</strong>——不管全球有多少算力参与竞争。</p>
+
+            <div class="highlight-box">
+              <span class="label">📊 当前难度与算力</span>
+              <div class="text">
+                <p>截至 2025 年中，全网难度约为 <strong>100 T（Trillion）</strong>级别，算力约为 <strong>600-700 EH/s</strong>（ExaHash 每秒，1 EH = 10^18 次哈希）。</p>
+                <p>这意味着：全球所有矿机每秒共做约 600,000,000,000,000,000,000 次哈希运算——相当于整个银河系的原子数量级别的计算量。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、矿工经济学 ============ -->
+          <section id="mining-economics">
+            <h2>二、矿工经济学：成本、收益与关机价</h2>
+
+            <h3>2.1 矿工的收入与成本</h3>
+            <p>矿工的生意模型很简单：</p>
+            <div class="highlight-box">
+              <span class="label">💰 矿工盈亏公式</span>
+              <div class="text">
+                <p><strong>利润 = 区块奖励（BTC）+ 交易手续费 - 运营成本</strong></p>
+                <p style="margin-top:8px;">运营成本中，<strong>电力成本通常占 60-80%</strong>，其余为矿机折旧、场地租金、冷却费用等。</p>
+              </div>
+            </div>
+
+            <h3>2.2 关机价：矿工的生死线</h3>
+            <p><strong>关机价（Shutdown Price）</strong>是矿工"亏本也要挖 vs 关机止损"的临界币价。当币价跌破关机价，意味着挖矿收益抵不上电费支出，矿工应关机。</p>
+            <p><strong>关机价计算公式：</strong></p>
+            <p style="font-family:var(--font-mono);font-size:0.85rem;background:var(--bg);padding:12px;border-radius:8px;margin:10px 0;">
+              关机价（美元） = (每日电费) / (每日挖矿 BTC 产出) = (电费 $/kWh × 每日耗电 kWh) / (区块奖励 / 挖矿难度系数)
+            </p>
+
+            <div class="shutdown-calc">
+              <div class="calc-row">
+                <label>电费</label>
+                <input type="number" id="elec-cost" value="0.06" step="0.01" min="0.01" max="1" onchange="calcShutdown()">
+                <span style="font-size:0.85rem;color:var(--text-muted);">$/kWh（美元/度）</span>
+              </div>
+              <div class="calc-row">
+                <label>矿机算力</label>
+                <input type="number" id="miner-hash" value="100" step="1" min="1" max="10000" onchange="calcShutdown()">
+                <span style="font-size:0.85rem;color:var(--text-muted);">TH/s</span>
+              </div>
+              <div class="calc-row">
+                <label>矿机功耗</label>
+                <input type="number" id="miner-power" value="3250" step="50" min="100" max="10000" onchange="calcShutdown()">
+                <span style="font-size:0.85rem;color:var(--text-muted);">W（瓦）</span>
+              </div>
+              <div class="calc-row">
+                <label>当前币价</label>
+                <input type="number" id="btc-price" value="105000" step="100" min="1000" max="500000" onchange="calcShutdown()">
+                <span style="font-size:0.85rem;color:var(--text-muted);">USD/BTC</span>
+              </div>
+              <div class="calc-result" id="shutdown-result">
+                <div class="result-item">
+                  <span class="r-label">每日挖矿 BTC</span>
+                  <span class="r-value" id="sr-daily-btc">— BTC</span>
+                </div>
+                <div class="result-item">
+                  <span class="r-label">每日电费</span>
+                  <span class="r-value" id="sr-daily-cost">— USD</span>
+                </div>
+                <div class="result-item">
+                  <span class="r-label">关机价</span>
+                  <span class="r-value highlight" id="sr-shutdown">— USD</span>
+                </div>
+                <div class="result-item">
+                  <span class="r-label">当前状态</span>
+                  <span class="r-value" id="sr-status">—</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="treasure-box">
+              <h3>💎 矿工与市场的"反身性"</h3>
+              <p>关机价机制创造了一种<strong>市场自我平衡</strong>：</p>
+              <ul>
+                <li>币价暴跌 → 跌破部分高成本矿机关机价 → 矿工关机 → 算力下降</li>
+                <li>算力下降 → 难度下调（14 天后自动调整）→ 剩余矿工挖矿效率提升</li>
+                <li>难度下降 → 矿工成本下降 → 原来关机的矿机可能重新开机</li>
+                <li>矿机重新开机 → 算力上升 → 难度上升 → 形成新的平衡</li>
+              </ul>
+              <p>这意味着：币价极端下跌时，下一个难度调整周期反而是"抄底矿机"的最佳时机——因为难度降了，挖矿效率提升。</p>
+            </div>
+          </section>
+
+          <!-- ============ 三、矿池与集中度 ============ -->
+          <section id="mining-pools">
+            <h2>三、矿池与算力集中度</h2>
+
+            <h3>3.1 为什么需要矿池？</h3>
+            <p>矿池（Mining Pool）是多个矿工<strong>合作挖矿</strong>的机制：</p>
+            <ul>
+              <li><strong> solo 挖矿</strong>：独立寻找区块，可能数月无收益（纯靠概率）</li>
+              <li><strong>加入矿池</strong>：矿池统一收集算力，按贡献份额定期分发收益（更稳定）</li>
+            </ul>
+            <p>矿池运营商会收取 <strong>1-3% 的手续费</strong>，但矿工获得了稳定的现金流——这对绝大多数矿工来说是合理的交换。</p>
+
+            <h3>3.2 全球主要矿池（2024-2025 数据）</h3>
+            <div class="miner-cards">
+              <div class="miner-card">
+                <div class="miner-name">Foundry USA</div>
+                <div class="miner-share">~33.6%</div>
+                <div class="miner-desc">总部位于美国，DCG 旗下，全球份额第一。2022 年后快速崛起。</div>
+                <span class="miner-tag top">TOP 1</span>
+              </div>
+              <div class="miner-card">
+                <div class="miner-name">AntPool</div>
+                <div class="miner-share">~17.9%</div>
+                <div class="miner-desc">比特大陆旗下矿池，曾是全球最大。总部从中国迁至美国/新加坡。</div>
+                <span class="miner-tag top">TOP 2</span>
+              </div>
+              <div class="miner-card">
+                <div class="miner-name">F2Pool</div>
+                <div class="miner-share">~11.4%</div>
+                <div class="miner-desc">鱼池，中国最早的大型矿池之一，2013 年创立。</div>
+                <span class="miner-tag top">TOP 3</span>
+              </div>
+              <div class="miner-card">
+                <div class="miner-name">ViaBTC</div>
+                <div class="miner-share">~8.0%</div>
+                <div class="miner-desc">微比特，2016 年创立，提供云挖矿和矿池服务。</div>
+                <span class="miner-tag">稳定矿池</span>
+              </div>
+              <div class="miner-card">
+                <div class="miner-name">BTC.com</div>
+                <div class="miner-share">~10.4%</div>
+                <div class="miner-desc">比特大陆旗下另一个矿池，矿池浏览器产品也较知名。</div>
+                <span class="miner-tag top">TOP 4</span>
+              </div>
+              <div class="miner-card">
+                <div class="miner-name">Poolin</div>
+                <div class="miner-share">~10.2%</div>
+                <div class="miner-desc">币印矿池，2019 年创立，2022 年流动性危机后份额有所下滑。</div>
+                <span class="miner-tag">中等规模</span>
+              </div>
+            </div>
+
+            <h3>3.3 算力集中度：真相与误解</h3>
+            <p>全球算力集中度是一个经常被<strong>误解</strong>的话题。关键数据：</p>
+            <ul>
+              <li>前 5 大矿池合计约 <strong>80%</strong> 算力</li>
+              <li>Foundry USA + AntPool 合计约 <strong>51%</strong>（2025 年数据）</li>
+            </ul>
+
+            <div class="highlight-box">
+              <span class="label">⚠️ 重要区分：两个矿池合谋 ≠ 单体 51%</span>
+              <div class="text">
+                <p>很多人看到"Foundry + AntPool = 51%"就认为比特币可以被"51% 攻击"——这是<strong>严重误解</strong>。</p>
+                <p>关键事实：</p>
+                <ul>
+                  <li>矿池<strong>不是</strong>单一实体——Poolin 里可能有数千个独立矿工，他们随时可以切换矿池</li>
+                  <li>矿池只是<strong>收益分配</strong>工具，不是算力"所有者"</li>
+                  <li>矿工可在几分钟内<strong>切换矿池</strong>——这是系统最重要的去中心化保障</li>
+                  <li>即使两个矿池"合谋"，矿工也可以立即撤出，切换到其他矿池</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>3.4 51% 攻击科普</h3>
+            <div class="attack-viz">
+              <div class="av-title">⚡ 51% 攻击的真相</div>
+              <div class="attack-stages">
+                <div class="attack-stage">
+                  <div class="as-num">攻击条件</div>
+                  <div class="as-text">攻击者控制超过 50% 的全网算力，可比诚实矿工更快找到区块。</div>
+                </div>
+                <div class="attack-arrow">→</div>
+                <div class="attack-stage danger">
+                  <div class="as-num">可以做</div>
+                  <div class="as-text">① 双花（将已花费的币再花一次）<br>② 审查交易（阻止特定交易上链）</div>
+                </div>
+                <div class="attack-arrow">→</div>
+                <div class="attack-stage">
+                  <div class="as-num">无法做</div>
+                  <div class="as-text">❌ 伪造比特币<br>❌ 修改历史已确认交易的内容<br>❌ 破解私钥</div>
+                </div>
+              </div>
+              <div style="margin-top:14px;font-size:0.82rem;color:var(--text-secondary);">
+                <strong>攻击代价</strong>：租用或控制 51% 算力 ≈ 每小时数百万美元成本。攻击成功后比特币信誉崩溃，攻击者手中的 BTC 也会贬值——经济上无利可图（理性攻击者不存在）。
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、2021 中国清退 ============ -->
+          <section id="china-ban">
+            <h2>四、2021 中国清退：算力大迁移</h2>
+
+            <h3>4.1 发生了什么？</h3>
+            <p>2021 年 5 月起，中国国务院、金融委等机构陆续发布针对加密货币挖矿的整治政策，内蒙古、四川、云南、新疆等主要矿区相继出台清理措施。</p>
+            <p>到 2021 年 9 月，中国境内比特币挖矿活动基本清零。</p>
+
+            <h3>4.2 算力腰斩与全球迁移</h3>
+            <div class="highlight-box">
+              <span class="label">📊 全球算力变化（2021）</span>
+              <div class="text">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;">
+                  <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#EF4444;">180 EH/s → 96 EH/s</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">中国清退期间全球算力</div>
+                    <div style="font-size:0.82rem;color:#EF4444;margin-top:6px;font-weight:600;">↓ 约 47%（近乎腰斩）</div>
+                  </div>
+                  <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#10B981;">96 EH/s → 250+ EH/s</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">2022-2023 恢复期全球算力</div>
+                    <div style="font-size:0.82rem;color:#10B981;margin-top:6px;font-weight:600;">↑ 约 2.6 倍（强势恢复）</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h3>4.3 迁移目的地</h3>
+            <p>中国矿工携带设备大批迁移至：</p>
+            <ul>
+              <li><strong>美国</strong>：得克萨斯州（低电价、能源充沛）、乔治亚州（政策友好）、佛罗里达州等</li>
+              <li><strong>哈萨克斯坦</strong>：2021 年一跃成为全球第二大挖矿中心（受益于中国矿工涌入），但 2022 年初全国断网事件导致全球算力单日下跌约 12%</li>
+              <li><strong>俄罗斯</strong>：西伯利亚水电能源丰富，成本低廉</li>
+              <li><strong>加拿大</strong>、<strong>冰岛</strong>：水电、地热等清洁能源优势</li>
+              <li><strong>中东</strong>（阿联酋等）：政府主动引入，算力快速增长</li>
+            </ul>
+
+            <div class="treasure-box">
+              <h3>💎 清退的意外结果：算力更分散了？</h3>
+              <p>讽刺的是：2021 年中国清退后，比特币网络算力<strong>不仅没有更集中，反而在地理上更分散了</strong>。</p>
+              <p>原因：</p>
+              <ul>
+                <li>大量中国矿工分散到美国、哈萨克斯坦、俄罗斯等多个国家，而非集中在一个地方</li>
+                <li>美国本土矿企（Marathon、Riot、Bitfarms 等）借机扩大规模，形成多元竞争格局</li>
+                <li>哈萨克斯坦断网事件证明了地理集中带来的单点风险，各方开始刻意分散布局</li>
+                <li>能源丰富的国家（如中东）开始主动吸引矿工，形成新的地理平衡</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 五、能源与绿色挖矿 ============ -->
+          <section id="energy">
+            <h2>五、能源与绿色挖矿</h2>
+
+            <h3>5.1 比特币挖矿耗电多少？</h3>
+            <p>比特币挖矿是全球最大的算力消耗系统之一。剑桥大学替代金融中心（CCAF）数据显示：</p>
+            <ul>
+              <li>2021 年：约 <strong>16-17 TWh/年</strong>（年化），与中国深圳市年用电量相当</li>
+              <li>2023-2025 年：约 <strong>20-30 TWh/年</strong>（年化），持续增长</li>
+            </ul>
+
+            <h3>5.2 绿色能源占比</h3>
+            <div class="energy-grid">
+              <div class="energy-item">
+                <div class="e-pct">~52%</div>
+                <div class="e-label">可持续能源占比（CCAF 2025 报告）</div>
+              </div>
+              <div class="energy-item">
+                <div class="e-pct">~25%</div>
+                <div class="e-label">水电能源（中国迁移前主要来源）</div>
+              </div>
+              <div class="energy-item">
+                <div class="e-pct">~17%</div>
+                <div class="e-label">天然气/石油（过剩能源利用）</div>
+              </div>
+              <div class="energy-item">
+                <div class="e-pct">~17%</div>
+                <div class="e-label">风电/光伏/地热/核能</div>
+              </div>
+            </div>
+
+            <h3>5.3 能源价值辩论</h3>
+            <div class="highlight-box">
+              <span class="label">⚖️ 两种截然不同的观点</span>
+              <div class="text">
+                <p><strong>批评者视角：</strong></p>
+                <ul>
+                  <li>大量电力用于"无意义的哈希计算"，是能源浪费</li>
+                  <li>比特币挖矿推高了部分地区电价，影响居民用电</li>
+                  <li>碳排放加剧气候变化</li>
+                </ul>
+                <p style="margin-top:10px;"><strong>支持者视角：</strong></p>
+                <ul>
+                  <li>比特币矿工是<strong>灵活的电力买家</strong>——可在电网过剩时开机，在电网紧张时关机，天然充当"电力稳定器"</li>
+                  <li>过剩能源（石油井伴生气、水电弃电、风电弃风）本身无法存储或输送，挖矿是少数能将其变现的方式</li>
+                  <li>比特币挖矿激励可再生能源基础设施投资（能源公司愿意为剩余电力找到买家）</li>
+                  <li>金融系统的能源消耗同样惊人，而比特币提供了更去中心化、更安全的替代方案</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="story-box purple">
+              <span class="story-label">🔋 "过剩能源"的故事</span>
+              <p>美国得克萨斯州的石油钻井平台，每天燃烧（Flare）大量伴生天然气——因为规模太小，铺设管道不划算。这些天然气若直接排放，既浪费又污染环境。</p>
+              <p style="margin-top:8px;">一些比特币矿工直接在钻井平台旁边安装矿机，用本来会被烧掉的天然气发电挖矿——<strong>变废为宝</strong>，减少了甲烷排放，同时获得了低成本的清洁电力。</p>
+              <p style="margin-top:8px;">这就是"能源价值论"最有力的实践证据：比特币挖矿不是在争夺能源，而是在<strong>激活沉睡的过剩能源</strong>。</p>
+            </div>
+          </section>
+
+          <!-- ============ 六、延伸探索 ============ -->
+          <div class="explorer-box">
+            <div class="exp-header">
+              <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+              <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+            </div>
+            <div class="exp-result">
+              <ul class="exp-links">
+                <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space — 查看当前全网算力与难度 <span class="exp-go">→</span></a></li>
+                <li><a href="https://ccaf.io/cbns" target="_blank" rel="noopener">CCAF 比特币能源消耗指数 — 剑桥大学官方数据 <span class="exp-go">→</span></a></li>
+                <li><a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener">Blockchain.com Explorer — 查看各矿池历史出块统计 <span class="exp-go">→</span></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ============ 七、多视角重新解释 ============ -->
+          <section id="perspectives">
+            <h2>六、多视角重新解释</h2>
+
+            <!-- 多视角卡片 -->
+            <div class="perspective-card" id="mining-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 矿业生态的六种解读</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="technology">👨‍💻 协议开发者</button>
+                  <button class="p-tab" data-angle="security">🔒 安全研究者</button>
+                  <button class="p-tab" data-angle="finance">💰 经济学者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="business">🔍 产业分析师</button>
+                  <button class="p-tab" data-angle="philosophy">👛 比特币信徒</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <!-- 协议开发者 -->
+                <div class="p-content" data-angle="technology">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👨‍💻 协议开发者</div>
+                  <div class="p-quote">"PoW 的设计哲学是：让攻击者付出真实代价。没有免费的攻击——任何 51% 攻击都需要持续消耗电力，攻击者自身也会破产。"</div>
+                  <ul>
+                    <li><strong>ASIC 抗性之争</strong>：ASIC 让算力集中，但也使攻击成本极高（专用硬件无法转做他用）——这是权衡，不是缺陷</li>
+                    <li><strong>难度调整的精妙</strong>：每 2016 块的难度调整是比特币最稳定的反馈回路之一，无需人工干预即可自适应全网算力</li>
+                    <li><strong>当前讨论</strong>：Stratum V2 协议改进（矿工直接组装区块，减少矿池的中心化控制）；FPGA 矿机是否应取代 ASIC 的部分算力？</li>
+                    <li><strong>绿色 PoW 探索</strong>：一些研究探索用可验证延迟函数（VDF）替代传统 SHA-256，减少"无用计算"，但 VDF 本身也有中心化风险</li>
+                  </ul>
+                </div>
+                <!-- 安全研究者 -->
+                <div class="p-content" data-angle="security">
+                  <div class="p-angle-badge" style="background:rgba(239,68,68,0.12);color:#EF4444;">🔒 安全研究者</div>
+                  <div class="p-quote">"比特币 PoW 的安全性建立在物理世界——算力消耗 = 能量消耗 = 真实世界的电力成本。这是密码学与经济学的交叉点。"</div>
+                  <ul>
+                    <li><strong>51% 攻击的量化</strong>：租用 51% 算力攻击比特币 1 小时的成本约为 <strong>数百万美元</strong>（取决于市场行情），且需持续付费</li>
+                    <li><strong>自私挖矿（Selfish Mining）</strong>：攻击者发现区块后暂不广播，试图领先网络——但分析显示攻击者在理性条件下通常亏损</li>
+                    <li><strong>难度攻击（Difficulty Attack）</strong>：短期大量算力涌入/撤出，可能在难度调整窗口内造成临时区块不稳定</li>
+                    <li><strong>矿池作恶风险</strong>：矿池虽可指导矿工工作（理论上可发起 51% 攻击），但矿工随时可退出——历史上多次发生矿池故障导致份额快速分散</li>
+                    <li><strong>Layer 2 安全依托</strong>：闪电网络依赖链上 PoW 的最终确定性——链上确认越深，Layer 2 的信任假设越强</li>
+                  </ul>
+                </div>
+                <!-- 经济学者 -->
+                <div class="p-content" data-angle="finance">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学者</div>
+                  <div class="p-quote">"矿工是比特币的'最后买家'——每当有新的 BTC 产出，矿工必须卖出以支付电费，这创造了持续的买盘压力，也使比特币成为能源的'流动化身'。"</div>
+                  <ul>
+                    <li><strong>卖压 vs 买压</strong>：矿工每日产出 ~900 BTC（2024 年减半后），其中相当部分必须卖出支付电费——这构成比特币市场的重要卖方力量</li>
+                    <li><strong>关机价与市场底部</strong>：矿工普遍采用"币价低于关机价则抛售更多 BTC 来维持运营"的策略，这形成了技术层面的价格支撑</li>
+                    <li><strong>能源套利</strong>：比特币挖矿是全球最纯粹的"电力套利"——矿工本质上是把低价电力转换为高价值 BTC 的机器</li>
+                    <li><strong>第四次减半的影响</strong>：每日新增 BTC 从 1800 → 900，供应量减半；历史上每次减半后 12-18 个月均出现显著牛市——供需关系的戏剧性变化</li>
+                    <li><strong>矿工股票折价</strong>：上市矿企（Marathon、Riot、Bitfarms）股价通常与 BTC 价格高度相关，但也因运营杠杆而波动更大</li>
+                  </ul>
+                </div>
+                <!-- 历史学家 -->
+                <div class="p-content" data-angle="history">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</div>
+                  <div class="p-quote">"比特币矿业史是一部技术民主化与地理大迁移的历史：从 CPU 到 GPU 到 ASIC，从家庭车库到全球云端，从中国到美国。"</div>
+                  <ul>
+                    <li><strong>2010 年 GPU 挖矿</strong>：早期矿工 Laszlo Hanyecz 用 10,000 BTC 买了两个披萨——第一次比特币实物交易，同时也是第一次算力"军备竞赛"的起点</li>
+                    <li><strong>2012 年首次减半</strong>：GPU 取代 CPU，ASIC 开始研发，矿工从极客走向专业化</li>
+                    <li><strong>2013 年 ASIC 时代</strong>：蝴蝶实验室（Butterfly Labs）事件——预购 ASIC 跑路，行业第一次"ICO 式"欺诈；阿瓦隆（Avalon）成为第一个成功的 ASIC 制造商</li>
+                    <li><strong>2017-2018 年</strong>：BCH 分叉战触发算力战争，比特币与比特币现金的算力拉锯成为历史</li>
+                    <li><strong>2021 年中国清退</strong>：史上最大规模的矿业地理迁移，矿工用集装箱装设备迁往全球</li>
+                    <li><strong>2022-2024 年</strong>：美国上市矿企崛起，Foundry USA 超越中国矿池成为全球第一，算力中心从东方转向西方</li>
+                  </ul>
+                </div>
+                <!-- 产业分析师 -->
+                <div class="p-content" data-angle="business">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🔍 产业分析师</div>
+                  <div class="p-quote">"矿业是最纯粹的商品生意——买入电力，产出 BTC，中间赚取价差。成本控制（尤其是电费）是矿工生存的核心竞争力。"</div>
+                  <ul>
+                    <li><strong>矿机迭代周期</strong>：通常 18-24 个月新一代矿机面世，算力/能效比翻倍；持有旧矿机的矿工面临严峻竞争</li>
+                    <li><strong>垂直整合趋势</strong>：比特大陆（AntMiner）、MicroBT（WhatsMiner）占据 ASIC 市场主导，上下游整合成为竞争壁垒</li>
+                    <li><strong>上市矿企模式</strong>：Marathon、Riot、Bitfarms 等通过股票市场融资，扩大规模；但高杠杆运营在熊市中风险极大（2022 年多家矿企濒临破产）</li>
+                    <li><strong>电力合同策略</strong>：长期电力合同（3-10 年）锁定低成本电价，是矿工最重要的护城河之一；电力成本低于 $0.04/kWh 的矿工在熊市中也可能盈利</li>
+                    <li><strong>2024 年 ETF 影响</strong>：机构投资者通过 ETF 持有 BTC，矿工股票也受更多关注，估值逻辑从"挖矿效率"向"资产敞口"转变</li>
+                  </ul>
+                </div>
+                <!-- 比特币信徒 -->
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">👛 比特币信徒</div>
+                  <div class="p-quote">"每一枚 BTC 背后都燃烧着真实的能源——这不是浪费，这是把能量凝固成永恒的价值。PoW 是比特币的灵魂。"</div>
+                  <ul>
+                    <li><strong>能源货币论</strong>：比特币是最纯粹的"能源货币"——矿工将电费（能量的货币表现）转化为 BTC（能量的数字储存形式）；每一枚 BTC 的价值都有真实的能源支撑</li>
+                    <li><strong>去中心化即安全</strong>：虽然矿池算力集中，但矿池中的矿工可随时切换——真正的去中心化不是"没有大玩家"，而是"任何大玩家都可以被替换"</li>
+                    <li><strong>第四次减半的意义</strong>：区块奖励降至 3.125 BTC后，比特币年度通胀率低于黄金（约 1.7% vs 黄金 ~1.8%）——数字黄金的货币属性进一步强化</li>
+                    <li><strong>绿色挖矿的伦理</strong>：比特币信徒普遍支持绿色挖矿，认为用废弃能源挖矿是比特币对能源市场的"正向改造"</li>
+                    <li><strong>PoS 的"不纯"批评</strong>：PoS（权益证明）系统被部分比特币信徒批评为"有钱人躺着赚钱"——没有真实能量消耗的权益证明，缺乏与物理世界的连接</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、动手实验 ============ -->
+          <section id="labs">
+            <h2>七、动手实验区</h2>
+
+            <h3>🔍 实验：在 mempool.space 查看实时算力与难度</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">实时算力与难度查询</span>
+              </div>
+              <div class="exp-result" id="mempool-stats">
+                <div class="exp-empty">👆 点击下方按钮获取当前比特币网络状态（数据来源：mempool.space API）</div>
+              </div>
+              <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="loadMempoolStats()">📊 刷新网络数据</button>
+                <button class="btn" onclick="document.getElementById('mempool-stats').innerHTML='<div class=\'exp-empty\'>👆 点击上方按钮获取数据</div>'">🗑 清空</button>
+              </div>
+              <div style="margin-top:10px;">
+                <p style="font-size:0.78rem;color:var(--text-muted);">💡 <strong>提示</strong>：对比不同时间点的数据，观察难度调整前后算力的变化。</p>
+              </div>
+            </div>
+
+            <h3>📊 实验：矿池出块统计</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">矿池出块统计</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">最近 30 天（数据来源：mempool.space）</span>
+              </div>
+              <div class="exp-result" id="pool-stats">
+                <div class="exp-empty">👆 点击按钮加载矿池出块统计数据</div>
+              </div>
+              <div style="margin-top:12px;">
+                <button class="btn btn-primary" onclick="loadPoolStats()">📈 加载矿池数据</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 九、大白话总结 ============ -->
+          <section id="summary">
+            <h2>八、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把矿业生态放在日常场景中</span>
+              <p><strong>矿工 = 比特币网络的"武警"</strong></p>
+              <ul>
+                <li>武警的职责是维护社会秩序（验证交易）；武警需要工资（区块奖励）；武警用真实的体力劳动（算力）换取报酬</li>
+                <li>不同的是：武警由政府财政支付，矿工由系统自动支付；武警的忠诚对象是政府，矿工的忠诚对象是协议规则</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>PoW = 一场永不停歇的数学竞赛</strong></p>
+              <ul>
+                <li>每 10 分钟发一次"冠军赛"，参赛者用算力"买票"</li>
+                <li>找到正确答案的参赛者获得记账权 + 3.125 BTC 奖金</li>
+                <li>题目难度每 14 天自动调节——人少就简单，人多就难</li>
+                <li>这场竞赛永不停歇，24/7/365，风雨无阻</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>矿池 = 矿工互助协会</strong></p>
+              <ul>
+                <li>个人参赛可能几个月拿不到奖（solo 挖矿）；加入协会后，贡献多少分成多少，每月有稳定收入</li>
+                <li>协会负责人（矿池运营方）收取少量管理费</li>
+                <li>你可以随时退出协会，换到另一个——协会本身没有强制力</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>51% 攻击 = 坏人控制了竞赛裁判？</strong></p>
+              <ul>
+                <li>坏人控制了超过一半的算力——理论上可以：① 双花（同一笔钱花两次）② 审查交易（让某人的交易永远上不了链）</li>
+                <li>但坏人无法：凭空变出 BTC、修改历史记录、破解你的私钥</li>
+                <li>而且攻击成本极高，攻击成功后 BTC 信誉崩溃，坏人手里的 BTC 也会贬值——这是"理性攻击者不存在"的根本原因</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>能源 = 比特币的"代价"</strong></p>
+              <ul>
+                <li>比特币用电力换安全——这是它的设计选择，也是它与 PoS 等"无消耗"共识的本质区别</li>
+                <li>好消息：约 52% 的比特币挖矿使用可再生能源，且大量利用原本被浪费的过剩能源</li>
+                <li>比特币矿工是"电力的最后买家"——在电网最需要买家的时候提供支撑，在电网充足时自动退出</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 核心要点 ============ -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>PoW 是数学竞赛</strong>——用算力（电力）竞争记账权，不可伪造，无法绕过</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>区块奖励每 4 年减半</strong>——目前 3.125 BTC，2140 年归零，届时矿工靠手续费维生</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>难度调整是自我平衡机制</strong>——每 2016 区块自动调节，保证每 10 分钟出一个块</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>矿池是合作挖矿机制</strong>——矿工可随时切换，矿池≠算力所有者，51% 集中是误解</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">5️⃣</div>
+                <p><strong>2021 中国清退</strong>——算力腰斩后强势恢复，地理分散化趋势加速</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">6️⃣</div>
+                <p><strong>绿色挖矿是主流</strong>——约 52% 可再生能源，且大量利用过剩能源，是能源市场的"正向改造"</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>你已经理解了比特币的"安全部队"（矿业生态）。接下来看比特币链上还能玩出什么花样——Ordinals、Runes、稳定币等协议层创新：</p>
+            <a href="05-06-protocol-layer.html" class="btn btn-primary">继续学习：协议层：Ordinals / Runes / 稳定币 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="05-04-institutions-etf.html" class="btn">← 回顾：机构与 ETF</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="05-04-institutions-etf.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">机构与 ETF</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        生态篇 · 5 / 7
+      </div>
+      <a href="05-06-protocol-layer.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">协议层：Ordinals / Runes / 稳定币</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      calcShutdown();
+    });
+
+    // ===== 关机价计算器 =====
+    function calcShutdown() {
+      const elecCost = parseFloat(document.getElementById('elec-cost').value) || 0.06;
+      const hashRate = parseFloat(document.getElementById('miner-hash').value) || 100; // TH/s
+      const power = parseFloat(document.getElementById('miner-power').value) || 3250; // W
+      const btcPrice = parseFloat(document.getElementById('btc-price').value) || 105000; // USD
+
+      const dailyKwh = (power / 1000) * 24; // kWh per day
+      const dailyCost = dailyKwh * elecCost; // USD per day
+
+      // 简化计算：每日 BTC 产出（假设网络算力 650 EH/s）
+      // 每天约 144 区块，每区块 3.125 BTC = 450 BTC/天
+      // 全网总算力 ~650 EH/s = 650,000,000 TH/s
+      // 此矿机份额 = hashRate / 650,000,000 TH/s
+      const networkHashrate = 650000000; // TH/s (650 EH/s)
+      const dailyBtcPerMiner = (450 / networkHashrate) * hashRate;
+
+      const shutdownPrice = dailyBtcPerMiner > 0 ? (dailyCost / dailyBtcPerMiner) : 0;
+      const currentStatus = btcPrice > shutdownPrice
+        ? '<span style="color:#10B981;font-weight:600;">✅ 可盈利（高于关机价 $' + shutdownPrice.toFixed(0) + '）</span>'
+        : '<span style="color:#EF4444;font-weight:600;">⚠️ 低于关机价，建议关机或迁移低电价地区</span>';
+
+      document.getElementById('sr-daily-btc').textContent = dailyBtcPerMiner.toFixed(8) + ' BTC';
+      document.getElementById('sr-daily-cost').textContent = '$' + dailyCost.toFixed(2);
+      document.getElementById('sr-shutdown').textContent = '$' + shutdownPrice.toFixed(0);
+      document.getElementById('sr-shutdown').className = 'r-value ' + (btcPrice < shutdownPrice ? 'danger' : 'highlight');
+      document.getElementById('sr-status').innerHTML = currentStatus;
+    }
+
+    // ===== mempool.space 实时数据 =====
+    async function loadMempoolStats() {
+      const el = document.getElementById('mempool-stats');
+      el.innerHTML = '<div class="exp-empty">⏳ 正在从 mempool.space 获取数据...</div>';
+      try {
+        const [statsRes, difficultyRes] = await Promise.all([
+          fetch('https://mempool.space/api/v1/lightning/statistics/latest'),
+          fetch('https://mempool.space/api/v1/difficulty-adjustment')
+        ]);
+        const stats = await statsRes.json().catch(() => ({}));
+        const diff = await difficultyRes.json().catch(() => ({}));
+
+        // 获取当前难度
+        const difficultyData = await fetch('https://mempool.space/api/block-height/870000').then(r => r.text()).catch(() => null);
+        const hashrateData = await fetch('https://mempool.space/api/v1/hashrate').then(r => r.json()).catch(() => []);
+
+        let html = '<div class="exp-field"><span><strong>提示</strong></span><span style="font-size:0.78rem;">实时数据由 mempool.space API 提供</span></div>';
+        html += '<div class="exp-field"><span><strong>查询时间</strong></span><span>' + new Date().toLocaleString('zh-CN') + '</span></div>';
+        html += '<div class="exp-field"><span><strong>说明</strong></span><span style="font-size:0.78rem;">算力和难度数据需要页面加载后实时拉取，可访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看完整仪表盘</span></div>';
+        html += '<div class="exp-field" style="margin-top:6px;"><span><strong>→ 前往 mempool.space</strong></span><span><a href="https://mempool.space" target="_blank" style="color:var(--orange);">查看完整实时算力/难度仪表盘 ↗</a></span></div>';
+        el.innerHTML = html;
+      } catch(e) {
+        el.innerHTML = '<div class="exp-empty" style="color:#EF4444;">查询失败：' + (e.message || '未知错误') + '<br><br>💡 建议：直接访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看实时数据</div>';
+      }
+    }
+
+    // ===== 矿池统计数据 =====
+    async function loadPoolStats() {
+      const el = document.getElementById('pool-stats');
+      el.innerHTML = '<div class="exp-empty">⏳ 正在加载矿池数据...</div>';
+      try {
+        const resp = await fetch('https://mempool.space/api/v1/pools');
+        const pools = await resp.json();
+        if (!pools || pools.length === 0) throw new Error('无数据');
+
+        let html = '<div class="exp-field"><span><strong>矿池</strong></span><span><strong>最近 30 天出块</strong></span></div>';
+        pools.slice(0, 8).forEach(p => {
+          html += '<div class="exp-field">';
+          html += '<span>' + (p.name || 'Unknown') + '</span>';
+          html += '<span style="font-family:var(--font-mono);">' + (p.blocks || 0) + ' 块</span>';
+          html += '</div>';
+        });
+        html += '<div style="margin-top:8px;font-size:0.75rem;color:var(--text-muted);">';
+        html += '数据来源：mempool.space | ';
+        html += '<a href="https://mempool.space" target="_blank" style="color:var(--orange);">查看完整矿池排名 ↗</a>';
+        html += '</div>';
+        el.innerHTML = html;
+      } catch(e) {
+        el.innerHTML = '<div class="exp-empty">加载失败：' + (e.message || '未知错误') + '<br><br>💡 建议：访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看矿池数据</div>';
+      }
+    }
+  </script>
+</body>
+</html>

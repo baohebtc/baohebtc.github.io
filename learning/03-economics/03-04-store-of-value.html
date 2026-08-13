@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>价值存储 | 比特币学习地图</title>
+  <meta name="description" content="比特币作为价值存储（SoV）的论证：黄金对比七维分析、数字黄金论、机构采纳数据、MicroStrategy案例。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ===== 对比表格 ===== */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 14px 0;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .compare-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .compare-table td {
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    .compare-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .compare-table .winner {
+      color: #10B981;
+      font-weight: 600;
+    }
+    .compare-table .loser {
+      color: #EF4444;
+    }
+
+    /* ===== 机构数据卡片 ===== */
+    .institution-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .institution-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .institution-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #F7931A 0%, #E8B86D 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .institution-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .institution-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .institution-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 12px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+    }
+    .stat-item .stat-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .stat-item .stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .stat-item .stat-unit {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .stat-item .stat-note {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ===== 里程碑时间线 ===== */
+    .milestone-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .milestone-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+    }
+    .milestone-item:hover {
+      border-color: var(--orange);
+    }
+    .milestone-date {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--orange);
+      min-width: 85px;
+    }
+    .milestone-content {
+      flex: 1;
+    }
+    .milestone-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .milestone-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ===== 数字黄金论卡片 ===== */
+    .gold-thesis {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .thesis-side {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 18px;
+    }
+    .thesis-side.pros {
+      border-color: rgba(16,185,129,0.3);
+    }
+    .thesis-side.cons {
+      border-color: rgba(239,68,68,0.3);
+    }
+    .thesis-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .thesis-side.pros .thesis-title { color: #10B981; }
+    .thesis-side.cons .thesis-title { color: #EF4444; }
+    .thesis-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .thesis-list li {
+      padding: 6px 0;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .thesis-list li:last-child { border-bottom: none; }
+    .thesis-list li::before {
+      content: attr(data-icon);
+      margin-right: 6px;
+    }
+
+    /* ===== 视角卡片 ===== */
+    .perspective-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .perspective-header {
+      padding: 14px 18px;
+      background: rgba(247,147,26,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .ph-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .ph-label-icon { font-size: 1rem; }
+    .perspective-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .p-tab {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .p-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .p-tab.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .perspective-body { padding: 16px 18px; }
+    .p-content { display: none; }
+    .p-content.active { display: block; }
+    .p-angle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .p-quote {
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      margin: 10px 0;
+    }
+    .p-content ul {
+      padding-left: 20px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .perspective-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p-dot-indicator { display: flex; gap: 4px; }
+    .p-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .p-dot.active { background: var(--orange); }
+
+    /* ===== 实验区 ===== */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .lab-section .lab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .lab-section .lab-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .lab-section .lab-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .lab-section .lab-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .lab-section .lab-list li:last-child { border-bottom: none; }
+    .lab-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 700px) {
+      .gold-thesis { grid-template-columns: 1fr; }
+      .institution-stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="03-00-overview.html">经济学篇</a>
+        <span>›</span>
+        <span>价值存储</span>
+      </div>
+
+      <h1>💎 价值存储</h1>
+      <p class="page-subtitle">比特币是"数字黄金"还是"数字郁金香"？从货币职能、黄金对比到机构采纳，全面审视比特币作为价值存储（SoV）的论据与争议。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 20 分钟</span>
+        <span class="page-tag">📊 难度：中级</span>
+        <span class="page-tag">📑 经济学篇 4/8</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>4 / 8 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 50%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#definition">什么是价值存储</a>
+          <a href="#comparison">黄金 vs 比特币</a>
+          <a href="#digital-gold">数字黄金论</a>
+          <a href="#institutions">机构为什么买入</a>
+          <a href="#evolution">SoV 的演进</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 核心直觉 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p><strong>价值存储（Store of Value）</strong> = 把今天的购买力"存起来"，十年后拿出来还能换同样多的东西。</p>
+            <p style="margin-top:8px;">黄金能当价值存储，因为它<strong>稀缺、耐久、便携、可验证、抗没收</strong>。比特币在这五个维度上有优势，但有一个致命弱点：<strong>历史太短，尚未经过百年检验</strong>。</p>
+            <p style="margin-top:8px;">它是数字时代的黄金，还是代码世界的郁金香？答案不在过去，而在未来。</p>
+          </div>
+
+          <!-- ============ 一、什么是价值存储 ============ -->
+          <section id="definition">
+            <h2>一、什么是价值存储（SoV）？</h2>
+
+            <h3>1.1 货币的四大职能</h3>
+            <p>经济学教科书定义货币有四大职能：</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">💰</div>
+                <h4>交易媒介</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">用来买东西——直接支付</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📊</div>
+                <h4>记账单位</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">用来标价——一把椅子 $50</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">💾</div>
+                <h4>价值存储</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">存下来未来还能用——本章重点</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">⏰</div>
+                <h4>延期支付标准</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">用来还债——未来的钱</p>
+              </div>
+            </div>
+
+            <p>比特币目前主要在<strong>价值存储</strong>职能上竞争，而不是交易媒介。</p>
+
+            <h3>1.2 SoV 资产的五大特征</h3>
+            <p>一个理想的价值存储资产应具备：</p>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>特征</th>
+                  <th>含义</th>
+                  <th>为什么重要</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>稀缺性</strong></td>
+                  <td>供应有限，不能随意增发</td>
+                  <td>稀缺才有价值，稀缺保证购买力不被稀释</td>
+                </tr>
+                <tr>
+                  <td><strong>耐久性</strong></td>
+                  <td>不会腐烂、消失或降解</td>
+                  <td>存十年还在，才能当存储</td>
+                </tr>
+                <tr>
+                  <td><strong>便携性</strong></td>
+                  <td>易于携带、转移、分割</td>
+                  <td>流动性——需要时能快速变现或转移</td>
+                </tr>
+                <tr>
+                  <td><strong>可验证性</strong></td>
+                  <td>容易辨别真伪</td>
+                  <td>假货泛滥会摧毁信任</td>
+                </tr>
+                <tr>
+                  <td><strong>抗没收性</strong></td>
+                  <td>难以被政府或他人强制没收</td>
+                  <td>财产权保护——特别是极端情况下</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- ============ 二、黄金 vs 比特币对比 ============ -->
+          <section id="comparison">
+            <h2>二、黄金 vs 比特币：七维对比</h2>
+
+            <p>比特币常被称为"数字黄金"。让我们逐项对比：</p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>维度</th>
+                  <th>🥇 黄金</th>
+                  <th>₿ 比特币</th>
+                  <th>赢家</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>存量流量比 (S2F)</strong></td>
+                  <td>约 62 年<br><span style="font-size:0.7rem;color:var(--text-muted);">存量约 20 万吨，年新增约 3200 吨</span></td>
+                  <td>约 56 年 (2024减半后)<br><span style="font-size:0.7rem;color:var(--text-muted);">2028年后将超越黄金</span></td>
+                  <td class="winner">黄金 (目前)</td>
+                </tr>
+                <tr>
+                  <td><strong>便携性</strong></td>
+                  <td>实物黄金跨境携带受限，需托运或保险<br><span style="font-size:0.7rem;color:var(--text-muted);">机场安检、海关申报</span></td>
+                  <td>全球秒转，无需物理移动<br><span style="font-size:0.7rem;color:var(--text-muted);">记忆 12 个词即可携带任意金额</span></td>
+                  <td class="winner">比特币</td>
+                </tr>
+                <tr>
+                  <td><strong>可分割性</strong></td>
+                  <td>最小单位约 1 克金条<br><span style="font-size:0.7rem;color:var(--text-muted);">再小需要专业熔炼</span></td>
+                  <td>最小单位 1 聪 (0.00000001 BTC)<br><span style="font-size:0.7rem;color:var(--text-muted);">1 BTC 可分成 1 亿份</span></td>
+                  <td class="winner">比特币</td>
+                </tr>
+                <tr>
+                  <td><strong>可验证性</strong></td>
+                  <td>需要专业鉴定（检测仪、密度测试）<br><span style="font-size:0.7rem;color:var(--text-muted);">假黄金时有出现（钨芯镀金）</span></td>
+                  <td>节点密码学验证，任何人可独立验证<br><span style="font-size:0.7rem;color:var(--text-muted);">假比特币 = 数学上不可能</span></td>
+                  <td class="winner">比特币</td>
+                </tr>
+                <tr>
+                  <td><strong>存储成本</strong></td>
+                  <td>金库租赁、保险费用<br><span style="font-size:0.7rem;color:var(--text-muted);">约 0.1%-0.5% 年费</span></td>
+                  <td>私钥保管（自行承担风险）<br><span style="font-size:0.7rem;color:var(--text-muted);">冷钱包成本约 $50-150</span></td>
+                  <td class="winner">比特币</td>
+                </tr>
+                <tr>
+                  <td><strong>审查抵抗</strong></td>
+                  <td>海关可没收，历史上多次发生<br><span style="font-size:0.7rem;color:var(--text-muted);">1933 年美国行政命令没收黄金</span></td>
+                  <td>无许可系统，难以强制没收<br><span style="font-size:0.7rem;color:var(--text-muted);">私钥不在手中 = 没有比特币</span></td>
+                  <td class="winner">比特币</td>
+                </tr>
+                <tr>
+                  <td><strong>供应弹性</strong></td>
+                  <td>价格涨 → 矿工增产 → 部分抑制<br><span style="font-size:0.7rem;color:var(--text-muted);">有历史案例：金价涨后年产量上升</span></td>
+                  <td>价格涨 → 产量不变 (代码保证)<br><span style="font-size:0.7rem;color:var(--text-muted);">供给完全刚性</span></td>
+                  <td class="winner">比特币</td>
+                </tr>
+                <tr>
+                  <td><strong>历史信任</strong></td>
+                  <td class="winner">5000 年历史，全球认可</td>
+                  <td class="loser">仅 16 年历史（2009-2025）</td>
+                  <td class="winner">黄金</td>
+                </tr>
+                <tr>
+                  <td><strong>波动性</strong></td>
+                  <td>年均波动约 15%</td>
+                  <td>年均波动约 70%</td>
+                  <td class="winner">黄金</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="highlight-box">
+              <span class="label">📊 比分总结</span>
+              <div class="text">
+                <p><strong>比特币：6 胜</strong>（便携性、可分割性、可验证性、存储成本、审查抵抗、供应弹性）</p>
+                <p><strong>黄金：3 胜</strong>（S2F、历史信任、波动性）</p>
+                <p style="margin-top:8px;font-size:0.85rem;">比特币在"技术属性"上占优，黄金在"历史与社会共识"上占优。这恰恰是价值存储的核心矛盾：<strong>最好的存储资产，需要时间来证明自己</strong>。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、数字黄金论 ============ -->
+          <section id="digital-gold">
+            <h2>三、数字黄金论：论据与批评</h2>
+
+            <p>比特币作为"数字黄金"的叙事，有支持也有反对。</p>
+
+            <div class="gold-thesis">
+              <div class="thesis-side pros">
+                <div class="thesis-title">✅ 支持论据</div>
+                <ul class="thesis-list">
+                  <li data-icon="💎"><strong>稀缺性</strong>：2100 万上限是硬约束，比黄金的"地质稀缺"更可靠</li>
+                  <li data-icon="🌍"><strong>去中心化</strong>：没有央行、没有政府、没有金库管理员——信任转移到数学</li>
+                  <li data-icon="🔐"><strong>非主权</strong>：任何人都可以使用，无需 KYC，无需银行账户</li>
+                  <li data-icon="📱"><strong>数字原生</strong>：互联网时代需要数字原生的价值存储</li>
+                  <li data-icon="⚡"><strong>可编程</strong>：智能合约、多签、时间锁——黄金做不到</li>
+                  <li data-icon="🌐"><strong>全球流动性</strong>：7×24 小时交易，无收盘时间</li>
+                </ul>
+              </div>
+              <div class="thesis-side cons">
+                <div class="thesis-title">❌ 批评观点</div>
+                <ul class="thesis-list">
+                  <li data-icon="📈"><strong>波动性大</strong>：年波动率 70%，不像存储更像投机资产</li>
+                  <li data-icon="⏳"><strong>历史太短</strong>：16 年 vs 黄金 5000 年，未经极端危机检验</li>
+                  <li data-icon="🔧"><strong>无工业用途</strong>：黄金有工业价值（电子、首饰），比特币纯金融</li>
+                  <li data-icon="⚡"><strong>技术风险</strong>：协议漏洞、量子计算威胁、分叉风险</li>
+                  <li data-icon="🏛️"><strong>监管不确定性</strong>：各国政策分歧，可能影响流动性</li>
+                  <li data-icon="❓"><strong>未必被认可</strong>：黄金被所有人认可，比特币仍有争议</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="treasure-box">
+              <h3>💎 核心争议：波动性 vs 长期趋势</h3>
+              <p>批评者说：比特币波动太大，不适合当价值存储。</p>
+              <p>支持者说：早期资产都有波动，黄金在 1970 年代脱离金本位后也曾暴涨暴跌。从 2010 年到 2025 年的<strong>长期趋势</strong>看，比特币购买力在增长——只是路径颠簸。</p>
+              <p style="margin-top:8px;font-size:0.85rem;color:var(--text-muted);">真相可能介于两者之间：<strong>比特币是"成长中的价值存储"</strong>，波动性会随着市值增长、机构持仓、流动性改善而逐步降低。</p>
+            </div>
+          </section>
+
+          <!-- ============ 四、机构为什么买入 ============ -->
+          <section id="institutions">
+            <h2>四、机构为什么买入？</h2>
+
+            <p>2020 年以来，比特币从"极客玩具"转向"机构资产"。以下是关键数据：</p>
+
+            <h3>4.1 MicroStrategy：企业比特币 Treasury 策略标杆</h3>
+            <div class="institution-card">
+              <div class="institution-header">
+                <div class="institution-logo">M</div>
+                <div>
+                  <div class="institution-name">MicroStrategy (策略公司)</div>
+                  <div class="institution-desc">美股上市公司，全球最大企业持币者</div>
+                </div>
+              </div>
+              <div class="institution-stats">
+                <div class="stat-item">
+                  <div class="stat-label">累计持仓</div>
+                  <div class="stat-value">638,985</div>
+                  <div class="stat-unit">BTC</div>
+                  <div class="stat-note">截至 2025-09</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-label">总投入</div>
+                  <div class="stat-value">~472</div>
+                  <div class="stat-unit">亿美元</div>
+                  <div class="stat-note">腾讯新闻 2025-09-15</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-label">平均成本</div>
+                  <div class="stat-value">~73,913</div>
+                  <div class="stat-unit">美元/枚</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-label">2025收益率</div>
+                  <div class="stat-value" style="color:#10B981;">+25.9%</div>
+                  <div class="stat-unit">年内</div>
+                </div>
+              </div>
+            </div>
+
+            <p>MicroStrategy CEO Michael Saylor 的策略：<strong>"净积累者"</strong>——卖 1 股股票，买 10-20 BTC。他认为比特币是"数字时代的货币"，长期目标价百万美元（2025 年言论）。</p>
+
+            <h3>4.2 现货 ETF：传统资金水龙头</h3>
+            <div class="milestone-timeline">
+              <div class="milestone-item">
+                <div class="milestone-date">2024-01</div>
+                <div class="milestone-content">
+                  <div class="milestone-title">美国 SEC 批准首批现货 ETF</div>
+                  <div class="milestone-desc">11 支 ETF 同日获批，包括贝莱德、富达等巨头。Saylor 称其为"监管机构对比特币作为合法资产的认可"。</div>
+                </div>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-date">2024-Q1</div>
+                <div class="milestone-content">
+                  <div class="milestone-title">ETF 资金快速流入</div>
+                  <div class="milestone-desc">贝莱德 IBIT 单只 ETF 资产规模突破 100 亿美元，创 ETF 史最快增长纪录。</div>
+                </div>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-date">2024-05</div>
+                <div class="milestone-content">
+                  <div class="milestone-title">香港批准亚洲首批现货 ETF</div>
+                  <div class="milestone-desc">嘉实、华夏等 6 支 ETF 在港交所上市，打开亚洲零售通道。</div>
+                </div>
+              </div>
+            </div>
+
+            <h3>4.3 机构预测（需谨慎看待）</h3>
+            <div class="highlight-box">
+              <span class="label">⚠️ 预测性内容（非事实）</span>
+              <div class="text">
+                <p>以下为机构预测，<strong>不是价格保证</strong>：</p>
+                <ul>
+                  <li><strong>VanEck 预测</strong>：2031 年前比特币价格可能达到百万美元级别（2026-05）</li>
+                  <li><strong>Bitwise 预测</strong>：2035 年比特币价格区间 130-140 万美元，年均增长约 28.3%（2025-08）</li>
+                </ul>
+                <p style="margin-top:8px;font-size:0.8rem;color:var(--text-muted);">⚠️ 任何价格预测都有不确定性，过去表现不代表未来收益。投资需自行判断风险。</p>
+              </div>
+            </div>
+
+            <h3>4.4 为什么机构买入？</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📈</div>
+                <h4>收益潜力</h4>
+                <p>历史回报率高，尽管波动大，长期趋势向上</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔗</div>
+                <h4>非相关性</h4>
+                <p>与传统资产（股、债）相关性低，分散风险</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🛡️</div>
+                <h4>通胀对冲</h4>
+                <p>固定供给，对冲法币贬值风险</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🌐</div>
+                <h4>客户需求</h4>
+                <p>机构投资者要求配置数字资产，ETF 满足需求</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 五、SoV 的演进 ============ -->
+          <section id="evolution">
+            <h2>五、SoV 的演进：黄金 → 美债 → 比特币？</h2>
+
+            <p>人类历史上的"终极价值存储"一直在演变：</p>
+
+            <div class="milestone-timeline">
+              <div class="milestone-item">
+                <div class="milestone-date">古代 - 1971</div>
+                <div class="milestone-content">
+                  <div class="milestone-title">🥇 黄金时代</div>
+                  <div class="milestone-desc">黄金是跨越文明的价值存储，5000 年历史。政府发行的金币、银币是货币，黄金本身是终极清算资产。</div>
+                </div>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-date">1971 - 2009</div>
+                <div class="milestone-content">
+                  <div class="milestone-title">💵 美债时代</div>
+                  <div class="milestone-desc">布雷顿森林体系瓦解，美元脱离黄金。美国国债成为"全球最安全资产"，各国央行大量持有。</div>
+                </div>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-date">2009 - ?</div>
+                <div class="milestone-content">
+                  <div class="milestone-title">₿ 比特币时代？</div>
+                  <div class="milestone-desc">比特币诞生，提出"数字原生价值存储"概念。能否成为新时代的黄金，取决于技术安全性、社会共识、监管环境。</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="story-box purple">
+              <span class="story-label">🌐 为什么数字时代需要数字原生的 SoV？</span>
+              <ul>
+                <li><strong>互联网原生</strong>：数字经济需要原生货币，而不是"实物黄金的数字化映射"</li>
+                <li><strong>全球流动性</strong>：黄金跨境转移受限，比特币无国界</li>
+                <li><strong>可编程性</strong>：智能合约、DeFi、多签——数字原生资产的独特优势</li>
+                <li><strong>去信任化</strong>：不需要信任政府、银行、托管机构</li>
+              </ul>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">🔗 衔接</span>
+              <div class="text">
+                <p>比特币能否成为"数字黄金"，本质上是一场<strong>社会共识实验</strong>。在 <strong>03-07 法币 vs 比特币</strong> 中，我们将正面回应各种质疑。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>六、多视角解读</h2>
+
+            <div class="perspective-card" id="sov-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>同一个价值存储，六种看法</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab active" data-angle="finance">💰 经济学家</button>
+                  <button class="p-tab" data-angle="business">🏢 投资者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="humanity">🧠 普通人</button>
+                  <button class="p-tab" data-angle="philosophy">🏛️ 哲学家</button>
+                  <button class="p-tab" data-angle="technology">⚙️ 开发者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="finance">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.15);color:#EAB308;">💰 经济学家</span>
+                  <p class="p-quote">"比特币是'成长中的价值存储'——波动性会随市值增长而下降。"</p>
+                  <ul>
+                    <li><strong>货币职能</strong>：比特币在"价值存储"职能上表现最好，但波动性仍是硬伤</li>
+                    <li><strong>网络效应</strong>：用户越多 → 流动性越好 → 波动性越低 → 更适合存储</li>
+                    <li><strong>争议</strong>：固定供给是否导致"通缩螺旋"？囤币 vs 流通的张力</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="business">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.15);color:#8B5CF6;">🏢 投资者</span>
+                  <p class="p-quote">"波动是风险，也是机会。长期持有者享受的是趋势，不是波动。"</p>
+                  <ul>
+                    <li><strong>配置建议</strong>：主流机构建议 1%-5% 资产配置比特币（高波动资产）</li>
+                    <li><strong>定投策略</strong>：DCA（Dollar Cost Averaging）是降低波动风险的主流方法</li>
+                    <li><strong>周期风险</strong>：在周期顶峰买入，可能需要 3-4 年才能回本</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.15);color:#10B981;">📜 历史学家</span>
+                  <p class="p-quote">"黄金用了 5000 年建立信任，比特币只用了 16 年。时间是最好的检验者。"</p>
+                  <ul>
+                    <li><strong>对比案例</strong>：1970 年代黄金脱离金本位后也曾剧烈波动，后来稳定</li>
+                    <li><strong>郁金香教训</strong>：郁金香泡沫 3 年破灭，比特币 16 年仍在——时间已经给出了部分答案</li>
+                    <li><strong>范式转移</strong>：每一次货币形态演变，都被旧时代质疑</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="humanity">
+                  <span class="p-angle-badge" style="background:rgba(236,72,153,0.15);color:#EC4899;">🧠 普通人</span>
+                  <p class="p-quote">"我只想知道：把钱放进去，十年后还在不在？还能买多少东西？"</p>
+                  <ul>
+                    <li><strong>简单答案</strong>：过去 10 年，比特币购买力增长了数千倍（尽管路径颠簸）</li>
+                    <li><strong>风险提示</strong>：过去不保证未来，比特币可能归零（尽管概率在降低）</li>
+                    <li><strong>实用建议</strong>：只投入"亏得起"的钱，长期持有，不追涨杀跌</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.15);color:#F97316;">🏛️ 哲学家</span>
+                  <p class="p-quote">"价值存储的本质是社会共识——比特币正在争取这种共识。"</p>
+                  <ul>
+                    <li><strong>社会契约</strong>：比特币的价值来自参与者共同认可规则</li>
+                    <li><strong>信任转移</strong>：从"信任政府"到"信任数学"——这是哲学层面的范式转移</li>
+                    <li><strong>争议</strong>：数学信任 vs 社会信任，哪个更可靠？</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="technology">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.15);color:#3B82F6;">⚙️ 开发者</span>
+                  <p class="p-quote">"技术安全是价值存储的前提——没有安全，就没有存储。"</p>
+                  <ul>
+                    <li><strong>安全模型</strong>：私钥控制 = 绝对控制；私钥丢失 = 永久丢失</li>
+                    <li><strong>技术风险</strong>：协议漏洞、51% 攻击、量子计算威胁——都有应对方案，但风险仍在</li>
+                    <li><strong>可用性</strong>：冷钱包、多签、硬件设备——技术门槛是普通人参与的最大障碍</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角 · 同一事实，不同透镜</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、动手实验 ============ -->
+          <section id="labs">
+            <h2>七、动手实验区</h2>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">实验清单</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">📊</span>
+                  <div>
+                    <strong>实验 1：对比黄金与比特币市值</strong><br>
+                    黄金总市值 ≈ 14-15 万亿美元（地上存量约 20 万吨 × ~$70,000/公斤）<br>
+                    比特币市值 ≈ <span id="btcMcap">—</span>（实时计算：当前价格 × 约 1970 万存量）<br>
+                    <span style="font-size:0.75rem;color:var(--text-muted);">提示：在 <a href="https://companiesmarketcap.com" target="_blank" style="color:var(--orange);">Companies Market Cap</a> 查看对比可视化。</span>
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📈</span>
+                  <div>
+                    <strong>实验 2：查看 ETF 持仓数据</strong><br>
+                    打开 <a href="https://farside.co.uk/btc-etf-flow-all/" target="_blank" style="color:var(--orange);">farside.co.uk/btc-etf-flow-all</a> 查看美国现货 ETF 资金流向。<br>
+                    <span style="font-size:0.75rem;color:var(--text-muted);">观察：资金净流入还是净流出？哪些 ETF 规模最大？</span>
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">🏢</span>
+                  <div>
+                    <strong>实验 3：查看 MicroStrategy 持仓</strong><br>
+                    访问 <a href="https://www.microstrategy.com/bitcoin" target="_blank" style="color:var(--orange);">microstrategy.com/bitcoin</a> 查看官方持仓披露。<br>
+                    <span style="font-size:0.75rem;color:var(--text-muted);">观察：总持仓、平均成本、当前市值。</span>
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📉</span>
+                  <div>
+                    <strong>实验 4：对比波动率</strong><br>
+                    在 <a href="https://coinmarketcap.com" target="_blank" style="color:var(--orange);">CoinMarketCap</a> 查看 BTC 过去 1 年波动幅度。<br>
+                    对比黄金（GLD ETF）同期波动。<br>
+                    <span style="font-size:0.75rem;color:var(--text-muted);">问题：波动率是否在随时间降低？</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+              <!-- ============ 延伸探索 ============ -->
+    <section id="explore">
+      <div class="explorer-box">
+        <div class="exp-header">
+          <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+        </div>
+        <div class="exp-result">
+          <ul class="exp-links">
+        <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space · 实时供应与费率 <span class="exp-go">→</span></a></li>
+        <li><a href="https://planbtc.com" target="_blank" rel="noopener">PlanB S2F 模型站 <span class="exp-go">→</span></a></li>
+        <li><a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener">Blockchain.com · 查看大额转账 <span class="exp-go">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- ============ 八、大白话总结 ============ -->
+          <section id="summary">
+            <h2>八、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把复杂概念放回日常</span>
+              <p><strong>价值存储 = "十年后拿出来，还能换同样多的东西"</strong></p>
+              <ul>
+                <li>黄金能当存储，因为它<strong>稀缺、耐久、别人都认</strong></li>
+                <li>比特币在"稀缺"和"耐久"上没问题，问题在于"别人认不认"</li>
+                <li>16 年历史 vs 黄金 5000 年——比特币还在"证明自己"的阶段</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>比特币想当什么？</strong></p>
+              <ul>
+                <li>一个<strong>不锈不烂、谁也抢不走、全球通用</strong>的保险柜</li>
+                <li>你把购买力放进去，十年后打开，还在那里</li>
+                <li>但这个保险柜是新的——只有时间能证明它是否可靠</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>机构为什么买？</strong></p>
+              <ul>
+                <li>不是因为"信仰"，而是因为<strong>收益潜力 + 分散风险</strong></li>
+                <li>MicroStrategy 把它当公司储备资产，而不是现金</li>
+                <li>ETF 让普通人也能"上车"，不用自己管私钥</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>核心风险</strong>：</p>
+              <ul>
+                <li>波动大：今天存 10 万，明天可能变 8 万，也可能变 12 万</li>
+                <li>历史短：没人知道 50 年后比特币还在不在</li>
+                <li>技术风险：私钥丢了 = 永远没了</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>价值存储</strong>需要稀缺、耐久、便携、可验证、抗没收五大特征</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>比特币 vs 黄金</strong>：技术属性占优（6:3），但历史共识落后</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>数字黄金论</strong>有支持（稀缺/去中心化）也有批评（波动/历史短）</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>机构采纳</strong>（ETF、MicroStrategy）标志着比特币从极客走向主流</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">5️⃣</div>
+                <p><strong>时间是最好的检验者</strong>——比特币是否可靠，需要更长时间验证</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>价值存储的核心是"存得住"。但谁来保证区块空间本身的价值？下一章，我们深入比特币的"手续费市场"——区块空间如何定价，矿工如何生存。</p>
+            <a href="03-05-fee-market.html" class="btn btn-primary">继续学习：手续费市场 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="03-03-monetary-policy.html" class="btn">← 回顾：比特币的货币政策</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="03-03-monetary-policy.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">比特币的货币政策</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 4 / 8
+      </div>
+      <a href="03-05-fee-market.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">手续费市场</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      fetchBtcMarketData();
+    });
+
+    // ===== 已读标记 =====
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-04-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-04-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // ===== 多视角卡片 =====
+    function initSovPerspectives() {
+      const card = document.getElementById('sov-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      // 触摸滑动
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+
+    // ===== 获取 BTC 市值数据 =====
+    async function fetchBtcMarketData() {
+      const mcapSpan = document.getElementById('btcMcap');
+      if (!mcapSpan) return;
+      try {
+        const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_market_cap=true');
+        const data = await resp.json();
+        const mcap = data.bitcoin?.usd_market_cap;
+        if (mcap) {
+          const trillion = mcap / 1e12;
+          mcapSpan.textContent = `约 ${trillion.toFixed(2)} 万亿美元`;
+        }
+      } catch(e) {
+        mcapSpan.textContent = '约 2 万亿美元（需实时数据）';
+      }
+    }
+  </script>
+</body>
+</html>

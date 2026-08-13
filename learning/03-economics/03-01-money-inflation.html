@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>货币与通胀 | 比特币学习地图</title>
+  <meta name="description" content="货币的四大职能是什么？法币为何必然通胀？货币史经历了怎样的演化？本页面用购买力计算器让你直观感受「钱是如何悄悄变毛的」。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 时间线 ---- */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+      margin: 20px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 8px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: 2px solid var(--bg);
+    }
+    .timeline-item .tl-year {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+    .timeline-item .tl-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+    }
+    .timeline-item .tl-title {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+      font-size: 0.88rem;
+    }
+
+    /* ---- 货币职能卡片 ---- */
+    .func-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .func-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .func-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .func-card .func-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .func-card .func-name { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; }
+    .func-card .func-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+    .func-card .func-eg { font-size: 0.73rem; color: var(--text-muted); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+
+    /* ---- 通胀机制图 ---- */
+    .inflation-chain {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 16px 0;
+      justify-content: center;
+    }
+    .inflation-chain .chain-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      text-align: center;
+      min-width: 120px;
+      max-width: 160px;
+    }
+    .inflation-chain .chain-node .cn-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .inflation-chain .chain-node .cn-value {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .inflation-chain .chain-node.red { border-color: rgba(239,68,68,0.3); }
+    .inflation-chain .chain-node.red .cn-value { color: #EF4444; }
+    .inflation-chain .chain-node.orange { border-color: rgba(247,147,26,0.3); }
+    .inflation-chain .chain-node.orange .cn-value { color: var(--orange); }
+    .inflation-chain .chain-arrow {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    /* ---- 购买力计算器 ---- */
+    .ppc-calc {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin: 20px 0;
+    }
+    .ppc-calc .ppc-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .ppc-calc .ppc-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .ppc-calc .ppc-row label {
+      min-width: 110px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .ppc-calc .ppc-row input,
+    .ppc-calc .ppc-row select {
+      flex: 1;
+      min-width: 130px;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+    .ppc-calc .ppc-row input:focus,
+    .ppc-calc .ppc-row select:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+    .ppc-calc .ppc-result {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      margin-top: 4px;
+    }
+    .ppc-calc .ppc-result .res-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .ppc-calc .ppc-result .res-item:last-child { border-bottom: none; }
+    .ppc-calc .ppc-result .res-label { color: var(--text-secondary); }
+    .ppc-calc .ppc-result .res-value { font-weight: 600; }
+    .ppc-calc .ppc-result .res-value.highlight { color: var(--orange); font-size: 1rem; }
+    .ppc-calc .ppc-result .res-value.warning { color: #EF4444; }
+    .ppc-calc .ppc-result .res-value.good { color: #10B981; }
+
+    /* ---- 警示案例 ---- */
+    .case-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .case-card .case-year {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #EF4444;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .case-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .case-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 6px; }
+    .case-card .case-stat {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(239,68,68,0.12);
+      color: #EF4444;
+      margin-top: 4px;
+    }
+
+    /* ---- 视角卡片（通用样式，参照 03-00） ---- */
+    .perspective-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .perspective-header {
+      padding: 14px 18px;
+      background: rgba(247,147,26,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .ph-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .ph-label-icon { font-size: 1rem; }
+    .perspective-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .p-tab {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .p-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .p-tab.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .perspective-body { padding: 16px 18px; }
+    .p-content { display: none; }
+    .p-content.active { display: block; }
+    .p-angle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .p-quote {
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      margin: 10px 0;
+    }
+    .p-content ul {
+      padding-left: 20px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .perspective-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p-dot-indicator { display: flex; gap: 4px; }
+    .p-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .p-dot.active { background: var(--orange); }
+
+    /* ---- 实验区 ---- */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .lab-section .lab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .lab-section .lab-title { font-size: 0.9rem; font-weight: 700; }
+    .lab-section .lab-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .lab-section .lab-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+    }
+    .lab-section .lab-list li:last-child { border-bottom: none; }
+    .lab-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .inflation-chain { flex-direction: column; }
+      .inflation-chain .chain-arrow { transform: rotate(90deg); }
+      .func-grid { grid-template-columns: 1fr 1fr; }
+      .perspective-tabs { gap: 4px; }
+      .p-tab { font-size: 0.65rem; padding: 4px 7px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html">经济学篇</a>
+        <span>›</span>
+        <span>货币与通胀</span>
+      </div>
+
+      <h1>💸 货币与通胀</h1>
+      <p class="page-subtitle">钱为什么越来越「毛」？政府多印钞票的背后逻辑是什么？用购买力计算器，算算你的钱被通胀偷走了多少。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：入门</span>
+        <span class="page-tag">📑 经济学篇 1/8</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>1 / 8 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 12.5%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#functions">货币四大职能</a>
+          <a href="#history">货币演变史</a>
+          <a href="#mechanism">法币为何通胀</a>
+          <a href="#calculator">购买力计算器</a>
+          <a href="#china-cases">中国警示案例</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 核心直觉 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p><strong>通货膨胀不是天灾，是人祸。</strong>当政府发现可以通过印钱来解决债务问题，就再也没有动力去控制开支了。</p>
+            <p style="margin-top:8px;">你的钱「变毛」不是意外，是一场被设计好的、安静的财富转移：谁先拿到新印的钱，谁就以旧价格享受好处——而最后拿到的人，只剩涨价后的账单。</p>
+          </div>
+
+          <!-- ============ 一、货币的四大职能 ============ -->
+          <section id="functions">
+            <h2>一、货币的四大职能：钱到底在做什么？</h2>
+
+            <p>「钱是什么」看似简单，但经济学给出了一个精确的定义——货币必须同时承担<strong>四大职能</strong>，缺一不可。比特币正是按这四个职能逐一检视，才得出了自己的定位。</p>
+
+            <div class="func-grid">
+              <div class="func-card">
+                <div class="func-icon">🛒</div>
+                <div class="func-name">交易媒介</div>
+                <div class="func-desc">买卖东西时大家都愿意收的中间品。不用再"以物易物"——不用拿一头羊去换一把斧子，直接换成钱，再拿钱换。</div>
+                <div class="func-eg">例：你用微信转账买咖啡，而不是直接拿东西去换</div>
+              </div>
+              <div class="func-card">
+                <div class="func-icon">📊</div>
+                <div class="func-name">记账单位</div>
+                <div class="func-desc">所有商品和服务都可以用同一个尺度来标价。米饭 3 元、电影 40 元、工资 8000 元——用同一个"钱"来衡量价值。</div>
+                <div class="func-eg">例：超市里所有商品都有价格标签，单位统一为"元"</div>
+              </div>
+              <div class="func-card">
+                <div class="func-icon">🏦</div>
+                <div class="func-name">价值储藏</div>
+                <div class="func-desc">今天挣的钱可以留到明天用，购买力不会立刻消失（理想情况下）。把钱存起来，未来还能买到差不多价值的东西。</div>
+                <div class="func-eg">例：存 10 万元，十年后还能用它买东西（实际能买多少是另一回事）</div>
+              </div>
+              <div class="func-card">
+                <div class="func-icon">⏳</div>
+                <div class="func-name">延期支付标准</div>
+                <div class="func-desc">借条、合同、工资都用法币计价。未来交货、贷款、租金，都以"多少钱"来约定——大家相信这个单位不会随便改变。</div>
+                <div class="func-eg">例：银行贷款 100 万买房，还款额以人民币计价</div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">📌 关键洞察</span>
+              <div class="text">
+                <p><strong>比特币在四个职能上的现状：</strong></p>
+                <ul>
+                  <li>✅ <strong>价值储藏</strong>：目前最成熟的叙事，「数字黄金」</li>
+                  <li>✅ <strong>交易媒介</strong>：在特定场景下已可使用（跨境、大额），日常使用仍在发展</li>
+                  <li>⚙️ <strong>记账单位</strong>：大多数人仍以法币计价，比特币本身波动太大</li>
+                  <li>⚙️ <strong>延期支付</strong>：已有协议支持，但合同以 BTC 计价尚不普及</li>
+                </ul>
+                <p>本节先聚焦「价值储藏」的最大敌人——<strong>通货膨胀</strong>。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、货币的演变史 ============ -->
+          <section id="history">
+            <h2>二、货币演变史：钱是怎么一步步变成「纸」的？</h2>
+
+            <p>货币不是从天上掉下来的，它是<strong>人类社会自发演化</strong>出来的。每个阶段都是对前一个阶段缺陷的回应。</p>
+
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="tl-year">约公元前 9000 年</div>
+                <div class="tl-content">
+                  <div class="tl-title">🐄 物物交换</div>
+                  最早的交换方式：我有一袋麦子，你有一头羊，找到一个愿意"麦子换羊"的人不容易。需求双重巧合——我想要的恰好是你有的。
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-year">约公元前 1200 年</div>
+                <div class="tl-content">
+                  <div class="tl-title">🐚 实物货币（贝壳/牲畜/盐）</div>
+                  某些物品因其稀缺性或普遍需求成为"一般等价物"。贝壳在非洲部落充当货币长达数千年，中国古代用贝壳做货币（汉字「货」从贝）。缺点：不易分割、不易标准化、难以携带大量。
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-year">约公元前 700 年</div>
+                <div class="tl-content">
+                  <div class="tl-title">🥇 贵金属货币（金/银/铜）</div>
+                  金属货币登场：耐储存、可分割、稀缺性高、价值密度大。中国用铜钱，欧洲用银币，古罗马用银德纳里乌斯。缺点：称量麻烦、磨损造假（剪边）、运输困难。
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-year">约公元 1600 年</div>
+                <div class="tl-content">
+                  <div class="tl-title">🏦 纸币与银行票据</div>
+                  金匠发现：存在金库里的金子收据可以流通——人们不一定要来取黄金，只要收据可靠就可以。银行券诞生（宋、金朝也有纸币先例）。纸币是黄金的「收据」，可兑换。
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-year">1944 年</div>
+                <div class="tl-content">
+                  <div class="tl-title">💼 布雷顿森林体系</div>
+                  二战后美元与黄金挂钩（35 美元 = 1 盎司黄金），其他货币与美元挂钩。美国承诺：外国人拿美元可以换黄金，但外国人不能换。这叫「金汇兑本位制」——黄金的影子货币。
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-year">1971 年</div>
+                <div class="tl-content">
+                  <div class="tl-title">📄 布雷顿森林体系崩溃 → 纯法币时代</div>
+                  尼克松单方面宣布美元停止兑换黄金。全球货币从此没有任何实物锚定——各国法币的「锚」只剩下政府信用和彼此间的汇率。法币时代正式开启。
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-year">2009 年</div>
+                <div class="tl-content">
+                  <div class="tl-title">₿ 比特币诞生</div>
+                  中本聪在密码学邮件组发布比特币白皮书。首次用技术手段实现了货币的「发行规则不可篡改」——不是由政府，而是由算法和全球共识来决定发行量。比特币也是第一个「数字原生货币」。
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">📌 演化规律</span>
+              <div class="text">
+                <p>货币演化的主线逻辑：<strong>方便性↑ + 可控性↓ + 内在价值↓</strong></p>
+                <p>从贝壳到黄金是「方便性↑」，从黄金到纸币是「方便性↑ + 可控性↑」（发行者可以超发），从纸币到法币是「完全失去内在价值锚」。</p>
+                <p><strong>比特币是对这个趋势的第一次逆转</strong>——用技术重建内在约束，把「不可篡改的规则」变成了货币的内置属性。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、法币为何必然通胀 ============ -->
+          <section id="mechanism">
+            <h2>三、法币为何必然通胀：印钞的动机从未消失</h2>
+
+            <h3>3.1 印钞的三大动机</h3>
+            <p>政府（或央行）决定多印钞票，通常有三个主要动机：</p>
+
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🏛️</div>
+                <h4>1. 债务货币化</h4>
+                <p>政府发债 → 央行印钞购买 → 政府拿新钱还旧债。债务永远不会真正还清，只是货币化地转移给所有持币者。</p>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">→ 典型案例：美联储持有大量美国国债</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">💰</div>
+                <h4>2. 铸币税（Seigniorage）</h4>
+                <p>发行货币的成本几乎为零，但政府收到的却是真金白银。印 100 元的钞票，纸张油墨成本可能只有 1 元——这 99 元差价就是铸币税。</p>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">→ 历史上，政府常靠印钱来支付军费和债务</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📈</div>
+                <h4>3. 「刺激经济」叙事</h4>
+                <p>宽松货币政策被认为可以提振经济（降低利率、放贷更便宜）。然而，「刺激」的代价是通胀稀释，只是效果有时滞——等普通人感受到时，政策已经难以逆转。</p>
+              </div>
+            </div>
+
+            <h3>3.2 通胀的传导链条</h3>
+            <div class="inflation-chain">
+              <div class="inflation-chain chain-node">
+                <div class="cn-label">第一步</div>
+                <div class="cn-value">央行扩表/印钞</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="inflation-chain chain-node orange">
+                <div class="cn-label">第二步</div>
+                <div class="cn-value">流动性进入银行系统</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="inflation-chain chain-node">
+                <div class="cn-label">第三步</div>
+                <div class="cn-value">贷款扩张 → M2 增长</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="inflation-chain chain-node red">
+                <div class="cn-label">第四步</div>
+                <div class="cn-value">商品/服务总量不变<br>→ 物价上涨</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="inflation-chain chain-node red">
+                <div class="cn-label">受害者</div>
+                <div class="cn-value">现金持有者<br>购买力被稀释</div>
+              </div>
+            </div>
+
+            <h3>3.3 「温和通胀」叙事的问题</h3>
+            <p>主流经济学长期接受「2% 通胀目标」作为「健康」标准，理由是：温和通胀可以润滑经济、避免通缩螺旋。但这个逻辑有三个隐藏的陷阱：</p>
+            <div class="highlight-box">
+              <span class="label">⚠️ 三个隐藏陷阱</span>
+              <div class="text">
+                <p><strong>陷阱 1：目标从来不是上限</strong><br>各国央行常年在 2% 目标以上运行。据估计，过去 20 年中国的年均 M2 增速远超 10%，M2 总量从约 13 万亿增长到超过 300 万亿。2% 的目标早已是安慰剂。</p>
+                <p><strong>陷阱 2：通胀统计 ≠ 真实感受</strong><br>官方 CPI 通常不包含房价、教育、医疗的真实成本涨幅。如果把学区房价格纳入「生活成本」，真实通胀感受可能是官方数字的 2-3 倍。</p>
+                <p><strong>陷阱 3：2% × 复利 = 购买力腰斩只需要 35 年</strong><br>按 2% 年均通胀率计算，今天的 100 元，35 年后只值约 50 元（等效购买力）。这不是温和，是慢性蒸发。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、购买力计算器 ============ -->
+          <section id="calculator">
+            <h2>四、购买力被谁偷走了：交互计算器</h2>
+
+            <div class="story-box purple">
+              <span class="story-label">💡 核心公式</span>
+              <p>通胀的数学是冷酷的复利：<code>今日购买力 = 本金 ÷ (1 + 年通胀率)<sup>年数</sup></code></p>
+              <p style="margin-top:6px;">这个公式告诉我们：<strong>购买力损失不是线性叠加，而是指数衰减</strong>——时间越长，缩水越快。</p>
+            </div>
+
+            <div class="ppc-calc">
+              <div class="ppc-header">🧮 购买力计算器</div>
+              <div class="ppc-row">
+                <label>初始金额（万元）</label>
+                <input type="number" id="ppc-amount" value="10" min="0.1" step="0.1" oninput="calcPPC()">
+              </div>
+              <div class="ppc-row">
+                <label>经过年数（年）</label>
+                <input type="number" id="ppc-years" value="10" min="1" max="100" oninput="calcPPC()">
+              </div>
+              <div class="ppc-row">
+                <label>年通胀率（%）</label>
+                <select id="ppc-rate" onchange="calcPPC()">
+                  <option value="3">3% — 温和（官方说法）</option>
+                  <option value="5" selected>5% — 实际感受</option>
+                  <option value="8">8% — 偏高</option>
+                  <option value="10">10% — 高通胀</option>
+                  <option value="15">15% — 严重通胀</option>
+                </select>
+              </div>
+              <div class="ppc-result" id="ppc-result">
+                <div class="res-item">
+                  <span class="res-label">初始金额</span>
+                  <span class="res-value" id="ppc-out-amount">— 万元</span>
+                </div>
+                <div class="res-item">
+                  <span class="res-label">经历年数</span>
+                  <span class="res-value" id="ppc-out-years">— 年</span>
+                </div>
+                <div class="res-item">
+                  <span class="res-label">实际购买力（等效今天的钱）</span>
+                  <span class="res-value highlight" id="ppc-out-real">— 万元</span>
+                </div>
+                <div class="res-item">
+                  <span class="res-label">等效今天要花多少钱</span>
+                  <span class="res-value warning" id="ppc-out-nominal">— 万元</span>
+                </div>
+                <div class="res-item">
+                  <span class="res-label">购买力损失</span>
+                  <span class="res-value warning" id="ppc-out-loss">— %</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">📊 常见误区</span>
+              <div class="text">
+                <p><strong>「我工资涨了 10%，所以我变富了」——错。</strong></p>
+                <p>如果通胀率也是 10%，你的实际购买力没变——你只是在原地踏步。只有工资涨幅超过通胀的部分，才是真正的收益。</p>
+                <p>这就是为什么说<strong>「跑赢通胀」是最低目标</strong>——不是跑赢CPI数字，而是保住真实的购买力。</p>
+              </div>
+            </div>
+
+            <h3>4.1 过去 20 年中国 M2 增速的直观表达</h3>
+            <p>货币供应量（M2）是「流通中的现金 + 活期存款 + 定期存款」，代表社会整体购买力的总和。增速过高意味着「钱变多了，但东西没变多」。</p>
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:14px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div class="feature-icon">📅</div>
+                <h4>2000 年</h4>
+                <p style="font-size:1.2rem;font-weight:700;color:var(--orange);margin:4px 0;">约 13.5 万亿</p>
+                <p style="font-size:0.72rem;color:var(--text-muted);">M2 广义货币</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div class="feature-icon">📅</div>
+                <h4>2010 年</h4>
+                <p style="font-size:1.2rem;font-weight:700;color:var(--orange);margin:4px 0;">约 73 万亿</p>
+                <p style="font-size:0.72rem;color:var(--text-muted);">10 年增长 4.4 倍</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div class="feature-icon">📅</div>
+                <h4>2020 年</h4>
+                <p style="font-size:1.2rem;font-weight:700;color:#EF4444;margin:4px 0;">约 219 万亿</p>
+                <p style="font-size:0.72rem;color:var(--text-muted);">10 年增长 3 倍</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div class="feature-icon">📅</div>
+                <h4>2024 年</h4>
+                <p style="font-size:1.2rem;font-weight:700;color:#EF4444;margin:4px 0;">约 315 万亿</p>
+                <p style="font-size:0.72rem;color:var(--text-muted);">4 年增长约 44%</p>
+              </div>
+            </div>
+            <p style="font-size:0.78rem;color:var(--text-muted);">※ 以上数据据公开资料整理，具体数字以央行官方发布为准。增速为示意性表达，非精确引用。</p>
+          </section>
+
+          <!-- ============ 五、中国货币史警示案例 ============ -->
+          <section id="china-cases">
+            <h2>五、中国货币史警示案例：通胀不是理论，是真实发生过的事</h2>
+
+            <p>货币通胀在全球各国反复上演，中国近现代史上也有深刻教训。这些不是极端特例，而是货币失控的标准剧本：危机 → 财政缺口 → 印钞 → 失控 → 货币崩溃。</p>
+
+            <div class="case-card">
+              <div class="case-year">1948 年 — 恶性通胀</div>
+              <h4>💸 金圆券事件</h4>
+              <p>国民党政府为弥补内战军费，强制发行金圆券取代法币。规定民间持有的黄金、白银、外币必须限期兑换金圆券。政府承诺：严格控制发行量。</p>
+              <p>结果：承诺从未兑现。金圆券发行量在 10 个月内膨胀超过 300 倍，面值从 1 元一路飙升到 100 万元。一袋大米的价格从几十元涨到几亿元。</p>
+              <span class="case-stat">📉 10 个月贬值数百万倍</span>
+            </div>
+
+            <div class="case-card">
+              <div class="case-year">1930s — 民国恶性通胀</div>
+              <h4>💸 民国物价失控</h4>
+              <p>抗日战争和国共内战期间，政府军费开支巨大，财政入不敷出。银行大量发行纸币，法币流通量在 1937 年至 1949 年间增长了 1400 亿倍。</p>
+              <p>1949 年，一石米的价格约为 2000 万—4000 万元旧法币。普通人领到工资的第一件事是跑步去换成实物或黄金。</p>
+              <span class="case-stat">📉 12 年物价上涨约 1400 亿倍</span>
+            </div>
+
+            <div class="case-card">
+              <div class="case-year">1980s — 改革开放初期</div>
+              <h4>📈 价格闯关与双轨制</h4>
+              <p>改革开放初期，中国实行价格双轨制——计划内价格与市场价并存。1988 年尝试「价格闯关」，大量印钞支撑赤字财政，导致全国范围内商品抢购风潮，通胀率一度超过 18%。</p>
+              <p>教训：货币超发 + 价格放开 = 短期通胀失控。经过强力治理，1990 年代初通胀逐步回落，但那一代人的储蓄经历了一次系统性缩水。</p>
+              <span class="case-stat">📉 1988 年通胀峰值超 18%</span>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">📌 三次危机的共同剧本</span>
+              <div class="text">
+                <ol>
+                  <li><strong>财政危机</strong>（战争/扩张/补贴）→ 政府入不敷出</li>
+                  <li><strong>印钞融资</strong> → 最容易、成本最低的选项</li>
+                  <li><strong>通胀加速</strong> → 公众预期改变，开始抢购</li>
+                  <li><strong>信心崩溃</strong> → 货币被抛售，贬值加速</li>
+                  <li><strong>货币改革或崩溃</strong> → 旧货币废除，新货币重新开始</li>
+                </ol>
+                <p>这个剧本在金圆券、魏玛德国、委内瑞拉、津巴布韦一次次重演——不是意外，是货币没有硬约束的必然结果。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>六、多视角解读：通胀对谁有利？</h2>
+
+            <div class="perspective-card" id="inflation-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 同一个通胀，六种处境</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="finance">💰 经济学家</button>
+                  <button class="p-tab" data-angle="business">🏛️ 投资者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="humanity">🙋 普通人</button>
+                  <button class="p-tab" data-angle="philosophy">🏛️ 政治家</button>
+                  <button class="p-tab" data-angle="technology">⚙️ 开发者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="finance">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学家</span>
+                  <div class="p-quote">"通胀不是中性的——它有分配效应。坎蒂隆效应告诉我们：新钱的分配顺序决定了谁受益、谁受损。"</div>
+                  <ul>
+                    <li><strong>坎蒂隆效应</strong>：最先拿到新钱的人（通常是政府、银行、大企业）以「旧价格」购买资产；最后拿到的人只承担了新价格</li>
+                    <li><strong>通胀税本质</strong>：是一种向所有持币者征收的税，税率等于通胀率，无需立法</li>
+                    <li><strong>货币中性神话</strong>：长期来看货币是中性的（MV=PY），但短期内（几年），货币扩张会导致资源错配（错误的投资决策在通胀期被掩盖）</li>
+                    <li><strong>真实通胀 vs 官方 CPI</strong>：不同群体的通胀体验差异极大——低收入群体在住房/食品上支出比例更高，而这些类目通胀往往高于官方 CPI</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="business">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🏛️ 投资者</span>
+                  <div class="p-quote">"持有现金是最差的投资决策——在通胀面前，你的购买力每天都在悄悄蒸发。"</div>
+                  <ul>
+                    <li><strong>实际利率 = 名义利率 − 通胀率</strong>：名义利率 3%、通胀率 5% → 实际利率 −2%。你的存款在以 2%/年的速度缩水</li>
+                    <li><strong>股权/房产 vs 现金</strong>：在货币扩张期，股权和房地产往往跑赢通胀（资产价格上涨），但现金存款确定跑输</li>
+                    <li><strong>「通胀保护」资产</strong>：黄金、比特币、大宗商品、实物资产——各有保护能力，也各有局限性</li>
+                    <li><strong>风险</strong>：在「滞胀」（高通胀 + 低增长）时期，连股票也可能下跌——因为企业盈利被成本侵蚀，同时央行加息</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</span>
+                  <div class="p-quote">"历史上每一次货币大崩溃，都遵循同样的剧本——危机、印钞、通胀、信心崩塌、货币改革。"</div>
+                  <ul>
+                    <li><strong>罗马帝国</strong>：银德纳里乌斯含银量从 94%（公元前 200 年）跌至 5%（公元 300 年），帝国随之财政崩溃、军力瓦解</li>
+                    <li><strong>魏玛德国（1923）</strong>：一战赔款压力 → 疯狂印钞 → 物价每两天翻倍 → 市民用成袋钞票买一根面包 → 极端政治势力借乱崛起</li>
+                    <li><strong>中国：金圆券（1948）</strong>：国民党政府强制收缴民间黄金，发行金圆券，10 个月内贬值数百万倍，次年政权易手</li>
+                    <li><strong>津巴布韦（2008）</strong>：政府土地改革失败 → 财政危机 → 印钞还债 → 发行 100 万亿面额纸币 → 2019 年废除本币</li>
+                    <li><strong>规律</strong>：从无锚货币到恶性通胀，平均需要 30-50 年积累——但从温和通胀加速到失控，往往只需要一次重大危机</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="humanity">
+                  <span class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">🙋 普通人</span>
+                  <div class="p-quote">"我不关心 M2 增速，只想知道：我存的养老钱会不会有一天买不了一袋米。"</div>
+                  <ul>
+                    <li><strong>储蓄者的惩罚</strong>：把钱存银行，利率 2%，通胀 5%，每年净亏 3%——30 年后，100 万的实际购买力只剩约 40 万</li>
+                    <li><strong>工资的追赶困境</strong>：工资往往滞后于物价上涨——通胀先行，企业利润先涨，工资上涨要等下一次谈判</li>
+                    <li><strong>被迫成为投资者</strong>：为了保值，普通人被迫去炒股、买房、买理财——承担了「本来不需要承担」的投资风险</li>
+                    <li><strong>最脆弱的人群</strong>：退休老人、拿固定养老金的群体、现金储蓄占比高的低收入家庭——通胀对他们的伤害最深</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">🏛️ 政治家</span>
+                  <div class="p-quote">"印钞是不需要投票的税收——选票解决不了这个问题，因为受害者不知道是谁害了他们。"</div>
+                  <ul>
+                    <li><strong>激励错位</strong>：政客有短期激励（选票）、没有长期约束（债务留给下一代）——印钞在政治上永远是最「容易」的选择</li>
+                    <li><strong>债务货币化的诱惑</strong>：借债然后货币化还债，让后代承担成本——这是「代际不公平」的极致版本</li>
+                    <li><strong>凯恩斯的坦白</strong>："通过持续通胀，政府可以在暗中进行没收性财富转移——而且这个过程可以有数十百万的聪明人毫不知情。"</li>
+                    <li><strong>解决方案</strong>：财政纪律、央行独立性、货币规则（通胀目标/货币供应目标）——但历史上，这些约束屡屡被打破</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="technology">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">⚙️ 开发者</span>
+                  <div class="p-quote">"从工程角度看，通胀系统是一个没有写保护（write-protect）的全局变量——任何有权限的进程都可以改，而且没有审计日志。"</div>
+                  <ul>
+                    <li><strong>协议 vs 实现</strong>：法币的「协议」规定了价值单位，但其「实现」（谁来发行、多少量）可以随时被修改——这在代码里等于没有 const 限定符</li>
+                    <li><strong>无发行上限</strong>：央行资产负债表扩张没有硬性上限，只有「自律」——而自律是靠不住的</li>
+                    <li><strong>比特币的对比</strong>：在比特币里，发行量是硬编码常量（const SUPPLY = 21000000），没有 admin 权限可以修改</li>
+                    <li><strong>货币非国家化</strong>：当货币可以像开源软件一样被任何人 Fork、改进、竞争发行——质量会趋向最优</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                
+
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角 · 同一事实，不同处境</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、动手实验 ============ -->
+          <section id="labs">
+            <h2>七、动手实验区</h2>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">建议实验（阅读后立即动手）</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">🧮</span>
+                  <div>
+                    <strong>实验 1：算算你的钱「消失」了多少</strong><br>
+                    用上面的购买力计算器，输入你（或家人）十年前存下的金额，按 5% 通胀率算一下，今天的实际购买力还剩多少。这个数字可能比你想象的更触目惊心。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📊</span>
+                  <div>
+                    <strong>实验 2：对比存款利率 vs 真实通胀</strong><br>
+                    查询你常用银行的定期存款利率（通常约 1.5-2.5%），对比你认为的真实通胀水平（参考：CPI / M2 增速 / 房价涨幅），算出「实际利率」是多少。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">🏛️</span>
+                  <div>
+                    <strong>实验 3：查看中国 CPI 历史数据</strong><br>
+                    访问 <a href="https://data.stats.gov.cn" target="_blank" style="color:var(--orange);">国家统计局 data.stats.gov.cn</a>，查询过去 30 年的 CPI 年度数据。找出通胀最高的年份（1994 年约 24%、2008 年约 5.9%），对应当时的经济背景是什么。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📚</span>
+                  <div>
+                    <strong>实验 4：阅读金圆券历史</strong><br>
+                    搜索「1948 金圆券」或阅读相关历史资料。了解一个政权如何在短短一年内失去对货币的信任——以及信任崩塌的速度往往比预期更快。
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+              <!-- ============ 延伸探索 ============ -->
+    <section id="explore">
+      <div class="explorer-box">
+        <div class="exp-header">
+          <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+        </div>
+        <div class="exp-result">
+          <ul class="exp-links">
+        <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space · 实时货币供应与费率 <span class="exp-go">→</span></a></li>
+        <li><a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener">Blockchain.com 区块浏览器 <span class="exp-go">→</span></a></li>
+        <li><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币白皮书（供应逻辑源头） <span class="exp-go">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- ============ 八、大白话总结 ============ -->
+          <section id="summary">
+            <h2>八、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 一句话总结</span>
+              <p><strong>通胀 = 货币稀释。</strong>政府多印钞票，商品总量没变，每单位货币的购买力就下降——这个过程无声无息，不需要任何人同意，也没有人会来通知你。</p>
+              <p style="margin-top:8px;"><strong>比特币想成为的，是「不稀释的货币」。</strong></p>
+              <p style="margin-top:8px;">比特币总量上限 2100 万个——每 10 分钟产出一定数量，到 2140 年左右停止增长，之后永远不会有新的比特币。没有人能按下「多印一点」这个按钮。</p>
+              <p style="margin-top:8px;">这不是「比特币比法币好」的宣言，而是一个技术事实的陈述：<strong>比特币的货币政策写在代码里，运行在全世界数万个独立节点上，不能被单方面修改</strong>。法币的货币政策写在文件和官员的承诺里，可以被单方面修改。</p>
+              <p style="margin-top:8px;">下一个问题：这种「固定发行」是怎么实现的？2100 万这个数字是怎么来的？——这将在下一节「货币政策」里详细展开。</p>
+            </div>
+
+            <div class="story-box purple">
+              <span class="story-label">🗣️ 日常场景比喻</span>
+              <p>想象你是一个游泳池的管理员：</p>
+              <ul>
+                <li><strong>法币系统</strong>：泳池的水位（货币购买力）取决于我（央行）想往里加多少水（印钞）。每次水不够了，我就加一桶——水位看着没变，但你发现游泳的人变多了。</li>
+                <li><strong>比特币系统</strong>：泳池里永远只有 2100 万升水，没有人能往里加水，也没有人能把水抽走。你拥有多少升水，你的份额就是固定的——无论多少人进来游泳。</li>
+              </ul>
+            </div>
+
+            <!-- 行动召唤 -->
+            <div class="cta-box" style="margin-top:40px;">
+              <h3>🚀 下一步</h3>
+              <p>通胀的根源之一，是政府可以随意决定货币的「规则」——那么比特币的规则是如何从技术上被锁死的？哈耶克早在 1976 年就提出了「货币非国家化」的想法，比特币如何实现它？</p>
+              <a href="03-02-austrian-hayek.html" class="btn btn-primary">继续学习：奥地利学派与哈耶克 →</a>
+              <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+              <a href="03-00-overview.html" class="btn">← 回顾：经济学篇总览</a>
+            </div>
+          </section>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="03-00-overview.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">经济学篇总览</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 1 / 8
+      </div>
+      <a href="03-02-austrian-hayek.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">奥地利学派与哈耶克</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      calcPPC();
+    });
+
+    // ===== 已读标记 =====
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-01-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-01-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // ===== 购买力计算器 =====
+    function calcPPC() {
+      const amount = parseFloat(document.getElementById('ppc-amount').value) || 0;
+      const years = parseInt(document.getElementById('ppc-years').value, 10) || 1;
+      const rate = parseFloat(document.getElementById('ppc-rate').value) / 100 || 0;
+      const factor = Math.pow(1 + rate, years);
+      const realValue = amount / factor;
+      const nominalValue = amount * factor;
+      const loss = factor > 0 ? (1 - 1 / factor) * 100 : 0;
+
+      document.getElementById('ppc-out-amount').textContent = amount.toFixed(2) + ' 万元';
+      document.getElementById('ppc-out-years').textContent = years + ' 年（年通胀 ' + (rate * 100).toFixed(0) + '%）';
+      document.getElementById('ppc-out-real').textContent = realValue.toFixed(4) + ' 万元';
+      document.getElementById('ppc-out-nominal').textContent = nominalValue.toFixed(2) + ' 万元';
+      document.getElementById('ppc-out-loss').textContent = loss.toFixed(2) + '%';
+
+      // 颜色反馈
+      const realEl = document.getElementById('ppc-out-real');
+      const lossEl = document.getElementById('ppc-out-loss');
+      if (loss > 30) {
+        realEl.className = 'res-value warning';
+        lossEl.className = 'res-value warning';
+      } else if (loss > 10) {
+        realEl.className = 'res-value highlight';
+        lossEl.className = 'res-value highlight';
+      } else {
+        realEl.className = 'res-value good';
+        lossEl.className = 'res-value';
+      }
+    }
+
+    // ===== 多视角卡片 =====
+    function initInflationPerspectives() {
+      const card = document.getElementById('inflation-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      // 触摸滑动
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+  </script>
+</body>
+</html>

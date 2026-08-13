@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一句话理解比特币 · 比特币学习地图</title>
+<meta name="description" content="比特币学习地图 · 开宝盒的钥匙。用一句话从哲学、技术、历史、人性、金融、商业六个视角准确理解比特币。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+/* 本页专用 */
+.article-wrap { padding: 40px 0 60px; }
+.reading-progress { position:fixed; top:58px; left:0; right:0; height:3px; background:var(--border); z-index:99; }
+.reading-progress .fill { height:100%; background:linear-gradient(90deg,var(--orange),var(--purple)); width:0%; transition:width 0.2s linear; }
+.article-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
+.article-header h1 .emoji { font-size: 1.8rem; margin-right: 8px; }
+.article-header .page-subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 14px; }
+.article-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-muted); }
+.article-body { max-width: 740px; }
+.article-body p { font-size: 0.97rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.85; }
+.article-body h2 { font-size: 1.3rem; font-weight: 700; margin: 36px 0 14px; color: var(--text); }
+.article-body h3 { font-size: 1.05rem; font-weight: 600; margin: 22px 0 10px; color: var(--text); }
+.article-body ul, .article-body ol { padding-left: 22px; margin-bottom: 16px; }
+.article-body li { font-size: 0.94rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.7; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body blockquote { border-left: 3px solid var(--orange); padding: 12px 16px; margin: 20px 0; background: rgba(247,147,26,0.06); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; color: var(--text-secondary); }
+.article-body code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--orange); }
+
+/* 章节标签 */
+.chapter-label { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: linear-gradient(135deg, rgba(247,147,26,0.1), rgba(139,92,246,0.1)); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.72rem; font-weight: 600; color: var(--orange); margin-bottom: 16px; }
+
+/* 核心一句话大卡片 */
+.core-quote-card {
+  background: var(--bg-gem);
+  border: 1px solid rgba(247,147,26,0.15);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin: 0 0 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.core-quote-card::before {
+  content: '💎';
+  position: absolute; top: 10px; left: 16px;
+  font-size: 1.2rem; opacity: 0.5;
+}
+.core-quote-card::after {
+  content: '🔐';
+  position: absolute; top: 10px; right: 16px;
+  font-size: 1.2rem; opacity: 0.5;
+}
+.core-quote-card .cqc-label {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-muted); font-weight: 700; margin-bottom: 12px;
+}
+.core-quote-card blockquote {
+  font-size: 1.3rem; font-weight: 700; color: var(--text);
+  line-height: 1.6; margin: 0 auto; max-width: 580px;
+  border: none; padding: 0; background: none; font-style: normal;
+  background: linear-gradient(135deg, var(--orange), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.core-quote-card .cqc-sub {
+  font-size: 0.82rem; color: var(--text-muted); margin-top: 12px;
+  font-style: italic;
+}
+
+/* 常见误解 */
+.misconception-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin: 20px 0; }
+.misconception-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px 20px; }
+.misconception-card .mis-tag { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; display: inline-block; }
+.misconception-card .mis-tag.x { background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
+.misconception-card .mis-tag.check { background: rgba(16,185,129,0.1); color: #10B981; border: 1px solid rgba(16,185,129,0.2); }
+.misconception-card h3 { font-size: 0.92rem; font-weight: 600; margin-bottom: 6px; }
+.misconception-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+
+/* 视角切换按钮高亮 */
+.p-angle-badge.philosophy { background: rgba(249,115,22,0.15); color: var(--phil-color); border-color: var(--phil-color); }
+.p-angle-badge.technology { background: rgba(59,130,246,0.15); color: var(--tech-color); border-color: var(--tech-color); }
+.p-angle-badge.history { background: rgba(16,185,129,0.15); color: var(--hist-color); border-color: var(--hist-color); }
+.p-angle-badge.humanity { background: rgba(236,72,153,0.15); color: var(--hum-color); border-color: var(--hum-color); }
+.p-angle-badge.finance { background: rgba(234,179,8,0.15); color: var(--fin-color); border-color: var(--fin-color); }
+.p-angle-badge.business { background: rgba(139,92,246,0.15); color: var(--biz-color); border-color: var(--biz-color); }
+
+/* 时间线 */
+.timeline { position: relative; padding-left: 24px; margin: 20px 0; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--orange), var(--purple)); }
+.timeline-item { position: relative; margin-bottom: 20px; }
+.timeline-item::before { content: ''; position: absolute; left: -21px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--orange); border: 2px solid var(--bg); }
+.timeline-item .tl-year { font-size: 0.72rem; color: var(--orange); font-weight: 700; font-family: var(--font-mono); }
+.timeline-item .tl-text { font-size: 0.9rem; color: var(--text-secondary); margin-top: 2px; line-height: 1.6; }
+
+.reading-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(247,147,26,0.1); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.75rem; color: var(--orange); cursor: pointer; transition: all var(--transition); }
+.reading-indicator:hover { background: rgba(247,147,26,0.15); }
+.reading-indicator.read { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #10B981; }
+</style>
+</head>
+<body>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../00-overview.html" class="nav-link active" data-section="learning">📚 学习区</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../index.html">首页</a><span>›</span>
+      <a href="../00-overview.html">学习区</a><span>›</span>
+      <span>入门篇</span><span>›</span>
+      <span>02-01</span>
+    </div>
+
+    <header class="article-header">
+      <div class="chapter-label">⚙️ 入门篇 · Chapter 01</div>
+      <h1><span class="emoji">🔑</span> 一句话理解比特币</h1>
+      <p class="page-subtitle">大多数人对比特币的描述是错的——要么太技术，要么太投机。这一篇用六个真实视角，给出比特币的准确描述。</p>
+      <div class="article-meta">
+        <span class="page-tag">⚙️ 入门篇</span>
+        <span>🌱 适合所有人</span>
+        <span>预计阅读 10 分钟</span>
+        <button class="reading-indicator" id="read-btn" onclick="handleMarkRead()">
+          <span id="read-icon">⬜</span>
+          <span id="read-text">标记为已读</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 核心一句话大卡片 -->
+    <div class="core-quote-card">
+      <div class="cqc-label">💎 宝盒比特币 · 核心一句话</div>
+      <blockquote>
+        比特币是一个任何人都可以加入、没有人可以控制、用数学保证规则公正运行的全球共享账本。
+      </blockquote>
+      <p class="cqc-sub">—— 不需要银行，不需要许可，不需要信任任何人</p>
+    </div>
+
+    <!-- 多视角一句话卡片 -->
+    <div class="perspective-card" id="main-perspective">
+      <div class="perspective-header">
+        <div class="ph-label">
+          <span class="ph-label-icon">💎</span>
+          <span>一句话 · 六个视角 · 开宝盒的六把钥匙</span>
+        </div>
+        <div class="perspective-tabs">
+          <button class="p-tab active" data-angle="philosophy" title="哲学视角">🏛️ 哲学</button>
+          <button class="p-tab" data-angle="technology" title="技术视角">⚙️ 技术</button>
+          <button class="p-tab" data-angle="history" title="历史视角">📜 历史</button>
+          <button class="p-tab" data-angle="humanity" title="人性视角">🧠 人性</button>
+          <button class="p-tab" data-angle="finance" title="金融视角">💰 金融</button>
+          <button class="p-tab" data-angle="business" title="商业视角">🏢 商业</button>
+        </div>
+      </div>
+      <div class="perspective-body" style="position:relative;padding-bottom:20px">
+        <!-- 哲学视角 -->
+        <div class="p-content active" data-angle="philosophy">
+          <span class="p-angle-badge philosophy" style="background:rgba(249,115,22,0.12);color:#F97316;border:1px solid rgba(249,115,22,0.3)">
+            🏛️ 哲学视角
+          </span>
+          <div class="p-quote">
+            "比特币是一种不需要任何权威机构背书，用数学和代码取代人与人之间的信任，让「规则」本身成为权威的货币制度。"
+          </div>
+          <div class="p-author">
+            <span class="p-dot" style="color:#F97316"></span>
+            核心：把「信任权威」变成「信任数学」
+          </div>
+        </div>
+        <!-- 技术视角 -->
+        <div class="p-content" data-angle="technology">
+          <span class="p-angle-badge technology" style="background:rgba(59,130,246,0.12);color:#3B82F6;border:1px solid rgba(59,130,246,0.3)">
+            ⚙️ 技术视角
+          </span>
+          <div class="p-quote">
+            "比特币是一个运行在互联网上的分布式网络，通过密码学（哈希函数、非对称加密）确保：没人能伪造交易，没人能双花，没人能篡改历史。"
+          </div>
+          <div class="p-author">
+            <span class="p-dot" style="color:#3B82F6"></span>
+            核心：用数学证明替代制度承诺
+          </div>
+        </div>
+        <!-- 历史视角 -->
+        <div class="p-content" data-angle="history">
+          <span class="p-angle-badge history" style="background:rgba(16,185,129,0.12);color:#10B981;border:1px solid rgba(16,185,129,0.3)">
+            📜 历史视角
+          </span>
+          <div class="p-quote">
+            "比特币是人类历史上第一次，用技术手段实现了货币的『去中心化』——打破了政府垄断货币发行权2000多年的局面。"
+          </div>
+          <div class="p-author">
+            <span class="p-dot" style="color:#10B981"></span>
+            核心：货币史上第一次「去国家化」
+          </div>
+        </div>
+        <!-- 人性视角 -->
+        <div class="p-content" data-angle="humanity">
+          <span class="p-angle-badge humanity" style="background:rgba(236,72,153,0.12);color:#EC4899;border:1px solid rgba(236,72,153,0.3)">
+            🧠 人性视角
+          </span>
+          <div class="p-quote">
+            "比特币是对人类历史上所有『机构背叛公众信任』的系统性回应——它是写在代码里的悲观主义，但恰恰因此成为了最乐观的技术。"
+          </div>
+          <div class="p-author">
+            <span class="p-dot" style="color:#EC4899"></span>
+            核心：对「人性本恶」的制度性防备
+          </div>
+        </div>
+        <!-- 金融视角 -->
+        <div class="p-content" data-angle="finance">
+          <span class="p-angle-badge finance" style="background:rgba(234,179,8,0.12);color:#EAB308;border:1px solid rgba(234,179,8,0.3)">
+            💰 金融视角
+          </span>
+          <div class="p-quote">
+            "比特币是一种非主权、抗通胀、可全球流通的「数字资产」——它的价值来源于共识，而共识建立在稀缺性、去中心化、安全性三重属性之上。"
+          </div>
+          <div class="p-author">
+            <span class="p-dot" style="color:#EAB308"></span>
+            核心：第一个用数学取代央行发行的货币
+          </div>
+        </div>
+        <!-- 商业视角 -->
+        <div class="p-content" data-angle="business">
+          <span class="p-angle-badge business" style="background:rgba(139,92,246,0.12);color:#8B5CF6;border:1px solid rgba(139,92,246,0.3)">
+            🏢 商业视角
+          </span>
+          <div class="p-quote">
+            "比特币的商业价值在于它是一种『无需信任第三方的价值传输协议』——任何两个人可以直接转移价值，无需银行、无需许可、无法阻止。"
+          </div>
+          <div class="p-author">
+            <span class="p-dot" style="color:#8B5CF6"></span>
+            核心：商业的「基础设施革命」
+          </div>
+        </div>
+
+        <div class="perspective-footer">
+        <div class="p-footer-left">
+          <div class="p-dot-indicator" id="main-dots">
+            <span class="p-dot active" data-idx="0"></span>
+            <span class="p-dot" data-idx="1"></span>
+            <span class="p-dot" data-idx="2"></span>
+            <span class="p-dot" data-idx="3"></span>
+            <span class="p-dot" data-idx="4"></span>
+            <span class="p-dot" data-idx="5"></span>
+                  <span class="p-dot"></span>
+
+          </div>
+        </div>
+        <div class="p-footer-right">
+          <span class="auto-badge">⏱️ <span id="auto-label">自动播放中 · 点击视角标签手动切换</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-body">
+
+      <h2>⚠️ 常见的误解</h2>
+      <p>在建立正确认知之前，先排除这些错误理解：</p>
+
+      <div class="misconception-grid">
+        <div class="misconception-card">
+          <span class="mis-tag x">❌ 误解</span>
+          <h3>"比特币就是一堆代码"</h3>
+          <p>代码是实现方式，但比特币的本质是一种协议和制度设计——就像 TCP/IP 协议本身不是软件，但它是互联网的基础。</p>
+        </div>
+        <div class="misconception-card">
+          <span class="mis-tag x">❌ 误解</span>
+          <h3>"比特币是庞氏骗局"</h3>
+          <p>庞氏骗局靠后来者的钱支付早期参与者的收益。比特币没有中心运营者、没有公司、没有「推荐奖励」——价值完全来自共识。</p>
+        </div>
+        <div class="misconception-card">
+          <span class="mis-tag x">❌ 误解</span>
+          <h3>"比特币没有任何价值支撑"</h3>
+          <p>比特币的价值来源于：被验证了15年的安全性、全球共识、稀缺性、开放性——这些都是有实质意义的「支撑」，不是空气。</p>
+        </div>
+        <div class="misconception-card">
+          <span class="mis-tag check">✅ 真相</span>
+          <h3>比特币是一种「制度性创新"</h3>
+          <p>它的创新不在于技术本身有多难，而在于用技术手段实现了货币的「去中心化发行」和「去中介转移」——这是5000年货币史上的第一次。</p>
+        </div>
+      </div>
+
+      <h2>📜 比特币诞生的时间线</h2>
+      <p>理解比特币为什么会在2009年出现：</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="tl-year">1998年</div>
+          <div class="tl-text"><strong>戴伟（Wei Dai）</strong>提出 B-money——第一个「去中心化数字货币」的理论构想，但没有实现。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2005年</div>
+          <div class="tl-text"><strong>尼克·萨博（Nick Szabo）</strong>提出「 Bit Gold」——尝试用工作量证明来实现数字稀缺性，但未完全实现。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2008年</div>
+          <div class="tl-text"><strong>10月31日</strong>——中本聪在密码学邮件组发布白皮书草稿，标题是《比特币：一种点对点的电子现金系统》。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2008年</div>
+          <div class="tl-text"><strong>11月1日</strong>——正式白皮书发布。全球任何人可以下载阅读、验证、讨论。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2009年</div>
+          <div class="tl-text"><strong>1月3日</strong>——比特币网络正式启动，中本聪挖出创世区块（Block #0），内含泰晤士报头版标题："Chancellor on brink of second bailout for banks"（财政大臣正处于第二轮银行救助的边缘）。这句话的选择不是巧合。</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2009年</div>
+          <div class="tl-text"><strong>1月12日</strong>——第一笔比特币转账：中本聪向Hal Finney转了10个BTC。Hal Finney是第一个在现实网络中运行比特币节点的人。</div>
+        </div>
+      </div>
+
+      <h2>💎 宝盒比喻：为什么叫「宝盒」</h2>
+      <p>「宝盒比特币」这个名字背后的含义：</p>
+
+      <div class="treasure-box">
+        <h3>💎 宝盒比特币的隐喻</h3>
+        <p>想象一个极其珍贵的宝盒：</p>
+        <ul>
+          <li>🔐 <strong>宝盒里装的是什么？</strong> 你的财富、你的自由、你对自身资产的所有权</li>
+          <li>🔑 <strong>钥匙是什么？</strong> 私钥——那串你必须妥善保管的密码</li>
+          <li>🏛️ <strong>为什么叫「宝盒」？</strong> 因为传统世界里，你的「财富盒子」其实是银行在保管——他们随时可以开你的盒子、冻结你的资产</li>
+          <li>💎 <strong>真正的宝盒是什么？</strong> 比特币让每个人拥有自己的宝盒：只有你有钥匙，任何人无法强制打开</li>
+        </ul>
+        <p style="margin-top:10px;font-size:0.82rem;color:var(--text-muted)"><strong>这就是「开宝盒的钥匙」的含义：</strong>学习比特币，就是学会如何拥有和管理自己的财富宝盒。</p>
+      </div>
+
+      <h2>🎯 三个关键概念</h2>
+      <p>记住这三个词，就抓住了比特币的本质：</p>
+
+      <div class="table-wrap">
+        <table class="compare-table">
+          <tr>
+            <th>关键词</th>
+            <th>含义</th>
+            <th>类比</th>
+            <th>为什么重要</th>
+          </tr>
+          <tr>
+            <td><strong>去中心化</strong></td>
+            <td>没有单一控制者</td>
+            <td>不是一座桥，而是一张网——切断任何一条线，整张网仍然连通</td>
+            <td>没人能关闭它，没人能冻结它</td>
+          </tr>
+          <tr>
+            <td><strong>密码学</strong></td>
+            <td>用数学保证安全</td>
+            <td>不是靠保安，而是靠数学——暴力破解的成本接近无限大</td>
+            <td>无法伪造，无法双花</td>
+          </tr>
+          <tr>
+            <td><strong>稀缺性</strong></td>
+            <td>总量固定2100万</td>
+            <td>不是靠政策承诺，而是靠代码规则——任何人都可以验证</td>
+            <td>永久对抗通胀</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="highlight-box">
+        <span class="label">💎 本章小结</span>
+        <span class="text">比特币不是股票，不是黄金，不是法币的替代品——它是一种全新的「制度性技术」，用数学替代信任、用代码替代法律、用网络替代机构。<br><br>用一句话总结：<strong>比特币是一个任何人都可以加入、没有人可以控制、用数学保证规则公正运行的全球共享账本。</strong></span>
+      </div>
+
+      <div class="cta-box" style="text-align:left">
+        <h3>→ 下一篇：私钥与所有权</h3>
+        <p>理解了比特币是什么，下一个问题：比特币的「所有权」是怎么定义的？为什么「私钥=所有权」？</p>
+        <a href="02-02-keys-ownership.html" class="btn btn-primary" style="display:inline-flex;margin-top:4px">继续阅读 →</a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 实时区块浏览器 <span class="exp-go">→</span></a></li>
+          <li><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币白皮书 (Bitcoin.org) <span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="../00-overview.html" class="nav-prev" style="text-decoration:none">
+      <span class="nav-icon">←</span>
+      <div class="nav-text">
+        <div class="nav-label">入门篇</div>
+        <div class="nav-title">← 入门篇总览</div>
+      </div>
+    </a>
+    <a href="02-02-keys-ownership.html" class="nav-next" style="text-decoration:none">
+      <div class="nav-text" style="text-align:right">
+        <div class="nav-label">入门篇 · 02-02</div>
+        <div class="nav-title">私钥与所有权 →</div>
+      </div>
+      <span class="nav-icon">→</span>
+    </a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../../index.html">首页</a> · <a href="../00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a>
+      </div>
+      <div class="footer-links">
+        <span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+<script>
+initNav();
+
+// 进度条
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+// 已读状态
+const PHASE = 'basics';
+const CHAPTER = '02-01-one-sentence';
+
+function handleMarkRead() {
+  BTCMap.markChapterRead(PHASE, CHAPTER);
+}
+
+// 初始化已读状态
+(function() {
+  const btn = document.getElementById('read-btn');
+  if (!btn) return;
+  if (BTCMap.isChapterRead(PHASE, CHAPTER)) {
+    btn.classList.add('read');
+    document.getElementById('read-icon').textContent = '✅';
+    document.getElementById('read-text').textContent = '已读完';
+  }
+})();
+
+// 监听存储变化
+window.addEventListener('storage', function(e) {
+  if (e.key === 'btc-progress-update') {
+    const btn = document.getElementById('read-btn');
+    if (btn && BTCMap.isChapterRead(PHASE, CHAPTER)) {
+      btn.classList.add('read');
+      document.getElementById('read-icon').textContent = '✅';
+      document.getElementById('read-text').textContent = '已读完';
+    }
+  }
+});
+
+// Dot指示器初始化（多视角卡片内部）
+(function() {
+  const card = document.getElementById('main-perspective');
+  if (!card) return;
+  const dots = card.querySelectorAll('.p-dot');
+  dots.forEach(dot => {
+    dot.addEventListener('click', function() {
+      const idx = parseInt(this.dataset.idx);
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      tabs.forEach((t, i) => {
+        t.classList.toggle('active', i === idx);
+      });
+      contents.forEach((c, i) => {
+        c.classList.toggle('active', i === idx);
+      });
+      dots.forEach((d, i) => {
+        d.classList.toggle('active', i === idx);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

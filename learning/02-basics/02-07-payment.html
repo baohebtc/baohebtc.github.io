@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入门篇 07 · 支付与闪电网络 | 比特币学习地图</title>
+<meta name="description" content="比特币学习地图 · 比特币如何用于日常支付？Layer2 解决方案、闪电网络原理、小额支付新范式。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+:root { --primary: #F7931A; --orange: #F7931A; }
+body { background: #0a0806; color: #FFF3E0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+.basics-page { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+.top-bar { display:flex; align-items:center; gap:12px; padding:20px 0 32px; font-size:0.78rem; color:rgba(255,243,224,0.35); }
+.top-bar a { color:rgba(255,243,224,0.4); text-decoration:none; transition:color 0.2s; }
+.top-bar a:hover { color:#F7931A; }
+.top-bar span { color:rgba(255,243,224,0.2); }
+.page-hero { padding: 48px 0 44px; border-bottom: 1px solid rgba(247,147,26,0.12); margin-bottom: 44px; }
+.page-eyebrow { font-size:0.65rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#F7931A; margin-bottom:14px; }
+.page-hero h1 { font-size:clamp(1.8rem,4vw,2.6rem); font-weight:800; letter-spacing:-0.02em; line-height:1.15; margin-bottom:14px; }
+.page-hero h1 .accent { color:#F7931A; }
+.page-hero .subtitle { font-size:1rem; color:rgba(255,243,224,0.55); line-height:1.75; max-width:620px; }
+.chapter-tag { display:inline-flex; align-items:center; gap:8px; background:rgba(247,147,26,0.08); border:1px solid rgba(247,147,26,0.2); padding:5px 14px; border-radius:100px; font-size:0.72rem; font-weight:600; color:#F7931A; margin-bottom:24px; }
+.section { margin-bottom: 52px; }
+.section h2 { font-size: 1.3rem; font-weight: 700; color: #FFF3E0; margin-bottom: 8px; letter-spacing: -0.01em; }
+.section h2 .num { color: #F7931A; margin-right: 10px; font-size: 1.1em; }
+.section .section-intro { font-size: 0.9rem; color: rgba(255,243,224,0.5); line-height: 1.8; margin-bottom: 24px; }
+
+/* Layer diagram */
+.layer-diagram {
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.layer {
+  padding: 18px 24px;
+  border-radius: 14px;
+  position: relative;
+}
+.layer-L2 {
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.2);
+  margin-bottom: 4px;
+}
+.layer-L1 {
+  background: rgba(247,147,26,0.08);
+  border: 1px solid rgba(247,147,26,0.15);
+}
+.layer .layer-name {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.layer-L2 .layer-name { color: #60A5FA; }
+.layer-L1 .layer-name { color: #F7931A; }
+.layer .layer-title { font-size: 0.95rem; font-weight: 700; color: #FFF3E0; margin-bottom: 4px; }
+.layer .layer-desc { font-size: 0.8rem; color: rgba(255,243,224,0.5); line-height: 1.65; }
+.layer-arrow {
+  text-align: center;
+  color: rgba(255,255,255,0.15);
+  font-size: 1.2rem;
+  padding: 4px 0;
+}
+
+/* LN visual */
+.ln-visual {
+  background: rgba(247,147,26,0.04);
+  border: 1px solid rgba(247,147,26,0.12);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+}
+.ln-visual h3 { font-size: 0.95rem; font-weight: 700; color: #F7931A; margin-bottom: 16px; }
+.channel-diagram {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 20px 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.chan-node {
+  background: rgba(247,147,26,0.08);
+  border: 1px solid rgba(247,147,26,0.2);
+  border-radius: 12px;
+  padding: 14px 20px;
+  text-align: center;
+  min-width: 110px;
+  flex-shrink: 0;
+}
+.chan-node.center {
+  background: rgba(247,147,26,0.12);
+  border-color: rgba(247,147,26,0.35);
+}
+.chan-icon { font-size: 1.6rem; margin-bottom: 6px; }
+.chan-label { font-size: 0.8rem; font-weight: 600; color: #FFF3E0; }
+.chan-sub { font-size: 0.68rem; color: rgba(255,243,224,0.4); margin-top: 2px; }
+.chan-arrow { color: rgba(247,147,26,0.3); font-size: 1.3rem; flex-shrink: 0; padding: 0 6px; }
+.chan-balance {
+  display: inline-block;
+  background: rgba(59,130,246,0.15);
+  border: 1px solid rgba(59,130,246,0.25);
+  color: #60A5FA;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 100px;
+  margin-top: 4px;
+}
+
+/* Comparison */
+.comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0; }
+.comp-card {
+  background: rgba(247,147,26,0.04);
+  border: 1px solid rgba(247,147,26,0.12);
+  border-radius: 14px;
+  padding: 20px;
+}
+.comp-card h3 { font-size: 0.95rem; font-weight: 700; color: #FFF3E0; margin-bottom: 8px; }
+.comp-card p { font-size: 0.82rem; color: rgba(255,243,224,0.55); line-height: 1.7; margin-bottom: 10px; }
+.comp-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag { font-size: 0.65rem; padding: 3px 8px; border-radius: 100px; font-weight: 600; }
+.tag-green { background:rgba(74,222,128,0.1); color:#86EFAC; }
+.tag-red { background:rgba(239,68,68,0.1); color:#FCA5A5; }
+.tag-blue { background:rgba(59,130,246,0.1); color:#60A5FA; }
+.tag-orange { background:rgba(247,147,26,0.1); color:#F7931A; }
+
+/* Alert boxes */
+.alert-box { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:12px; padding:18px 20px; margin:16px 0; display:flex; gap:12px; align-items:flex-start; }
+.alert-box .icon { font-size:1.3rem; flex-shrink:0; }
+.alert-box h4 { font-size:0.88rem; font-weight:600; color:#FCA5A5; margin-bottom:4px; }
+.alert-box p { font-size:0.82rem; color:rgba(255,243,224,0.5); line-height:1.65; }
+.alert-box.green { background:rgba(74,222,128,0.08); border-color:rgba(74,222,128,0.2); }
+.alert-box.green h4 { color:#86EFAC; }
+.alert-box.orange { background:rgba(247,147,26,0.08); border-color:rgba(247,147,26,0.2); }
+.alert-box.orange h4 { color:#F7931A; }
+.alert-box.blue { background:rgba(59,130,246,0.08); border-color:rgba(59,130,246,0.2); }
+.alert-box.blue h4 { color:#60A5FA; }
+
+/* Use case cards */
+.use-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+.use-card {
+  background: rgba(247,147,26,0.04);
+  border: 1px solid rgba(247,147,26,0.1);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  transition: all 0.3s;
+}
+.use-card:hover { border-color: rgba(247,147,26,0.25); transform: translateY(-2px); }
+.use-icon { font-size: 2rem; margin-bottom: 8px; }
+.use-card h3 { font-size: 0.88rem; font-weight: 700; color: #FFF3E0; margin-bottom: 4px; }
+.use-card p { font-size: 0.75rem; color: rgba(255,243,224,0.45); line-height: 1.6; }
+
+/* Timeline */
+.timeline { position:relative; padding-left: 36px; margin: 24px 0; }
+.timeline::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom, #F7931A, rgba(247,147,26,0.1)); }
+.tl-item { position:relative; margin-bottom:24px; }
+.tl-item::before { content:''; position:absolute; left:-30px; top:6px; width:10px; height:10px; border-radius:50%; background:#F7931A; border:2px solid #0a0806; box-shadow:0 0 10px rgba(247,147,26,0.4); }
+.tl-item h3 { font-size:0.95rem; font-weight:700; color:#FFF3E0; margin-bottom:4px; }
+.tl-item p { font-size:0.82rem; color:rgba(255,243,224,0.5); line-height:1.7; }
+
+/* Page nav */
+.page-nav { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:52px; padding-top:32px; border-top:1px solid rgba(247,147,26,0.1); }
+.page-nav a { display:flex; flex-direction:column; padding:18px 20px; background:rgba(247,147,26,0.04); border:1px solid rgba(247,147,26,0.15); border-radius:14px; text-decoration:none; transition:all 0.3s; }
+.page-nav a:hover { border-color:rgba(247,147,26,0.35); background:rgba(247,147,26,0.08); }
+.page-nav a.next { text-align:right; }
+.nav-label { font-size:0.65rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,243,224,0.3); margin-bottom:5px; }
+.nav-title { font-size:0.9rem; font-weight:600; color:#F7931A; }
+@media (max-width:500px) { .page-nav { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="basics-page">
+  <nav class="top-bar">
+    <a href="../../index.html">首页</a>
+    <span>›</span>
+    <a href="02-00-overview.html">入门篇</a>
+    <span>›</span>
+    <span style="color:#F7931A;">支付与闪电网络</span>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-eyebrow">入门篇 · Chapter 07</div>
+    <h1>支付 · <span class="accent">闪电网络</span> · 未来</h1>
+    <p class="subtitle">比特币不只是"数字黄金"，它也可以成为日常支付工具。闪电网络让每秒百万笔、几乎零手续费的小额支付成为可能——这是中本聪最初的愿景。</p>
+  </header>
+
+  <!-- SECTION 1: 为什么需要 Layer2 -->
+  
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币主链（Layer 1）是"结算层"——安全但慢，适合大额转账；闪电网络是"支付层"——快如闪电、几乎免费，适合日常消费。</p>
+            <p style="margin-top:8px;">把比特币主链想象成银行间的大额转账系统（实时到账但收费高），闪电网络就像微信支付（秒到、几乎免费，但只适合小额）。两者是互补关系，不是替代关系。</p>
+          </div>
+    <section class="section">
+    <div class="chapter-tag">📐 技术背景</div>
+    <h2><span class="num">⚖️</span> Layer 1 的局限性：比特币主链为什么不适合日常支付？</h2>
+    <p class="section-intro">比特币主链（Layer 1）每秒只能处理约 7 笔交易，交易确认需 10–60 分钟，手续费在网络繁忙时可能高达数十美元。这对小额支付来说是不可接受的。</p>
+
+    <div class="layer-diagram">
+      <div class="layer layer-L2">
+        <div class="layer-name">⚡ Layer 2 · 闪电网络</div>
+        <div class="layer-title">每秒百万笔 · 毫秒确认 · 近零手续费</div>
+        <div class="layer-desc">在主链之上建立支付通道，处理日常小额交易，定期在主链结算。</div>
+      </div>
+      <div class="layer-arrow">↕ 上层交易，下层结算</div>
+      <div class="layer layer-L1">
+        <div class="layer-name">⛓️ Layer 1 · 比特币主链</div>
+        <div class="layer-title">约 7 TPS · 10–60 分钟确认 · 手续费波动</div>
+        <div class="layer-desc">最终结算层，存储所有交易记录，保证整个系统的安全和最终确定性。</div>
+      </div>
+    </div>
+
+    <div class="alert-box orange">
+      <div class="icon">💡</div>
+      <div>
+        <h4>类比：Layer 1 = 银行转账，Layer 2 = 微信支付</h4>
+        <p>Layer 1 相当于银行之间的最终清算（你不会每天用银行转账买咖啡）；Layer 2 相当于微信/支付宝的即时支付（秒付、零手续费），但背后有银行账户兜底。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: Lightning Network -->
+  <section class="section">
+    <div class="chapter-tag">⚡ 闪电网络</div>
+    <h2><span class="num">⚡</span> 闪电网络原理：支付通道如何工作？</h2>
+    <p class="section-intro">闪电网络（Lightning Network, LN）由 Joseph Poon 和 Tadge Dryja 于 2015 年提出，2018 年主网正式上线。它是比特币最重要的 Layer 2 扩展方案。</p>
+
+    <div class="ln-visual">
+      
+          <!-- 闪电网络视频讲解 -->
+          <div style="margin:16px 0;padding:20px;background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.15);border-radius:var(--radius);">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <span style="font-size:1.2rem;">🎬</span>
+              <div>
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--orange);font-weight:700;">推荐视频</div>
+                <div style="font-size:0.88rem;font-weight:600;color:var(--text);">闪电网络是什么？（中英双字幕）</div>
+              </div>
+            </div>
+            <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;margin-bottom:10px;">
+              <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://player.bilibili.com/player.html?bvid=BV1o24y1y7Jc&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+            </div>
+            <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">↑ 视频来自哔哩哔哩，讲解了闪电网络如何成为比特币的 Layer2 扩容方案，以及支付渠道如何创建（几乎）免费和即时交易。</p>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <a href="https://www.bilibili.com/video/BV1o24y1y7Jc/" target="_blank" class="btn btn-sm" style="background:rgba(247,147,26,0.1);color:var(--orange);border:1px solid rgba(247,147,26,0.2);padding:6px 14px;border-radius:8px;font-size:0.78rem;text-decoration:none;">↗ 在哔哩哔哩打开</a>
+              <a href="https://lightning.network/lightning-network-paper.pdf" target="_blank" class="btn btn-sm" style="background:rgba(59,130,246,0.1);color:#3B82F6;border:1px solid rgba(59,130,246,0.2);padding:6px 14px;border-radius:8px;font-size:0.78rem;text-decoration:none;">📄 闪电网络白皮书（PDF）</a>
+            </div>
+          </div>
+        <h3>🔗 支付通道的工作原理</h3>
+      <div class="channel-diagram">
+        <div class="chan-node">
+          <div class="chan-icon">👤</div>
+          <div class="chan-label">Alice</div>
+          <div class="chan-sub">用户A</div>
+          <div class="chan-balance">存入 0.01 BTC</div>
+        </div>
+        <div class="chan-arrow">⟷</div>
+        <div class="chan-node center">
+          <div class="chan-icon">⚡</div>
+          <div class="chan-label">支付通道</div>
+          <div class="chan-sub">链下状态</div>
+          <div class="chan-balance" style="background:rgba(247,147,26,0.15);color:#F7931A;">余额实时分配</div>
+        </div>
+        <div class="chan-arrow">⟷</div>
+        <div class="chan-node">
+          <div class="chan-icon">🏪</div>
+          <div class="chan-label">咖啡店</div>
+          <div class="chan-sub">商家B</div>
+          <div class="chan-balance">通道接收方</div>
+        </div>
+      </div>
+      <p style="font-size:0.8rem;color:rgba(255,243,224,0.5);line-height:1.7;">开通通道时，Alice 将 <strong>0.01 BTC 锁定</strong>到多签地址。之后她每付一笔咖啡钱，只需在通道内更新双方余额——无需上链。关闭通道时，最终余额状态在主链结算，只需一笔交易。</p>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <h3>① 开设通道（On-chain）</h3>
+        <p>Alice 将 0.01 BTC 存入多签地址，锁定在 Alice 和咖啡店之间。这笔存款交易写入主链，耗时约 10–60 分钟（1–6 个区块确认）。</p>
+      </div>
+      <div class="tl-item">
+        <h3>② 无数次链下支付（Off-chain）</h3>
+        <p>Alice 每天买 5 杯咖啡，每笔支付由双方签名更新通道余额。无需上链，毫秒级完成，零手续费（或极低费用）。</p>
+      </div>
+      <div class="tl-item">
+        <h3>③ 关闭通道，链上结算（On-chain）</h3>
+        <p>某天 Alice 或咖啡店想关闭通道。双方签署最终余额，提交主链。链上只需一笔交易，比特币网络确认后通道关闭。</p>
+      </div>
+      <div class="tl-item">
+        <h3>④ 跨链路由（Hops）</h3>
+        <p>Alice 不需要和每个商家都开设直接通道。通过"路由节点"（类似网络路由器），Alice 可以向任何已接入闪电网络的商家支付——只需找到一条连通的支付路径。</p>
+      </div>
+    </div>
+
+    <div class="alert-box blue">
+      <div class="icon">🔍</div>
+      <div>
+        <h4>HTLC：哈希时间锁合约</h4>
+        <p>闪电网络使用 HTLC（Hashed Time-Locked Contract）技术，保证跨多跳支付的安全性。即使 Alice → 路由器 → 商家的路径上有中间人，中间人也无法窃取资金——这是一种加密托管机制。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: LN 特点 -->
+  <section class="section">
+    <div class="chapter-tag">📊 对比</div>
+    <h2><span class="num">📊</span> 闪电网络 vs 比特币主链 vs 传统支付</h2>
+    <p class="section-intro">闪电网络解决的是比特币 Layer 1 不擅长的小额高频支付场景。</p>
+
+    <div class="comp-grid">
+      <div class="comp-card">
+        <h3>⚡ 闪电网络</h3>
+        <p>比特币 Layer 2，适合小额高频场景</p>
+        <div class="comp-tags">
+          <span class="tag tag-green">~百万 TPS</span>
+          <span class="tag tag-green">毫秒确认</span>
+          <span class="tag tag-green">近乎零手续费</span>
+          <span class="tag tag-red">需开通通道</span>
+          <span class="tag tag-orange">小额/日常</span>
+        </div>
+      </div>
+      <div class="comp-card">
+        <h3>⛓️ 比特币主链</h3>
+        <p>最终结算层，大额资产存储</p>
+        <div class="comp-tags">
+          <span class="tag tag-blue">~7 TPS</span>
+          <span class="tag tag-orange">10–60 分钟</span>
+          <span class="tag tag-blue">手续费波动</span>
+          <span class="tag tag-green">最高安全性</span>
+          <span class="tag tag-orange">大额/存储</span>
+        </div>
+      </div>
+      <div class="comp-card">
+        <h3>💳  Visa / 支付宝</h3>
+        <p>中心化传统支付网络</p>
+        <div class="comp-tags">
+          <span class="tag tag-green">~65,000 TPS</span>
+          <span class="tag tag-green">秒级确认</span>
+          <span class="tag tag-orange">1–3% 手续费</span>
+          <span class="tag tag-red">需实名</span>
+          <span class="tag tag-red">可被冻结</span>
+          <span class="tag tag-red">中心化风险</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert-box green">
+      <div class="icon">✅</div>
+      <div>
+        <h4>闪电网络真正实现了比特币的原始愿景</h4>
+        <p>中本聪在 2010 年的论坛帖子里写道，他希望比特币能支持"每笔交易 0.01 美元的手续费"。Layer 1 无法做到这一点，但闪电网络可以——它让比特币在保持去中心化和抗审查的同时，实现了日常支付的可行性。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: 实际用例 -->
+  <section class="section">
+    <div class="chapter-tag">🛒 实际用例</div>
+    <h2><span class="num">🛒</span> 闪电网络现在能做什么？</h2>
+    <p class="section-intro">闪电网络已经进入实用阶段。虽然仍需改进用户体验，但已经有真实用户在用它生活。</p>
+
+    <div class="use-grid">
+      <div class="use-card">
+        <div class="use-icon">☕</div>
+        <h3>咖啡和小额消费</h3>
+        <p>一杯咖啡 0.00001 BTC ≈ 几毛钱人民币，闪电网络秒付无手续费</p>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">⚡</div>
+        <h3>打赏与小费</h3>
+        <p>Twitter/YouTube 内容创作者接收比特币打赏，几秒到账无需平台审核</p>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">🎮</div>
+        <h3>游戏内购</h3>
+        <p>去中心化游戏订阅、道具购买，闪电网络毫秒级完成</p>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">📡</div>
+        <h3>去中心化社交</h3>
+        <p>Nostr 等协议用闪电网络支付内容、防止垃圾信息</p>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">🌍</div>
+        <h3>跨境汇款</h3>
+        <p>向海外家人转账，闪电网络比 Western Union 更快更便宜</p>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">📱</div>
+        <h3>手机充值</h3>
+        <p>Bitrefill 等服务支持用闪电网络充值手机话费、购买礼品卡</p>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <div class="icon">📊</div>
+      <div>
+        <h4>闪电网络规模（截至 2026 年）</h4>
+        <p>全网超过 15,000 个节点，通道容量超过 5,000 BTC（约 3 亿美元）。虽仍处于早期，但增长迅速。主流钱包 BlueWallet、Muun、ZeusLN、Phoenix 等均已支持。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: 入门工具 -->
+  <section class="section">
+    <div class="chapter-tag">🛠️ 入门工具</div>
+    <h2><span class="num">🛠️</span> 如何开始使用闪电网络？</h2>
+    <p class="section-intro">推荐的新手入门路径：从支持闪电网络的钱包开始，先小量体验，熟悉后再加大使用。</p>
+
+    <div class="ln-visual">
+      <h3>⚡ 闪电网络钱包推荐</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px;">
+        <div style="background:rgba(247,147,26,0.06);border-radius:10px;padding:14px;">
+          <div style="font-size:1.2rem;margin-bottom:6px;">📱</div>
+          <div style="font-size:0.88rem;font-weight:700;color:#FFF3E0;margin-bottom:3px;">BlueWallet</div>
+          <div style="font-size:0.75rem;color:rgba(255,243,224,0.4);">iOS/Android · 界面简洁 · 自带通道</div>
+        </div>
+        <div style="background:rgba(247,147,26,0.06);border-radius:10px;padding:14px;">
+          <div style="font-size:1.2rem;margin-bottom:6px;">🔵</div>
+          <div style="font-size:0.88rem;font-weight:700;color:#FFF3E0;margin-bottom:3px;">Phoenix</div>
+          <div style="font-size:0.75rem;color:rgba(255,243,224,0.4);">iOS/Android · 自动路由 · 最简单</div>
+        </div>
+        <div style="background:rgba(247,147,26,0.06);border-radius:10px;padding:14px;">
+          <div style="font-size:1.2rem;margin-bottom:6px;">🔒</div>
+          <div style="font-size:0.88rem;font-weight:700;color:#FFF3E0;margin-bottom:3px;">Muun</div>
+          <div style="font-size:0.75rem;color:rgba(255,243,224,0.4);">iOS/Android · 不用下载完整节点</div>
+        </div>
+        <div style="background:rgba(247,147,26,0.06);border-radius:10px;padding:14px;">
+          <div style="font-size:1.2rem;margin-bottom:6px;">⚡</div>
+          <div style="font-size:0.88rem;font-weight:700;color:#FFF3E0;margin-bottom:3px;">Zeus LN</div>
+          <div style="font-size:0.75rem;color:rgba(255,243,224,0.4);">Android · 功能最强 · 进阶用户</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline" style="margin-top:20px;">
+      <div class="tl-item">
+        <h3>第一步：下载钱包</h3>
+        <p>从 App Store / Google Play 下载 BlueWallet（推荐新手）或 Phoenix。注册时只需保存好助记词，无需提供个人信息。</p>
+      </div>
+      <div class="tl-item">
+        <h3>第二步：从交易所充值 BTC</h3>
+        <p>在钱包中找到"充值"按钮，复制你的比特币地址（闪电钱包通常也支持主链地址接收）。从交易所提币到这个地址。建议首次充值 500–1000 元试试。</p>
+      </div>
+      <div class="tl-item">
+        <h3>第三步：尝试小额闪电支付</h3>
+        <p>钱包会自动为你开设闪电通道。你可以在 Bitrefill 用闪电网络购买一张 Amazon 礼品卡，或向朋友的闪电地址转账几聪（Satoshi），感受秒付体验。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: 入门总结 -->
+  <section class="section">
+    <div class="chapter-tag">🎓 入门总结</div>
+    <h2><span class="num">🎓</span> 入门篇完结：你现在知道了什么？</h2>
+    <p class="section-intro">完成入门篇后，你已经掌握了理解和使用比特币所需的全部核心知识。</p>
+
+    <div style="background:linear-gradient(135deg,#1a1000,#2a1800);border:1px solid rgba(247,147,26,0.25);border-radius:16px;padding:28px 32px;margin:16px 0;">
+      <h3 style="font-size:1rem;font-weight:700;color:#F7931A;margin-bottom:16px;">📋 入门篇知识清单</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          比特币是什么（一句话 + 六视角）
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          私钥/公钥/地址的关系与意义
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          区块链如何记账（UTXO模型）
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          挖矿与去中心化共识的原理
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          如何注册交易所并完成KYC认证
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          买币→入金→提币到钱包的完整流程
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          助记词备份的完整操作规范
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          热钱包/冷钱包/硬件钱包的适用场景
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          闪电网络原理与日常支付用例
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.83rem;color:rgba(255,243,224,0.7);line-height:1.6;">
+          <span style="color:#86EFAC;flex-shrink:0;">✓</span>
+          DCA 策略的基本逻辑与执行方法
+        </div>
+      </div>
+    </div>
+
+    <div class="alert-box green" style="margin-top:20px;">
+      <div class="icon">🚀</div>
+      <div>
+        <h4>下一步：技术篇或经济学篇</h4>
+        <p>入门之后，你可以选择深入技术细节（了解比特币为什么安全、如何验证）或深入经济学（了解比特币的货币属性、投资逻辑、周期规律）。技术篇从密码学开始，经济学篇从供需关系切入。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 多视角卡片 ============ -->
+    <div class="perspective-card" id="main-perspectives">
+      <div class="persp-tabs">
+        <button class="p-tab active" data-angle="finance">💰 金融</button>
+        <button class="p-tab" data-angle="user">👤 用户</button>
+        <button class="p-tab" data-angle="technology">⚙️ 技术</button>
+        <button class="p-tab" data-angle="history">📜 历史</button>
+        <button class="p-tab" data-angle="business">🏪 商业</button>
+        <button class="p-tab" data-angle="philosophy">🧠 哲学</button>
+      </div>
+      <div class="persp-contents">
+        <div class="p-content active" data-angle="finance">
+          <p>【金融视角】闪电网络让比特币从"储值资产"向"支付货币"延伸。Layer 2 的毫秒确认 + 近零手续费，使其在小额零售场景具备与 Visa/支付宝竞争的技术基础。2026 年全网通道容量已超 5000 BTC，微支付、微理财、去中心化工资单等新金融场景正在涌现。</p>
+        </div>
+        <div class="p-content" data-angle="user">
+          <p>【用户视角】对于普通用户，闪电网络的核心价值是：无需信任任何第三方，即可完成即时、低成本的比特币转移。一个人可以在没有银行账户的情况下（全球仍有 17 亿无银行账户人口），通过闪电网络收到比特币工资或海外汇款。</p>
+        </div>
+        <div class="p-content" data-angle="technology">
+          <p>【技术视角】闪电网络基于 HTLC（哈希时间锁合约）和支付通道网络（Payment Channel Network）实现。HTLC 保证跨多跳支付安全：即使 Alice 通过 Bob 向 Carol 转账，Bob 也无法截留资金。这是比特币智能合约能力的首次大规模实用化。</p>
+        </div>
+        <div class="p-content" data-angle="history">
+          <p>【历史视角】中本聪在 2010 年写道，希望比特币支持"每笔 0.01 美元的手续费"用于日常小费支付。但 Layer 1 无法满足这个愿景，闪电网络才让这一理想真正落地。2015 年白皮书发布，2018 年主网上线，2025 年节点超 15000 个——这是一场持续十年的技术演进。</p>
+        </div>
+        <div class="p-content" data-angle="business">
+          <p>【商业视角】Bitrefill、Fold、Lightning Labs 等公司已构建完整的 LN 商业生态：礼品卡购买、手机充值、流媒体订阅。Stripe 已集成闪电网络，MicroStrategy 宣布将探索 LN 支付。比特币支付赛道正在从极客玩具转向主流商业基础设施。</p>
+        </div>
+        <div class="p-content" data-angle="philosophy">
+          <p>【哲学视角】闪电网络代表着比特币从"对抗性资产"到"建设性工具"的转变。持有比特币不只是为了升值，而是为了参与一个无审查、无许可、不可阻止的价值转移网络。当每个人都能用 LN 即时发送任意金额时，比特币的货币革命才算真正完成。</p>
+        </div>
+      </div>
+      <div class="persp-dots">
+        <span class="p-dot active" data-angle="finance"></span>
+        <span class="p-dot" data-angle="user"></span>
+        <span class="p-dot" data-angle="technology"></span>
+        <span class="p-dot" data-angle="history"></span>
+        <span class="p-dot" data-angle="business"></span>
+        <span class="p-dot" data-angle="philosophy"></span>
+      </div>
+    </div>
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 区块浏览器 · 查看 Layer 1 结算数据<span class="exp-go">→</span></a></li>
+          <li><a href="https://www.8btc.com" target="_blank" rel="noopener">8btc 比特币中文门户 · 闪电网络最新进展<span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+  <!-- Page nav -->
+  <nav class="page-nav">
+    <a href="02-06-security.html" class="prev">
+      <span class="nav-label">← 上一章</span>
+      <span class="nav-title">安全存储</span>
+    </a>
+    <a href="../03-economics/03-00-overview.html" class="next">
+      <span class="nav-label">经济学篇 →</span>
+      <span class="nav-title">总览</span>
+    </a>
+  </nav>
+
+
+          <!-- 闪电网络 vs 主链 vs 传统支付对比 -->
+          <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:24px 0;">
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">⛓️</div>
+              <h4>比特币主链</h4>
+              <p>安全、去中心化，但确认慢（10-60分钟）、手续费高（网络繁忙时可达数十美元）。适合：大额转账、资产存储。</p>
+              <span style="margin-top:8px;display:inline-block;background:rgba(247,147,26,0.1);color:var(--orange);font-size:0.72rem;padding:3px 10px;border-radius:100px;">适合：大额·资产</span>
+            </div>
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">⚡</div>
+              <h4>闪电网络</h4>
+              <p>秒级到账、几乎零手续费，适合日常消费和小额支付。需要先在主链开通道，通道关闭时主链结算。</p>
+              <span style="margin-top:8px;display:inline-block;background:rgba(16,185,129,0.1);color:#10B981;font-size:0.72rem;padding:3px 10px;border-radius:100px;">适合：日常·小额</span>
+            </div>
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">🏦</div>
+              <h4>传统支付</h4>
+              <p>Visa/支付宝：快（但需2-3工作日跨境），收费2-5%，中心化（可冻结账户）。比特币网络是去中心化替代。</p>
+              <span style="margin-top:8px;display:inline-block;background:rgba(59,130,246,0.1);color:#3B82F6;font-size:0.72rem;padding:3px 10px;border-radius:100px;">中心化·可监管</span>
+            </div>
+          </div>
+          <div class="explorer-box" style="margin-top:20px;">
+            <div class="exp-header"><span style="font-weight:700;">🔍 入门实验：体验闪电网络</span></div>
+            <div style="padding:12px 0;">
+              <ul style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;padding-left:20px;">
+                <li>📱 <strong>Phoenix Wallet</strong>（手机端最佳）：<a href="https://phoenix.acinq.co/" target="_blank" style="color:var(--orange);">phoenix.acinq.co</a> — 支持中文，自动路由</li>
+                <li>📱 <strong>BlueWallet</strong>（多平台）：<a href="https://bluewallet.io/" target="_blank" style="color:var(--orange);">bluewallet.io</a> — 支持 iOS/Android，可创建自己的闪电节点</li>
+                <li>🖥️ <strong>Lightning Labs</strong>（开发者）：<a href="https://lightning.engineering/" target="_blank" style="color:var(--orange);">lightning.engineering</a> — LND 节点软件</li>
+                <li>⚠️ <strong>注意</strong>：闪电网络需要先存入比特币，存入后只能通过闪电网络使用，无法直接转到交易所卖出</li>
+              </ul>
+            </div>
+          </div>
+    </div>
+
+<footer style="text-align:center;padding:32px 20px;color:rgba(255,243,224,0.2);font-size:0.75rem;border-top:1px solid rgba(247,147,26,0.08);margin-top:40px;">
+  © 2026 比特币学习地图 · Bitcoin Learning Map
+</footer>
+
+</body>
+</html>

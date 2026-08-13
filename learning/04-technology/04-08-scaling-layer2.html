@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>扩容与 Layer2 | 比特币学习地图</title>
+  <meta name="description" content="深入比特币扩展方案：闪电网络、侧链、RGB、铭文(Ordinals/Runes)，理解Layer2如何提升比特币能力。">
+  <link rel="stylesheet" href="../../shared/style.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="04-00-overview.html">技术篇</a>
+        <span>›</span>
+        <span>扩容与 Layer2</span>
+      </div>
+      <h1>⚡ 扩容与 Layer2</h1>
+      <p class="page-subtitle">主链是高速公路，Layer2 是高架快线。闪电网络、侧链、RGB、铭文——理解比特币如何扩容，以及为什么 Layer2 是比特币的必然选择。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 20 分钟</span>
+        <span class="page-tag">📊 难度：较难</span>
+        <span class="page-tag">📑 技术篇 9/9</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>技术篇进度</span>
+          <span>9 / 9 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#why">扩容的必要性</a>
+          <a href="#layer-arch">Layer 体系</a>
+          <a href="#lightning">闪电网络原理</a>
+          <a href="#other">其他 Layer2 方案</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 核心直觉 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p><strong>Layer1 = 高速公路</strong>（安全但慢，收费高）；<strong>Layer2 = 高架快线</strong>（继承高速安全，速度快且免费）。</p>
+            <p style="margin-top:8px;">比特币主链每秒只能处理约 7 笔交易（7 TPS），而 Visa 约 24000 TPS。把所有交易都放主链，就像把所有车都堵在一条两车道上。解决方案：<strong>在主链之上构建 Layer2，高频交易走快线，大额结算走主链</strong>。</p>
+          </div>
+
+          <!-- ============ 一、扩容的必要性 ============ -->
+          <section id="why">
+            <h2>一、扩容的必要性</h2>
+
+            <h3>1.1 主链瓶颈</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:14px 0;">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;">
+                <div style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">吞吐量</div>
+                <div style="font-size:1.8rem;font-weight:700;color:var(--orange);">~7 TPS</div>
+                <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:6px;">VISA 约 24000 TPS</div>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;">
+                <div style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">确认时间</div>
+                <div style="font-size:1.8rem;font-weight:700;color:var(--orange);">10-60 分钟</div>
+                <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:6px;">1-6 区块确认</div>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;">
+                <div style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">区块空间</div>
+                <div style="font-size:1.8rem;font-weight:700;color:var(--orange);">~4 MB</div>
+                <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:6px;">重量单位限制</div>
+              </div>
+              <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:var(--radius-sm);padding:16px;text-align:center;">
+                <div style="font-size:0.72rem;color:#EF4444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">高峰手续费</div>
+                <div style="font-size:1.8rem;font-weight:700;color:#EF4444;">$50-200</div>
+                <div style="font-size:0.72rem;color:#EF4444;margin-top:6px;">2017/2021/2023 高峰期</div>
+              </div>
+            </div>
+
+            <h3>1.2 两条扩容路线</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;">
+              <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:var(--radius-sm);padding:16px;">
+                <h4 style="color:#EF4444;margin-bottom:10px;">❌ 链上扩容（大区块派）</h4>
+                <ul style="font-size:0.85rem;color:var(--text-secondary);">
+                  <li><strong>思路</strong>：增大区块大小 → 更多交易/块</li>
+                  <li><strong>方案</strong>：BCH (8MB→32MB)、BSV (128MB)</li>
+                  <li><strong>代价</strong>：节点运行成本飙升 → 中心化</li>
+                  <li><strong>结果</strong>：比特币选择了另一条路</li>
+                </ul>
+              </div>
+              <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:var(--radius-sm);padding:16px;">
+                <h4 style="color:#10B981;margin-bottom:10px;">✅ 链下扩容（Layer2派）</h4>
+                <ul style="font-size:0.85rem;color:var(--text-secondary);">
+                  <li><strong>思路</strong>：保持区块大小，把交易搬到链下</li>
+                  <li><strong>方案</strong>：闪电网络、侧链、状态通道</li>
+                  <li><strong>优势</strong>：主链去中心化不变，容量指数级扩展</li>
+                  <li><strong>结果</strong>：比特币选择了这条路</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="treasure-box">
+              <h3>💎 为什么比特币选择了 Layer2？</h3>
+              <ul>
+                <li><strong>去中心化优先</strong>：大区块 = 全节点减少 = 中心化</li>
+                <li><strong>安全第一</strong>：主链承载结算，Layer2 承载高频</li>
+                <li><strong>长期可持续</strong>：区块补贴减半，手续费市场依赖稀缺性</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 二、Layer 体系 ============ -->
+          <section id="layer-arch">
+            <h2>二、比特币 Layer 体系</h2>
+
+            <figure class="diagram-container" style="max-width:500px;margin:22px auto;padding:18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow-x:auto;">
+              <svg viewBox="0 0 440 470" width="100%" style="display:block;height:auto;max-width:500px;margin:0 auto;font-family:var(--font-sans);">
+                <text x="220" y="22" text-anchor="middle" style="font-size:15px;font-weight:700;fill:var(--text);">图 D · 比特币 Layer 体系</text>
+
+                <defs>
+                  <marker id="arrD" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto"><path d="M2,2 L8,5 L2,8 Z" style="fill:var(--orange);"/></marker>
+                  <marker id="arrU" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto"><path d="M2,2 L8,5 L2,8 Z" style="fill:var(--gold);"/></marker>
+                </defs>
+
+                <!-- App layer -->
+                <rect x="60" y="40" width="280" height="84" rx="14" style="fill:var(--purple);"/>
+                <text x="200" y="72" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#fff;">应用层 Applications</text>
+                <text x="200" y="92" text-anchor="middle" style="font-size:11px;fill:#EDE9FE;">钱包 · 交易所 · DeFi App</text>
+                <text x="200" y="110" text-anchor="middle" style="font-size:10px;fill:#EDE9FE;">各类用户产品入口</text>
+
+                <!-- Layer 2 -->
+                <rect x="60" y="180" width="280" height="84" rx="14" style="fill:var(--orange);"/>
+                <text x="200" y="212" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#1A1A1A;">Layer 2 · 扩容方案</text>
+                <text x="200" y="232" text-anchor="middle" style="font-size:11px;fill:#1A1A1A;">闪电网络 · 侧链 · RGB</text>
+                <text x="200" y="250" text-anchor="middle" style="font-size:10px;fill:#1A1A1A;">对应：本章（快且便宜）</text>
+
+                <!-- Layer 1 -->
+                <rect x="60" y="320" width="280" height="84" rx="14" style="fill:var(--gold);"/>
+                <text x="200" y="352" text-anchor="middle" style="font-size:15px;font-weight:700;fill:#1A1A1A;">Layer 1 · 主链</text>
+                <text x="200" y="372" text-anchor="middle" style="font-size:11px;fill:#1A1A1A;">BTC 核心 · 安全但慢</text>
+                <text x="200" y="390" text-anchor="middle" style="font-size:10px;fill:#1A1A1A;">对应：03-05 脚本 / 03-07 升级</text>
+
+                <!-- right arrows -->
+                <line x1="375" y1="124" x2="375" y2="176" stroke-width="2.5" marker-end="url(#arrD)" style="stroke:var(--orange);"/>
+                <line x1="375" y1="264" x2="375" y2="316" stroke-width="2.5" marker-end="url(#arrD)" style="stroke:var(--orange);"/>
+                <text x="392" y="155" style="font-size:10px;fill:var(--text-secondary);">状态</text>
+                <text x="392" y="170" style="font-size:10px;fill:var(--text-secondary);">更新↓</text>
+                <text x="392" y="295" style="font-size:10px;fill:var(--text-secondary);">状态</text>
+                <text x="392" y="310" style="font-size:10px;fill:var(--text-secondary);">更新↓</text>
+
+                <!-- left arrows -->
+                <line x1="40" y1="316" x2="40" y2="264" stroke-width="2.5" marker-end="url(#arrU)" style="stroke:var(--gold);"/>
+                <line x1="40" y1="176" x2="40" y2="124" stroke-width="2.5" marker-end="url(#arrU)" style="stroke:var(--gold);"/>
+                <text x="14" y="200" style="font-size:10px;fill:var(--text-secondary);">资金/结算 ↑</text>
+                <text x="14" y="290" style="font-size:10px;fill:var(--text-secondary);">资金 ↑</text>
+              </svg>
+              <p style="margin:10px 0 0;text-align:center;font-size:12px;color:var(--text-muted);">主链安全但慢 · Layer2 快且便宜 · 应用层面向用户</p>
+            </figure>
+
+            <p>比特币生态呈<strong>三层架构</strong>：</p>
+            <ul style="margin:10px 0;font-size:0.88rem;">
+              <li><strong>Layer 1（主链）</strong>：结算层，安全但慢，用于最终结算和大额转账</li>
+              <li><strong>Layer 2（扩容层）</strong>：执行层，继承主链安全，提供高速低费交易</li>
+              <li><strong>应用层</strong>：用户直接交互，钱包、交易所、DApp</li>
+            </ul>
+          </section>
+
+          <!-- ============ 三、闪电网络原理 ============ -->
+          <section id="lightning">
+            <h2>三、闪电网络原理</h2>
+
+            <h3>3.1 核心理念</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:14px 0;">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">🔗</div>
+                <h4 style="margin-bottom:6px;">支付通道</h4>
+                <p style="font-size:0.82rem;color:var(--text-secondary);">两个人开一个"账本"，在链下无限次互相记账，只在开/关通道时上链结算。</p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">🌐</div>
+                <h4 style="margin-bottom:6px;">网络路由</h4>
+                <p style="font-size:0.82rem;color:var(--text-secondary);">通道互联成网，A→B 可以通过 A→C→D→B 路由，无需直接通道。</p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">⚖️</div>
+                <h4 style="margin-bottom:6px;">智能合约保障</h4>
+                <p style="font-size:0.82rem;color:var(--text-secondary);">用 HTLC 哈希时间锁合约保证：要么支付成功，要么退回，无法作弊。</p>
+              </div>
+            </div>
+
+            <figure class="diagram-container" style="max-width:640px;margin:22px auto;padding:18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow-x:auto;">
+              <svg viewBox="0 0 640 300" width="100%" style="display:block;height:auto;max-width:640px;margin:0 auto;font-family:var(--font-sans);">
+                <defs>
+                  <marker id="bothE" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto"><path d="M2,2 L9,6 L2,10 Z" style="fill:var(--orange);"/></marker>
+                </defs>
+                <text x="320" y="22" text-anchor="middle" style="font-size:15px;font-weight:700;fill:var(--text);">图 E · 闪电网络双向通道</text>
+
+                <text x="320" y="50" text-anchor="middle" style="font-size:12px;font-weight:600;fill:var(--text-secondary);">⛓ 链上开启 / 关闭通道</text>
+                <line x1="320" y1="60" x2="320" y2="112" stroke-width="1.5" stroke-dasharray="4 4" style="stroke:var(--text-muted);"/>
+
+                <rect x="210" y="115" width="220" height="70" rx="14" stroke-width="2" style="fill:rgba(247,147,26,0.12);stroke:var(--orange);"/>
+                <text x="320" y="142" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--orange);">⚡ 闪电通道</text>
+                <text x="320" y="162" text-anchor="middle" style="font-size:11px;fill:var(--text);">HTLC 智能合约</text>
+
+                <circle cx="100" cy="150" r="36" stroke-width="2.5" style="fill:var(--bg-section);stroke:var(--orange);"/>
+                <text x="100" y="158" text-anchor="middle" style="font-size:22px;">👤</text>
+                <text x="100" y="208" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--text);">Alice</text>
+
+                <circle cx="540" cy="150" r="36" stroke-width="2.5" style="fill:var(--bg-section);stroke:var(--orange);"/>
+                <text x="540" y="158" text-anchor="middle" style="font-size:22px;">👤</text>
+                <text x="540" y="208" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--text);">Bob</text>
+
+                <line x1="140" y1="150" x2="208" y2="150" stroke-width="3" marker-start="url(#bothE)" marker-end="url(#bothE)" style="stroke:var(--orange);"/>
+                <line x1="432" y1="150" x2="500" y2="150" stroke-width="3" marker-start="url(#bothE)" marker-end="url(#bothE)" style="stroke:var(--orange);"/>
+
+                <line x1="320" y1="186" x2="320" y2="238" stroke-width="1.5" stroke-dasharray="4 4" style="stroke:var(--text-muted);"/>
+                <text x="320" y="258" text-anchor="middle" style="font-size:12px;font-weight:600;fill:var(--text-secondary);">⚡ 通道内秒级转账</text>
+              </svg>
+              <p style="margin:10px 0 0;text-align:center;font-size:12px;color:var(--text-muted);">开/关通道需链上交易 · 通道内可无限次即时互转</p>
+            </figure>
+
+            <h3>3.2 通道工作流程</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;margin:14px 0;">
+              <div style="display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;">
+                <span style="background:var(--orange);color:#1A1A1A;font-weight:700;min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;">1</span>
+                <div>
+                  <strong>开通道</strong>：双方各出 BTC，创建 2-of-2 多签地址。交易上链（1 笔链上交易）。通道容量 = 双方出资之和。
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;">
+                <span style="background:var(--orange);color:#1A1A1A;font-weight:700;min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;">2</span>
+                <div>
+                  <strong>链下更新</strong>：创建新承诺交易，更新双方余额。签署但不广播（链下）。可无限次更新，秒级完成。
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;">
+                <span style="background:var(--orange);color:#1A1A1A;font-weight:700;min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;">3</span>
+                <div>
+                  <strong>关通道</strong>：广播最新承诺交易。交易上链（1 笔链上交易）。按最新余额分配资金。
+                </div>
+              </div>
+            </div>
+
+            <figure class="diagram-container" style="max-width:640px;margin:22px auto;padding:18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow-x:auto;">
+              <svg viewBox="0 0 640 300" width="100%" style="display:block;height:auto;max-width:640px;margin:0 auto;font-family:var(--font-sans);">
+                <defs>
+                  <marker id="arrF" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path d="M2,2 L8,5 L2,8 Z" style="fill:var(--purple);"/></marker>
+                </defs>
+                <text x="320" y="22" text-anchor="middle" style="font-size:15px;font-weight:700;fill:var(--text);">图 F · 多跳路由示意图</text>
+
+                <line x1="130" y1="140" x2="278" y2="140" stroke-width="3" marker-end="url(#arrF)" style="stroke:var(--purple);"/>
+                <line x1="362" y1="140" x2="510" y2="140" stroke-width="3" marker-end="url(#arrF)" style="stroke:var(--purple);"/>
+
+                <text x="204" y="124" text-anchor="middle" style="font-size:11px;font-weight:600;fill:var(--purple);">💸 0.01%</text>
+                <text x="436" y="124" text-anchor="middle" style="font-size:11px;font-weight:600;fill:var(--purple);">💸 0.01%</text>
+
+                <circle cx="90" cy="140" r="38" stroke-width="2.5" style="fill:var(--bg-section);stroke:var(--orange);"/>
+                <text x="90" y="148" text-anchor="middle" style="font-size:22px;">👤</text>
+                <text x="90" y="200" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--text);">Alice</text>
+                <text x="90" y="218" text-anchor="middle" style="font-size:10px;fill:var(--text-muted);">路由费 0.01%</text>
+
+                <circle cx="320" cy="140" r="38" stroke-width="2.5" style="fill:var(--bg-section);stroke:var(--purple);"/>
+                <text x="320" y="136" text-anchor="middle" style="font-size:11px;font-weight:700;fill:var(--purple);">中间</text>
+                <text x="320" y="152" text-anchor="middle" style="font-size:11px;font-weight:700;fill:var(--purple);">节点</text>
+                <text x="320" y="200" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--text);">路由节点</text>
+                <text x="320" y="218" text-anchor="middle" style="font-size:10px;fill:var(--text-muted);">路由费 0.01%</text>
+
+                <circle cx="550" cy="140" r="38" stroke-width="2.5" style="fill:var(--bg-section);stroke:var(--orange);"/>
+                <text x="550" y="148" text-anchor="middle" style="font-size:22px;">👤</text>
+                <text x="550" y="200" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--text);">Bob</text>
+                <text x="550" y="218" text-anchor="middle" style="font-size:10px;fill:var(--text-muted);">收款方</text>
+
+                <text x="320" y="262" text-anchor="middle" style="font-size:11px;fill:var(--text-muted);">去中心化路由 · 无需信任中间节点（HTLC 保证资金安全退回）</text>
+              </svg>
+              <p style="margin:10px 0 0;text-align:center;font-size:12px;color:var(--text-muted);">支付可经多个中间节点跳转，每跳仅收取微量路由费</p>
+            </figure>
+
+            <h3>3.3 HTLC：信任最小化的路由</h3>
+            <p><strong>A 想通过 B→C→D 付给 D 1000 聪：</strong></p>
+            <ol style="margin:10px 0;font-size:0.85rem;color:var(--text-secondary);padding-left:20px;">
+              <li>D 生成秘密 R，把哈希 H = hash(R) 给 A</li>
+              <li>A 创建 HTLC：如果 B 在 24h 内出示 R，付给 B 1000 聪；否则退回</li>
+              <li>B 创建 HTLC：如果 C 在 20h 内出示 R，付给 C 1000 聪；否则退回</li>
+              <li>C 创建 HTLC：如果 D 在 16h 内出示 R，付给 D 1000 聪；否则退回</li>
+              <li>D 向 C 出示 R，拿走 1000 聪 → C 向 B 出示 R，拿走 → B 向 A 出示 R，拿走</li>
+            </ol>
+            <p style="font-size:0.88rem;color:var(--orange);">💡 结果：支付成功，每跳都能拿到钱。如果任何环节失败，超时自动退回。</p>
+
+            <h3>3.4 闪电网络优势与限制</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:14px 0;">
+              <thead>
+                <tr>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:#10B981;font-weight:600;">优势</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:#EF4444;font-weight:600;">限制</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">✅ 秒级支付</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">⚠️ 需要在线接收</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">✅ 近乎零手续费</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">⚠️ 需要开通道（链上交易）</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">✅ 隐私提升（链下交易不可见）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">⚠️ 通道容量限制</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">✅ 继承主链安全（最终结算）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">⚠️ 路由可能失败</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">✅ 扩展性指数级</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">⚠️ 复杂度、用户体验</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- ============ 四、其他 Layer2 方案 ============ -->
+          <section id="other">
+            <h2>四、其他 Layer2 方案</h2>
+
+            <h3>4.1 侧链（Sidechains）</h3>
+            <p>侧链是与主链平行的独立区块链，通过<strong>双向锚定（2WP）</strong>与主链连接：锁定主链 BTC → 在侧链铸造等量代币 → 销毁侧链代币 → 在主链释放等量 BTC。</p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:14px 0;">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-weight:700;margin-bottom:8px;">🏦 Liquid Network</div>
+                <div style="font-size:0.72rem;color:var(--orange);margin-bottom:8px;">联盟侧链</div>
+                <ul style="font-size:0.78rem;color:var(--text-secondary);">
+                  <li><strong>共识</strong>：15 个联盟成员签名出块</li>
+                  <li><strong>速度</strong>：1 分钟出块</li>
+                  <li><strong>功能</strong>：保密交易、资产发行</li>
+                </ul>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-weight:700;margin-bottom:8px;">⛏️ Rootstock (RSK)</div>
+                <div style="font-size:0.72rem;color:var(--orange);margin-bottom:8px;">合并挖矿</div>
+                <ul style="font-size:0.78rem;color:var(--text-secondary);">
+                  <li><strong>共识</strong>：与 BTC 合并挖矿</li>
+                  <li><strong>功能</strong>：EVM 兼容智能合约</li>
+                  <li><strong>代币</strong>：RBTC（1:1 锚定 BTC）</li>
+                </ul>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div style="font-weight:700;margin-bottom:8px;">📚 Stacks</div>
+                <div style="font-size:0.72rem;color:var(--orange);margin-bottom:8px;">PoX</div>
+                <ul style="font-size:0.78rem;color:var(--text-secondary);">
+                  <li><strong>共识</strong>：Proof of Transfer</li>
+                  <li><strong>功能</strong>：智能合约、Clarity 语言</li>
+                  <li><strong>特点</strong>：所有交易在 BTC 上锚定</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>4.2 RGB：客户端验证协议</h3>
+            <p><strong>RGB</strong> 是一种在比特币上发行和转移资产的协议，采用<strong>客户端验证</strong>模式：资产定义在链下，转移通过比特币交易传递证明，只有参与者能看到完整历史，链上不可见。</p>
+            <ul style="margin:10px 0;font-size:0.85rem;">
+              <li><strong>隐私优先</strong>：资产流转链下进行，只有参与者能看到</li>
+              <li><strong>可扩展</strong>：不占用主链空间</li>
+              <li><strong>灵活资产</strong>：可发行代币、NFT、证券、票据</li>
+              <li><strong>用例</strong>：稳定币、证券代币、NFT、身份凭证</li>
+            </ul>
+
+            <h3>4.3 铭文（Ordinals / Runes）</h3>
+            <p><strong>铭文（Inscriptions）</strong>是通过在比特币交易中嵌入任意数据，实现"在区块链上永久存储信息"的技术。2023 年由 Casey Rodarmor 发明（Ordinals 协议），利用 Taproot 见证数据，可存储最大 4MB 数据/交易。</p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0;">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;">
+                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">🖼️ Ordinals NFT</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;">2023</div>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">在特定聪上刻录图片、文字、代码，每个 NFT 对应一个唯一聪</p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;">
+                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">🪙 BRC-20</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;">2023</div>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">在比特币上发行同质化代币，部署/铸造/转移操作，2023年爆发</p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;">
+                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">💎 Runes</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;">2024</div>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">改进版代币协议，更简洁、UTXO 友好，2024 减半时激活</p>
+              </div>
+            </div>
+
+            <h3>4.4 Layer2 方案对比</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:14px 0;">
+              <thead>
+                <tr>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">方案</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">主要功能</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">速度</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">去中心化</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>闪电网络</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">支付</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">秒级</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">高</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>Liquid</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">资产发行、结算</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">分钟级</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">中（联盟）</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>Rootstock</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">智能合约</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">分钟级</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">中</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>RGB</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">资产发行</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">链上结算</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">高</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>铭文</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">NFT/代币/数据</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">链上确认</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">继承主链</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="treasure-box">
+              <h3>💎 比特币中立性原则</h3>
+              <p>比特币协议不区分"有用"和"无用"交易。只要支付手续费、遵守规则，任何数据都可以上链。这是抗审查的核心，也是铭文争议的根源。</p>
+            </div>
+          </section>
+
+          <!-- ============ 五、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>五、多视角解读</h2>
+            <div class="perspective-card" id="layer2-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 同一 Layer2，六种身份</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="user">👤 普通用户</button>
+                  <button class="p-tab" data-angle="developer">👨‍💻 开发者</button>
+                  <button class="p-tab" data-angle="maximalist">🧘 最大主义者</button>
+                  <button class="p-tab" data-angle="security">🛡️ 安全研究员</button>
+                  <button class="p-tab" data-angle="economist">💰 经济学家</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content" data-angle="user">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">👤 普通用户视角</div>
+                  <div class="p-quote">"扫码支付，瞬间到账——这就是闪电网络对普通用户的意义。"</div>
+                  <ul>
+                    <li><strong>秒级到账</strong>：扫码支付，瞬间完成</li>
+                    <li><strong>手续费极低</strong>：通常 &lt;1 聪</li>
+                    <li><strong>无需找零</strong>：精确支付任意金额</li>
+                    <li><strong>挑战</strong>：开通道需要链上交易、通道管理复杂</li>
+                    <li><strong>趋势</strong>：托管钱包（如 Wallet of Satoshi）简化体验，无需用户管理通道</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="developer">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👨‍💻 开发者视角</div>
+                  <div class="p-quote">"构建 Layer2 应用，核心挑战是流动性管理和路由算法。"</div>
+                  <ul>
+                    <li><strong>闪电网络</strong>：LND/CLN API、LDK、BOLT 规范</li>
+                    <li><strong>RGB</strong>：RGB 协议、客户端验证逻辑</li>
+                    <li><strong>铭文</strong>：Ordinals 协议、索引器、钱包集成</li>
+                    <li><strong>挑战</strong>：流动性管理、路由算法、用户体验改善</li>
+                    <li><strong>机会</strong>：LNURL 协议让闪电支付像扫码一样简单</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="maximalist">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🧘 最大主义者视角</div>
+                  <div class="p-quote">"区块空间是稀缺资源，用于最终结算。高频交易应该走 Layer2。"</div>
+                  <ul>
+                    <li><strong>主链稀缺</strong>：区块空间是比特币的"护城河"，不应该被低价值交易浪费</li>
+                    <li><strong>Layer2 扩展</strong>：高频交易应该走闪电网络，主链留给真正需要它的</li>
+                    <li><strong>铭文争议</strong>：占用主链空间是否值得？</li>
+                    <li><strong>反驳</strong>：比特币的中立性原则不判断"有用"，市场会决定价格</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="security">
+                  <div class="p-angle-badge" style="background:rgba(239,68,68,0.12);color:#EF4444;">🛡️ 安全研究员视角</div>
+                  <div class="p-quote">"Layer2 是安全的——前提是你理解它的信任模型。"</div>
+                  <ul>
+                    <li><strong>闪电网络</strong>：通道强制关闭（penalty transaction）、HTLC 正确实现至关重要；历史上已有多次资金被盗事件（2023年LND漏洞）</li>
+                    <li><strong>侧链</strong>：联盟中心化、跨链桥攻击（Ronin、Bridge 等 ETH 生态已有案例）</li>
+                    <li><strong>RGB</strong>：客户端验证正确性、数据可用性问题</li>
+                    <li><strong>铭文</strong>：索引器共识、重放攻击风险</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="economist">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学家视角</div>
+                  <div class="p-quote">"主链 = 贵但稀缺的结算层；Layer2 = 边际成本近乎零的执行层。"</div>
+                  <ul>
+                    <li><strong>主链</strong>：稀缺区块空间 → 高手续费 → 矿工安全收入</li>
+                    <li><strong>闪电网络</strong>：边际成本近乎零 → 极低手续费 → 大规模采用</li>
+                    <li><strong>铭文</strong>：新需求 → 额外手续费收入（2023-2024年矿工受益显著）</li>
+                    <li><strong>均衡</strong>：高频走 L2，结算走主链——市场自动分层</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家视角</div>
+                  <div class="p-quote">"Layer2 的历史，就是比特币如何在保持主链简洁的同时拥抱复杂需求的历史。"</div>
+                  <ul>
+                    <li><strong>2015</strong>：闪电网络白皮书（Joseph Poon, Thaddeus Dryja）</li>
+                    <li><strong>2017</strong>：SegWit 激活，为闪电网络铺路</li>
+                    <li><strong>2018</strong>：闪电网络主网上线（LND、CLN）</li>
+                    <li><strong>2019-2020</strong>：Liquid、RSK 等侧链发展</li>
+                    <li><strong>2023</strong>：Ordinals 铭文爆发，BRC-20、Runes 兴起</li>
+                    <li><strong>2024-</strong>：RGB、Stacks、Layer2 生态持续演化</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、动手实验 ============ -->
+          <section id="labs">
+            <h2>六、动手实验</h2>
+
+            <h3>⚡ 实验：体验闪电网络支付</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">🧪 推荐闪电钱包（任选其一）</span>
+              </div>
+              <div class="exp-result">
+                <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.7;">
+                  <div class="exp-field"><span>🏆 Phoenix Wallet</span><span><a href="https://phoenixgreen.org/" target="_blank" style="color:var(--orange);">phoenixgreen.org ↗</a></span></div>
+                  <div class="exp-field"><span>推荐理由</span><span style="font-size:0.78rem;">自托管 + 自动通道管理，体验最接近"普通钱包"</span></div>
+                  <div class="exp-field"><span>💙 BlueWallet</span><span><a href="https://bluewallet.io/" target="_blank" style="color:var(--orange);">bluewallet.io ↗</a></span></div>
+                  <div class="exp-field"><span>推荐理由</span><span style="font-size:0.78rem;">界面友好，支持托管和非托管，入门首选</span></div>
+                  <div class="exp-field"><span>⚡ Wallet of Satoshi</span><span><a href="https://walletofsatoshi.com/" target="_blank" style="color:var(--orange);">walletofsatoshi.com ↗</a></span></div>
+                  <div class="exp-field"><span>推荐理由</span><span style="font-size:0.78rem;">最简化的托管钱包，扫码即用，适合初次体验</span></div>
+                  <div class="exp-field"><span>🌐 闪电网络浏览器</span><span><a href="https://1ml.com/" target="_blank" style="color:var(--orange);">1ml.com ↗</a></span></div>
+                  <div class="exp-field"><span>功能</span><span style="font-size:0.78rem;">查看全球闪电节点、通道、容量实时数据</span></div>
+                  <p style="margin-top:12px;font-size:0.78rem;color:var(--text-muted);">
+                    💡 <strong>快速体验建议：</strong>在 Wallet of Satoshi 或 BlueWallet 创建账户 → 充值少量 BTC（0.001 BTC 足够） →
+                    找一个接受闪电支付的商家或使用 <a href="https://strike.me/" target="_blank" style="color:var(--orange);">Strike</a> 互相转账 → 体验秒级到账的快感。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <h3>🖼️ 实验：探索铭文生态</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">🗺️ 铭文浏览器</span>
+              </div>
+              <div class="exp-result">
+                <div class="exp-field"><span>Ordinals.com</span><span><a href="https://ordinals.com/" target="_blank" style="color:var(--orange);">ordinals.com ↗</a></span></div>
+                <div class="exp-field"><span>UniSat（推荐）</span><span><a href="https://unisat.io/" target="_blank" style="color:var(--orange);">unisat.io ↗</a></span></div>
+                <div class="exp-field"><span>功能</span><span style="font-size:0.78rem;">浏览 Ordinals NFT、BRC-20 代币、Runes 代币</span></div>
+                <div style="margin-top:8px;font-size:0.75rem;color:var(--text-muted);">
+                  📜 延伸阅读：<a href="https://docs.ordinals.com/" target="_blank" style="color:var(--orange);">Ordinals 协议文档</a> ·
+                  <a href="https://docs.rgb.info/" target="_blank" style="color:var(--orange);">RGB 协议文档</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、大白话总结 ============ -->
+          <section id="summary">
+            <h2>七、大白话总结</h2>
+            <div class="story-box green">
+              <span class="story-label">💡 把这些复杂的放在日常场景中</span>
+              <p><strong>主链</strong> = <strong>高速公路</strong></p>
+              <ul>
+                <li>贵但最安全</li>
+                <li>用于大额转账、最终结算</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>闪电网络</strong> = <strong>高架快线</strong></p>
+              <ul>
+                <li>先开通道（交押金），然后无限次通行</li>
+                <li>秒级到达，近乎免费</li>
+                <li>适合日常小额支付</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>侧链</strong> = <strong>并行辅路</strong></p>
+              <ul>
+                <li>有自己的规则，可以实验</li>
+                <li>通过桥与主链连接</li>
+                <li>安全性比主链低</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>铭文</strong> = <strong>在账单背面写字</strong></p>
+              <ul>
+                <li>把图片、文字、代币刻在区块链上</li>
+                <li>永久保存，不可删除</li>
+                <li>占空间、手续费高，但有人愿意付费</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>Layer2</strong>在主链之上构建，继承安全，扩展能力</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>闪电网络</strong>实现秒级支付、近乎零手续费，适合小额高频场景</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>侧链</strong>提供灵活实验场，但安全性低于主链</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>铭文</strong>拓展比特币用途，引发区块空间价值之争</p>
+              </div>
+            </div>
+            <div class="highlight-box">
+              <span class="label">扩展的两条路</span>
+              <div class="text">
+                <p><strong>链下（Layer2）</strong>：闪电网络把高频小额支付移到链外，主链只做最终结算，吞吐与隐私同时提升。</p>
+                <p><strong>其他路径</strong>：侧链提供灵活实验场，铭文重新定义区块空间用途——扩展永远是"安全 vs 灵活"的权衡。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🎉 恭喜！你已完成技术篇全部 9 章节！</h3>
+            <p>比特币技术篇到此结束。你现在拥有了理解比特币所需的核心技术知识。</p>
+            <a href="../00-overview.html" class="btn btn-primary">查看学习地图总览 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="04-07-upgrades.html" class="btn">← 回顾：协议升级与治理</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="04-07-upgrades.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">协议升级与治理</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        技术篇 · 9 / 9 ✅ 完结
+      </div>
+      <a href="../05-ecosystem/05-00-overview.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">生态篇总览</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">₿ 比特币学习地图</div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      initLayer2Perspectives();
+
+      const isRead = localStorage.getItem('btc-ch03-08-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    });
+
+    function toggleBookmark(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-08-read', isRead);
+    }
+
+    function initLayer2Perspectives() {
+      const card = document.getElementById('layer2-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+      let autoTimer = setInterval(() => show(current + 1), 5000);
+      card.addEventListener('mouseenter', () => clearInterval(autoTimer));
+      card.addEventListener('mouseleave', () => { autoTimer = setInterval(() => show(current + 1), 5000); });
+      show(0);
+    }
+  </script>
+</body>
+</html>

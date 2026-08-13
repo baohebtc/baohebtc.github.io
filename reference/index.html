@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>参考资料 · 比特币学习地图</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+.ref-hero { padding: 48px 0 32px; }
+.ref-hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+.ref-hero p { color: var(--text-secondary); font-size: 0.9rem; }
+.ref-section { padding: 0 0 56px; }
+.ref-section h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.ref-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; transition: all var(--transition); }
+.ref-card:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: var(--shadow); }
+.ref-card a { text-decoration: none; color: var(--text); display: block; }
+.ref-card a:hover h3 { color: var(--orange); }
+.ref-card h3 { font-size: 0.92rem; font-weight: 600; margin-bottom: 4px; transition: color var(--transition); }
+.ref-card p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+.ref-card .ref-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+.glossary-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 16px; }
+.glossary-table th, .glossary-table td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; }
+.glossary-table th { background: var(--bg); color: var(--orange); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.glossary-table td:first-child { font-family: var(--font-mono); color: var(--text); font-weight: 600; white-space: nowrap; }
+.glossary-table td:nth-child(2) { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="index.html" class="nav-link active" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="ref-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">首页</a><span>›</span><span>参考资料</span></div>
+    <h1>📖 参考资料</h1>
+    <p>推荐阅读清单、术语表、中英对照——比特币学习的完整资源库</p>
+  </div>
+</header>
+
+<main class="ref-section">
+  <div class="container">
+
+    <!-- 推荐阅读 -->
+    <h2>📚 推荐阅读</h2>
+    <div class="ref-grid" style="margin-bottom:40px">
+      <div class="ref-card">
+        <a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">
+          <h3>📄 比特币白皮书（中英）</h3>
+          <p>必读原文。中本聪2008年的9页论文，一切的起点</p>
+          <div class="ref-tags"><span class="tag tag-orange">必读</span><span class="tag">英文</span><span class="tag">官方</span></div>
+        </a>
+      </div>
+      <div class="ref-card">
+        <a href="https://learnmeabitcoin.com" target="_blank" rel="noopener">
+          <h3>🔧 Learn Me A Bitcoin</h3>
+          <p>用最直观的方式解释比特币技术。极度推荐入门</p>
+          <div class="ref-tags"><span class="tag tag-green">推荐</span><span class="tag">英文</span><span class="tag">技术</span></div>
+        </a>
+      </div>
+      <div class="ref-card">
+        <a href="https://river.com/learn" target="_blank" rel="noopener">
+          <h3>📊 River Financial Learn</h3>
+          <p>从投资者视角出发的比特币学习平台，质量极高</p>
+          <div class="ref-tags"><span class="tag tag-green">推荐</span><span class="tag">英文</span><span class="tag">投资</span></div>
+        </a>
+      </div>
+      <div class="ref-card">
+        <a href="https://bitcoin.org/en/bitcoin-paper" target="_blank" rel="noopener">
+          <h3>🏛️ Bitcoin.org 官方站</h3>
+          <p>比特币官方社区门户，包含完整文档和新手引导</p>
+          <div class="ref-tags"><span class="tag tag-blue">官方</span><span class="tag">英文</span></div>
+        </a>
+      </div>
+      <div class="ref-card">
+        <a href="https://btcstudy.gitbook.io/btcstudy-resources/" target="_blank" rel="noopener">
+          <h3>📖 BTCStudy 比特币学习资料</h3>
+          <p>高质量中文比特币学习资源聚合，涵盖技术、经济、哲学</p>
+          <div class="ref-tags"><span class="tag tag-green">推荐</span><span class="tag">中文</span></div>
+        </a>
+      </div>
+      <div class="ref-card">
+        <a href="https://github.com/coxxa/bitcoin-ahr999-HODL" target="_blank" rel="noopener">
+          <h3>📝 ahr999「囤比特币」系列</h3>
+          <p>中文社区最系统的比特币投资思想，包含周期理论与心态框架</p>
+          <div class="ref-tags"><span class="tag tag-orange">必读</span><span class="tag">中文</span><span class="tag">囤币</span></div>
+        </a>
+      </div>
+    </div>
+
+    
+<style>
+.journey-svg-container { text-align:center; margin: 32px 0; }
+.journey-svg-container svg { width:100%; max-width:820px; height:auto; font-family: var(--font-sans); }
+</style>
+<div class="journey-svg-container">
+<svg viewBox="0 0 780 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#F7931A"/>
+    </marker>
+    <marker id="arrow-gray" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#666"/>
+    </marker>
+  </defs>
+  <!-- 主路径线 -->
+  <path d="M 40 100 Q 200 100 200 100 T 400 100 T 600 100 T 740 100" 
+        stroke="#2A2A2A" stroke-width="3" fill="none" stroke-dasharray="6,3" marker-end="url(#arrow-orange)"/>
+  
+  <!-- 节点1: 哲学篇 -->
+  <circle cx="80" cy="100" r="28" fill="#8B5CF6" opacity="0.2"/>
+  <circle cx="80" cy="100" r="20" fill="#8B5CF6"/>
+  <text x="80" y="95" text-anchor="middle" fill="white" font-size="11">❓</text>
+  <text x="80" y="112" text-anchor="middle" fill="#8B5CF6" font-size="9" font-weight="700">哲学篇</text>
+  <text x="80" y="65" text-anchor="middle" fill="#999" font-size="8">货币的本质</text>
+  <text x="80" y="145" text-anchor="middle" fill="#666" font-size="7">先建立认知</text>
+
+  <!-- 节点2: 入门篇 -->
+  <circle cx="220" cy="100" r="28" fill="#F7931A" opacity="0.2"/>
+  <circle cx="220" cy="100" r="20" fill="#F7931A"/>
+  <text x="220" y="95" text-anchor="middle" fill="white" font-size="11">⚙️</text>
+  <text x="220" y="112" text-anchor="middle" fill="#F7931A" font-size="9" font-weight="700">入门篇</text>
+  <text x="220" y="65" text-anchor="middle" fill="#999" font-size="8">技术直觉</text>
+  <text x="220" y="145" text-anchor="middle" fill="#666" font-size="7">理解原理</text>
+
+  <!-- 节点3: 技术篇 -->
+  <circle cx="400" cy="100" r="32" fill="#3B82F6" opacity="0.2"/>
+  <circle cx="400" cy="100" r="24" fill="#3B82F6"/>
+  <text x="400" y="95" text-anchor="middle" fill="white" font-size="12">🔐</text>
+  <text x="400" y="112" text-anchor="middle" fill="#3B82F6" font-size="9" font-weight="700">技术篇</text>
+  <text x="400" y="60" text-anchor="middle" fill="#999" font-size="8">密码学/交易/挖矿</text>
+  <text x="400" y="148" text-anchor="middle" fill="#666" font-size="7">深入原理</text>
+
+  <!-- 节点4: 经济篇 -->
+  <circle cx="560" cy="100" r="28" fill="#10B981" opacity="0.2"/>
+  <circle cx="560" cy="100" r="20" fill="#10B981"/>
+  <text x="560" y="95" text-anchor="middle" fill="white" font-size="11">📊</text>
+  <text x="560" y="112" text-anchor="middle" fill="#10B981" font-size="9" font-weight="700">经济学篇</text>
+  <text x="560" y="65" text-anchor="middle" fill="#999" font-size="8">周期/稀缺</text>
+  <text x="560" y="145" text-anchor="middle" fill="#666" font-size="7">投资框架</text>
+
+  <!-- 节点5: 行动 -->
+  <circle cx="700" cy="100" r="28" fill="#F7931A" opacity="0.2"/>
+  <circle cx="700" cy="100" r="20" fill="#F7931A"/>
+  <text x="700" y="95" text-anchor="middle" fill="white" font-size="11">🚀</text>
+  <text x="700" y="112" text-anchor="middle" fill="#F7931A" font-size="9" font-weight="700">行动篇</text>
+  <text x="700" y="65" text-anchor="middle" fill="#999" font-size="8">钱包/购买</text>
+  <text x="700" y="145" text-anchor="middle" fill="#666" font-size="7">知行合一</text>
+
+  <!-- 时间标注 -->
+  <text x="40" y="188" fill="#666" font-size="8">0周</text>
+  <text x="210" y="188" fill="#666" font-size="8">1-2周</text>
+  <text x="390" y="188" fill="#666" font-size="8">3-6周</text>
+  <text x="550" y="188" fill="#666" font-size="8">2-3月</text>
+  <text x="690" y="188" fill="#666" font-size="8">持续</text>
+</svg>
+<p style="color:var(--text-muted);font-size:0.82rem;margin-top:6px;">从零基础到自主判断 · 没有标准答案，只有越来越准确的认知</p>
+</div>
+
+<!-- 术语表 -->
+    <h2>📋 比特币核心术语表（中英对照）</h2>
+    <div class="table-wrap">
+      <table class="glossary-table">
+        <tr><th>中文</th><th>English</th><th>简明解释</th></tr>
+        <tr><td>私钥</td><td>Private Key</td><td>256位随机数，拥有它就拥有对应地址上所有比特币的支配权</td></tr>
+        <tr><td>公钥</td><td>Public Key</td><td>由私钥通过椭圆曲线生成，可公开，用于接收比特币</td></tr>
+        <tr><td>地址</td><td>Address</td><td>类似银行账号，由公钥哈希生成，用于接收比特币</td></tr>
+        <tr><td>哈希</td><td>Hash</td><td>数据的「数字指纹」。输入任意内容，输出固定长度字符串，且无法反推</td></tr>
+        <tr><td>区块</td><td>Block</td><td>包含一组交易记录的数据包，每个区块包含前一区块的哈希，形成链式结构</td></tr>
+        <tr><td>区块链</td><td>Blockchain</td><td>由多个区块通过哈希串联形成的账本，历史记录不可篡改</td></tr>
+        <tr><td>矿工</td><td>Miner</td><td>运行专用设备竞争记账权的人/组织，获得新区块奖励作为激励</td></tr>
+        <tr><td>挖矿</td><td>Mining</td><td>通过计算数学题竞争记账权的过程，本质是工作量证明</td></tr>
+        <tr><td>工作量证明</td><td>Proof of Work (PoW)</td><td>用真实能量消耗来证明你做了工作，防止双重支付</td></tr>
+        <tr><td>双重支付</td><td>Double Spend</td><td>同一笔比特币花两次。比特币通过共识机制彻底解决了这个问题</td></tr>
+        <tr><td>UTXO</td><td>Unspent Transaction Output</td><td>未花费交易输出。比特币账本的基本单位，类似支票——只花未兑现的</td></tr>
+        <tr><td>全节点</td><td>Full Node</td><td>下载并验证全部比特币交易历史的独立程序，真正实现自我验证</td></tr>
+        <tr><td>SPV</td><td>Simplified Payment Verification</td><td>轻节点。只下载区块头，不下载完整账本，但仍然可以验证支付</td></tr>
+        <tr><td>减半</td><td>Halving</td><td>每21万个区块（约4年），挖矿奖励自动减半，比特币通胀率下降</td></tr>
+        <tr><td>闪电网络</td><td>Lightning Network</td><td>比特币的Layer 2扩容方案，在链下实现近乎即时的低费用支付</td></tr>
+        <tr><td>BIP</td><td>Bitcoin Improvement Proposal</td><td>比特币改进提案。任何人可以提出，通过社区讨论决定是否实施</td></tr>
+        <tr><td>隔离见证</td><td>SegWit (Segregated Witness)</td><td>将签名数据从交易中分离，增加区块容量，解决交易延展性问题</td></tr>
+        <tr><td>Taproot</td><td>Taproot</td><td>2021年比特币升级，增强隐私性和灵活性，降低复杂交易费用</td></tr>
+        <tr><td>热钱包</td><td>Hot Wallet</td><td>联网的钱包，用于日常交易，方便但风险较高</td></tr>
+        <tr><td>冷钱包</td><td>Cold Wallet</td><td>不联网的钱包，用于长期存储，安全级别最高</td></tr>
+        <tr><td>助记词</td><td>Mnemonic Phrase / Seed Phrase</td><td>由12或24个英文单词组成的备份短语，可恢复全部私钥</td></tr>
+        <tr><td>硬件钱包</td><td>Hardware Wallet</td><td>专用硬件设备，安全存储私钥，永不联网</td></tr>
+        <tr><td>哈希率</td><td>Hash Rate</td><td>全网总算力。哈希率越高，网络越安全</td></tr>
+        <tr><td>难度调整</td><td>Difficulty Adjustment</td><td>每2016个区块（约2周）调整一次挖矿难度，保持出块时间约10分钟</td></tr>
+        <tr><td>算力</td><td>Hashrate / Computing Power</td><td>矿机每秒能做多少次哈希运算，决定获得区块奖励的概率</td></tr>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../index.html">首页</a> · <a href="../learning/00-overview.html">学习区</a> · <a href="../tools/index.html">工具</a> · <a href="index.html">参考</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>initNav();</script>
+</body>
+</html>

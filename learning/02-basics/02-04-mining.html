@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>挖矿原理 · 比特币学习地图</title>
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+.article-wrap { padding: 40px 0 60px; }
+.reading-progress { position:fixed; top:58px; left:0; right:0; height:3px; background:var(--border); z-index:99; }
+.reading-progress .fill { height:100%; background:linear-gradient(90deg,var(--orange),var(--purple)); width:0%; transition:width 0.2s linear; }
+.article-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
+.article-header h1 .emoji { font-size: 1.8rem; margin-right: 8px; }
+.article-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; }
+.article-body { max-width: 740px; }
+.article-body p { font-size: 0.97rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.85; }
+.article-body h2 { font-size: 1.3rem; font-weight: 700; margin: 36px 0 14px; color: var(--text); }
+.article-body h3 { font-size: 1.05rem; font-weight: 600; margin: 22px 0 10px; color: var(--text); }
+.article-body ul, .article-body ol { padding-left: 22px; margin-bottom: 16px; }
+.article-body li { font-size: 0.94rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.7; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body blockquote { border-left: 3px solid var(--orange); padding: 12px 16px; margin: 20px 0; background: rgba(247,147,26,0.06); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; color: var(--text-secondary); }
+.chapter-label { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: linear-gradient(135deg, rgba(247,147,26,0.1), rgba(139,92,246,0.1)); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.72rem; font-weight: 600; color: var(--orange); margin-bottom: 16px; }
+
+/* 挖矿流程 */
+.mining-steps { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+.mining-step { display: flex; gap: 16px; align-items: flex-start; padding: 16px 18px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all var(--transition); }
+.mining-step:hover { border-color: var(--orange); transform: translateX(4px); }
+.mining-step .ms-num { font-size: 1.4rem; font-weight: 900; color: var(--orange); flex-shrink: 0; width: 36px; text-align: center; line-height: 1; margin-top: 2px; }
+.mining-step .ms-body h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 5px; color: var(--text); }
+.mining-step .ms-body p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0; line-height: 1.55; }
+.mining-step .ms-body code { font-family: var(--font-mono); font-size: 0.78em; background: var(--bg); padding: 2px 5px; border-radius: 3px; color: var(--orange); }
+
+/* 哈希竞猜可视化 */
+.hash-race { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; margin: 20px 0; overflow-x: auto; }
+.hash-race .race-label { color: var(--orange); font-weight: 700; font-size: 0.82rem; display: block; margin-bottom: 14px; }
+.race-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.race-row .race-miner { min-width: 60px; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); }
+.race-row .race-attempts { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); flex: 1; overflow: hidden; white-space: nowrap; }
+.race-row .race-badge { font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; }
+.race-badge.winner { background: rgba(247,147,26,0.15); color: var(--orange); border: 1px solid rgba(247,147,26,0.3); }
+.race-badge.loser { background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* 难度调整 */
+.difficulty-viz { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 20px 0; }
+.diff-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; }
+.diff-card .dc-num { font-size: 1.8rem; font-weight: 900; color: var(--orange); font-family: var(--font-mono); display: block; }
+.diff-card .dc-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block; }
+.diff-card .dc-note { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); font-style: italic; }
+
+/* 减半时间线 */
+.halving-timeline { position: relative; padding-left: 24px; margin: 20px 0; }
+.halving-timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--orange), var(--purple)); }
+.halving-item { position: relative; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px dashed var(--border); }
+.halving-item:last-child { border-bottom: none; }
+.halving-item::before { content: ''; position: absolute; left: -21px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--orange); border: 2px solid var(--bg); }
+.halving-item .halving-year { font-size: 0.72rem; color: var(--orange); font-weight: 700; font-family: var(--font-mono); }
+.halving-item .halving-data { margin-top: 4px; }
+.halving-item .halving-data span { font-size: 0.85rem; color: var(--text-secondary); margin-right: 14px; }
+.halving-item .halving-data .halving-btc { font-weight: 700; color: var(--text); }
+.halving-item .halving-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+/* 能源盒 */
+.energy-box { background: linear-gradient(135deg, rgba(247,147,26,0.04), rgba(16,185,129,0.04)); border: 1px solid rgba(247,147,26,0.12); border-radius: var(--radius); padding: 20px 24px; margin: 20px 0; }
+.energy-box h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 10px; }
+.energy-box p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+
+/* 算力卡片 */
+.hashrate-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin: 20px 0; }
+.hashrate-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; }
+.hashrate-card .hc-num { font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, var(--orange), var(--orange-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; font-family: var(--font-mono); }
+.hashrate-card .hc-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block; }
+
+.reading-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(247,147,26,0.1); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.75rem; color: var(--orange); cursor: pointer; transition: all var(--transition); }
+.reading-indicator:hover { background: rgba(247,147,26,0.15); }
+.reading-indicator.read { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #10B981; }
+</style>
+</head>
+<body>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../00-overview.html" class="nav-link active" data-section="learning">📚 学习区</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../../index.html">首页</a><span>›</span>
+      <a href="../00-overview.html">学习区</a><span>›</span>
+      <span>入门篇</span><span>›</span>
+      <span>02-04</span>
+    </div>
+
+    <header class="article-header">
+      <div class="chapter-label">⚙️ 入门篇 · Chapter 04</div>
+      <h1><span class="emoji">⛏️</span> 挖矿原理</h1>
+      <p class="page-subtitle" style="color:var(--text-secondary);font-size:0.95rem;margin-bottom:14px">「挖矿」不是挖黄金，而是用真实能量换取网络安全——它是比特币最反直觉、也最优雅的创新。</p>
+      <div class="article-meta">
+        <span class="page-tag">⚙️ 入门篇</span>
+        <span>🌱 适合所有人</span>
+        <span>预计阅读 14 分钟</span>
+        <button class="reading-indicator" id="read-btn" onclick="handleMarkRead()">
+          <span id="read-icon">⬜</span>
+          <span id="read-text">标记为已读</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <!-- 多视角卡片 -->
+      <div class="perspective-card" id="p-card">
+        <div class="perspective-header">
+          <div class="ph-label"><span class="ph-label-icon">💎</span><span>一句话 · 六个视角</span></div>
+          <div class="perspective-tabs">
+            <button class="p-tab active" data-angle="philosophy" onclick="switchTab(this)">🏛️ 哲学</button>
+            <button class="p-tab" data-angle="technology" onclick="switchTab(this)">⚙️ 技术</button>
+            <button class="p-tab" data-angle="history" onclick="switchTab(this)">📜 历史</button>
+            <button class="p-tab" data-angle="humanity" onclick="switchTab(this)">🧠 人性</button>
+            <button class="p-tab" data-angle="finance" onclick="switchTab(this)">💰 金融</button>
+            <button class="p-tab" data-angle="business" onclick="switchTab(this)">🏢 商业</button>
+          </div>
+        </div>
+        <div class="perspective-body" style="position:relative">
+          <div class="p-content active" data-angle="philosophy">
+            <span class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;border:1px solid rgba(249,115,22,0.3)">🏛️ 哲学视角</span>
+            <div class="p-quote">"比特币挖矿是世界上第一个『以真实能量消耗换取历史记录诚实』的系统——它把『作恶成本』变成了物理现实：攻击比特币，先买下整个德意志联邦共和国的年发电量。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#F97316"></span>核心：能量 = 物理世界中「诚实的代价」</div>
+          </div>
+          <div class="p-content" data-angle="technology">
+            <span class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;border:1px solid rgba(59,130,246,0.3)">⚙️ 技术视角</span>
+            <div class="p-quote">"挖矿的本质是『暴力搜索』：矿工反复改变一个随机数（Nonce），计算区块头的SHA-256双哈希，直到结果小于网络设定的难度目标——第一个找到的人赢得记账权。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#3B82F6"></span>核心：哈希竞猜 = 彩票系统 + 时间戳排序</div>
+          </div>
+          <div class="p-content" data-angle="history">
+            <span class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;border:1px solid rgba(16,185,129,0.3)">📜 历史视角</span>
+            <div class="p-quote">"从『工作量证明』（PoW）的概念提出，到比特币实现它，人类花了17年：Adam Back的Hashcash（1997）→ Hal Finney的RPoW（2004）→ Bitcoin（2009）。这是密码朋克30年运动的结晶。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#10B981"></span>核心：工作量证明 = 30年密码朋克运动的技术终点</div>
+          </div>
+          <div class="p-content" data-angle="humanity">
+            <span class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;border:1px solid rgba(236,72,153,0.3)">🧠 人性视角</span>
+            <div class="p-quote">"挖矿把『激励对齐』做到了极致：矿工越攻击网络，他们自己投入的设备就越贬值。作恶和自利，在数学层面被绑定成了同一道选择题——矿工是比特币最忠诚的守护者，因为他们自己就是受益者。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#EC4899"></span>核心：激励相容 = 最好的防御</div>
+          </div>
+          <div class="p-content" data-angle="finance">
+            <span class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;border:1px solid rgba(234,179,8,0.3)">💰 金融视角</span>
+            <div class="p-quote">"比特币挖矿是一种『无许可的铸币权』——任何人都可以用电费+设备购买来『购买』铸造新比特币的权利，且规则对所有人完全一致。这比任何央行都更公平、透明、可预测。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#EAB308"></span>核心：公平的发行机制 = 市场化的货币供给</div>
+          </div>
+          <div class="p-content" data-angle="business">
+            <span class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;border:1px solid rgba(139,92,246,0.3)">🏢 商业视角</span>
+            <div class="p-quote">"挖矿产业每年产生数百亿美元的营收，驱动了芯片设计、能源、房地产等多个行业。它是第一个把『能源』直接转化为『货币』的商业模式——某种程度上，比特币矿工是数字时代的炼金术士。"</div>
+            <div class="p-author"><span class="p-dot" style="color:#8B5CF6"></span>核心：能源即货币 = 全新价值交换范式</div>
+          </div>
+perspective-footer">
+          <div class="p-dot-indicator">
+            <span class="p-dot active" onclick="goDot(0)"></span>
+            <span class="p-dot" onclick="goDot(1)"></span>
+            <span class="p-dot" onclick="goDot(2)"></span>
+            <span class="p-dot" onclick="goDot(3)"></span>
+            <span class="p-dot" onclick="goDot(4)"></span>
+            <span class="p-dot" onclick="goDot(5)"></span>
+                  <span class="p-dot"></span>
+
+          </div>
+          <div class="p-footer-right" style="font-size:0.72rem;color:var(--text-muted)">⏱️ 自动播放中</div>
+        </div>
+      </div>
+
+      <h2>💎 宝盒比喻：挖矿 = 抢着当「记账员」</h2>
+      <p>想象一座宝库（比特币网络），里面有宝藏（比特币），需要有人来记录谁拿了什么：</p>
+
+      <div class="mining-steps">
+        <div class="mining-step">
+          <div class="ms-num">🎲</div>
+          <div class="ms-body">
+            <h3>问题：谁来记这笔账？</h3>
+            <p>不能由一个人说了算——否则他可以给自己多记比特币。所以要「竞争」产生记账者。</p>
+          </div>
+        </div>
+        <div class="mining-step">
+          <div class="ms-num">🏃</div>
+          <div class="ms-body">
+            <h3>规则：解数学题，先解出的人记</h3>
+            <p>全球矿工同时做一道「哈希竞猜题」：猜一个随机数，计算结果。谁先猜中，谁就赢得记账权。</p>
+          </div>
+        </div>
+        <div class="mining-step">
+          <div class="ms-num">⚡</div>
+          <div class="ms-body">
+            <h3>为什么用能量？——这是关键</h3>
+            <p>如果只是「比谁算得快」，有钱人可以买超级计算机作弊。但能量消耗（电费）把「算力」和「真实成本」绑定在一起：攻击网络 = 烧掉价值数十亿美元的电力。</p>
+          </div>
+        </div>
+        <div class="mining-step">
+          <div class="ms-num">💰</div>
+          <div class="ms-body">
+            <h3>奖励：记账员获得比特币</h3>
+            <p>第一个解出题的矿工，获得区块奖励（目前6.25 BTC）+ 该区块所有交易的手续费。这是矿工的收入，也是比特币的发行机制。</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>⚙️ 挖矿的四个步骤（完整流程）</h2>
+
+      <div class="mining-steps">
+        <div class="mining-step">
+          <div class="ms-num">1</div>
+          <div class="ms-body">
+            <h3>收集未确认交易</h3>
+            <p>矿工从比特币网络收集所有待确认交易，验证每笔交易的有效性（签名、余额等），构建候选区块。</p>
+          </div>
+        </div>
+        <div class="mining-step">
+          <div class="ms-num">2</div>
+          <div class="ms-body">
+            <h3>构建区块头 + 试错随机数</h3>
+            <p>矿工设定区块头，包括：上一个区块的哈希、这笔交易列表的默克尔根、时间戳、难度目标，然后开始疯狂试错随机数 <code>Nonce</code>，每次计算 SHA-256 双哈希。</p>
+          </div>
+        </div>
+        <div class="mining-step">
+          <div class="ms-num">3</div>
+          <div class="ms-body">
+            <h3>找到有效哈希 → 广播</h3>
+            <p>当计算结果的哈希值满足难度目标（前面有足够多的0），矿工立即把区块广播给全网所有节点。</p>
+          </div>
+        </div>
+        <div class="mining-step">
+          <div class="ms-num">4</div>
+          <div class="ms-body">
+            <h3>全网验证 → 接受 → 继续</h3>
+            <p>其他节点验证区块有效后，将其加入自己的区块链副本。矿工获得 <strong>区块奖励</strong>，开始竞争下一个区块。</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎰 哈希竞猜：可视化理解</h2>
+      <p>假设难度目标是「结果必须以 <code>00</code> 开头」——这是简化版，实际难度要高出非常多：</p>
+
+      <div class="hash-race">
+        <span class="race-label">⛏️ 全球矿工同时「掷骰子」，谁先掷出目标结果谁赢</span>
+
+        <div class="race-row">
+          <span class="race-miner">矿工-A</span>
+          <span class="race-attempts">Nonce=1 → hash(1)= 7F3D2C... ✗<br>Nonce=2 → hash(2)= 9A1B8E... ✗<br>Nonce=3 → hash(3)= <span style="color:var(--orange)">00F9E2...</span> ✅ WIN!</span>
+          <span class="race-badge winner">🏆 胜出！</span>
+        </div>
+
+        <div class="race-row">
+          <span class="race-miner">矿工-B</span>
+          <span class="race-attempts">Nonce=1 → hash(1)= 3E7A9D... ✗<br>Nonce=2 → hash(2)= <span style="color:#EF4444;text-decoration:line-through">00C4F1...</span> ← 但晚了3毫秒！<br>Nonce=3 → 5B2D8C... ✗</span>
+          <span class="race-badge loser">差一点</span>
+        </div>
+
+        <div class="race-row">
+          <span class="race-miner">矿工-C</span>
+          <span class="race-attempts">Nonce=1 → hash(1)= C9D2E1... ✗<br>Nonce=2 → hash(2)= F7A3B8... ✗<br>Nonce=3 → hash(3)= 2E5D9C... ✗<br>Nonce=... → (还在努力)</span>
+          <span class="race-badge loser">继续尝试</span>
+        </div>
+
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border-light);font-size:0.78rem;color:var(--text-muted)">
+          💡 <strong>关键事实：</strong>实际难度目标是约 <strong>2^240</strong> 分之一（目标哈希前面需要约76个零）。全球矿工每秒共尝试约 <strong>500 EH/s</strong>（5×10²⁰ 次哈希），平均每10分钟才有一个人找到正确答案。
+        </div>
+      </div>
+
+      <h2>📊 难度调整：为什么比特币永远不会停止？</h2>
+      <p>比特币网络有一个自动调节机制：<strong>每 2016 个区块（约两周），全网根据过去两周的平均出块时间，调整难度目标</strong>。</p>
+
+      <div class="difficulty-viz">
+        <div class="diff-card">
+          <span class="dc-num">10分钟</span>
+          <span class="dc-label">目标出块时间</span>
+          <span class="dc-note">这是中本聪设定的理想出块间隔</span>
+        </div>
+        <div class="diff-card">
+          <span class="dc-num">2016</span>
+          <span class="dc-label">调整周期（区块数）</span>
+          <span class="dc-note">约等于14天（2016×10分钟）</span>
+        </div>
+        <div class="diff-card">
+          <span class="dc-num">↑↓</span>
+          <span class="dc-label">自动调节方向</span>
+          <span class="dc-note">出块太快→难度↑ 出块太慢→难度↓</span>
+        </div>
+        <div class="diff-card">
+          <span class="dc-num">∞</span>
+          <span class="dc-label">比特币永不停机</span>
+          <span class="dc-note">即使全网只剩1台矿机，也会调整难度继续运行</span>
+        </div>
+      </div>
+
+      <h2>🔢 减半机制：比特币为什么稀缺？</h2>
+      <p>比特币通过「区块奖励减半」控制新比特币的发行速度——每 21 万个区块（大约4年），挖矿奖励减半一次：</p>
+
+      <div class="halving-timeline">
+        <div class="halving-item">
+          <div class="halving-year">2009 — 区块 #0</div>
+          <div class="halving-data">
+            <span class="halving-btc">50 BTC / 区块</span>
+            <span>每天约 7200 BTC</span>
+          </div>
+          <div class="halving-desc">创世区块诞生，中本聪挖出第一批比特币</div>
+        </div>
+        <div class="halving-item">
+          <div class="halving-year">2012年11月28日 — 区块 #210,000</div>
+          <div class="halving-data">
+            <span class="halving-btc">25 BTC / 区块</span>
+            <span>↓ 减半</span>
+          </div>
+          <div class="halving-desc">第一次减半。价格从 $2 涨至 $1000+</div>
+        </div>
+        <div class="halving-item">
+          <div class="halving-year">2016年7月9日 — 区块 #420,000</div>
+          <div class="halving-data">
+            <span class="halving-btc">12.5 BTC / 区块</span>
+            <span>↓ 减半</span>
+          </div>
+          <div class="halving-desc">第二次减半。价格从 $400 涨至 $20,000</div>
+        </div>
+        <div class="halving-item">
+          <div class="halving-year">2020年5月11日 — 区块 #630,000</div>
+          <div class="halving-data">
+            <span class="halving-btc">6.25 BTC / 区块</span>
+            <span>↓ 减半</span>
+          </div>
+          <div class="halving-desc">第三次减半。价格从 $8,500 涨至 $69,000</div>
+        </div>
+        <div class="halving-item">
+          <div class="halving-year">2024年4月20日 — 区块 #840,000</div>
+          <div class="halving-data">
+            <span class="halving-btc">3.125 BTC / 区块</span>
+            <span>↓ 减半</span>
+          </div>
+          <div class="halving-desc">第四次减半。目前处于此阶段</div>
+        </div>
+        <div class="halving-item">
+          <div class="halving-year">~2140年</div>
+          <div class="halving-data">
+            <span class="halving-btc" style="color:var(--text-muted)">≈ 0 BTC</span>
+            <span>区块奖励→0</span>
+          </div>
+          <div class="halving-desc">最后一个比特币将在约2140年被挖出，此后将完全依靠交易手续费维持网络安全</div>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <span class="label">💎 关键洞察：为什么减半很重要？</span>
+        <span class="text">
+          比特币的发行不是通胀模型，而是<strong>通缩模型</strong>：<br>
+          • 供应速度每4年减半，而需求是自由的<br>
+          • 历史规律：每次减半后1-2年，价格都创出历史新高<br>
+          • 到了2140年，比特币总量将精确等于 <strong>20,999,999.9769 BTC</strong>——没有人能改变这个数字
+        </span>
+      </div>
+
+      <h2>⚡ 能源争议：挖矿真的浪费吗？</h2>
+
+      <div class="energy-box">
+        <h3>🌍 关于比特币能源消耗的真相</h3>
+        <p>批评者说比特币浪费能源。支持者说这是误解。真实情况是：</p>
+      </div>
+
+      <div class="table-wrap">
+        <table class="compare-table">
+          <tr>
+            <th>批评</th>
+            <th>事实</th>
+          </tr>
+          <tr>
+            <td>比特币消耗太多电</td>
+            <td>约 150 TWh/年。与全球银行业约 650 TWh/年相比，比特币耗电约为银行业的 23%，但提供了更强大的基础设施</td>
+          </tr>
+          <tr>
+            <td>挖矿没有「实际用途」</td>
+            <td>挖矿的「实际用途」是：保护价值传输网络。它消耗能源来确保历史记录不可篡改——这是它存在的理由</td>
+          </tr>
+          <tr>
+            <td>大量使用化石能源</td>
+            <td>实际情况：2023年约 50%+ 的比特币挖矿使用可再生能源，许多矿场建在水电丰富（四川、云南）或天然气过剩（德克萨斯）的地区</td>
+          </tr>
+          <tr>
+            <td>能源被「浪费」了</td>
+            <td>许多比特币矿场使用「被浪费的能源」（油田天然气flare、废弃水电站），将其转化为价值——相当于把废弃能源变成了货币</td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>🛡️ 51%攻击：理论上最危险的事</h2>
+
+      <div class="story-box green">
+        <span class="story-label">📖 什么是51%攻击？</span>
+        <p>如果某人/组织控制了全网超过 50% 的算力，理论上可以：<br>① <strong>审查交易</strong>——阻止某些交易被打包<br>② <strong>逆转交易</strong>——把自己花出去的比特币「撤回」<br>③ <strong>双花攻击</strong>——花同一笔钱两次</p>
+        <p style="margin-top:8px"><strong>但实际上，攻击极其困难：</strong></p>
+        <ul style="padding-left:18px">
+          <li>需要收购超过全网50%的算力硬件，当前成本 > 150亿美元</li>
+          <li>一旦发起攻击，比特币价格暴跌→攻击者的硬件资产也贬值</li>
+          <li>历史上从未发生过成功的51%攻击</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <span class="label">💎 本章小结</span>
+        <span class="text">
+          挖矿是比特币最优雅的设计之一：<strong>用真实能量换取网络安全</strong>，用<strong>经济激励</strong>驱动<strong>去中心化</strong>保护。<br><br>
+          矿工不是「挖比特币的人」，而是<strong>比特币网络的守护者</strong>——他们消耗真实资源来确保账本安全，同时获得比特币作为回报。这个激励结构让整个系统在没有任何中心机构的情况下，自运行了超过15年。<br><br>
+          <strong>理解了挖矿，你就理解了比特币是如何用「能量」和「数学」替代「机构和法律」的。</strong>
+        </span>
+      </div>
+
+      <div class="cta-box" style="text-align:left">
+        <h3>🎉 入门篇完结！</h3>
+        <p>恭喜你完成了入门篇的学习！哲学篇（为什么存在）和入门篇（如何运作）已完成。接下来可以进入：</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <a href="../04-technology/04-01-cryptography.html" class="btn btn-primary" style="display:inline-flex">⚙️ 技术篇 →</a>
+          <a href="../00-overview.html" class="btn" style="display:inline-flex">💰 经济学篇 →</a>
+          <a href="../00-overview.html" class="btn" style="display:inline-flex">📋 查看完整学习路径</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 实时区块浏览器 <span class="exp-go">→</span></a></li>
+          <li><a href="https://www.8btc.com" target="_blank" rel="noopener">巴比特 — 比特币矿业资讯 <span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="02-03-blockchain.html" class="nav-prev" style="text-decoration:none">
+      <span class="nav-icon">←</span>
+      <div class="nav-text">
+        <div class="nav-label">入门篇 · 02-03</div>
+        <div class="nav-title">← 区块链原理</div>
+      </div>
+    </a>
+    <a href="02-05-buy-hold.html" class="nav-next" style="text-decoration:none">
+      <div class="nav-text" style="text-align:right">
+        <div class="nav-label">入门篇 · 02-05</div>
+        <div class="nav-title">买币·入金·持币 →</div>
+      </div>
+      <span class="nav-icon">→</span>
+    </a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left"><a href="../../index.html">首页</a> · <a href="../00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a></div>
+      <div class="footer-links"><span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span></div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+<script>
+initNav();
+const PHASE = 'basics';
+const CHAPTER = '02-04-mining';
+const card = document.getElementById('p-card');
+
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+function handleMarkRead() { BTCMap.markChapterRead(PHASE, CHAPTER); }
+(function() {
+  const btn = document.getElementById('read-btn');
+  if (btn && BTCMap.isChapterRead(PHASE, CHAPTER)) {
+    btn.classList.add('read');
+    document.getElementById('read-icon').textContent = '✅';
+    document.getElementById('read-text').textContent = '已读完';
+  }
+})();
+window.addEventListener('storage', function(e) {
+  if (e.key === 'btc-progress-update') {
+    const btn = document.getElementById('read-btn');
+    if (btn && BTCMap.isChapterRead(PHASE, CHAPTER)) {
+      btn.classList.add('read');
+      document.getElementById('read-icon').textContent = '✅';
+      document.getElementById('read-text').textContent = '已读完';
+    }
+  }
+});
+
+(function() {
+  if (!card) return;
+  const tabs = card.querySelectorAll('.p-tab');
+  const contents = card.querySelectorAll('.p-content');
+  const dots = card.querySelectorAll('.p-dot');
+  const INTERVAL = 5000;
+  let idx = 0, timer = null;
+
+  function show(i) {
+    idx = ((i % tabs.length) + tabs.length) % tabs.length;
+    tabs.forEach((t, j) => {
+      const cfg = BTCMap.PERSPECTIVE_CONFIG[t.dataset.angle] || {};
+      t.classList.toggle('active', j === idx);
+      t.style.borderColor = j === idx ? (cfg.color || 'var(--orange)') : '';
+    });
+    contents.forEach((c, j) => c.classList.toggle('active', j === idx));
+    dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+    const bar = card.querySelector('.p-bar');
+    if (bar) { bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth; bar.style.transition=`width ${INTERVAL}ms linear`; bar.style.width='100%'; }
+  }
+
+  function start() { clearInterval(timer); timer = setInterval(() => show(idx + 1), INTERVAL); }
+  card.addEventListener('mouseenter', () => clearInterval(timer));
+  card.addEventListener('mouseleave', start);
+  tabs.forEach((t, i) => t.addEventListener('click', () => { show(i); start(); }));
+  dots.forEach((d, i) => d.addEventListener('click', () => { show(i); start(); }));
+  start(); show(0);
+})();
+
+function switchTab(btn) {
+  const card = document.getElementById('p-card');
+  if (!card) return;
+  const tabs = card.querySelectorAll('.p-tab');
+  const contents = card.querySelectorAll('.p-content');
+  const dots = card.querySelectorAll('.p-dot');
+  const idx = Array.from(tabs).indexOf(btn);
+  tabs.forEach((t, j) => {
+    const cfg = BTCMap.PERSPECTIVE_CONFIG[t.dataset.angle] || {};
+    t.classList.toggle('active', j === idx);
+    t.style.borderColor = j === idx ? (cfg.color || 'var(--orange)') : '';
+  });
+  contents.forEach((c, j) => c.classList.toggle('active', j === idx));
+  dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+  const bar = card.querySelector('.p-bar');
+  if (bar) { bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth; bar.style.transition='width 5000ms linear'; bar.style.width='100%'; }
+}
+
+function goDot(i) {
+  switchTab(document.querySelectorAll('.p-tab')[i]);
+}
+</script>
+</body>
+</html>

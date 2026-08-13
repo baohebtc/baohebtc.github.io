@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交易与脚本 | 比特币学习地图</title>
+  <meta name="description" content="深入比特币交易核心：UTXO模型、Script脚本语言、地址类型从P2PKH到Taproot的演进、SegWit原理。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 交易结构图 ---- */
+    .tx-structure {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 20px 0;
+      font-size: 0.85rem;
+    }
+    .tx-structure .tx-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      color: var(--orange);
+    }
+    .tx-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
+    .tx-field {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 10px 14px;
+      flex: 1;
+      min-width: 160px;
+    }
+    .tx-field .field-name {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .tx-field .field-val {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+    .tx-field .field-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .tx-field.primary { border-color: rgba(247,147,26,0.3); }
+    .tx-field.primary .field-name { color: var(--orange); }
+    .tx-field.witness { border-color: rgba(139,92,246,0.3); }
+    .tx-field.witness .field-name { color: var(--purple); }
+
+    /* ---- UTXO 流程图 ---- */
+    .utxo-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 16px 0;
+    }
+    .utxo-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      text-align: center;
+      min-width: 120px;
+    }
+    .utxo-node .utxo-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .utxo-node .utxo-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .utxo-node .utxo-status {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .utxo-node .utxo-status.unspent {
+      background: rgba(16,185,129,0.15);
+      color: #10B981;
+    }
+    .utxo-node .utxo-status.spent {
+      background: rgba(239,68,68,0.15);
+      color: #EF4444;
+    }
+    .utxo-arrow {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+    }
+    .utxo-spent {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    /* ---- 脚本模拟器 ---- */
+    .script-sim {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .script-sim .sim-header {
+      padding: 12px 18px;
+      background: rgba(247,147,26,0.08);
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .script-sim .sim-body {
+      padding: 16px 18px;
+    }
+    .script-sim .sim-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .script-sim .sim-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: var(--bg);
+    }
+    .script-sim .sim-step .step-op {
+      color: var(--orange);
+      font-weight: 600;
+      min-width: 90px;
+    }
+    .script-sim .sim-step .step-stack {
+      margin-left: auto;
+      color: var(--purple);
+      font-weight: 500;
+    }
+    .script-sim .sim-step.active {
+      background: rgba(247,147,26,0.1);
+      border: 1px solid rgba(247,147,26,0.2);
+    }
+    .script-sim .sim-step.success {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.2);
+    }
+    .script-sim .sim-step .step-check {
+      font-size: 1rem;
+      min-width: 20px;
+    }
+
+    /* ---- 地址类型卡片 ---- */
+    .addr-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .addr-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .addr-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .addr-card .addr-type {
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .addr-card .addr-example {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      word-break: break-all;
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      background: var(--bg);
+      border-radius: 4px;
+    }
+    .addr-card .addr-script {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--purple);
+    }
+    .addr-card .addr-size {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+    .addr-card .addr-size.legacy { background: rgba(239,68,68,0.1); color: #EF4444; }
+    .addr-card .addr-size.segwit { background: rgba(59,130,246,0.1); color: #3B82F6; }
+    .addr-card .addr-size.taproot { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+    .addr-card .addr-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    /* ---- 费用计算器 ---- */
+    .fee-calc {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .fee-calc .calc-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .fee-calc .calc-row label {
+      min-width: 100px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .fee-calc .calc-row input,
+    .fee-calc .calc-row select {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+    .fee-calc .calc-row input:focus,
+    .fee-calc .calc-row select:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+    .fee-calc .calc-result {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin-top: 12px;
+    }
+    .fee-calc .calc-result .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.88rem;
+    }
+    .fee-calc .calc-result .result-item .r-label {
+      color: var(--text-secondary);
+    }
+    .fee-calc .calc-result .result-item .r-value {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .fee-calc .calc-result .result-item .r-value.highlight {
+      color: var(--orange);
+      font-size: 1rem;
+    }
+
+    /* ---- 费用优先级 ---- */
+    .fee-priorities {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .fee-priority {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .fee-priority:hover {
+      border-color: var(--orange);
+    }
+    .fee-priority.active {
+      border-color: var(--orange);
+      background: rgba(247,147,26,0.08);
+    }
+    .fee-priority .pri-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .fee-priority .pri-rate {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .fee-priority .pri-time {
+      font-size: 0.68rem;
+      color: var(--orange);
+      margin-top: 2px;
+    }
+
+    /* ---- 区块浏览器嵌入 ---- */
+    .explorer-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .explorer-box .exp-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .explorer-box .exp-header input {
+      flex: 1;
+      padding: 8px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.85rem;
+      min-width: 200px;
+    }
+    .explorer-box .exp-header input:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+    .explorer-box .exp-header button {
+      padding: 8px 16px;
+    }
+    .explorer-box .exp-result {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      min-height: 100px;
+    }
+    .explorer-box .exp-result .exp-empty {
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.88rem;
+    }
+    .explorer-box .exp-result .exp-field {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+    .explorer-box .exp-result .exp-field:last-child {
+      border-bottom: none;
+    }
+
+    /* ---- OP Code 表格 ---- */
+    .op-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 14px 0;
+    }
+    .op-table th,
+    .op-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .op-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .op-table td {
+      color: var(--text-secondary);
+    }
+    .op-table .op-code {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--purple);
+    }
+    .op-table .op-desc {
+      color: var(--text);
+    }
+    .op-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .tx-row { flex-direction: column; }
+      .utxo-flow { flex-direction: column; }
+      .utxo-arrow { transform: rotate(90deg); }
+      .addr-types { grid-template-columns: 1fr; }
+      .fee-priorities { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="04-00-overview.html">技术篇</a>
+        <span>›</span>
+        <span>交易与脚本</span>
+      </div>
+
+      <h1>📝 交易与脚本</h1>
+      <p class="page-subtitle">当你"发一笔比特币"，背后到底发生了什么？UTXO 模型、Script 脚本、从 P2PKH 到 Taproot 的地址类型演进——一页讲透。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 20 分钟</span>
+        <span class="page-tag">📊 难度：中等</span>
+        <span class="page-tag">📑 技术篇 3/9</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>技术篇进度</span>
+          <span>3 / 9 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 33%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#utxo">UTXO 模型</a>
+          <a href="#structure">交易结构</a>
+          <a href="#script">Script 脚本</a>
+          <a href="#address-types">地址类型演进</a>
+          <a href="#segwit">SegWit 原理</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 引言 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币没有"余额"概念。你的比特币不是放在一个账户里，而是以一堆"未花掉的零钱"形式散落在链上。交易不是"从A转给B"，而是"撕掉几张旧票据，签发几张新票据"。</p>
+            <p style="margin-top:8px;">每笔交易的执行，都由一段微小程序（Script）控制——谁能用这些币，由代码说了算。</p>
+          </div>
+
+          <!-- ============ 一、UTXO 模型 ============ -->
+          <section id="utxo">
+            <h2>一、UTXO 模型：比特币的"钞票"体系</h2>
+
+            <h3>1.1 什么是 UTXO？</h3>
+            <p><strong>UTXO</strong> = Unspent Transaction Output（未花费交易输出）。</p>
+            <p>想象一下：你钱包里有不同面值的<strong>钞票</strong>——一张 100 元、一张 50 元、两张 20 元。你的"余额"是这些钞票的总和，而不是账户里一个数字。</p>
+            <p>比特币完全一样：</p>
+            <ul>
+              <li>每一笔交易的输出（output）就是一张"钞票"</li>
+              <li>这张"钞票"尚未被花掉 → 它就是 UTXO</li>
+              <li>一旦被花掉 → 从 UTXO 名单中移除</li>
+              <li>你的"比特币余额" = 所有你控制的 UTXO 的面值之和</li>
+            </ul>
+
+            <div class="utxo-flow">
+              <div class="utxo-node">
+                <div class="utxo-amount">0.5 BTC</div>
+                <div class="utxo-label">输入 UTXO</div>
+                <div class="utxo-status spent">已花费</div>
+              </div>
+              <div class="utxo-arrow">→</div>
+              <div class="utxo-node">
+                <div class="utxo-amount">0.3 BTC</div>
+                <div class="utxo-label">输出 A（给商家）</div>
+                <div class="utxo-status unspent">UTXO</div>
+              </div>
+              <div class="utxo-arrow">→</div>
+              <div class="utxo-node">
+                <div class="utxo-amount">0.19 BTC</div>
+                <div class="utxo-label">输出 B（找零）</div>
+                <div class="utxo-status unspent">UTXO</div>
+              </div>
+              <div class="utxo-arrow" style="opacity:0.4;font-size:0.9rem;">（0.01 BTC 手续费）</div>
+            </div>
+
+            <h3>1.2 UTXO 的核心特性</h3>
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔗</div>
+                <h4>线性消耗</h4>
+                <p>一旦被花掉就消失，不能部分花费。必须花掉整个 UTXO。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔍</div>
+                <h4>全局可见</h4>
+                <p>所有 UTXO 都在链上，任何人都可以验证"这张钞票是否还在"。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔑</div>
+                <h4>脚本锁定</h4>
+                <p>每个 UTXO 都被一段 Script 锁定，只有满足条件才能解锁花费。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📊</div>
+                <h4>状态累积</h4>
+                <p>全节点维护 UTXO 集（当前所有未花输出），是比特币状态的"快照"。</p>
+              </div>
+            </div>
+
+            <div class="treasure-box">
+              <h3>💎 为什么用 UTXO 不用账户模型？</h3>
+              <p>以太坊用"账户余额"模型（类似银行），比特币坚持 UTXO。原因：</p>
+              <ul>
+                <li><strong>并发性</strong>：多笔交易可并行验证，互不冲突（每笔交易只花自己的 UTXO）</li>
+                <li><strong>隐私性</strong>：没有"账户"，地址可每次换新，追踪更难</li>
+                <li><strong>简洁性</strong>：不存在"余额篡改"——要么 UTXO 存在且未花，要么不存在</li>
+                <li><strong>可验证</strong>：全节点只需维护 UTXO 集就能验证所有交易，无需知道历史</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 二、交易结构 ============ -->
+          <section id="structure">
+            <h2>二、交易结构：扒开一笔交易的"内脏"</h2>
+
+            <p>每一笔比特币交易，本质上是一个<strong>数据结构</strong>。先看宏观骨架：</p>
+
+            <div class="tx-structure">
+              <div class="tx-title">📋 比特币交易数据结构</div>
+              <div class="tx-row">
+                <div class="tx-field primary">
+                  <div class="field-name">Version（版本号）</div>
+                  <div class="field-val">0x01000000</div>
+                  <div class="field-desc">4 字节，标识交易格式版本。SegWit 交易通常为 1 (0x0001)。</div>
+                </div>
+                <div class="tx-field">
+                  <div class="field-name">Marker + Flag</div>
+                  <div class="field-val">0x00 0x01</div>
+                  <div class="field-desc">SegWit 标记（非 SegWit 无此字段）。Marker=0x00, Flag=0x01。</div>
+                </div>
+              </div>
+              <div class="tx-row">
+                <div class="tx-field">
+                  <div class="field-name">Input Count（输入数量）</div>
+                  <div class="field-val">0x02</div>
+                  <div class="field-desc">CompactSize 编码，表示后面有多少个输入。</div>
+                </div>
+              </div>
+              <div class="tx-row">
+                <div class="tx-field" style="flex:2;">
+                  <div class="field-name">Inputs（输入列表）</div>
+                  <div class="field-desc">每个输入包含：</div>
+                  <div style="margin-top:6px;padding:8px 10px;background:var(--bg);border-radius:6px;">
+                    <code style="font-size:0.75rem;color:var(--text-secondary);">
+                      <span style="color:var(--orange);">Previous TxID</span> (32字节)<br>
+                      <span style="color:var(--orange);">Output Index</span> (4字节，vout)<br>
+                      <span style="color:var(--orange);">ScriptSig / ScriptWitness</span> (变长)<br>
+                      <span style="color:var(--orange);">Sequence</span> (4字节)
+                    </code>
+                  </div>
+                </div>
+              </div>
+              <div class="tx-row">
+                <div class="tx-field">
+                  <div class="field-name">Output Count（输出数量）</div>
+                  <div class="field-val">0x02</div>
+                  <div class="field-desc">CompactSize 编码，表示后面有多少个输出。</div>
+                </div>
+              </div>
+              <div class="tx-row">
+                <div class="tx-field" style="flex:2;">
+                  <div class="field-name">Outputs（输出列表）</div>
+                  <div class="field-desc">每个输出包含：</div>
+                  <div style="margin-top:6px;padding:8px 10px;background:var(--bg);border-radius:6px;">
+                    <code style="font-size:0.75rem;color:var(--text-secondary);">
+                      <span style="color:var(--orange);">Amount</span> (8字节，以 satoshi 为单位)<br>
+                      <span style="color:var(--orange);">ScriptPubKey</span> (变长，锁定脚本)
+                    </code>
+                  </div>
+                </div>
+              </div>
+              <div class="tx-row">
+                <div class="tx-field witness">
+                  <div class="field-name">Witness Data</div>
+                  <div class="field-desc">SegWit 专属。每个输入对应一个见证数据栈。</div>
+                </div>
+                <div class="tx-field">
+                  <div class="field-name">Locktime（锁定时间）</div>
+                  <div class="field-val">0x00000000</div>
+                  <div class="field-desc">4 字节。指定交易何时生效（区块高度或时间戳）。</div>
+                </div>
+              </div>
+            </div>
+
+            <h3>2.1 输入结构详解</h3>
+            <div class="story-box blue">
+              <span class="story-label">🔍 输入 = 指向"旧钞票"的引用</span>
+              <p>每笔交易输入<strong>不是拿"币"本身</strong>，而是引用历史上某个交易的一个输出（UTXO）。</p>
+              <p>包含两个关键信息：</p>
+              <ul>
+                <li><strong>Outpoint</strong> = <code>txid:vout</code> —— 你要"撕掉的旧钞票"在哪</li>
+                <li><strong>解锁证明</strong> —— 证明你有权花掉它（私钥签名或满足脚本条件）</li>
+              </ul>
+            </div>
+
+            <h3>2.2 输出结构详解</h3>
+            <div class="story-box green">
+              <span class="story-label">📤 输出 = 发新钞票"</span>
+              <p>每笔输出<strong>创造一张新钞票</strong>，包含：</p>
+              <ul>
+                <li><strong>Amount</strong>：面值，以 satoshi 为单位（1 BTC = 100,000,000 sat）</li>
+                <li><strong>ScriptPubKey</strong>：锁定条件（下一个持票人必须满足什么条件才能花）</li>
+              </ul>
+              <p>输出一旦创建，就成为 UTXO，直到被新交易的输入引用并花费。</p>
+            </div>
+
+            <h3>2.3 交易 ID（TXID）</h3>
+            <p>每笔交易的<strong>哈希值</strong>就是它的唯一标识——<code>txid</code>。</p>
+            <p>但这里有个<strong>重要的细节</strong>：</p>
+            <div class="highlight-box">
+              <span class="label">SegWit 的双重 ID</span>
+              <div class="text">
+                <p><strong>TXID</strong> = 不含 witness 部分的交易哈希（SegWit 中不受影响）</p>
+                <p><strong>WTXID</strong> = 含 witness 部分的交易哈希</p>
+                <p>这就是 SegWit 实现"见证数据隔离"的关键——第三层不参与 TXID 计算，所以任何人都可以<strong>在不改变 TXID 的前提下</strong>剪切 witness 数据（未来节点可选择性忽略历史见证数据）。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、Script 脚本 ============ -->
+          <section id="script">
+            <h2>三、Script 脚本：比特币的"可编程锁"</h2>
+
+            <h3>3.1 栈式执行语言</h3>
+            <p>比特币 <strong>Script</strong> 是一种精巧的<strong>基于栈的脚本语言</strong>，设计极度克制——</p>
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📚</div>
+                <h4>非图灵完备</h4>
+                <p>没有循环/递归，保证每个脚本都终止运行——避免"停机问题"。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🧮</div>
+                <h4>栈式运算</h4>
+                <p>数据压入栈，操作码从栈顶取数据运算，结果再压回栈。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔍</div>
+                <h4>签收验证</h4>
+                <p>脚本执行后，栈顶为 true → 验证通过。否则交易无效。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔒</div>
+                <h4>隔离安全性</h4>
+                <p>无跳转指令，无法构造死循环，恶意脚本只能在有限范围内捣乱。</p>
+              </div>
+            </div>
+
+            <h3>3.2 常用操作码</h3>
+            <table class="op-table">
+              <thead>
+                <tr>
+                  <th>操作码</th>
+                  <th>值</th>
+                  <th>描述</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="op-code">OP_DUP</td>
+                  <td>0x76</td>
+                  <td class="op-desc">复制栈顶元素</td>
+                </tr>
+                <tr>
+                  <td class="op-code">OP_HASH160</td>
+                  <td>0xA9</td>
+                  <td class="op-desc">栈顶元素先 SHA-256 再 RIPEMD-160</td>
+                </tr>
+                <tr>
+                  <td class="op-code">OP_EQUALVERIFY</td>
+                  <td>0x88</td>
+                  <td class="op-desc">检查栈顶两个元素是否相等，不等则脚本失败</td>
+                </tr>
+                <tr>
+                  <td class="op-code">OP_CHECKSIG</td>
+                  <td>0xAC</td>
+                  <td class="op-desc">验证签名：公钥 + 签名 → true/false</td>
+                </tr>
+                <tr>
+                  <td class="op-code">OP_CHECKMULTISIG</td>
+                  <td>0xAE</td>
+                  <td class="op-desc">验证 m-of-n 多重签名</td>
+                </tr>
+                <tr>
+                  <td class="op-code">OP_RETURN</td>
+                  <td>0x6A</td>
+                  <td class="op-desc">标记输出不可花费（用于数据嵌入）</td>
+                </tr>
+                <tr>
+                  <td class="op-code">OP_CHECKSIGADD</td>
+                  <td>0xBA</td>
+                  <td class="op-desc">Taproot 新增，累加签名计数（替代 CHECKMULTISIG）</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>3.3 P2PKH 脚本示例：经典"转账"</h3>
+            <p>最常见的一对一转账模式——Pay-to-Public-Key-Hash（支付到公钥哈希）。</p>
+
+            <div class="script-sim">
+              <div class="sim-header">🧪 P2PKH 脚本执行过程模拟（简化）</div>
+              <div class="sim-body">
+                <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:12px;">
+                  <strong>锁定脚本（ScriptPubKey）：</strong> <code style="font-size:0.75rem;">OP_DUP OP_HASH160 &lt;pubKeyHash&gt; OP_EQUALVERIFY OP_CHECKSIG</code><br>
+                  <strong>解锁脚本（ScriptSig）：</strong> <code style="font-size:0.75rem;">&lt;sig&gt; &lt;pubKey&gt;</code>
+                </p>
+                <div class="sim-steps" id="p2pkhSim">
+                  <div class="sim-step" data-step="0">
+                    <span class="step-check">▼</span>
+                    <span class="step-op">拼接脚本</span>
+                    <span>&lt;sig&gt; &lt;pubKey&gt; OP_DUP OP_HASH160 &lt;hash&gt; OP_EQUALVERIFY OP_CHECKSIG</span>
+                    <span class="step-stack">[]</span>
+                  </div>
+                  <div class="sim-step" data-step="1">
+                    <span class="step-check">①</span>
+                    <span class="step-op">&lt;sig&gt;</span>
+                    <span>压入签名</span>
+                    <span class="step-stack">[sig]</span>
+                  </div>
+                  <div class="sim-step" data-step="2">
+                    <span class="step-check">②</span>
+                    <span class="step-op">&lt;pubKey&gt;</span>
+                    <span>压入公钥</span>
+                    <span class="step-stack">[sig, pubKey]</span>
+                  </div>
+                  <div class="sim-step" data-step="3">
+                    <span class="step-check">③</span>
+                    <span class="step-op">OP_DUP</span>
+                    <span>复制栈顶（公钥）</span>
+                    <span class="step-stack">[sig, pubKey, pubKey]</span>
+                  </div>
+                  <div class="sim-step" data-step="4">
+                    <span class="step-check">④</span>
+                    <span class="step-op">OP_HASH160</span>
+                    <span>对 pubKey 哈希</span>
+                    <span class="step-stack">[sig, pubKey, hash(pubKey)]</span>
+                  </div>
+                  <div class="sim-step" data-step="5">
+                    <span class="step-check">⑤</span>
+                    <span class="step-op">&lt;pubKeyHash&gt;</span>
+                    <span>压入脚本中的哈希</span>
+                    <span class="step-stack">[sig, pubKey, hash(pubKey), expectedHash]</span>
+                  </div>
+                  <div class="sim-step" data-step="6">
+                    <span class="step-check">⑥</span>
+                    <span class="step-op">OP_EQUALVERIFY</span>
+                    <span>比较两个哈希 → 相同则删除，继续</span>
+                    <span class="step-stack">[sig, pubKey]</span>
+                  </div>
+                  <div class="sim-step" data-step="7">
+                    <span class="step-check">⑦</span>
+                    <span class="step-op">OP_CHECKSIG</span>
+                    <span>验证签名：pubKey 是否签署了这笔交易？</span>
+                    <span class="step-stack step-success">✅ true</span>
+                  </div>
+                </div>
+                <div class="sim-controls" style="margin-top:14px;">
+                  <button onclick="runP2PKHSim()" class="btn btn-primary btn-sm">▶ 执行模拟</button>
+                  <button onclick="resetP2PKHSim()" class="btn btn-sm">↺ 重置</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="treasure-box">
+              <h3>💎 脚本设计哲学："先签名后锁定"</h3>
+              <p>你可能注意到：<strong>签名在解锁脚本中，但签名验证的却是整笔交易</strong>。这造成了一个"先有鸡还是先有蛋"的悖论——签名要验证交易，但交易还没构建完。</p>
+              <p>比特币的解决方案是：在构造交易时，解锁脚本留空（或填入占位数据），计算签名后再填入。这个巧妙设计使得<strong>签名本身不可篡改</strong>——改了签名数据，签名验不过；改了输出/金额，签名也验不过。</p>
+            </div>
+          </section>
+
+          <!-- ============ 四、地址类型演进 ============ -->
+          <section id="address-types">
+            <h2>四、地址类型演进：从 1 开头到 bc1</h2>
+
+            <p>地址实际上是<strong>ScriptPubKey 的一种编码表示</strong>。地址类型的演进，本质上是 <strong>Script 脚本的演进</strong>。</p>
+
+            <div class="addr-types">
+              <div class="addr-card">
+                <div class="addr-type">🔴 P2PKH <span class="tag tag-red">Legacy</span></div>
+                <div class="addr-example">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</div>
+                <div class="addr-script">OP_DUP OP_HASH160 &lt;hash160&gt; OP_EQUALVERIFY OP_CHECKSIG</div>
+                <span class="addr-size legacy">~180 vBytes</span>
+                <div class="addr-desc">最原始的"转账"脚本。公钥哈希锁定，需提供公钥和签名解锁。2009 年即存在。</div>
+              </div>
+              <div class="addr-card">
+                <div class="addr-type">🟡 P2SH <span class="tag tag-yellow">Legacy</span></div>
+                <div class="addr-example">3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy</div>
+                <div class="addr-script">OP_HASH160 &lt;hash160(赎回脚本)&gt; OP_EQUAL</div>
+                <span class="addr-size legacy">~293 vBytes (3-of-3)</span>
+                <div class="addr-desc">支付到脚本哈希。发送方不知道最终解锁条件，隐藏了多签/时间锁等复杂脚本。</div>
+              </div>
+              <div class="addr-card">
+                <div class="addr-type">🔵 P2WPKH <span class="tag tag-blue">SegWit</span></div>
+                <div class="addr-example">bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq</div>
+                <div class="addr-script">0 &lt;hash160&gt; (见证程序)</div>
+                <span class="addr-size segwit">~91 vBytes</span>
+                <div class="addr-desc">Nested SegWit 的"原生版"。签名数据移至 Witness，省空间、防第三方篡改。2017 年。</div>
+              </div>
+              <div class="addr-card">
+                <div class="addr-type">🟢 P2WSH <span class="tag tag-green">SegWit</span></div>
+                <div class="addr-example">bc1q...（较复杂版本）</div>
+                <div class="addr-script">0 &lt;sha256(见证脚本)&gt;</div>
+                <span class="addr-size segwit">~133 vBytes (2-of-3)</span>
+                <div class="addr-desc">P2SH 的 SegWit 版本。见证脚本在 witness 区域，减少区块负担。</div>
+              </div>
+              <div class="addr-card">
+                <div class="addr-type">🟣 P2TR <span class="tag tag-purple">Taproot</span></div>
+                <div class="addr-example">bc1px3gx7x3gx...（或 bech32m 格式）</div>
+                <div class="addr-script">1 &lt;x-only-pubkey&gt;</div>
+                <span class="addr-size taproot">~127 vBytes (单签)</span>
+                <div class="addr-desc">2021 年最新。所有花费路径对外表现为一个单一公钥。多签/时间锁对外隐藏，等同单签外观。</div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">📈 地址演进趋势</span>
+              <div class="text">
+                <p>从 P2PKH 到 P2TR，清晰看到比特币脚本哲学的进化：<strong>从显式到隐式，从确定性到隐私性</strong>。</p>
+                <p>P2PKH 告诉你"这后面是一个公钥"，P2TR 对所有人说"不知道，可能是一个公钥，也可能是一个复杂的脚本树"——而矿工和验证节点也不知道你的真实意图。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 五、SegWit 原理 ============ -->
+          <section id="segwit">
+            <h2>五、SegWit：见证数据隔离的革命</h2>
+
+            <h3>5.1 为什么需要 SegWit？</h3>
+            <p>2017 年比特币面临两个核心问题：</p>
+            <ul>
+              <li><strong>区块容量</strong>：1MB 限制了每秒约 7 笔交易，扩容呼声震天</li>
+              <li><strong>交易延展性</strong>：签名在 TXID 计算范围内，第三方可在广播前修改签名，改变 TXID 却不影响交易有效性——导致闪电网络无法安全实现</li>
+            </ul>
+            <p>SegWit（隔离见证）<strong>一石二鸟</strong>地解决了这两个问题。</p>
+
+            <h3>5.2 SegWit 做了什么？</h3>
+            <div class="tx-structure">
+              <div class="tx-title">⚡ SegWit 的核心改动</div>
+              <div class="tx-row">
+                <div class="tx-field">
+                  <div class="field-name" style="color:var(--text);">改动 1</div>
+                  <div class="field-val" style="font-family:var(--font-sans);">签名（见证数据）从输入中移出</div>
+                  <div class="field-desc">放入新的 Witness 字段，不参与 TXID 计算 → 第三方无法更改 TXID</div>
+                </div>
+                <div class="tx-field">
+                  <div class="field-name" style="color:var(--text);">改动 2</div>
+                  <div class="field-val" style="font-family:var(--font-sans);">旧 1MB 限制 → 4M 重量单位</div>
+                  <div class="field-desc">Witness 数据按 1x 权重计算，非见证数据按 4x → 实际区块可达 ~4MB</div>
+                </div>
+                <div class="tx-field">
+                  <div class="field-name" style="color:var(--text);">改动 3</div>
+                  <div class="field-val" style="font-family:var(--font-sans);">新地址格式（Bech32）</div>
+                  <div class="field-desc">bc1 开头，更短的二维码，内置校验（检测输入错误）</div>
+                </div>
+              </div>
+            </div>
+
+            <h3>5.3 重量单位（Weight Units）</h3>
+            <p>SegWit 引入了 <strong>WU（重量单位）</strong>的概念，替代了旧的"字节"限制：</p>
+            <div class="story-box purple">
+              <span class="story-label">⚖️ 重量计算规则</span>
+              <ul>
+                <li><strong>非见证数据</strong>（版本、输入、输出、locktime）× <strong>4</strong></li>
+                <li><strong>见证数据</strong>（witness） × <strong>1</strong></li>
+                <li>总和 ≤ 4,000,000 WU（≈ 4MB）</li>
+                <li>旧区块 1,000,000 字节 = 4,000,000 WU（完全向后兼容）</li>
+              </ul>
+            </div>
+
+            <h3>5.4 SegWit 的实际收益</h3>
+            <table class="op-table">
+              <thead>
+                <tr>
+                  <th>交易类型</th>
+                  <th>旧大小 (bytes)</th>
+                  <th>SegWit (vBytes)</th>
+                  <th>节省</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>P2PKH (单签)</td>
+                  <td>192</td>
+                  <td>~122 (P2WPKH)</td>
+                  <td>36%</td>
+                </tr>
+                <tr>
+                  <td>P2SH 2-of-3 多签</td>
+                  <td>~366</td>
+                  <td>~177 (P2WSH)</td>
+                  <td>52%</td>
+                </tr>
+                <tr>
+                  <td>P2TR 单签</td>
+                  <td>—</td>
+                  <td>~127</td>
+                  <td>比 P2WPKH 略高但功能更强</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="table-note" style="margin-top:6px;font-size:0.78rem;color:var(--text-muted);">
+              vBytes = 虚拟字节。见证了数据 1/4 的实际空间（4 WU = 1 vByte）。
+            </p>
+          </section>
+
+          <!-- ============ 六、多视角重新解释 ============ -->
+          <section id="perspectives">
+            <h2>六、多视角重新解释</h2>
+
+            <!-- 多视角卡片组件 -->
+            <div class="perspective-card" id="tx-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 同一笔交易，六种身份</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="technology">👨‍💻 协议开发者</button>
+                  <button class="p-tab" data-angle="business">🔍 链上分析师</button>
+                  <button class="p-tab" data-angle="humanity">🕵️ 隐私研究者</button>
+                  <button class="p-tab" data-angle="philosophy">👛 钱包开发者</button>
+                  <button class="p-tab" data-angle="finance">💰 经济学者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <!-- 协议开发者 -->
+                <div class="p-content" data-angle="technology">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">⚙️ 协议开发者</div>
+                  <div class="p-quote">"脚本语言的设计是比特币最精妙的权衡——提供足够的表达力以满足基本验证需求，但严格限制以防图灵完备带来的安全灾难。"</div>
+                  <ul>
+                    <li><strong>安全优先</strong>：无循环/递归，保证脚本终止；早期禁用 OP_CAT/OP_MUL 等操作码，以防 DOS 攻击</li>
+                    <li><strong>模块化升级</strong>：P2SH 允许"不知道具体条件也能接收"，SegWit 协议升级不改变 TXID，Taproot 通过 MAST 树支持条件分支</li>
+                    <li><strong>向后兼容</strong>：SegWit 以软分叉实现——老节点看到 Witness 标记认为"任何 valid 的签名都可以"</li>
+                    <li><strong>当前焦点</strong>：OP_CAT、CTV(BIP-119)、CSFS(BIP-348) 等新操作码是否应重新激活？安全性审查仍在进行</li>
+                  </ul>
+                </div>
+                <!-- 链上分析师 -->
+                <div class="p-content" data-angle="business">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🔍 链上分析师</div>
+                  <div class="p-quote">"每一枚 satoshi 都可以从创世块追踪到今天。UTXO 模型让资金流谱系完全透明——追踪比洗钱更困难。"</div>
+                  <ul>
+                    <li><strong>UTXO 追踪</strong>：通过"共同花费"启发式——同一交易中的多个输入很可能属于同一个实体</li>
+                    <li><strong>地址聚类</strong>：找零地址通常符合特定模式（新生成的地址、金额不等于任意输入），可归属到原始地址</li>
+                    <li><strong>Coinjoin 检测</strong>：均衡金额输出 + 多参与者输入 = 大概率 CoinJoin 混币</li>
+                    <li><strong>收发单分析</strong>：大额 UTXO 拆分、交易所热钱包归集、矿池支付模式均可通过 UTXO 图谱可视化</li>
+                    <li><strong>隐私挑战</strong>：Taproot 使交易"看起来都一样"，链上分析正在从模式识别转向机器学习</li>
+                  </ul>
+                </div>
+                <!-- 隐私研究者 -->
+                <div class="p-content" data-angle="humanity">
+                  <div class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">🕵️ 隐私研究者</div>
+                  <div class="p-quote">"Taproot 是比特币隐私的范式转移——不是通过隐藏数据，而是通过隐藏复杂性，让所有交易看起来一模一样。"</div>
+                  <ul>
+                    <li><strong>Homogeneity（同质化）</strong>：P2TR 迫使传统单签、多签、时间锁交易对外表现相同——外界完全无法区分</li>
+                    <li><strong>MAST（Merkle Abstricted Syntax Tree）</strong>：执行时只暴露执行的路径，隐藏所有未使用的分支——多签条件对外界不可见</li>
+                    <li><strong>CoinJoin 的新可能</strong>：Taproot 让混币交易更难识别，因为所有参与者输出都是"看起来一样"的 P2TR</li>
+                    <li><strong>支付聚合</strong>：多个输入可以聚合为单一 Schnorr 签名（通过 MuSig 协议），链路分析更难关联</li>
+                    <li><strong>挑战</strong>：链上数据分析师转向"金额模式分析"等新方法，隐私工程和去匿名化技术仍在军备竞赛</li>
+                  </ul>
+                </div>
+                <!-- 钱包开发者 -->
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">👛 钱包开发者</div>
+                  <div class="p-quote">"最令用户困惑的设计：为什么我收到 0.01 BTC，却不能用 0.01 BTC 支付 0.009 BTC？UTXO 碎片的心理成本远超预期。"</div>
+                  <ul>
+                    <li><strong>UTXO 选择算法</strong>：核心问题——从钱包的 UTXO 集合中选择哪些来满足支付金额，同时最小化费用</li>
+                    <li><strong>常见策略</strong>：
+                      <ul>
+                        <li><strong>Best-fit 最适匹配</strong>：选略大于支付金额的 UTXO（产生最小找零）</li>
+                        <li><strong>Knapsack 背包算法</strong>：寻找最佳 UTXO 组合，最小化总金额与支付目标的差距（减少找零）</li>
+                        <li><strong>Single-random-draw</strong>：随机挑选 UTXO，增加隐私性（更难以关联）</li>
+                      </ul>
+                    </li>
+                    <li><strong>找零地址管理</strong>：<strong>永远使用新地址</strong>接收找零，不与支付输入地址重复 → 链上分析更难追踪</li>
+                    <li><strong>UTXO 合并</strong>：低费率时合并小额 UTXO（dust），避免高费率时"花不起"（UTXO 面值小于手续费）</li>
+                    <li><strong>隐私-效率权衡</strong>：合并 UTXO 提高效率但暴露了你控制这些 UTXO，需权衡</li>
+                  </ul>
+                </div>
+                <!-- 经济学者 -->
+                <div class="p-content" data-angle="finance">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学者</div>
+                  <div class="p-quote">"手续费不是 Bug，而是比特币网络安全的经济学基石——它驱动资金从低价值交易流向高价值交易。"</div>
+                  <ul>
+                    <li><strong>手续费 = 区块空间的竞价拍卖</strong>：区块空间有限（~4MWU/10min），矿工优先打包出价最高的交易</li>
+                    <li><strong>sat/vB</strong>：费率单位，每虚拟字节的聪数。高 sat/vB → 优先入块</li>
+                    <li><strong>RBF（Replace-by-Fee）</strong>：交易尚未确认，用更高手续费替换原交易——竞价上车</li>
+                    <li><strong>CPFP（Child-Pays-For-Parent）</strong>：你收到一个低费率交易 A（未确认），你创建依赖 A 的交易 B 并付高费——矿工同时打包 A 和 B</li>
+                    <li><strong>手续费市场的行为经济学</strong>：网络拥堵时，用户恐慌出价导致费率飙升（2023 年 Ordinals 铭文拥堵期间，平均费率突破 300 sat/vB）</li>
+                    <li><strong>手续费 vs 区块奖励</strong>：随区块奖励逐渐减半（约 2140 年归零），手续费将完全替代区块奖励成为矿工收入来源，届时比特币的安全预算足够吗？</li>
+                  </ul>
+                </div>
+                <!-- 历史学家 -->
+                <div class="p-content" data-angle="history">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</div>
+                  <div class="p-quote">"2017 年 SegWit 之争不仅是技术分歧——它暴露出比特币没有治理中心的无序与韧性。"</div>
+                  <ul>
+                    <li><strong>2010 年脚本漏洞</strong>：OP_LSHIFT/OP_RSHIFT 操作码存在整数溢出漏洞（CVE-2010-5139），攻击者可创建无限量比特币。中本聪紧急发布 0.3.17 版本禁用问题操作码</li>
+                    <li><strong>2012 年 P2SH</strong>：在 Bitcoin Core 0.6.0 中引入，BIP-16。支持支付到脚本哈希，允许发送方无需知道接收方脚本细节。软分叉实施</li>
+                    <li><strong>2014-2017 区块大小战争</strong>：1MB 瓶颈让社区分裂——大区块派主张直接扩容（Bitcoin XT，Bitcoin Classic，Bitcoin Unlimited）；Core 开发者主张 SegWit 软分叉</li>
+                    <li><strong>2017 年 8 月 UASF（用户激活软分叉）</strong>：用户和节点运营者通过 BIP-148 强制激活 SegWit，绕过矿工阻挠。这是"用户主权"的经典案例</li>
+                    <li><strong>2017 年 8 月 1 日</strong>：BCH 分叉，拒绝 SegWit，走大区块路线</li>
+                    <li><strong>2021 年 Taproot</strong>：BIP-340/341/342，Schnorr 签名 + MAST + Tapscript。自 SegWit 以来最大的协议升级，几乎无争议通过</li>
+                    <li><strong>2023-2026 新一波争论</strong>：铭文(Ordinals/Runes)利用 SegWit 的数据空间承载数据；BIP-420 OP_CAT 重新讨论；BIP-110 限制铭文——历史再次重演：创新性应用 vs 原始设计意图的张力</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、动手实验 ============ -->
+          <section id="labs">
+            <h2>七、动手实验区</h2>
+
+            <!-- 实验 1：区块浏览器 -->
+            <h3>🔍 实验 1：查一笔真实交易</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <input type="text" id="txInput" placeholder="输入 TXID：例如 8c14f0db3df150123e6a3c3c... 或 点击下方样例" value="f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16">
+                <button onclick="lookupTx()" class="btn btn-primary">🔍 查交易</button>
+              </div>
+              <div class="exp-header" style="flex-wrap:wrap;">
+                <span style="font-size:0.78rem;color:var(--text-muted);">样例：</span>
+                <button class="btn btn-sm" onclick="document.getElementById('txInput').value='f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16';lookupTx()">创世块后的第一笔转账</button>
+                <button class="btn btn-sm" onclick="document.getElementById('txInput').value='a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d';lookupTx()">经典 P2PKH</button>
+                <button class="btn btn-sm" onclick="document.getElementById('txInput').value='a663e0e5d0293bb4e52b3dcc5e9bb14445eb8a1096a97c7eb3d0ea4e83a1fcb3';lookupTx()">SegWit 交易</button>
+              </div>
+              <div class="exp-result" id="txResult">
+                <div class="exp-empty">👆 输入 TXID 或点击样例查看交易结构</div>
+              </div>
+            </div>
+
+            <!-- 实验 2：UTXO 追踪器 -->
+            <h3>📊 实验 2：UTXO 追踪器</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <input type="text" id="addrInput" placeholder="输入比特币地址，如 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa">
+                <button onclick="lookupUTXOs()" class="btn btn-primary">🔍 查 UTXO</button>
+              </div>
+              <div class="exp-result" id="utxoResult">
+                <div class="exp-empty">👆 输入地址查看该地址下的所有 UTXO</div>
+              </div>
+              <div style="margin-top:10px;">
+                <p style="font-size:0.78rem;color:var(--text-muted);">💡 <strong>提示</strong>：使用 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 或 <a href="https://blockchain.info" target="_blank" style="color:var(--orange);">blockchain.info</a> 查询真实链上数据。<br>此实验为浏览器内建联模拟，真实查询通过以下接口进行。</p>
+              </div>
+            </div>
+
+            <!-- 实验 3：手续费计算器 -->
+            <h3>💰 实验 3：交易手续费计算器</h3>
+            <div class="fee-calc">
+              <div class="calc-row">
+                <label>交易类型</label>
+                <select id="txType" onchange="calcFee()">
+                  <option value="p2pkh">P2PKH（传统单签）</option>
+                  <option value="p2wpkh" selected>P2WPKH（SegWit 单签）</option>
+                  <option value="p2sh-2of3">P2SH 2-of-3 多签</option>
+                  <option value="p2wsh-2of3">P2WSH 2-of-3 多签</option>
+                  <option value="p2tr">P2TR（Taproot 单签）</option>
+                </select>
+              </div>
+              <div class="calc-row">
+                <label>输入数量</label>
+                <input type="number" id="txInputs" value="2" min="1" max="100" onchange="calcFee()">
+              </div>
+              <div class="calc-row">
+                <label>输出数量</label>
+                <input type="number" id="txOutputs" value="2" min="1" max="100" onchange="calcFee()">
+              </div>
+              <div class="calc-row">
+                <label>费率优先级</label>
+                <div style="flex:1;">
+                  <div class="fee-priorities">
+                    <div class="fee-priority" data-rate="5" onclick="selectFeePriority(this,5)">
+                      <div class="pri-name">🟢 经济</div>
+                      <div class="pri-rate">5 sat/vB</div>
+                      <div class="pri-time">不确定</div>
+                    </div>
+                    <div class="fee-priority active" data-rate="25" onclick="selectFeePriority(this,25)">
+                      <div class="pri-name">🟡 标准</div>
+                      <div class="pri-rate">25 sat/vB</div>
+                      <div class="pri-time">~10-30 分钟</div>
+                    </div>
+                    <div class="fee-priority" data-rate="80" onclick="selectFeePriority(this,80)">
+                      <div class="pri-name">🔴 优先</div>
+                      <div class="pri-rate">80 sat/vB</div>
+                      <div class="pri-time">~1-2 区块</div>
+                    </div>
+                    <div class="fee-priority" data-rate="150" onclick="selectFeePriority(this,150)">
+                      <div class="pri-name">⚡ 极速</div>
+                      <div class="pri-rate">150 sat/vB</div>
+                      <div class="pri-time">下一区块</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="calc-result" id="feeResult">
+                <div class="result-item">
+                  <span class="r-label">交易尺寸</span>
+                  <span class="r-value" id="txSize">— vBytes</span>
+                </div>
+                <div class="result-item">
+                  <span class="r-label">费率</span>
+                  <span class="r-value" id="txRate">25 sat/vB</span>
+                </div>
+                <div class="result-item">
+                  <span class="r-label">手续费</span>
+                  <span class="r-value highlight" id="txFee">— sats</span>
+                </div>
+                <div class="result-item">
+                  <span class="r-label"></span>
+                  <span class="r-value highlight" id="txFeeBTC">— BTC</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 实验 4：脚本模拟器 -->
+            <h3>🧪 实验 4：交互式脚本模拟器</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">选择脚本类型：</span>
+                <select id="scriptType" onchange="loadScriptDemo()" style="flex:1;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);">
+                  <option value="p2pkh">P2PKH（单签转账）</option>
+                  <option value="p2sh">P2SH 2-of-3 多签</option>
+                  <option value="p2tr-key-path">P2TR 密钥路径花费</option>
+                </select>
+              </div>
+              <div class="exp-result" id="scriptDemo">
+                <div class="exp-empty">选择脚本类型，查看执行过程和栈状态变化</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、大白话总结 ============ -->
+          <section id="summary">
+            <h2>八、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把这些复杂的放在日常场景中</span>
+              <p><strong>UTXO = 一张张"未花掉的钞票"</strong></p>
+              <ul>
+                <li>你的比特币不是"账户余额"，而是一堆不同面值的钞票</li>
+                <li>买杯咖啡 0.003 BTC？你递过去一张 0.01 BTC 的钞票，对方找你 0.00697 BTC（扣掉 30 聪小费）</li>
+                <li>这 0.01 BTC 的钞票被"销毁"，换来一张 0.003 BTC + 0.00697 BTC 的新钞票</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>交易 = 撕掉旧钞票，签发新钞票</strong></p>
+              <ul>
+                <li>输入 = 你要撕掉哪些旧钞票 | 输出 = 签发哪些新钞票</li>
+                <li>差额 = 小费给收银员（矿工）</li>
+                <li>旧钞被撕毁 = UTXO 从"未花费"列表中移除</li>
+                <li>新钞签发 = 新 UTXO 进入列表</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>Script = 钞票上的"解锁谜题"</strong></p>
+              <ul>
+                <li>每张钞票上都写着一道谜题："只有能提供正确签名且公钥哈希符合以下条件的人才能花"</li>
+                <li>你要花它时，需提供谜底（签名+公钥）</li>
+                <li>验证节点就是"裁判"——按规则检查谜底是否正确</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>手续费 = 给小费（给矿工）</strong></p>
+              <ul>
+                <li>你的钞票总面值 - 签发的新钞总面值 = 小费（手续费）</li>
+                <li>小费给得越多，收银员（矿工）越积极帮你处理</li>
+                <li>网络拥堵时大家都在加小费 → 手续费飙升</li>
+              </ul>
+            </div>
+
+            <div class="story-box purple">
+              <span class="story-label">📦 地址类型的"演化故事"</span>
+              <p>想象比特币是一个菜市场：</p>
+              <ul>
+                <li><strong>P2PKH（1开头）</strong> = 每个摊位前都挂着"此摊位需要：出示身份证 + 签名确认"的招牌。所有人都能看懂。</li>
+                <li><strong>P2SH（3开头）</strong> = 招牌上只写了一个编号"请到 XXX 仓库查看具体验证规则"。你不知道后面是多签还是什么，只要满足就行。</li>
+                <li><strong>P2WPKH（bc1q开头）</strong> = 身份证和签名不需要在招牌上展示，放进"额外单"里。招牌更短更干净，而且别人改不了你的签名。</li>
+                <li><strong>P2TR（bc1p开头）</strong> = 招牌上只有一句话"负责人：张三"。但张三背后可能有一个复杂的律师团队、三个合伙人、或者一个遗嘱执行人——但外人完全看不出。</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 核心要点 ============ -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>比特币没有"余额"</strong>——只有一堆 UTXO（未花费交易输出），你的"余额"是这些 UTXO 面值之和</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>交易 = 输入 + 输出</strong>——输入引用旧 UTXO（要花掉的钞票），输出创建新 UTXO（新钞票）</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>Script 脚本</strong>是比特币的可编程锁——每笔输出都被一段脚本锁定，只有满足条件才能花费</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>SegWit</strong>移除了签名对 TXID 的影响并引入重量单位概念——实际提升了区块容量并修复了交易延展性</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">5️⃣</div>
+                <p><strong>Taproot</strong>让所有交易看起来一样——多签/时间锁对外界不可见，这是比特币隐私的范式转移</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">6️⃣</div>
+                <p><strong>手续费 = 区块空间拍卖</strong>——矿工优先收取高费率交易，RBF/CPFP 是两种"加价插队"方式</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>你已经理解了比特币的"记账方法"（交易和脚本）。下一个主题是这些交易如何被打包成区块，以及 Merkle 树如何保证效率：</p>
+            <a href="04-04-blockchain-structure.html" class="btn btn-primary">继续学习：区块与区块链结构 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="04-02-keys-addresses.html" class="btn">← 回顾：密钥与地址</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="04-02-keys-addresses.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">密钥与地址</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        技术篇 · 3 / 9
+      </div>
+      <a href="04-04-blockchain-structure.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">区块与区块链结构</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      initTxExplorer();
+      initPerspectiveCard();
+      calcFee();
+      loadScriptDemo();
+    });
+
+    // ===== 已读标记 =====
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-03-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-03-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // ===== P2PKH 脚本模拟 =====
+    let p2pkhStep = -1;
+
+    function runP2PKHSim() {
+      const steps = document.querySelectorAll('#p2pkhSim .sim-step');
+      if (p2pkhStep >= steps.length - 1) {
+        resetP2PKHSim();
+        setTimeout(runP2PKHSim, 300);
+        return;
+      }
+      p2pkhStep++;
+      steps.forEach((s, i) => {
+        s.classList.remove('active', 'success');
+        if (i === p2pkhStep) s.classList.add('active');
+        if (i < p2pkhStep) s.classList.add('success');
+      });
+      // 最后一步成功
+      if (p2pkhStep >= steps.length - 1) {
+        const last = steps[steps.length - 1];
+        last.classList.remove('active');
+        last.classList.add('success');
+        // 在最后一个显示 true 的步骤里添加最终显示
+        const stackSpan = last.querySelector('.step-stack');
+        if (stackSpan) {
+          stackSpan.textContent = '✅ true';
+          stackSpan.style.color = '#10B981';
+          stackSpan.style.fontWeight = '700';
+        }
+      }
+    }
+
+    function resetP2PKHSim() {
+      p2pkhStep = -1;
+      const steps = document.querySelectorAll('#p2pkhSim .sim-step');
+      steps.forEach((s, i) => {
+        s.classList.remove('active', 'success');
+        // 重置栈文本
+        const stackSpan = s.querySelector('.step-stack');
+        if (stackSpan) {
+          stackSpan.style.color = '';
+          stackSpan.style.fontWeight = '';
+        }
+      });
+      // 恢复初始栈文本
+      const initStacks = ['[]', '[sig]', '[sig, pubKey]', '[sig, pubKey, pubKey]', '[sig, pubKey, hash(pubKey)]', '[sig, pubKey, hash(pubKey), expectedHash]', '[sig, pubKey]', '✅ true'];
+      steps.forEach((s, i) => {
+        const stackSpan = s.querySelector('.step-stack');
+        if (stackSpan) stackSpan.textContent = initStacks[i];
+      });
+    }
+
+    // ===== 多视角卡片（自定义版，手动控制） =====
+    function initPerspectiveCard() {
+      const card = document.getElementById('tx-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      // 触摸滑动
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+
+      // 自动轮播
+      let autoTimer = setInterval(() => show(current + 1), 5000);
+      card.addEventListener('mouseenter', () => clearInterval(autoTimer));
+      card.addEventListener('mouseleave', () => {
+        autoTimer = setInterval(() => show(current + 1), 5000);
+      });
+
+      show(0);
+    }
+
+    // ===== 交易查看器（模拟，通过 Mempool API） =====
+    async function lookupTx() {
+      const txid = document.getElementById('txInput').value.trim();
+      const resultDiv = document.getElementById('txResult');
+      if (!txid) {
+        resultDiv.innerHTML = '<div class="exp-empty">请输入 TXID</div>';
+        return;
+      }
+      try {
+        resultDiv.innerHTML = '<div class="exp-empty">⏳ 正在查询...</div>';
+        // 使用 mempool.space API
+        const resp = await fetch(`https://mempool.space/api/tx/${txid}`);
+        if (!resp.ok) throw new Error('查询失败');
+        const tx = await resp.json();
+        
+        let vinHtml = '';
+        tx.vin.forEach((v, i) => {
+          vinHtml += `<div class="exp-field">
+            <span>输入 #${i + 1}</span>
+            <span style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;max-width:50%;text-align:right;">
+              ${v.txid ? v.txid.substring(0, 20) + '...:' + v.vout : 'Coinbase'}</span>
+          </div>`;
+        });
+        let voutHtml = '';
+        tx.vout.forEach((v, i) => {
+          const btc = (v.value / 1e8).toFixed(8);
+          voutHtml += `<div class="exp-field">
+            <span>输出 #${i + 1}</span>
+            <span style="font-family:var(--font-mono);">${btc} BTC</span>
+          </div>`;
+        });
+
+        resultDiv.innerHTML = `
+          <div class="exp-field"><span><strong>TXID</strong></span><span style="font-family:var(--font-mono);font-size:0.72rem;word-break:break-all;max-width:60%;text-align:right;">${tx.txid}</span></div>
+          <div class="exp-field"><span><strong>版本</strong></span><span>${tx.version}</span></div>
+          <div class="exp-field"><span><strong>确认数</strong></span><span>${tx.status.confirmed ? (tx.status.block_height ? '已确认 (块高: ' + tx.status.block_height + ')' : '已确认') : '未确认'} </span></div>
+          ${tx.status.block_height ? `<div class="exp-field"><span><strong>块高</strong></span><span>${tx.status.block_height}</span></div>` : ''}
+          <div class="exp-field" style="border-top:1px solid var(--border);margin-top:4px;padding-top:6px;"><span><strong>输入 (${tx.vin.length})</strong></span></div>
+          ${vinHtml}
+          <div class="exp-field" style="border-top:1px solid var(--border);margin-top:4px;padding-top:6px;"><span><strong>输出 (${tx.vout.length})</strong></span></div>
+          ${voutHtml}
+          <div class="exp-field" style="border-top:1px solid var(--border);margin-top:4px;padding-top:6px;">
+            <span><strong>手续费</strong></span>
+            <span style="font-family:var(--font-mono);">${tx.fee ? (tx.fee / 1e8).toFixed(8) : '?'} BTC</span>
+          </div>
+          <div class="exp-field" style="margin-top:4px;">
+            <span></span>
+            <span style="font-size:0.72rem;color:var(--text-muted);">
+              <a href="https://mempool.space/tx/${txid}" target="_blank" style="color:var(--orange);">在 mempool.space 上查看完整详情 ↗</a>
+            </span>
+          </div>
+        `;
+      } catch(e) {
+        resultDiv.innerHTML = `<div class="exp-empty">❌ 查询失败：${e.message}。可能是 TXID 无效或网络问题。<br>尝试点击上方样例按钮查看已知交易。</div>`;
+      }
+    }
+
+    // ===== UTXO 追踪器 =====
+    async function lookupUTXOs() {
+      const addr = document.getElementById('addrInput').value.trim();
+      const resultDiv = document.getElementById('utxoResult');
+      if (!addr) {
+        resultDiv.innerHTML = '<div class="exp-empty">请输入比特币地址</div>';
+        return;
+      }
+      try {
+        resultDiv.innerHTML = '<div class="exp-empty">⏳ 正在查询...</div>';
+        const resp = await fetch(`https://mempool.space/api/address/${addr}/utxo`);
+        if (!resp.ok) throw new Error('查询失败');
+        const utxos = await resp.json();
+        
+        if (utxos.length === 0) {
+          resultDiv.innerHTML = '<div class="exp-empty">该地址下无 UTXO（余额为 0）</div>';
+          return;
+        }
+
+        let totalSat = 0;
+        let html = `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">共 ${utxos.length} 个 UTXO</div>`;
+        utxos.forEach((u, i) => {
+          const btc = (u.value / 1e8).toFixed(8);
+          totalSat += u.value;
+          html += `<div class="exp-field">
+            <span style="font-family:var(--font-mono);font-size:0.72rem;">#${i + 1}: ${u.txid.substring(0, 16)}...:${u.vout}</span>
+            <span style="font-family:var(--font-mono);color:var(--orange);font-weight:600;">${btc} BTC</span>
+          </div>`;
+        });
+        html += `<div class="exp-field" style="border-top:1px solid var(--border);margin-top:6px;padding-top:6px;">
+          <span><strong>合计</strong></span>
+          <span style="font-family:var(--font-mono);color:var(--orange);font-weight:700;">${(totalSat / 1e8).toFixed(8)} BTC (${totalSat.toLocaleString()} sats)</span>
+        </div>`;
+        html += `<div style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);">
+          <a href="https://mempool.space/address/${addr}" target="_blank" style="color:var(--orange);">在 mempool.space 上查看完整地址历史 ↗</a>
+        </div>`;
+        resultDiv.innerHTML = html;
+      } catch(e) {
+        resultDiv.innerHTML = `<div class="exp-empty">❌ 查询失败：${e.message}</div>`;
+      }
+    }
+
+    // ===== 手续费计算器 =====
+    let selectedFeeRate = 25;
+
+    function selectFeePriority(el, rate) {
+      document.querySelectorAll('.fee-priority').forEach(e => e.classList.remove('active'));
+      el.classList.add('active');
+      selectedFeeRate = rate;
+      calcFee();
+    }
+
+    function calcFee() {
+      const type = document.getElementById('txType').value;
+      const inputs = parseInt(document.getElementById('txInputs').value) || 1;
+      const outputs = parseInt(document.getElementById('txOutputs').value) || 1;
+
+      // 基于交易类型估算 vBytes
+      let baseSize = 0;
+      const inputSizes = {
+        'p2pkh': 148,
+        'p2wpkh': 68,
+        'p2sh-2of3': 283,
+        'p2wsh-2of3': 104,
+        'p2tr': 58,
+      };
+      const outputSizes = {
+        'p2pkh': 34,
+        'p2wpkh': 31,
+        'p2sh-2of3': 32,
+        'p2wsh-2of3': 43,
+        'p2tr': 43,
+      };
+
+      const overhead = 10; // version + locktime + 计数
+      const vBytes = overhead + inputs * (inputSizes[type] || 68) + outputs * (outputSizes[type] || 31);
+      const feeSat = vBytes * selectedFeeRate;
+      const feeBTC = (feeSat / 1e8).toFixed(8);
+
+      document.getElementById('txSize').textContent = vBytes.toLocaleString() + ' vBytes';
+      document.getElementById('txRate').textContent = selectedFeeRate + ' sat/vB';
+      document.getElementById('txFee').textContent = feeSat.toLocaleString() + ' sats';
+      document.getElementById('txFeeBTC').textContent = feeBTC + ' BTC';
+    }
+
+    // ===== 脚本模拟器 =====
+    function loadScriptDemo() {
+      const type = document.getElementById('scriptType').value;
+      const div = document.getElementById('scriptDemo');
+      
+      if (type === 'p2pkh') {
+        div.innerHTML = `
+          <div style="margin-bottom:12px;padding:8px 12px;background:var(--bg);border-radius:6px;font-family:var(--font-mono);font-size:0.78rem;">
+            <span style="color:var(--orange);">Locking Script (ScriptPubKey):</span><br>
+            OP_DUP OP_HASH160 &lt;pubkey_hash&gt; OP_EQUALVERIFY OP_CHECKSIG<br><br>
+            <span style="color:var(--orange);">Unlocking Script (ScriptSig):</span><br>
+            &lt;signature&gt; &lt;public_key&gt;<br><br>
+            <span style="color:var(--purple);">Combined Execution:</span><br>
+            &lt;sig&gt; &lt;pubkey&gt; OP_DUP OP_HASH160 &lt;hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+          </div>
+          <div style="margin-top:8px;">
+            <button onclick="stepScript('p2pkh')" class="btn btn-sm btn-primary">▶ 逐步执行</button>
+            <button onclick="resetScript('p2pkh')" class="btn btn-sm">↺ 重置</button>
+          </div>
+          <div id="p2pkhExecution" style="margin-top:12px;">
+            <div class="sim-steps">
+              <div class="sim-step" data-sid="0"><span class="step-check">▼</span><span class="step-op">初始栈</span><span>执行开始，栈为空</span><span class="step-stack">[]</span></div>
+              <div class="sim-step" data-sid="1" style="display:none;"><span class="step-check">①</span><span class="step-op">&lt;sig&gt;</span><span>压入签名</span><span class="step-stack">[sig]</span></div>
+              <div class="sim-step" data-sid="2" style="display:none;"><span class="step-check">②</span><span class="step-op">&lt;pubkey&gt;</span><span>压入公钥</span><span class="step-stack">[sig, pubKey]</span></div>
+              <div class="sim-step" data-sid="3" style="display:none;"><span class="step-check">③</span><span class="step-op">OP_DUP</span><span>复制栈顶</span><span class="step-stack">[sig, pubKey, pubKey]</span></div>
+              <div class="sim-step" data-sid="4" style="display:none;"><span class="step-check">④</span><span class="step-op">OP_HASH160</span><span>公钥哈希</span><span class="step-stack">[sig, pubKey, hash]</span></div>
+              <div class="sim-step" data-sid="5" style="display:none;"><span class="step-check">⑤</span><span class="step-op">OP_EQUALVERIFY</span><span>哈希匹配?</span><span class="step-stack">[sig, pubKey]</span></div>
+              <div class="sim-step" data-sid="6" style="display:none;"><span class="step-check">⑥</span><span class="step-op">OP_CHECKSIG</span><span>验证签名</span><span class="step-stack" style="color:#10B981;font-weight:700;">✅ true</span></div>
+            </div>
+          </div>
+        `;
+      } else if (type === 'p2sh') {
+        div.innerHTML = `
+          <div style="margin-bottom:12px;padding:8px 12px;background:var(--bg);border-radius:6px;font-family:var(--font-mono);font-size:0.78rem;">
+            <span style="color:var(--orange);">Redeem Script (2-of-3 multisig):</span><br>
+            OP_2 &lt;pub1&gt; &lt;pub2&gt; &lt;pub3&gt; OP_3 OP_CHECKMULTISIG<br><br>
+            <span style="color:var(--orange);">Locking Script (ScriptPubKey):</span><br>
+            OP_HASH160 &lt;hash(redeemScript)&gt; OP_EQUAL<br><br>
+            <span style="color:var(--orange);">Unlocking Script (ScriptSig):</span><br>
+            OP_0 &lt;sig1&gt; &lt;sig2&gt; &lt;redeemScript&gt;<br><br>
+            <span style="color:var(--purple);">Execution Flow:</span><br>
+            ① 提供 OP_0 + 2个签名 + 赎回脚本<br>
+            ② 验证 OP_HASH160(赎回脚本) = 锁定脚本中的哈希<br>
+            ③ 检查 2-of-3 签名是否有效
+          </div>
+          <div style="color:var(--text-muted);font-size:0.82rem;">
+            💡 <strong>关键点</strong>：发送方只知道"这笔钱需要满足脚本 X 才能花"，并不知道 X 是 2-of-3 多签。这是 P2SH 的核心隐私优势。
+          </div>
+        `;
+      } else if (type === 'p2tr-key-path') {
+        div.innerHTML = `
+          <div style="margin-bottom:12px;padding:8px 12px;background:var(--bg);border-radius:6px;font-family:var(--font-mono);font-size:0.78rem;">
+            <span style="color:var(--orange);">Locking Script (ScriptPubKey):</span><br>
+            OP_1 &lt;32_bytes_x_only_pubkey&gt;<br><br>
+            <span style="color:var(--orange);">Witness (Taproot key path spend):</span><br>
+            &lt;signature&gt;<br><br>
+            <span style="color:var(--purple);">Execution:</span><br>
+            ① 验证 Schnorr 签名 &lt;sig&gt; 与公钥 &lt;Q&gt; 是否匹配<br>
+            ② 成功 → 资金解锁<br><br>
+            <span style="color:var(--purple);">对比 P2PKH:</span><br>
+            P2TR 执行更简单、签名更短、所有花费路径对外不可见
+          </div>
+          <div style="color:var(--text-muted);font-size:0.82rem;">
+            💡 <strong>关键点</strong>：P2TR 使用的 x-only 公钥（32 字节，不含 y 坐标）比传统 33 字节压缩公钥更短。Schnorr 签名聚合允许将多签表现为单签——外界完全无法区分。
+          </div>
+          <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+            <span class="tag tag-purple">Taproot 2021</span>
+            <span class="tag tag-green">BIP-340 Schnorr</span>
+            <span class="tag tag-blue">BIP-341 MAST</span>
+            <span class="tag tag-orange">BIP-342 Tapscript</span>
+          </div>
+        `;
+      }
+    }
+
+    // ===== 逐步执行脚本 =====
+    let scriptStepIndex = {};
+
+    function stepScript(type) {
+      const container = document.getElementById('p2pkhExecution');
+      if (!container) return;
+      if (!scriptStepIndex[type]) scriptStepIndex[type] = 0;
+      
+      const steps = container.querySelectorAll('.sim-step');
+      if (scriptStepIndex[type] >= steps.length) {
+        scriptStepIndex[type] = 0;
+      }
+      
+      scriptStepIndex[type]++;
+      steps.forEach((s, i) => {
+        if (i === 0) s.style.display = 'flex';
+        else s.style.display = i < scriptStepIndex[type] ? 'flex' : 'none';
+        s.classList.remove('active', 'success');
+        if (i > 0 && i < scriptStepIndex[type]) s.classList.add('success');
+        if (i > 0 && i === scriptStepIndex[type] - 1) s.classList.add('active');
+      });
+      
+      if (scriptStepIndex[type] >= steps.length) {
+        // 完成动画
+        container.querySelectorAll('.sim-step').forEach(s => s.classList.remove('active'));
+      }
+    }
+
+    function resetScript(type) {
+      scriptStepIndex[type] = 0;
+      const container = document.getElementById('p2pkhExecution');
+      if (container) {
+        const steps = container.querySelectorAll('.sim-step');
+        steps.forEach((s, i) => {
+          s.style.display = i === 0 ? 'flex' : 'none';
+          s.classList.remove('active', 'success');
+        });
+      }
+    }
+
+    // ===== 交易探索初始化 =====
+    function initTxExplorer() {
+      // 自动查询创世块后第一笔交易
+      setTimeout(() => lookupTx(), 1000);
+    }
+  </script>
+</body>
+</html>

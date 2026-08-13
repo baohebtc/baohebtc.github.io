@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>节点与 P2P 网络 | 比特币学习地图</title>
+  <meta name="description" content="深入比特币节点网络：全节点、轻节点、SPV验证、P2P传播机制，理解去中心化如何运行。">
+  <link rel="stylesheet" href="../../shared/style.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="04-00-overview.html">技术篇</a>
+        <span>›</span>
+        <span>节点与 P2P 网络</span>
+      </div>
+      <h1>🌐 节点与 P2P 网络</h1>
+      <p class="page-subtitle">比特币没有总部——每台全节点都是"记账员"。理解去中心化网络如何运转：节点类型、P2P 传播、Mempool 与最长链共识。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 15 分钟</span>
+        <span class="page-tag">📊 难度：中等</span>
+        <span class="page-tag">📑 技术篇 6/9</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>技术篇进度</span>
+          <span>6 / 9 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 67%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#types">节点的三种形态</a>
+          <a href="#p2p">P2P 网络运转</a>
+          <a href="#consensus">去中心化共识</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 核心直觉 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币没有"总部"，没有"服务器"，没有"管理员"。每一台运行 Bitcoin Core 的电脑，都是一个对等的节点——它们共同维护同一份账本，相互验证，彼此信任。</p>
+            <p style="margin-top:8px;">当你运行一个全节点，你就是比特币网络的"主权验证者"——不需要相信任何人，不需要任何中间人。</p>
+          </div>
+
+          <!-- ============ 一、节点的三种形态 ============ -->
+          <section id="types">
+            <h2>一、节点的三种形态</h2>
+
+            <h3>1.1 全节点（Full Node）</h3>
+            <p>全节点是比特币网络的<strong>脊梁骨</strong>——下载并验证完整区块链，独立判断每一笔交易、每一个区块的有效性，不依赖任何第三方。</p>
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">💾</div>
+                <h4>存储完整账本</h4>
+                <p>约 600GB+（持续增长），每笔交易、每个区块都有</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔍</div>
+                <h4>独立验证</h4>
+                <p>亲自核对签名、余额、双花，不信任任何人</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📢</div>
+                <h4>广播转发</h4>
+                <p>验证通过后，将有效交易/区块广播给邻居节点</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🔒</div>
+                <h4>规则守护者</h4>
+                <p>跑全节点 = 独立验证 = 不信任任何人 = 真正的去中心化</p>
+              </div>
+            </div>
+
+            <div class="treasure-box">
+              <h3>💎 全节点运行要求</h3>
+              <ul>
+                <li><strong>存储</strong>：600GB+（每年约 60GB 增长）</li>
+                <li><strong>带宽</strong>：上行/下行各 10Mbps+</li>
+                <li><strong>内存</strong>：2GB+（建议 4GB+）</li>
+                <li><strong>初始同步</strong>：2-7 天</li>
+                <li><strong>软件</strong>：Bitcoin Core 官方客户端（树莓派也能跑）</li>
+              </ul>
+            </div>
+
+            <h3>1.2 轻节点（Light Node / SPV）</h3>
+            <p><strong>SPV</strong> = Simplified Payment Verification（简单支付验证）。轻节点不下载完整账本，只下载区块头（约 80MB），通过 <strong>Merkle 证明</strong>验证交易是否被包含在区块中。</p>
+
+            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:14px 0;">
+              <thead>
+                <tr>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">优点</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">缺点</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">存储小（~80MB）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">无法独立验证双花</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">同步快（分钟级）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">隐私弱（查询泄露地址）</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">适合移动设备</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">依赖全节点服务</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">典型：Electrum、Breadwallet</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">信任假设：相信多数算力诚实</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>1.3 矿工节点</h3>
+            <p>矿工节点是<strong>全节点 + 挖矿软件</strong>：通常是全节点，额外运行矿机或矿池客户端。</p>
+            <ul>
+              <li><strong>打包交易</strong>：从 mempool 选择交易，构造区块</li>
+              <li><strong>PoW 计算</strong>：搜索 nonce，找到满足难度的区块哈希</li>
+              <li><strong>广播新区块</strong>：挖到后立即向全网广播</li>
+            </ul>
+            <p class="highlight-box" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin:10px 0;font-size:0.88rem;">
+              💡 矿工<strong>必须</strong>跑全节点或连接矿池的全节点，才能验证交易有效性。
+            </p>
+
+            <h3>1.4 节点类型对比</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:14px 0;">
+              <thead>
+                <tr>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">特性</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">全节点</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">轻节点(SPV)</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">矿工节点</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>存储</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">完整账本(~600GB)</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">仅区块头(~80MB)</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">完整账本(~600GB)</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>验证能力</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">独立验证所有</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">Merkle证明</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">独立验证+挖矿</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>双花检测</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">✅ 能检测</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">❌ 不能检测</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">✅ 能检测</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>隐私</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">高（无需泄露查询）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">低（需向全节点查询）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">高</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>同步时间</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">2-7 天</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">分钟级</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">2-7 天</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>典型用户</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">技术用户、企业</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">普通用户、手机钱包</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">矿工、矿池</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- ============ 二、P2P 网络运转 ============ -->
+          <section id="p2p">
+            <h2>二、P2P 网络运转</h2>
+
+            <h3>2.1 节点发现：如何找到邻居</h3>
+            <p>新节点启动后，如何找到第一批邻居？</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin:14px 0;">
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <strong style="color:var(--orange);">① DNS 种子（DNS Seeds）</strong>
+                <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:6px;">硬编码在 Bitcoin Core 中的 DNS 服务器列表，返回活跃节点 IP。<br>
+                <code style="font-size:0.78rem;color:var(--purple);">seed.bitcoin.sipa.be, dnsseed.bluematt.me, ...</code></p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <strong style="color:var(--orange);">② 固定节点（Fixed Seeds）</strong>
+                <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:6px;">DNS 不可用时的备选方案，尝试硬编码的 IP 地址列表。</p>
+              </div>
+              <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <strong style="color:var(--orange);">③ 地址广播（addr messages）</strong>
+                <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:6px;">连接后，邻居节点分享它们知道的其他节点地址。每个节点维护地址库（addrman），定期清理不活跃地址。</p>
+              </div>
+            </div>
+
+            <h3>2.2 连接拓扑：网状结构</h3>
+            <p>每个节点连接 <strong>8-125 个邻居</strong>（出站 8 个默认，入站最多 117 个）。无中心——所有节点地位平等，没有"超级节点"。</p>
+            <ul style="margin:10px 0;font-size:0.88rem;">
+              <li><strong>小世界网络</strong>：任意两个节点之间，平均跳数约 3-7 跳</li>
+              <li><strong>抗审查</strong>：没有单点故障，部分节点下线不影响网络</li>
+              <li><strong>Gossip 协议</strong>：节点随机向所有邻居广播新数据，全网秒级扩散</li>
+            </ul>
+
+            <figure class="diagram-container" style="margin:20px 0;text-align:center;">
+              <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;height:auto;font-family:var(--font-sans);">
+                <line x1="200" y1="80" x2="300" y2="50" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="200" y1="80" x2="140" y2="140" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="200" y1="80" x2="280" y2="140" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="200" y1="80" x2="380" y2="100" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="380" y1="100" x2="460" y2="60" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="380" y1="100" x2="500" y2="140" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="380" y1="100" x2="440" y2="180" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="280" y1="140" x2="440" y2="180" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="460" y1="60" x2="500" y2="140" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="140" y1="140" x2="200" y2="220" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="280" y1="140" x2="200" y2="220" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="440" y1="180" x2="340" y2="220" stroke="#2A2A2A" stroke-width="1.5"/>
+                <line x1="200" y1="220" x2="340" y2="220" stroke="#2A2A2A" stroke-width="1.5"/>
+                <circle cx="300" cy="50" r="28" fill="rgba(247,147,26,0.12)"/>
+                <circle cx="140" cy="140" r="22" fill="rgba(16,185,129,0.12)"/>
+                <circle cx="280" cy="140" r="22" fill="rgba(59,130,246,0.12)"/>
+                <circle cx="200" cy="80" r="30" fill="rgba(247,147,26,0.2)"/>
+                <circle cx="200" cy="80" r="22" fill="#F7931A"/>
+                <text x="200" y="77" text-anchor="middle" fill="white" font-size="13">⛏</text>
+                <text x="200" y="90" text-anchor="middle" fill="#FFA940" font-size="7">矿工</text>
+                <circle cx="380" cy="100" r="26" fill="rgba(139,92,246,0.12)"/>
+                <circle cx="380" cy="100" r="19" fill="#8B5CF6"/>
+                <text x="380" y="97" text-anchor="middle" fill="white" font-size="11">📱</text>
+                <text x="380" y="110" text-anchor="middle" fill="#A78BFA" font-size="7">SPV</text>
+                <circle cx="460" cy="60" r="22" fill="rgba(59,130,246,0.12)"/>
+                <circle cx="460" cy="60" r="16" fill="#3B82F6"/>
+                <text x="460" y="64" text-anchor="middle" fill="white" font-size="10">🖥</text>
+                <circle cx="500" cy="140" r="22" fill="rgba(16,185,129,0.12)"/>
+                <circle cx="500" cy="140" r="16" fill="#10B981"/>
+                <text x="500" y="144" text-anchor="middle" fill="white" font-size="10">📱</text>
+                <circle cx="440" cy="180" r="26" fill="rgba(139,92,246,0.12)"/>
+                <circle cx="440" cy="180" r="19" fill="#8B5CF6"/>
+                <text x="440" y="177" text-anchor="middle" fill="white" font-size="11">🏭</text>
+                <text x="440" y="190" text-anchor="middle" fill="#A78BFA" font-size="7">矿池</text>
+                <circle cx="300" cy="50" r="19" fill="#3B82F6"/>
+                <text x="300" y="54" text-anchor="middle" fill="white" font-size="10">🖥</text>
+                <circle cx="140" cy="140" r="16" fill="#10B981"/>
+                <text x="140" y="144" text-anchor="middle" fill="white" font-size="10">🖥</text>
+                <circle cx="280" cy="140" r="16" fill="#10B981"/>
+                <text x="280" y="144" text-anchor="middle" fill="white" font-size="10">🖥</text>
+                <circle cx="200" cy="220" r="20" fill="rgba(59,130,246,0.15)"/>
+                <circle cx="200" cy="220" r="14" fill="#3B82F6"/>
+                <text x="200" y="224" text-anchor="middle" fill="white" font-size="9">📱</text>
+                <circle cx="340" cy="220" r="20" fill="rgba(16,185,129,0.15)"/>
+                <circle cx="340" cy="220" r="14" fill="#10B981"/>
+                <text x="340" y="224" text-anchor="middle" fill="white" font-size="9">🖥</text>
+                <rect x="520" y="30" width="72" height="100" rx="8" fill="#1A1A1A" stroke="#2A2A2A"/>
+                <text x="556" y="48" text-anchor="middle" fill="#666" font-size="8" font-weight="700">图例</text>
+                <circle cx="532" cy="60" r="6" fill="#F7931A"/>
+                <text x="542" y="63" fill="#999" font-size="8">矿工</text>
+                <circle cx="532" cy="76" r="6" fill="#10B981"/>
+                <text x="542" y="79" fill="#999" font-size="8">全节点</text>
+                <circle cx="532" cy="92" r="6" fill="#3B82F6"/>
+                <text x="542" y="95" fill="#999" font-size="8">SPV</text>
+                <circle cx="532" cy="108" r="6" fill="#8B5CF6"/>
+                <text x="542" y="111" fill="#999" font-size="8">矿池</text>
+                <text x="556" y="140" text-anchor="middle" fill="#F7931A" font-size="8">去中心化 =</text>
+                <text x="556" y="153" text-anchor="middle" fill="#666" font-size="7">无单一</text>
+                <text x="556" y="163" text-anchor="middle" fill="#666" font-size="7">故障点</text>
+              </svg>
+              <figcaption style="color:var(--text-muted);font-size:0.8rem;margin-top:6px;">图1: 比特币 P2P 网络拓扑 — 每个节点连接多个邻居，任意节点下线网络依然运转</figcaption>
+            </figure>
+
+            <h3>2.3 消息传播：Flooding 协议</h3>
+            <p>交易和区块如何传遍全网？Gossip（八卦）协议：节点收到新数据，随机广播给所有邻居，邻居再广播给它们的邻居……</p>
+            <div style="display:flex;flex-direction:column;gap:8px;margin:14px 0;">
+              <div style="display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;">
+                <span style="font-size:1.1rem;">📤</span>
+                <div><strong>发起</strong>：节点 A 收到新交易，验证有效</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;">
+                <span style="font-size:1.1rem;">📢</span>
+                <div><strong>广播 inventory</strong>：A 向邻居发送 inv 消息，声明"我有交易 X"</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;">
+                <span style="font-size:1.1rem;">📥</span>
+                <div><strong>请求</strong>：邻居 B 没有 X，回复 getdata 请求</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;">
+                <span style="font-size:1.1rem;">✉️</span>
+                <div><strong>发送</strong>：A 发送完整交易数据给 B</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;">
+                <span style="font-size:1.1rem;">🔄</span>
+                <div><strong>转发</strong>：B 验证后，向它的邻居重复上述过程</div>
+              </div>
+            </div>
+            <p style="font-size:0.88rem;color:var(--orange);margin-top:8px;">💡 这种 <strong>flooding</strong> 机制确保交易/区块能在秒级传遍全网（目前平均约 2-5 秒）。</p>
+
+            <figure class="diagram-container" style="margin:20px 0;text-align:center;">
+              <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;height:auto;font-family:var(--font-sans);">
+                <defs>
+                  <marker id="blk-arr" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+                    <rect x="1" y="1" width="8" height="8" rx="2" fill="#F7931A" opacity="0.9"/>
+                  </marker>
+                  <style>
+                    @keyframes propagate {
+                      0% { opacity:0; transform: translateX(0); }
+                      15% { opacity:1; }
+                      35% { opacity:0; transform: translateX(90px); }
+                      50% { opacity:1; }
+                      70% { opacity:0; transform: translateX(180px); }
+                      85% { opacity:1; }
+                      100% { opacity:0; transform: translateX(270px); }
+                    }
+                    @keyframes pulse {
+                      0%, 100% { opacity:0.7; }
+                      50% { opacity:1; }
+                    }
+                    .block-propagate { animation: propagate 4s ease-in-out infinite; }
+                    .node-pulse { animation: pulse 2s ease-in-out infinite; }
+                  </style>
+                </defs>
+                <circle cx="60" cy="100" r="32" fill="rgba(247,147,26,0.15)" stroke="#F7931A" stroke-width="2"/>
+                <text x="60" y="97" text-anchor="middle" fill="#F7931A" font-size="18">🖥</text>
+                <text x="60" y="112" text-anchor="middle" fill="#FFA940" font-size="8">节点 A</text>
+                <circle cx="240" cy="100" r="32" fill="rgba(139,92,246,0.15)" stroke="#8B5CF6" stroke-width="2"/>
+                <text x="240" y="97" text-anchor="middle" fill="#8B5CF6" font-size="18">🖥</text>
+                <text x="240" y="112" text-anchor="middle" fill="#A78BFA" font-size="8">节点 B</text>
+                <circle cx="420" cy="100" r="32" fill="rgba(59,130,246,0.15)" stroke="#3B82F6" stroke-width="2"/>
+                <text x="420" y="97" text-anchor="middle" fill="#3B82F6" font-size="18">🖥</text>
+                <text x="420" y="112" text-anchor="middle" fill="#60A5FA" font-size="8">节点 C</text>
+                <circle cx="600" cy="100" r="32" fill="rgba(16,185,129,0.15)" stroke="#10B981" stroke-width="2"/>
+                <text x="600" y="97" text-anchor="middle" fill="#10B981" font-size="18">🖥</text>
+                <text x="600" y="112" text-anchor="middle" fill="#6EE7B7" font-size="8">节点 D</text>
+                <rect x="95" y="88" width="30" height="24" rx="4" fill="#F7931A" class="block-propagate" style="animation-delay:0s"/>
+                <text x="110" y="104" text-anchor="middle" fill="white" font-size="9" font-weight="700">B</text>
+                <rect x="275" y="88" width="30" height="24" rx="4" fill="#F7931A" class="block-propagate" style="animation-delay:1.5s"/>
+                <text x="290" y="104" text-anchor="middle" fill="white" font-size="9" font-weight="700">B</text>
+                <rect x="455" y="88" width="30" height="24" rx="4" fill="#F7931A" class="block-propagate" style="animation-delay:3s"/>
+                <text x="470" y="104" text-anchor="middle" fill="white" font-size="9" font-weight="700">B</text>
+                <text x="150" y="148" text-anchor="middle" fill="#F7931A" font-size="9">~100ms</text>
+                <text x="330" y="148" text-anchor="middle" fill="#8B5CF6" font-size="9">~100ms</text>
+                <text x="510" y="148" text-anchor="middle" fill="#3B82F6" font-size="9">~100ms</text>
+                <rect x="200" y="165" width="300" height="28" rx="8" fill="rgba(247,147,26,0.08)" stroke="#F7931A" stroke-width="1"/>
+                <text x="350" y="183" text-anchor="middle" fill="#FFA940" font-size="9">🌊 Gossip 协议: 每个节点随机广播给所有邻居，全网秒级扩散</text>
+              </svg>
+              <figcaption style="color:var(--text-muted);font-size:0.8rem;margin-top:6px;">图2: 区块传播 (Gossip 协议) — 区块从发现节点向全网扩散，约 6-10 秒传遍全球</figcaption>
+            </figure>
+
+            <h3>2.4 Mempool：交易候车室</h3>
+            <p>每台全节点维护一个 <strong>mempool</strong>（内存池），存储已广播但尚未被打包的交易。</p>
+            <ul style="margin:10px 0;font-size:0.88rem;">
+              <li><strong>按手续费排序</strong>：矿工优先打包高费率交易</li>
+              <li><strong>容量限制</strong>：默认 300MB，超出则丢弃低费率交易</li>
+              <li><strong>过期清理</strong>：默认 2 周，未打包则移除</li>
+            </ul>
+            <div class="explorer-box" style="margin-top:14px;">
+              <div class="exp-header">
+                <span style="font-weight:600;">Mempool 实时数据</span>
+              </div>
+              <div class="exp-result">
+                <div class="exp-field"><span>当前待确认交易</span><span id="mempoolTxCount">~15万笔</span></div>
+                <div class="exp-field"><span>Mempool 大小</span><span id="mempoolSize">~100MB</span></div>
+                <div class="exp-field"><span>推荐费率</span><span id="feeRate">~10 sat/vB</span></div>
+                <div style="margin-top:8px;font-size:0.75rem;color:var(--text-muted);">
+                  数据来源：<a href="https://mempool.space/" target="_blank" style="color:var(--orange);">mempool.space</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、去中心化共识 ============ -->
+          <section id="consensus">
+            <h2>三、去中心化共识</h2>
+
+            <h3>3.1 没有"投票"，只有"最长链"</h3>
+            <p>比特币没有中心化的投票机制，节点如何知道哪个版本是"真"链？</p>
+            <div class="story-box orange" style="margin:14px 0;">
+              <span class="story-label">📏 Nakamoto 共识规则</span>
+              <p><strong>最长链原则</strong>：累积工作量最多的链，就是有效链。</p>
+              <ul style="margin-top:8px;">
+                <li>每台节点独立计算每条链的<strong>累积难度</strong></li>
+                <li>选择累积难度最大的链作为主链</li>
+                <li>如果收到更长的链，切换过去（重组）</li>
+              </ul>
+            </div>
+
+            <h3>3.2 孤块与重组</h3>
+            <p><strong>场景：</strong>两个矿工同时挖出区块，网络短暂分叉。</p>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin:14px 0;">
+              <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                <div>
+                  <div style="font-size:0.78rem;color:var(--orange);margin-bottom:8px;font-weight:600;">链 A（更长）</div>
+                  <div style="display:flex;gap:4px;align-items:center;">
+                    <div style="width:60px;height:36px;background:var(--bg);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:var(--text-secondary);">块100</div>
+                    <span style="color:var(--text-muted);font-size:0.9rem;">→</span>
+                    <div style="width:60px;height:36px;background:var(--bg);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:var(--text-secondary);">块101-A</div>
+                    <span style="color:var(--text-muted);font-size:0.9rem;">→</span>
+                    <div style="width:60px;height:36px;background:var(--bg);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:var(--text-secondary);">块102-A</div>
+                    <span style="font-size:0.7rem;color:#10B981;margin-left:6px;">✅ 有效</span>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:8px;font-weight:600;text-decoration:line-through;">链 B（被废弃）</div>
+                  <div style="display:flex;gap:4px;align-items:center;">
+                    <div style="width:60px;height:36px;background:var(--bg);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:var(--text-secondary);">块100</div>
+                    <span style="color:var(--text-muted);font-size:0.9rem;">→</span>
+                    <div style="width:60px;height:36px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:#EF4444;">块101-B</div>
+                    <span style="font-size:0.7rem;color:#EF4444;margin-left:6px;">❌ 孤块</span>
+                  </div>
+                </div>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:10px;">节点会暂时接受先收到的链，但一旦另一条链变长，切换过去。块101-B 成为<strong>孤块（orphan）</strong>，其中的交易回到 mempool。</p>
+            </div>
+
+            <h3>3.3 确认深度：安全等待</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin:14px 0;">
+              <thead>
+                <tr>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">确认数</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">安全性</th>
+                  <th style="padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--orange);font-weight:600;">适用场景</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>0 确认</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">极低（可双花）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">小额、信任场景</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>1-2 确认</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">低（孤块风险）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">小额支付</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>3-6 确认</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">中（重组概率低）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">中等金额</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>6+ 确认</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">高（极难重组）</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">大额转账</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);"><strong>深层重组</strong></td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">需要 51% 攻击</td>
+                  <td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-secondary);">成本极高，几乎不可能</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- ============ 四、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>四、多视角解读</h2>
+            <div class="perspective-card" id="nodes-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 同一网络，六种身份</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="developer">👨‍💻 开发者</button>
+                  <button class="p-tab" data-angle="security">🛡️ 安全研究员</button>
+                  <button class="p-tab" data-angle="user">👤 普通用户</button>
+                  <button class="p-tab" data-angle="economist">💰 经济学家</button>
+                  <button class="p-tab" data-angle="philosophy">🧘 哲学视角</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content" data-angle="developer">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">👨‍💻 开发者视角</div>
+                  <div class="p-quote">"实现 P2P 网络，核心是处理连接管理、消息序列化、断线重连。BIP 130/152/155 是关键迭代。"</div>
+                  <ul>
+                    <li><strong>协议层</strong>：Bitcoin P2P 协议（版本握手、消息格式 inv/getdata/tx/block/ping/pong）</li>
+                    <li><strong>连接管理</strong>：维持出站/入站连接，处理超时、断线重连</li>
+                    <li><strong>BIP 优化</strong>：BIP 130 (sendheaders)、BIP 152 (紧凑区块加速同步)、BIP 155 (addrv2 支持 IPv6)</li>
+                    <li><strong>隐私</strong>：Tor/I2P 支持、防止 eclipse 攻击（恶意节点包围目标）</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="security">
+                  <div class="p-angle-badge" style="background:rgba(239,68,68,0.12);color:#EF4444;">🛡️ 安全研究员视角</div>
+                  <div class="p-quote">"网络层攻击的核心是'让你只看到我想让你看到的'——Eclipse 和 Sybil 是两大经典攻击。"</div>
+                  <ul>
+                    <li><strong>Eclipse 攻击</strong>：恶意节点包围目标，隔离其网络视野，让其只能看到攻击者控制的链</li>
+                    <li><strong>Sybil 攻击</strong>：大量虚假身份节点，试图稀释真实节点比例</li>
+                    <li><strong>路由劫持</strong>：BGP 劫持比特币节点流量，可将某地区流量隔离</li>
+                    <li><strong>分区攻击</strong>：将网络分成两个不通信的部分，制造双重支付窗口</li>
+                    <li><strong>防御</strong>：多出站连接、地址库多样化、避免固定种子、利用 Tor 增加拓扑复杂性</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="user">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">👤 普通用户视角</div>
+                  <div class="p-quote">"跑不跑全节点，取决于你想保护多少隐私、想验证多少真实性。"</div>
+                  <ul>
+                    <li><strong>跑全节点的好处</strong>：不信任任何人、隐私最高、验证所有规则</li>
+                    <li><strong>什么时候需要</strong>：大额持有者、商家、企业、开发者</li>
+                    <li><strong>轻钱包够用吗</strong>：日常小额够用，但要知道信任假设（信任多数算力诚实）</li>
+                    <li><strong>如何开始</strong>：Bitcoin Core 官方客户端，树莓派也能跑（约 10W 功耗）</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="economist">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学家视角</div>
+                  <div class="p-quote">"全节点是公共品——验证服务供所有人享用，但运营成本由少数人承担。这是经典的搭便车问题。"</div>
+                  <ul>
+                    <li><strong>全节点是公共品</strong>：验证服务供所有人享用，运营者独自承担成本</li>
+                    <li><strong>激励问题</strong>：跑全节点没有直接收益，为什么有人愿意跑？</li>
+                    <li><strong>答案</strong>：企业需要自保、隐私保护、意识形态认同、技术兴趣驱动</li>
+                    <li><strong>市场均衡</strong>：节点数 ≈ 愿意承担成本的主体数量，节点数下降则去中心化程度降低</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🧘 哲学视角</div>
+                  <div class="p-quote">"跑全节点 = 独立验证 = 不信任任何人。节点即权力，权力即节点。"</div>
+                  <ul>
+                    <li><strong>去中心化定义</strong>：不是"没有中心"，而是"每个人都可以成为中心"</li>
+                    <li><strong>审查抵抗</strong>：没有单点可被关闭、被封禁、被胁迫</li>
+                    <li><strong>网络效应</strong>：全节点越多，网络越健壮，比特币越安全</li>
+                    <li><strong>主权的物理基础</strong>：私钥是数字主权的证明，全节点是网络主权的证明</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家视角</div>
+                  <div class="p-quote">"从创世块到今天，比特币网络的进化就是一场去中心化的自我强化。"</div>
+                  <ul>
+                    <li><strong>2009</strong>：创世，只有中本聪和少数早期节点</li>
+                    <li><strong>2010-2013</strong>：节点数增长，但带宽瓶颈显现</li>
+                    <li><strong>2014</strong>：SPV 轻节点普及（手机钱包兴起），降低了普通用户参与门槛</li>
+                    <li><strong>2015-2017</strong>：区块大小争论，节点运营成本成为争议焦点</li>
+                    <li><strong>2017 至今</strong>：SegWit、紧凑区块(BIP-152)、节点优化，全节点数稳步增长</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 五、动手实验 ============ -->
+          <section id="labs">
+            <h2>五、动手实验</h2>
+
+            <h3>🔍 实验：查询自己电脑能不能跑全节点</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <span style="font-weight:600;">🖥️ 检查你的设备是否能运行 Bitcoin Core 全节点</span>
+              </div>
+              <div class="exp-result">
+                <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.7;">
+                  <p><strong>最低要求（2024 年参考）：</strong></p>
+                  <div class="exp-field"><span>磁盘空间</span><span>≥ 700 GB（建议 1TB+）</span></div>
+                  <div class="exp-field"><span>内存 (RAM)</span><span>≥ 2 GB（建议 4 GB+）</span></div>
+                  <div class="exp-field"><span>带宽</span><span>上行 ≥ 10 Mbps，建议无流量上限</span></div>
+                  <div class="exp-field"><span>初始同步时间</span><span>数小时 ~ 数天（取决于网速）</span></div>
+                  <div class="exp-field"><span>功耗</span><span>Bitcoin Core 本身约 10-30W，完整同步后降至 ~5W</span></div>
+                  <p style="margin-top:12px;"><strong>快速开始：</strong></p>
+                  <ol style="margin:6px 0 6px 20px;font-size:0.82rem;">
+                    <li>前往 <a href="https://bitcoin.org/zh_CN/download" target="_blank" style="color:var(--orange);">bitcoin.org/zh_CN/download</a> 下载 Bitcoin Core</li>
+                    <li>Windows/Mac/Linux 均有官方客户端</li>
+                    <li>首次运行选择<strong>精简模式（pruned）</strong>可大幅减少存储需求（约 8 GB）</li>
+                    <li>连接到网络，等待同步完成</li>
+                  </ol>
+                  <p style="margin-top:10px;font-size:0.78rem;color:var(--text-muted);">
+                    💡 <strong>提示：</strong>即使不跑全节点，运行一个轻节点（Electrum 等）也比完全不参与要好。节点即主权。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <h3>🌐 实验：查看全球节点地图</h3>
+            <div class="explorer-box">
+              <div class="exp-header">
+                <input type="text" id="nodeSearchInput" placeholder="输入节点 IP 或 ASN（可选）">
+                <button onclick="alert('Bitnodes 实时地图请直接访问：https://bitnodes.io/')" class="btn btn-primary">🔍 查看</button>
+              </div>
+              <div class="exp-result">
+                <div class="exp-empty">👆 当前全球可达节点约 <strong>1.5-2 万台</strong>（实际更多，部分在 NAT 防火墙后不可见）</div>
+                <div class="exp-field" style="margin-top:10px;"><span>全球节点地图</span><span><a href="https://bitnodes.io/" target="_blank" style="color:var(--orange);">https://bitnodes.io ↗</a></span></div>
+                <div class="exp-field"><span>Mempool 实时监控</span><span><a href="https://mempool.space/" target="_blank" style="color:var(--orange);">https://mempool.space ↗</a></span></div>
+                <div class="exp-field"><span>传播监控</span><span><a href="https://dsn.tm.kit.edu/bitcoin/" target="_blank" style="color:var(--orange);">DSN Bitcoin Monitor ↗</a></span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、大白话总结 ============ -->
+          <section id="summary">
+            <h2>六、大白话总结</h2>
+            <div class="story-box green">
+              <span class="story-label">💡 把这些复杂的放在日常场景中</span>
+              <p><strong>全节点</strong> = <strong>自己存全套账本并亲自核对</strong></p>
+              <ul>
+                <li>像每个村民都有一本完整的账本，谁都不能骗你</li>
+                <li>缺点：账本太厚（600GB+），翻起来慢</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>轻节点</strong> = <strong>只存书脊，遇到疑问问邻居</strong></p>
+              <ul>
+                <li>像只存目录索引，要看具体内容问别人</li>
+                <li>省空间，但得信任邻居没骗你</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>P2P 网络</strong> = <strong>没有总部的对等广播</strong></p>
+              <ul>
+                <li>像一群人围成圈，每个人都能跟左右说话</li>
+                <li>消息像水波一样扩散，几秒传遍全网</li>
+                <li>没有中心，关不掉，封不完</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>最长链原则</strong> = <strong>谁干的活多，就听谁的</strong></p>
+              <ul>
+                <li>不是投票，不是权威指定</li>
+                <li>累积难度最大 = 真链</li>
+              </ul>
+            </div>
+
+            <div class="story-box purple">
+              <span class="story-label">📦 一句话总结</span>
+              <p><strong>比特币网络 = 没有服务器的"无主之地"——每台节点都是对等的，任何人都能运行，共同维护同一份账本。</strong></p>
+              <p style="margin-top:8px;">跑全节点 = 独立验证 = 不信任任何人。节点即权力。</p>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">1️⃣</div>
+                <p><strong>全节点</strong>独立验证所有交易，是去中心化的基石</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">2️⃣</div>
+                <p><strong>轻节点（SPV）</strong>信任多数算力诚实，适合普通用户日常使用</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">3️⃣</div>
+                <p><strong>P2P 网络</strong>无中心，Gossip 协议使交易几秒传遍全网</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon" style="font-size:1.3rem;">4️⃣</div>
+                <p><strong>最长链原则</strong>（Nakamoto 共识）保证所有节点最终收敛到同一账本</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>你已经理解了比特币网络的去中心化运转。接下来是技术篇的第 7 页：</p>
+            <a href="04-07-upgrades.html" class="btn btn-primary">继续学习：协议升级与治理 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="04-05-mining-consensus.html" class="btn">← 回顾：挖矿与 PoW 共识</a>
+          </div>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="04-05-mining-consensus.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">挖矿与 PoW 共识</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        技术篇 · 6 / 9
+      </div>
+      <a href="04-07-upgrades.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">协议升级与治理</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">₿ 比特币学习地图</div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      initNodesPerspectives();
+
+      // 标记已读
+      const isRead = localStorage.getItem('btc-ch03-06-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    });
+
+    function toggleBookmark(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-06-read', isRead);
+    }
+
+    function initNodesPerspectives() {
+      const card = document.getElementById('nodes-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+      let autoTimer = setInterval(() => show(current + 1), 5000);
+      card.addEventListener('mouseenter', () => clearInterval(autoTimer));
+      card.addEventListener('mouseleave', () => { autoTimer = setInterval(() => show(current + 1), 5000); });
+      show(0);
+    }
+  </script>
+</body>
+</html>

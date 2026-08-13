@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入门篇 06 · 安全存储 | 比特币学习地图</title>
+<meta name="description" content="比特币学习地图 · 比特币安全完全指南：助记词备份、钱包类型选择、防盗防丢最佳实践。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+:root { --primary: #F7931A; --orange: #F7931A; }
+body { background: #0a0806; color: #FFF3E0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+.basics-page { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+.top-bar { display:flex; align-items:center; gap:12px; padding:20px 0 32px; font-size:0.78rem; color:rgba(255,243,224,0.35); }
+.top-bar a { color:rgba(255,243,224,0.4); text-decoration:none; transition:color 0.2s; }
+.top-bar a:hover { color:#F7931A; }
+.top-bar span { color:rgba(255,243,224,0.2); }
+.page-hero { padding: 48px 0 44px; border-bottom: 1px solid rgba(247,147,26,0.12); margin-bottom: 44px; }
+.page-eyebrow { font-size:0.65rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#F7931A; margin-bottom:14px; }
+.page-hero h1 { font-size:clamp(1.8rem,4vw,2.6rem); font-weight:800; letter-spacing:-0.02em; line-height:1.15; margin-bottom:14px; }
+.page-hero h1 .accent { color:#F7931A; }
+.page-hero .subtitle { font-size:1rem; color:rgba(255,243,224,0.55); line-height:1.75; max-width:620px; }
+.chapter-tag { display:inline-flex; align-items:center; gap:8px; background:rgba(247,147,26,0.08); border:1px solid rgba(247,147,26,0.2); padding:5px 14px; border-radius:100px; font-size:0.72rem; font-weight:600; color:#F7931A; margin-bottom:24px; }
+.section { margin-bottom: 52px; }
+.section h2 { font-size: 1.3rem; font-weight: 700; color: #FFF3E0; margin-bottom: 8px; letter-spacing: -0.01em; }
+.section h2 .num { color: #F7931A; margin-right: 10px; font-size: 1.1em; }
+.section .section-intro { font-size: 0.9rem; color: rgba(255,243,224,0.5); line-height: 1.8; margin-bottom: 24px; }
+
+/* Golden rule */
+.golden-rule {
+  background: linear-gradient(135deg, #1a0800 0%, #2a1000 50%, #1a0800 100%);
+  border: 2px solid rgba(247,147,26,0.4);
+  border-radius: 20px;
+  padding: 32px 36px;
+  margin: 28px 0 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.golden-rule::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(247,147,26,0.06) 0%, transparent 70%);
+}
+.golden-rule .emoji { font-size: 3rem; margin-bottom: 12px; position: relative; }
+.golden-rule h3 { font-size: 1.2rem; font-weight: 800; color: #F7931A; margin-bottom: 10px; position: relative; }
+.golden-rule p { font-size: 0.95rem; color: rgba(255,243,224,0.7); line-height: 1.8; max-width: 560px; margin: 0 auto; position: relative; }
+
+/* Wallet comparison */
+.wallet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 20px 0; }
+.wallet-card {
+  background: rgba(247,147,26,0.04);
+  border: 1px solid rgba(247,147,26,0.12);
+  border-radius: 16px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.wallet-card:hover { border-color: rgba(247,147,26,0.3); transform: translateY(-2px); }
+.wallet-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #F7931A, transparent); }
+.wallet-icon { font-size: 2.2rem; margin-bottom: 10px; }
+.wallet-card h3 { font-size: 1rem; font-weight: 700; color: #FFF3E0; margin-bottom: 4px; }
+.wallet-card .wallet-sub { font-size: 0.72rem; color: #F7931A; font-weight: 600; margin-bottom: 12px; }
+.wallet-card p { font-size: 0.83rem; color: rgba(255,243,224,0.55); line-height: 1.7; margin-bottom: 12px; }
+.wallet-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag { font-size: 0.68rem; padding: 3px 10px; border-radius: 100px; font-weight: 600; }
+.tag-safe { background: rgba(74,222,128,0.1); color: #86EFAC; }
+.tag-risk { background: rgba(239,68,68,0.1); color: #FCA5A5; }
+.tag-ok { background: rgba(234,179,8,0.1); color: #FCD34D; }
+
+/* Mnemonic visual */
+.mnem-visual {
+  background: rgba(247,147,26,0.04);
+  border: 1px solid rgba(247,147,26,0.15);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+}
+.mnem-visual h3 { font-size: 0.95rem; font-weight: 700; color: #F7931A; margin-bottom: 8px; }
+.mnem-visual p { font-size: 0.83rem; color: rgba(255,243,224,0.55); line-height: 1.75; margin-bottom: 16px; }
+.mnem-words { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.mnem-word {
+  background: rgba(247,147,26,0.06);
+  border: 1px solid rgba(247,147,26,0.1);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.78rem;
+  font-family: 'Courier New', monospace;
+  color: rgba(255,243,224,0.7);
+  display: flex;
+  gap: 6px;
+}
+.mnem-word .idx { color: rgba(247,147,26,0.4); font-size: 0.65rem; font-weight: 700; }
+.mnem-word .word { color: #FFF3E0; }
+
+/* Alert boxes */
+.alert-box { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:12px; padding:18px 20px; margin:16px 0; display:flex; gap:12px; align-items:flex-start; }
+.alert-box .icon { font-size:1.3rem; flex-shrink:0; }
+.alert-box h4 { font-size:0.88rem; font-weight:600; color:#FCA5A5; margin-bottom:4px; }
+.alert-box p { font-size:0.82rem; color:rgba(255,243,224,0.5); line-height:1.65; }
+.alert-box.green { background:rgba(74,222,128,0.08); border-color:rgba(74,222,128,0.2); }
+.alert-box.green h4 { color:#86EFAC; }
+.alert-box.yellow { background:rgba(234,179,8,0.08); border-color:rgba(234,179,8,0.2); }
+.alert-box.yellow h4 { color:#FCD34D; }
+.alert-box.orange { background:rgba(247,147,26,0.08); border-color:rgba(247,147,26,0.2); }
+.alert-box.orange h4 { color:#F7931A; }
+
+/* Best practices */
+.practice-list { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.practice-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; background: rgba(74,222,128,0.04); border: 1px solid rgba(74,222,128,0.1); border-radius: 12px; }
+.practice-icon { font-size: 1.3rem; flex-shrink: 0; }
+.practice-text h4 { font-size: 0.88rem; font-weight: 600; color: #86EFAC; margin-bottom: 3px; }
+.practice-text p { font-size: 0.8rem; color: rgba(255,243,224,0.5); line-height: 1.65; margin: 0; }
+.practice-item.danger { background: rgba(239,68,68,0.05); border-color: rgba(239,68,68,0.12); }
+.practice-item.danger .practice-icon { }
+.practice-item.danger .practice-text h4 { color: #FCA5A5; }
+
+/* Threat level */
+.threat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.threat-col h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 12px; }
+.threat-col.good h3 { color: #86EFAC; }
+.threat-col.bad h3 { color: #FCA5A5; }
+.threat-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(247,147,26,0.06); }
+.threat-item:last-child { border-bottom: none; }
+.threat-item .t-icon { font-size: 1.1rem; flex-shrink: 0; }
+.threat-item .t-text { font-size: 0.82rem; color: rgba(255,243,224,0.55); line-height: 1.6; }
+.threat-item .t-text strong { color: rgba(255,243,224,0.85); }
+@media (max-width: 600px) { .threat-grid { grid-template-columns: 1fr; } .mnem-words { grid-template-columns: repeat(3, 1fr); } }
+
+/* Page nav */
+.page-nav { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:52px; padding-top:32px; border-top:1px solid rgba(247,147,26,0.1); }
+.page-nav a { display:flex; flex-direction:column; padding:18px 20px; background:rgba(247,147,26,0.04); border:1px solid rgba(247,147,26,0.15); border-radius:14px; text-decoration:none; transition:all 0.3s; }
+.page-nav a:hover { border-color:rgba(247,147,26,0.35); background:rgba(247,147,26,0.08); }
+.page-nav a.next { text-align:right; }
+.nav-label { font-size:0.65rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,243,224,0.3); margin-bottom:5px; }
+.nav-title { font-size:0.9rem; font-weight:600; color:#F7931A; }
+@media (max-width:500px) { .page-nav { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="basics-page">
+  <nav class="top-bar">
+    <a href="../../index.html">首页</a>
+    <span>›</span>
+    <a href="02-00-overview.html">入门篇</a>
+    <span>›</span>
+    <span style="color:#F7931A;">安全存储</span>
+  </nav>
+
+  <header class="page-hero">
+    <div class="page-eyebrow">入门篇 · Chapter 06</div>
+    <h1>安全存储 · <span class="accent">守护你的比特币</span></h1>
+    <p class="subtitle">比特币最独特的安全哲学：没有银行替你保管，一切都靠你自己。理解了私钥和助记词，你就掌握了比特币安全的全部精髓。</p>
+  </header>
+
+  <!-- Golden Rule -->
+  <div class="golden-rule">
+    <div class="emoji">🔑</div>
+    <h3>比特币安全第一定律</h3>
+    <p>你的比特币不是存在"账户"里，是存在"链上地址"里。只有持有私钥的人才有权限花费该地址上的币。<strong>私钥 = 一切。保护私钥 = 保护比特币。</strong></p>
+  </div>
+
+  <!-- SECTION 1: 私钥 / 助记词 -->
+  
+          <div class="story-box red" style="background:linear-gradient(135deg,rgba(239,68,68,0.06),rgba(239,68,68,0.02));border-color:rgba(239,68,68,0.2);">
+            <span class="story-label" style="color:#EF4444;">🚨 安全第一定律</span>
+            <p><strong>比特币的安全性由私钥决定，不由钱包决定。</strong>你的币安账户可以被黑客攻破，但如果你把币提到自己钱包（私钥在你手里），除非私钥泄露，否则任何人都无法动用你的比特币。</p>
+            <p style="margin-top:8px;"><strong>丢失私钥 = 永远失去比特币。</strong>比特币没有客服、没有找回密码、没有账户冻结机制。私钥即所有权，铭刻于心。</p>
+          </div>
+    <section class="section">
+    <div class="chapter-tag">🔐 核心概念</div>
+    <h2><span class="num">🧠</span> 私钥 · 助记词 · 钱包的关系</h2>
+    <p class="section-intro">这三个概念是比特币安全的基础。很多人把币丢了，不是因为被偷，是因为不理解这几个概念。</p>
+
+    <div class="mnem-visual">
+      <h3>助记词（Mnemonic Phrase）= 私钥的人类可读版本</h3>
+      <p>私钥本质是一个256位的二进制数（约10⁷⁷种可能），无法记忆。钱包用BIP-39标准算法，将私钥转换为12–24个英文单词。输入助记词，钱包即可还原全部私钥。</p>
+      <div class="mnem-words">
+        <div class="mnem-word"><span class="idx">1</span><span class="word">apple</span></div>
+        <div class="mnem-word"><span class="idx">2</span><span class="word">banana</span></div>
+        <div class="mnem-word"><span class="idx">3</span><span class="word">cherry</span></div>
+        <div class="mnem-word"><span class="idx">4</span><span class="word">dragon</span></div>
+        <div class="mnem-word"><span class="idx">5</span><span class="word">eagle</span></div>
+        <div class="mnem-word"><span class="idx">6</span><span class="word">forest</span></div>
+        <div class="mnem-word"><span class="idx">7</span><span class="word">galaxy</span></div>
+        <div class="mnem-word"><span class="idx">8</span><span class="word">harbor</span></div>
+        <div class="mnem-word"><span class="idx">9</span><span class="word">island</span></div>
+        <div class="mnem-word"><span class="idx">10</span><span class="word">jungle</span></div>
+        <div class="mnem-word"><span class="idx">11</span><span class="word">kernel</span></div>
+        <div class="mnem-word"><span class="idx">12</span><span class="word">lemon</span></div>
+      </div>
+      <p style="margin-top:12px;font-size:0.75rem;color:rgba(255,243,224,0.3);">↑ BIP-39 助记词示例（12词）。这些词来自固定的2048个英文单词表，任何支持BIP-39的钱包均可导入。</p>
+    </div>
+
+    <div class="alert-box orange">
+      <div class="icon">⚡</div>
+      <div>
+        <h4>助记词就是私钥</h4>
+        <p>获得助记词 = 获得该钱包下所有地址的控制权。钱包会在创建时显示助记词一次，之后永远不会再次显示。截屏、截图、存网盘 = 私钥暴露 = 币随时可被转走。</p>
+      </div>
+    </div>
+
+    <div class="alert-box yellow">
+      <div class="icon">💡</div>
+      <div>
+        <h4>钱包（Wallet）是什么？</h4>
+        <p>钱包不是"存放"比特币的软件，而是<strong>管理私钥</strong>的工具。它帮你生成私钥、管理地址、签名交易、查看余额。比特币永远存在链上，不在钱包里。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: 钱包类型 -->
+  <section class="section">
+    <div class="chapter-tag">🏦 钱包类型</div>
+    <h2><span class="num">📱</span> 热钱包 vs 冷钱包 vs 硬件钱包</h2>
+    <p class="section-intro">比特币钱包按联网状态分为三大类。理解它们的安全权衡，是选择钱包的基础。</p>
+
+    <div class="wallet-grid">
+      <div class="wallet-card">
+        <div class="wallet-icon">🔥</div>
+        <h3>热钱包（Hot Wallet）</h3>
+        <div class="wallet-sub">联网软件钱包</div>
+        <p>手机APP或电脑软件钱包，私钥存储在联网设备中。方便快捷，适合日常小额交易。</p>
+        <div class="wallet-tags">
+          <span class="tag tag-ok">日常小额</span>
+          <span class="tag tag-risk">有联网风险</span>
+          <span class="tag tag-ok">方便</span>
+        </div>
+      </div>
+      <div class="wallet-card">
+        <div class="wallet-icon">❄️</div>
+        <h3>冷钱包（Cold Wallet）</h3>
+        <div class="wallet-sub">离线存储</div>
+        <p>完全不联网的钱包——可以是断开网络的电脑，也可以是专门的硬件设备。适合长期持有大额资产。</p>
+        <div class="wallet-tags">
+          <span class="tag tag-safe">安全</span>
+          <span class="tag tag-ok">大额存储</span>
+          <span class="tag tag-ok">离线</span>
+        </div>
+      </div>
+      <div class="wallet-card">
+        <div class="wallet-icon">🔐</div>
+        <h3>硬件钱包（Hardware Wallet）</h3>
+        <div class="wallet-sub">专用设备 · 推荐</div>
+        <p>专用硬件设备（如Ledger、Trezor），私钥存储在安全芯片中，永远不离开设备。交易时设备物理确认。</p>
+        <div class="wallet-tags">
+          <span class="tag tag-safe">最推荐</span>
+          <span class="tag tag-safe">安全</span>
+          <span class="tag tag-ok">便捷</span>
+        </div>
+      </div>
+      <div class="wallet-card">
+        <div class="wallet-icon">📄</div>
+        <h3>纸钱包（Paper Wallet）</h3>
+        <div class="wallet-sub">助记词手写</div>
+        <p>将私钥或助记词手写在纸上，完全离线。成本为零，但存在物理损坏/丢失风险。</p>
+        <div class="wallet-tags">
+          <span class="tag tag-safe">成本为零</span>
+          <span class="tag tag-risk">易丢失/损坏</span>
+          <span class="tag tag-ok">冷存储</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert-box green">
+      <div class="icon">✅</div>
+      <div>
+        <h4>新手推荐：热钱包 + 硬件钱包组合</h4>
+        <p>热钱包（欧易 Web3 / MetaMask / BlueWallet）用于日常小额；硬件钱包（Ledger / Trezor）用于存储超过1个月生活费的比特币。大额不用热钱包。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: 最佳实践 -->
+  <section class="section">
+    <div class="chapter-tag">🛡️ 最佳实践</div>
+    <h2><span class="num">🛡️</span> 防盗防丢 · 完整操作指南</h2>
+    <p class="section-intro">比特币安全的最大威胁不是黑客，而是自己的疏忽。以下清单来自真实案例经验。</p>
+
+    <div class="practice-list">
+      <div class="practice-item">
+        <div class="practice-icon">✅</div>
+        <div class="practice-text">
+          <h4>手抄助记词，至少两份</h4>
+          <p>用防水纸和耐褪色墨水，在两张纸上分别手抄助记词。不要用打印机（会被黑客或恶意软件获取）。将两份分别存放在不同地点的安全位置（保险箱、家中不同位置）。</p>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div class="practice-icon">✅</div>
+        <div class="practice-text">
+          <h4>验证备份的正确性</h4>
+          <p>抄写完成后，在新设备上导入助记词，确认地址余额正确且与原钱包一致，然后再删除原钱包。这确保备份有效，而不是抄错了词。</p>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div class="practice-icon">✅</div>
+        <div class="practice-text">
+          <h4>保管好硬件钱包 PIN 码</h4>
+          <p>硬件钱包通常有4–8位 PIN 码保护。PIN 码输错10次会强制恢复出厂设置（需要助记词）。同时保管好 PIN 码和助记词——分开存放，不要放在一起。</p>
+        </div>
+      </div>
+      <div class="practice-item danger">
+        <div class="practice-icon">🚫</div>
+        <div class="practice-text">
+          <h4>永远不要把助记词告诉任何人</h4>
+          <p>任何向你索要助记词的人，无论理由是什么，都是骗子。官方钱包永远不会问你助记词。Email、微信、Telegram上的"客服"，只要问助记词，直接拉黑。</p>
+        </div>
+      </div>
+      <div class="practice-item danger">
+        <div class="practice-icon">🚫</div>
+        <div class="practice-text">
+          <h4>不要截图、不要存网盘、不要发邮件</h4>
+          <p>手机截图自动同步云端（iCloud/Google Photos/微信）。助记词触网 = 必然泄露，只是时间问题。</p>
+        </div>
+      </div>
+      <div class="practice-item danger">
+        <div class="practice-icon">🚫</div>
+        <div class="practice-text">
+          <h4>警惕"领币"、"空投"骗局</h4>
+          <p>任何人告诉你"先转一点BTC才能领取更多BTC"的都是骗局。区块链交易不可逆，转出去就回不来。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: 场景指南 -->
+  <section class="section">
+    <div class="chapter-tag">🎯 场景选择</div>
+    <h2><span class="num">🎯</span> 你应该用什么钱包？</h2>
+    <p class="section-intro">不同金额、不同用途，策略不同。以下是推荐组合：</p>
+
+    <div class="threat-grid">
+      <div class="threat-col good">
+        <h3>✅ 推荐组合</h3>
+        <div class="threat-item">
+          <div class="t-icon">📱</div>
+          <div class="t-text"><strong>日常零花（< ¥5,000）</strong> → 交易所自带热钱包 / BlueWallet / MetaMask</div>
+        </div>
+        <div class="threat-item">
+          <div class="t-icon">💳</div>
+          <div class="t-text"><strong>中额资产（¥5,000–50万）</strong> → 软件热钱包 + 硬件钱包备份，助记词纸质存储</div>
+        </div>
+        <div class="threat-item">
+          <div class="t-icon">🏦</div>
+          <div class="t-text"><strong>大额资产（> ¥50万）</strong> → 硬件钱包（Ledger/Trezor）+ 助记词保险箱 + 多签方案</div>
+        </div>
+        <div class="threat-item">
+          <div class="t-icon">🛡️</div>
+          <div class="t-text"><strong>长期不动（5年+）</strong> → 硬件钱包 + 助记词防火防水存储 + 分散多份</div>
+        </div>
+      </div>
+      <div class="threat-col bad">
+        <h3>❌ 避免这些</h3>
+        <div class="threat-item">
+          <div class="t-icon">💸</div>
+          <div class="t-text">在交易所长期持有大额资产（Mt.Gox、FTX 都是真实案例）</div>
+        </div>
+        <div class="threat-item">
+          <div class="t-icon">📧</div>
+          <div class="t-text">通过 Email / 在线表单发送助记词，或截图存云</div>
+        </div>
+        <div class="threat-item">
+          <div class="t-icon">💬</div>
+          <div class="t-text">将助记词告诉"Telegram客服"或"微信助手"</div>
+        </div>
+        <div class="threat-item">
+          <div class="t-icon">🖨️</div>
+          <div class="t-text">用普通打印机打印助记词（可能被植入后门）</div>
+        </div>
+        <div class="threat-item">
+          <div class="t-icon">🔑</div>
+          <div class="t-text">使用来历不明的钱包软件（先在GitHub核查代码签名）</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: 多签简介 -->
+  <section class="section">
+    <div class="chapter-tag">🔐 进阶安全</div>
+    <h2><span class="num">🔐</span> 多签钱包：让资产更安全</h2>
+    <p class="section-intro">多签（Multisig）是一种高级安全方案：要求多个私钥同时签名才能转出币。适合机构、高净值个人、以及希望资产由多人共同管理的场景。</p>
+
+    <div class="alert-box green">
+      <div class="icon">💡</div>
+      <div>
+        <h4>最常见的多签配置：2-of-3</h4>
+        <p>生成3个私钥，任意2个签名即可转账。例如：手机1个（日常）、家中1个（备用）、律师事务所1个（遗产安排）。即使手机丢失或被偷，剩余2把钥匙仍能保护资产。</p>
+      </div>
+    </div>
+
+    <div class="practice-list" style="margin-top:16px;">
+      <div class="practice-item">
+        <div class="practice-icon">🏢</div>
+        <div class="practice-text">
+          <h4>公司/团队共同管理</h4>
+          <p>3位合伙人设3-of-3，任意2人同意即可动用公司比特币资产，防止单人叛变或意外。</p>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div class="practice-icon">👨‍👩‍👧</div>
+        <div class="practice-text">
+          <h4>家庭遗产规划</h4>
+          <p>将助记词分散给家人，设为2-of-3。持币人去世后，家人用各自助记词恢复资产，无需通过法律程序。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 多视角卡片 ============ -->
+    <div class="perspective-card" id="main-perspectives">
+      <div class="persp-tabs">
+        <button class="p-tab active" data-angle="security">🔐 安全</button>
+        <button class="p-tab" data-angle="user">👤 用户</button>
+        <button class="p-tab" data-angle="finance">💰 金融</button>
+        <button class="p-tab" data-angle="technology">⚙️ 技术</button>
+        <button class="p-tab" data-angle="history">📜 历史</button>
+        <button class="p-tab" data-angle="business">🏪 商业</button>
+      </div>
+      <div class="persp-contents">
+        <div class="p-content active" data-angle="security">
+          <p>【安全视角】私钥 = 比特币的全部。没有私钥就没有比特币的控制权。助记词是私钥的人类可读版本，截屏=泄露，存网盘=泄露，告诉任何人=必然被盗。最佳实践：手抄两份，防火防水，物理分散存储。</p>
+        </div>
+        <div class="p-content" data-angle="user">
+          <p>【用户视角】普通用户最大的安全误区是把大额资产存在交易所——FTX、Mt.Gox 都曾是如此"安全"的平台。真实风险来自两个方面：外部黑客攻击和内部运营风险。将币提到自己的钱包，才是真正"拥有"比特币的开始。</p>
+        </div>
+        <div class="p-content" data-angle="finance">
+          <p>【金融视角】钱包备份质量直接决定资产安全等级。硬件钱包（约 500–1500 元）提供最高安全保障，适合持币超过 1 年生活费的用户。多签方案（2-of-3）可有效分散单点失败风险，是机构级别资产管理的主流方案。</p>
+        </div>
+        <div class="p-content" data-angle="technology">
+          <p>【技术视角】BIP-39 将 256 位私钥编码为 12–24 个助记词，BIP-32/BIP-44 定义了分层确定性钱包结构。硬件钱包使用安全芯片（Secure Enclave / EAL5+）确保私钥永不离开设备。即使电脑被植入木马，硬件钱包仍可保护私钥安全。</p>
+        </div>
+        <div class="p-content" data-angle="history">
+          <p>【历史视角】2014 年 Mt.Gox 被盗 85 万 BTC，2017 年 The DAO 被盗 360 万 ETH，2022 年 FTX 挪用客户资产导致破产——每一次安全事件都在推动行业安全标准的提升。比特币 14 年历史证明：私钥在手，风险完全可控。</p>
+        </div>
+        <div class="p-content" data-angle="business">
+          <p>【商业视角】Ledger、Trezor 等硬件钱包厂商年收入已达数亿美元；Casa、Unchained Capital 提供多签托管服务；BitGo、Coinbase Custody 服务机构客户。比特币安全已形成一个从消费级到企业级的完整商业生态。</p>
+        </div>
+      </div>
+      <div class="persp-dots">
+        <span class="p-dot active" data-angle="security"></span>
+        <span class="p-dot" data-angle="user"></span>
+        <span class="p-dot" data-angle="finance"></span>
+        <span class="p-dot" data-angle="technology"></span>
+        <span class="p-dot" data-angle="history"></span>
+        <span class="p-dot" data-angle="business"></span>
+      </div>
+    </div>
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币白皮书（中本聪 2008）· 下载 PDF<span class="exp-go">→</span></a></li>
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 区块浏览器 · 查看链上真实数据<span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+  <!-- Page nav -->
+  <nav class="page-nav">
+    <a href="02-05-buy-hold.html" class="prev">
+      <span class="nav-label">← 上一章</span>
+      <span class="nav-title">买币·入金·持币</span>
+    </a>
+    <a href="02-07-payment.html" class="next">
+      <span class="nav-label">下一章 →</span>
+      <span class="nav-title">支付与闪电网络</span>
+    </a>
+  </nav>
+
+
+          <!-- Feature Cards: 钱包安全 -->
+          <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:24px 0;">
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">🔥</div>
+              <h4>热钱包</h4>
+              <p>联网使用，方便快捷，但面临网络攻击风险。适合存放少量日常使用的比特币。</p>
+              <span style="margin-top:8px;display:inline-block;background:rgba(239,68,68,0.1);color:#EF4444;font-size:0.72rem;padding:3px 10px;border-radius:100px;">风险：网络攻击</span>
+            </div>
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">💾</div>
+              <h4>冷钱包</h4>
+              <p>永不联网的设备。安全性高，适合存放大额资产。</p>
+              <span style="margin-top:8px;display:inline-block;background:rgba(249,115,22,0.1);color:#F97316;font-size:0.72rem;padding:3px 10px;border-radius:100px;">风险：物理丢失</span>
+            </div>
+            <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+              <div class="feature-icon">🔐</div>
+              <h4>硬件钱包</h4>
+              <p>专用设备（Ledger / Trezor / 比特护盾），私钥存储在安全芯片，永不暴露到互联网。推荐方案。</p>
+              <span style="margin-top:8px;display:inline-block;background:rgba(16,185,129,0.1);color:#10B981;font-size:0.72rem;padding:3px 10px;border-radius:100px;">推荐：大额存储</span>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <span class="label">🛡️ 比特币安全自检清单</span>
+            <div class="text">
+              <ul style="padding-left:20px;">
+                <li>✅ 助记词用手写方式备份（不要截屏、不要存在云端）</li>
+                <li>✅ 助记词抄写两份，存放在不同地点的防火防水位置</li>
+                <li>✅ 不要在任何网站/APP输入助记词（真钱包永远不会要求）</li>
+                <li>✅ 开启交易所 2FA（Google Authenticator > 短信验证码）</li>
+                <li>✅ 大额资产存放在硬件钱包，不长期放在交易所</li>
+                <li>✅ 测试恢复：换一部手机导入助记词，确认能正常恢复</li>
+                <li>⚠️ 永远不要给任何人发送私钥/助记词——即使是"客服"</li>
+              </ul>
+            </div>
+          </div>
+    </div>
+
+
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool 实时区块浏览器 <span class="exp-go">→</span></a></li>
+          <li><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币白皮书 (Bitcoin.org) <span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+<footer style="text-align:center;padding:32px 20px;color:rgba(255,243,224,0.2);font-size:0.75rem;border-top:1px solid rgba(247,147,26,0.08);margin-top:40px;">
+  © 2026 比特币学习地图 · Bitcoin Learning Map
+</footer>
+
+</body>
+</html>

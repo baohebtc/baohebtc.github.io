@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>经济学篇总览 | 比特币学习地图</title>
+  <meta name="description" content="比特币经济学全景地图：从货币本质到估值模型，理解比特币为什么值钱、价格从哪里来。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ===== SVG 区块样式 ===== */
+    .svg-visual-wrap {
+      background: #111;
+      border: 1.5px solid #2A2A2A;
+      border-radius: 18px;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .svg-visual-wrap svg {
+      border-radius: 10px;
+    }
+    .protocol-stack {
+      margin: 2.5rem 0;
+      background: #111;
+      border: 1.5px solid #2A2A2A;
+      border-radius: 18px;
+      padding: 24px;
+    }
+    .protocol-stack svg {
+      border-radius: 10px;
+    }
+    @media (max-width: 900px) {
+      .svg-visual-wrap,
+      .protocol-stack {
+        padding: 12px;
+      }
+    }
+
+    /* ===== 章节卡片 ===== */
+    .chapter-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .chapter-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .chapter-card .chapter-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .chapter-card .chapter-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+    .chapter-card .chapter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .chapter-card .chapter-tag {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text-muted);
+    }
+
+    /* ===== 路线图 ===== */
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .roadmap-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all var(--transition);
+    }
+    .roadmap-node:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .roadmap-node.current {
+      border-color: var(--orange);
+      background: rgba(247,147,26,0.08);
+    }
+    .roadmap-node .node-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-node .node-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orange);
+      min-width: 20px;
+    }
+    .roadmap-node .node-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .roadmap-node .node-desc {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .roadmap-arrow {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    /* ===== 对比表 ===== */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 14px 0;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .compare-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .compare-table td {
+      color: var(--text-secondary);
+    }
+    .compare-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .compare-table .new-marker {
+      display: inline-block;
+      font-size: 0.62rem;
+      padding: 1px 5px;
+      border-radius: 8px;
+      background: rgba(16,185,129,0.12);
+      color: #10B981;
+      font-weight: 600;
+    }
+    .table-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ===== 视角卡片 ===== */
+    .perspective-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .perspective-header {
+      padding: 14px 18px;
+      background: rgba(247,147,26,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .ph-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .ph-label-icon { font-size: 1rem; }
+    .perspective-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .p-tab {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .p-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .p-tab.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+    .perspective-body { padding: 16px 18px; }
+    .p-content { display: none; }
+    .p-content.active { display: block; }
+    .p-angle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .p-quote {
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      margin: 10px 0;
+    }
+    .p-content ul {
+      padding-left: 20px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .perspective-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p-dot-indicator { display: flex; gap: 4px; }
+    .p-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .p-dot.active { background: var(--orange); }
+
+    /* ===== 实验区 ===== */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .lab-section .lab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .lab-section .lab-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .lab-section .lab-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .lab-section .lab-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+    }
+    .lab-section .lab-list li:last-child { border-bottom: none; }
+    .lab-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 700px) {
+      .roadmap-grid { grid-template-columns: 1fr 1fr; }
+      .perspective-tabs { gap: 4px; }
+      .p-tab { font-size: 0.65rem; padding: 4px 7px; }
+    }
+
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <span>经济学篇</span>
+        <span>›</span>
+        <span>总览</span>
+      </div>
+
+      <h1>💰 经济学篇总览</h1>
+      <p class="page-subtitle">比特币不只是技术，更是一场货币实验。理解「钱为什么值钱」——从货币本质、货币政策到周期与估值，共 8 页，层层递进。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 5–8 分钟</span>
+        <span class="page-tag">📊 难度：中级</span>
+        <span class="page-tag">📑 经济学篇 0/8</span>
+        <span class="page-tag">🆕 总览页</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>0 / 8 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">经济学篇是什么</a>
+          <a href="#map">知识架构图</a>
+          <a href="#roadmap">八页路线图</a>
+          <a href="#why">为什么学经济学</a>
+          <a href="#compare">与其他篇对比</a>
+          <a href="#guide">学习路径指南</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 一、经济学篇是什么 ============ -->
+          <section id="intro">
+            <h2>一、经济学篇是什么？</h2>
+
+            <div class="story-box orange">
+              <span class="story-label">💡 核心直觉</span>
+              <p><strong>哲学篇</strong>回答「比特币为什么存在」——它要解决什么问题；<strong>入门篇</strong>给你「直觉地图」——它大概是什么；<strong>技术篇</strong>给你「工程图纸」——它如何做到。</p>
+              <p style="margin-top:8px;"><strong>经济学篇</strong>给你「价值坐标」——回答最尖锐的问题：<em>比特币为什么值钱？价格从哪里来？它是黄金还是郁金香？</em></p>
+              <p style="margin-top:8px;">如果说技术篇解释「比特币如何运转」，经济学篇就解释「比特币如何定价、如何演化、为什么有人愿意为它付出真金白银」。</p>
+            </div>
+
+            <h3>1.1 本篇讲解方式：三维讲解</h3>
+            <p>经济学篇每个主题同样从三个维度讲解：</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="chapter-card">
+                <div style="font-size:1.5rem;margin-bottom:6px;">📖</div>
+                <h4>① 正常讲解</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">从经济学原理出发，按逻辑顺序展开概念与机制。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.5rem;margin-bottom:6px;">🔄</div>
+                <h4>② 多视角重新解释</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">同一主题，从经济学家、投资者、历史学家等 6 个视角再看一遍。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.5rem;margin-bottom:6px;">💡</div>
+                <h4>③ 大白话比喻</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">用生活化的比喻，把抽象的经济机制变成可感知的画面。</p>
+              </div>
+            </div>
+
+            <h3>1.2 经济学篇路线图</h3>
+            <div class="roadmap-grid">
+              <div class="roadmap-node current">
+                <div class="node-header">
+                  <span class="node-num">00</span>
+                  <span class="node-title">总览</span>
+                </div>
+                <div class="node-desc">本篇导航 · 你在这里</div>
+              </div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">01</span>
+                  <span class="node-title">货币与通胀</span>
+                </div>
+                <div class="node-desc">钱为什么「越来越不值钱」</div>
+              </div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">02</span>
+                  <span class="node-title">奥地利学派与哈耶克</span>
+                </div>
+                <div class="node-desc">比特币的思想源头</div>
+              </div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">03</span>
+                  <span class="node-title">货币政策</span>
+                </div>
+                <div class="node-desc">2100 万与减半的密码</div>
+              </div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">04</span>
+                  <span class="node-title">价值存储</span>
+                </div>
+                <div class="node-desc">数字黄金论成立吗</div>
+              </div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">05</span>
+                  <span class="node-title">手续费市场</span>
+                </div>
+                <div class="node-desc">区块空间的拍卖</div>
+              </div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">06</span>
+                  <span class="node-title">周期与叙事</span>
+                </div>
+                <div class="node-desc">四年一次的供需拐点</div>
+              </div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">07</span>
+                  <span class="node-title">法币 vs 比特币</span>
+                </div>
+                <div class="node-desc">正面回答质疑</div>
+              </div>
+              <div class="roadmap-node">
+                <div class="node-header">
+                  <span class="node-num">08</span>
+                  <span class="node-title">估值模型</span>
+                </div>
+                <div class="node-desc">S2F / 网络效应 / 幂律</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、知识架构图 ============ -->
+          <section id="map">
+            <h2>二、知识架构图：一条从「钱」到「估值」的推理链</h2>
+            <p>经济学篇的 8 页不是并列的，而是一条环环相扣的推理链：</p>
+
+            <div class="svg-visual-wrap">
+              <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;font-family:-apple-system,'PingFang SC',sans-serif;">
+                <!-- 背景 -->
+                <rect x="0" y="0" width="900" height="340" rx="14" fill="#14161A"/>
+                <!-- 第一组：货币本质 -->
+                <text x="40" y="34" fill="#F7931A" font-size="15" font-weight="700">货币本质</text>
+                <rect x="40" y="50" width="250" height="64" rx="10" fill="#1C2027" stroke="#F7931A" stroke-opacity="0.45"/>
+                <text x="60" y="78" fill="#F5F5F5" font-size="14" font-weight="600">03-01 货币与通胀</text>
+                <text x="60" y="98" fill="#9CA3AF" font-size="11">钱为什么越来越不值钱？</text>
+                <rect x="40" y="126" width="250" height="64" rx="10" fill="#1C2027" stroke="#F7931A" stroke-opacity="0.45"/>
+                <text x="60" y="154" fill="#F5F5F5" font-size="14" font-weight="600">03-02 奥地利学派与哈耶克</text>
+                <text x="60" y="174" fill="#9CA3AF" font-size="11">货币可以「非国家化」吗？</text>
+                <path d="M165 114 L165 126" stroke="#3A3F47" stroke-width="2" marker-end="url(#arr)"/>
+                <!-- 第二组：比特币货币属性 -->
+                <text x="340" y="34" fill="#F7931A" font-size="15" font-weight="700">比特币的货币属性</text>
+                <rect x="340" y="50" width="250" height="64" rx="10" fill="#1C2027" stroke="#3B82F6" stroke-opacity="0.55"/>
+                <text x="360" y="78" fill="#F5F5F5" font-size="14" font-weight="600">03-03 货币政策</text>
+                <text x="360" y="98" fill="#9CA3AF" font-size="11">2100 万上限与四次减半</text>
+                <rect x="340" y="126" width="250" height="64" rx="10" fill="#1C2027" stroke="#3B82F6" stroke-opacity="0.55"/>
+                <text x="360" y="154" fill="#F5F5F5" font-size="14" font-weight="600">03-04 价值存储 SoV</text>
+                <text x="360" y="174" fill="#9CA3AF" font-size="11">数字黄金论成立吗？</text>
+                <path d="M290 90 L340 90" stroke="#3A3F47" stroke-width="2" marker-end="url(#arr)"/>
+                <path d="M465 190 L465 210" stroke="#3A3F47" stroke-width="2" marker-end="url(#arr)"/>
+                <!-- 第三组：市场与周期 -->
+                <text x="340" y="232" fill="#F7931A" font-size="15" font-weight="700">市场机制与周期</text>
+                <rect x="340" y="248" width="250" height="64" rx="10" fill="#1C2027" stroke="#10B981" stroke-opacity="0.55"/>
+                <text x="360" y="276" fill="#F5F5F5" font-size="14" font-weight="600">03-05 手续费市场</text>
+                <text x="360" y="296" fill="#9CA3AF" font-size="11">区块空间的稀缺定价</text>
+                <rect x="610" y="50" width="250" height="64" rx="10" fill="#1C2027" stroke="#EAB308" stroke-opacity="0.55"/>
+                <text x="630" y="78" fill="#F5F5F5" font-size="14" font-weight="600">03-06 周期与叙事</text>
+                <text x="630" y="98" fill="#9CA3AF" font-size="11">四年一次的供需拐点</text>
+                <rect x="610" y="126" width="250" height="64" rx="10" fill="#1C2027" stroke="#EAB308" stroke-opacity="0.55"/>
+                <text x="630" y="154" fill="#F5F5F5" font-size="14" font-weight="600">03-07 法币 vs 比特币</text>
+                <text x="630" y="174" fill="#9CA3AF" font-size="11">黄金还是郁金香？</text>
+                <rect x="610" y="248" width="250" height="64" rx="10" fill="#1C2027" stroke="#EC4899" stroke-opacity="0.55"/>
+                <text x="630" y="276" fill="#F5F5F5" font-size="14" font-weight="600">03-08 估值模型</text>
+                <text x="630" y="296" fill="#9CA3AF" font-size="11">S2F / Metcalfe / 幂律</text>
+                <path d="M590 90 L610 90" stroke="#3A3F47" stroke-width="2" marker-end="url(#arr)"/>
+                <path d="M465 110 L465 120 L590 120 L590 160 L610 160" stroke="#3A3F47" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+                <path d="M465 226 L465 240 L590 240 L590 280 L610 280" stroke="#3A3F47" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+                <!-- 箭头定义 -->
+                <defs>
+                  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#3A3F47"/>
+                  </marker>
+                </defs>
+              </svg>
+            </div>
+
+            <div class="highlight-box" style="margin-top:14px;">
+              <strong>阅读顺序建议：</strong>先读 03-01 → 03-04 理解「比特币的货币属性」，再读 03-05 → 03-06 理解「市场如何运转」，最后 03-07 → 03-08 直面「质疑与估值」。想快速抓住核心，可以只读 03-03 + 03-06 两页。
+            </div>
+          </section>
+
+          <!-- ============ 三、为什么学经济学 ============ -->
+          <section id="why">
+            <h2>三、为什么学经济学？</h2>
+            <p>很多比特币教程只讲技术和操作，不讲经济学。但少了经济学视角，你会漏掉最关键的几块拼图：</p>
+            <div class="feature-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:16px 0;">
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">💵</div>
+                <h4>理解价格</h4>
+                <p>为什么比特币有价值？稀缺性、共识、网络效应——经济学给出一套完整的解释框架。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">📉</div>
+                <h4>识别周期</h4>
+                <p>减半周期、牛熊转换、LTH 与 STH 的博弈——看懂周期，才不会被情绪裹挟。</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🗣️</div>
+                <h4>读懂叙事</h4>
+                <p>「数字黄金」「郁金香泡沫」「货币非国家化」——这些叙事背后是哪套经济学逻辑？</p>
+              </div>
+              <div class="feature-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+                <div class="feature-icon">🧭</div>
+                <h4>独立思考</h4>
+                <p>经济学篇不替你做投资决策，而是给你判断工具——包括批判比特币的工具。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、与其他篇对比 ============ -->
+          <section id="compare">
+            <h2>四、经济学篇与其他篇的关系</h2>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>篇章</th>
+                  <th>回答的核心问题</th>
+                  <th>类比</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>哲学篇（01）</td>
+                  <td>比特币为什么存在？它要解决什么社会问题？</td>
+                  <td>「为什么」</td>
+                </tr>
+                <tr>
+                  <td>入门篇（02）</td>
+                  <td>比特币是什么？怎么买、怎么存、怎么用？</td>
+                  <td>「使用手册」</td>
+                </tr>
+                <tr>
+                  <td>技术篇（04）</td>
+                  <td>比特币如何做到安全可信？底层机制是什么？</td>
+                  <td>「工程图纸」</td>
+                </tr>
+                <tr>
+                  <td><strong>经济学篇（03）</strong></td>
+                  <td><strong>比特币为什么值钱？价格从哪里来？</strong></td>
+                  <td><strong>「价值坐标」</strong></td>
+                </tr>
+                <tr>
+                  <td>生态篇（05）</td>
+                  <td>围绕比特币的人、钱、算力、代码如何分布？</td>
+                  <td>「生存环境」</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="table-note">💡 顺序建议：哲学篇 → 入门篇 → 经济学篇 → 技术篇 → 生态篇。先建立价值认知，再深入技术细节，最后看生态全貌。</p>
+          </section>
+
+          <!-- ============ 五、学习路径指南 ============ -->
+          <section id="guide">
+            <h2>五、学习路径指南</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:16px 0;">
+              <div class="chapter-card">
+                <div style="font-size:1.4rem;margin-bottom:6px;">⚡</div>
+                <h4>快速通道（约 20 分钟）</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">只读 03-03（货币政策）+ 03-06（周期与叙事），抓住「稀缺性 + 周期」两条主线。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.4rem;margin-bottom:6px;">📚</div>
+                <h4>完整通道（约 2–3 小时）</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">按顺序读完 8 页，建立从货币本质到估值模型的完整推理链。</p>
+              </div>
+              <div class="chapter-card">
+                <div style="font-size:1.4rem;margin-bottom:6px;">🧠</div>
+                <h4>深度通道（半天以上）</h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);">读完经济学篇后衔接技术篇 04-00，再回头读 03-08，理解估值与技术的互动。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>六、多视角解读：比特币是「什么」？</h2>
+            <div class="perspective-card" id="eco-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>同一个比特币，六种看法</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab active" data-angle="finance">💰 经济学家</button>
+                  <button class="p-tab" data-angle="business">🏢 投资者</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="humanity">🧠 普通人</button>
+                  <button class="p-tab" data-angle="philosophy">🏛️ 哲学家</button>
+                  <button class="p-tab" data-angle="technology">⚙️ 开发者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="finance">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.15);color:#EAB308;">💰 经济学家</span>
+                  <p class="p-quote">「货币的价值来自信任，而比特币把信任从机构转移到了数学。」</p>
+                  <ul>
+                    <li>关注货币职能：交易媒介、记账单位、价值储藏——比特币在哪个职能上合格？</li>
+                    <li>关注供给弹性：固定 2100 万 vs 法币无限增发，是货币实验的「天然实验室」。</li>
+                    <li>警惕泡沫：资产价格可以长期脱离基本面，经济学不预测，只解释。</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="business">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.15);color:#8B5CF6;">🏢 投资者</span>
+                  <p class="p-quote">「在别人恐惧时贪婪——但要先理解周期在哪一阶段。」</p>
+                  <ul>
+                    <li>关注周期：减半 → 供给收缩 → 价格上行，是过去三轮周期的主线。</li>
+                    <li>关注持仓结构：长期持有者（LTH）派发、短期持有者（STH）接盘，是牛熊转换的信号。</li>
+                    <li>关注仓位管理：DCA 定投与 ahr999 指数是中文社区最成熟的择时框架。</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.15);color:#10B981;">📜 历史学家</span>
+                  <p class="p-quote">「每一种货币制度都曾被认为是永恒的，直到它被历史推翻。」</p>
+                  <ul>
+                    <li>金本位 → 布雷顿森林 → 法币时代：货币制度一直在演化。</li>
+                    <li>金圆券、魏玛马克、津巴布韦币：超发货币摧毁购买力的案例反复重演。</li>
+                    <li>郁金香狂热 vs 黄金：区分「泡沫」与「新资产类别」需要时间尺度。</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="humanity">
+                  <span class="p-angle-badge" style="background:rgba(236,72,153,0.15);color:#EC4899;">🧠 普通人</span>
+                  <p class="p-quote">「我不关心货币理论，我只关心我的钱会不会缩水。」</p>
+                  <ul>
+                    <li>存款利率跑不过通胀 = 每天都在「被动亏钱」，这是普通人面对的现实。</li>
+                    <li>比特币波动大：普通人更适合小额、长期、定投，而不是梭哈。</li>
+                    <li>「不懂不碰」是底线——经济学篇帮你建立最基本的认知框架。</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.15);color:#F97316;">🏛️ 哲学家</span>
+                  <p class="p-quote">「货币是信任的结晶——哈耶克问：为什么发行货币必须是国家的特权？」</p>
+                  <ul>
+                    <li>哈耶克《货币的非国家化》：私人货币竞争能否带来更稳健的货币？</li>
+                    <li>奥地利学派：货币价值源于历史演化（米塞斯回溯定理），而非国家背书。</li>
+                    <li>「不可篡改的货币政策」本身是一种政治哲学声明。</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="technology">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.15);color:#3B82F6;">⚙️ 开发者</span>
+                  <p class="p-quote">「经济学约束是协议的隐性设计文档。」</p>
+                  <ul>
+                    <li>2100 万上限写在代码里，但维持它的是共识——不是某个人的承诺。</li>
+                    <li>手续费市场是激励设计的核心：矿工未来靠区块空间收费生存。</li>
+                    <li>协议升级（如 Taproot）改变链上成本结构，进而改变经济行为。</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角 · 同一事实，不同透镜</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、动手实验 ============ -->
+          <section id="labs">
+            <h2>七、动手实验区</h2>
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">建议实验（阅读中随时可做）</span>
+              </div>
+              <ul class="lab-list">
+                <li><span class="lab-icon">🧮</span><div><strong>体验购买力侵蚀：</strong>打开 03-01 的购买力计算器，输入 10 年前存下的 10 万元，看看今天的实际购买力还剩多少——这是理解比特币「抗通胀」叙事的起点。</div></li>
+                <li><span class="lab-icon">⏳</span><div><strong>查看减半时间线：</strong>在 03-03 查看四次减半的日期与价格区间，把「供给减半」与「价格周期」对应起来。</div></li>
+                <li><span class="lab-icon">📊</span><div><strong>对比 S2F 数据：</strong>在 03-08 用 S2F 模型计算黄金与比特币的存量流量比，体会「稀缺性」的量化含义。</div></li>
+                <li><span class="lab-icon">📈</span><div><strong>观察链上持仓：</strong>在 03-06 用区块浏览器/链上数据工具查看长期持有者（LTH）的持仓变化，识别市场处于积累还是派发阶段。</div></li>
+              </ul>
+            </div>
+          </section>
+
+              <!-- ============ 延伸探索 ============ -->
+    <section id="explore">
+      <div class="explorer-box">
+        <div class="exp-header">
+          <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+        </div>
+        <div class="exp-result">
+          <ul class="exp-links">
+        <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space · 实时链上数据 <span class="exp-go">→</span></a></li>
+        <li><a href="https://planbtc.com" target="_blank" rel="noopener">PlanB S2F 模型站 <span class="exp-go">→</span></a></li>
+        <li><a href="https://ccaf.io/cbns" target="_blank" rel="noopener">剑桥比特币耗电指数 CCAF <span class="exp-go">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- ============ 八、大白话总结 ============ -->
+          <section id="summary">
+            <h2>八、大白话总结</h2>
+            <div class="story-box green">
+              <span class="story-label">🗣️ 一句话记住经济学篇</span>
+              <p>比特币是一场「<strong>把货币发行权从政府手里夺回来，交给数学</strong>」的百年实验。技术篇告诉你它<em>怎么做到</em>，经济学篇告诉你它<em>为什么值得</em>——以及它可能错在哪里。</p>
+              <p style="margin-top:8px;">读完经济学篇，你应该能回答三个问题：<strong>① 比特币凭什么值钱？（稀缺 + 共识 + 网络效应）② 它为什么四年一个周期？（减半供给冲击）③ 它到底是黄金还是郁金香？（取决于你相信哪套叙事，以及多长的时间尺度）</strong></p>
+            </div>
+
+            <!-- 行动召唤 -->
+            <div class="cta-box" style="margin-top:40px;">
+              <h3>🚀 下一步</h3>
+              <p>我们从最基础的问题开始：<strong>钱，为什么会越来越不值钱？</strong>这是理解比特币所有叙事的起点。</p>
+              <a href="03-01-money-inflation.html" class="btn btn-primary">开始学习：货币与通胀 →</a>
+              <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+              <a href="../02-basics/02-07-payment.html" class="btn">← 回顾：入门篇 · 支付与闪电</a>
+            </div>
+          </section>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="../02-basics/02-07-payment.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">入门篇 · 支付与闪电</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 0 / 8
+      </div>
+      <a href="03-01-money-inflation.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">货币与通胀</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+    });
+
+    // ===== 已读标记 =====
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-00-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-00-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // ===== 多视角卡片 =====
+    function initEcoPerspectives() {
+      const card = document.getElementById('eco-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      // 触摸滑动
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+  </script>
+</body>
+</html>

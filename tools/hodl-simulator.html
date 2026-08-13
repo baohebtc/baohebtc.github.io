@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HODL 持有模拟器 · 比特币学习地图</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+.calc-hero { padding: 48px 0 32px; }
+.calc-body { padding: 0 0 60px; }
+.calc-grid { display: grid; grid-template-columns: 360px 1fr; gap: 28px; align-items: start; }
+@media(max-width:800px){ .calc-grid{grid-template-columns:1fr} }
+.calc-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: sticky; top: 72px; }
+.calc-panel h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 20px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
+.field input, .field select { width: 100%; padding: 9px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 0.9rem; outline: none; transition: border-color var(--transition); font-family: var(--font-sans); }
+.field input:focus, .field select:focus { border-color: var(--orange); }
+.field .hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+.result-panel { }
+.result-header { margin-bottom: 20px; }
+.result-header h2 { font-size: 1.3rem; font-weight: 700; }
+.result-header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+.result-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.result-card h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-bottom: 12px; }
+.result-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+.result-row:last-child { border-bottom: none; }
+.result-row .label { color: var(--text-secondary); }
+.result-row .value { font-weight: 700; font-family: var(--font-mono); font-size: 0.9rem; }
+.result-row .value.green { color: #22C55E; }
+.result-row .value.red { color: #EF4444; }
+.result-row .value.orange { color: var(--orange); }
+.big-result { font-size: 1.8rem; font-weight: 800; color: var(--orange); font-family: var(--font-mono); }
+.compare-chart { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-top: 20px; }
+.compare-chart h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+.bar-chart { display: flex; flex-direction: column; gap: 12px; }
+.bar-row { display: flex; align-items: center; gap: 12px; }
+.bar-row .bar-label { font-size: 0.78rem; color: var(--text-muted); width: 80px; flex-shrink: 0; text-align: right; }
+.bar-row .bar-track { flex: 1; height: 24px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.bar-row .bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; display: flex; align-items: center; padding-left: 8px; font-size: 0.72rem; color: #fff; font-weight: 600; }
+.bar-fill.green { background: linear-gradient(90deg, #16A34A, #22C55E); }
+.bar-fill.red { background: linear-gradient(90deg, #DC2626, #EF4444); }
+.bar-fill.orange { background: linear-gradient(90deg, #F7931A, #FFA940); }
+.bar-row .bar-val { font-size: 0.82rem; font-weight: 700; color: var(--text); width: 100px; flex-shrink: 0; }
+.summary-box { background: rgba(247,147,26,0.06); border: 1px solid rgba(247,147,26,0.15); border-radius: var(--radius); padding: 16px 20px; margin-top: 16px; }
+.summary-box p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; }
+.summary-box strong { color: var(--orange); }
+.mode-tabs { display: flex; gap: 3px; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; padding: 4px; margin-bottom: 20px; }
+.mode-tab { flex: 1; padding: 7px 8px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; transition: all var(--transition); text-align: center; }
+.mode-tab:hover { color: var(--text); }
+.mode-tab.active { background: var(--orange); color: #fff; }
+.mode-panel { display: none; }
+.mode-panel.active { display: block; }
+.price-history-note { font-size: 0.72rem; color: var(--text-muted); padding: 10px 14px; background: var(--bg); border-radius: var(--radius-sm); margin-top: 10px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="index.html" class="nav-link active" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="calc-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">首页</a><span>›</span><a href="index.html">工具</a><span>›</span><span>HODL模拟器</span></div>
+    <h1>💎 HODL 持有模拟器</h1>
+    <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px">用真实历史价格数据，穿越牛熊，量化长期持有的真实回报率</p>
+  </div>
+</header>
+
+<main class="calc-body">
+  <div class="container">
+    <div class="calc-grid">
+
+      <!-- 输入面板 -->
+      <div class="calc-panel">
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="tab-lump" onclick="switchMode('lump')">💰 一次性买入</button>
+          <button class="mode-tab" id="tab-dca" onclick="switchMode('dca')">📅 每月定投</button>
+        </div>
+
+        <!-- 一次性买入面板 -->
+        <div class="mode-panel active" id="panel-lump">
+          <h2>💰 一次性买入参数</h2>
+
+          <div class="field">
+            <label>买入日期</label>
+            <input type="month" id="lump-date" value="2020-01" min="2009-07" max="2025-08" oninput="calculateLump()">
+            <div class="hint">最早有可靠价格数据：2009 年 7 月</div>
+          </div>
+
+          <div class="field">
+            <label>投入金额（USD）</label>
+            <input type="number" id="lump-usd" value="1000" min="1" max="100000000" step="100" oninput="calculateLump()">
+            <div class="hint">任意金额，模拟你买入时的成本</div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="calculateLump()">🧮 模拟 HODL</button>
+        </div>
+
+        <!-- 定投面板 -->
+        <div class="mode-panel" id="panel-dca">
+          <h2>📅 每月定投参数</h2>
+
+          <div class="field">
+            <label>定投起始月份</label>
+            <input type="month" id="dca-start" value="2020-01" min="2009-07" max="2025-07" oninput="calculateDCA()">
+          </div>
+
+          <div class="field">
+            <label>定投结束月份</label>
+            <input type="month" id="dca-end" value="2024-01" min="2009-07" max="2025-08" oninput="calculateDCA()">
+            <div class="hint">请确保结束月份 ≥ 起始月份</div>
+          </div>
+
+          <div class="field">
+            <label>每月投入金额（USD）</label>
+            <input type="number" id="dca-usd" value="100" min="1" max="10000000" step="10" oninput="calculateDCA()">
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="calculateDCA()">🧮 模拟定投 HODL</button>
+        </div>
+
+        <div class="price-history-note">
+          📡 价格数据为 CoinDesk 历史月度均价，数据来源 coinmarketcap/prices。仅供教育目的，<strong>历史表现不代表未来收益</strong>。
+        </div>
+
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+          <h3 style="font-size:0.82rem;font-weight:700;margin-bottom:10px;color:var(--text-secondary)">📅 关键历史日期</h3>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <button class="btn btn-sm" style="justify-content:flex-start;font-size:0.75rem" onclick="quickFill('2017-12','lump',1000)">🚀 2017-12 月（ATH $19,000）买入</button>
+            <button class="btn btn-sm" style="justify-content:flex-start;font-size:0.75rem" onclick="quickFill('2020-03','lump',1000)">📉 2020-03 月（COVID 崩盘 $5,000）买入</button>
+            <button class="btn btn-sm" style="justify-content:flex-start;font-size:0.75rem" onclick="quickFill('2021-11','lump',1000)">🚀 2021-11 月（ATH $69,000）买入</button>
+            <button class="btn btn-sm" style="justify-content:flex-start;font-size:0.75rem" onclick="quickFill('2020-01','dca',100)">📅 2020-01 起每月 $100 定投</button>
+            <button class="btn btn-sm" style="justify-content:flex-start;font-size:0.75rem" onclick="quickFill('2017-01','dca',50)">📅 2017-01 起每月 $50 定投</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 结果面板 -->
+      <div class="result-panel">
+        <div class="result-header">
+          <h2>📊 模拟结果</h2>
+          <p id="result-desc">选择参数后点击「模拟 HODL」查看结果</p>
+        </div>
+
+        <!-- 核心结果卡片 -->
+        <div class="result-card">
+          <h3 id="result-mode-title">📈 持有结果</h3>
+          <div class="result-row">
+            <span class="label">买入日期</span>
+            <span class="value" id="res-date">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">买入价格（均价）</span>
+            <span class="value orange" id="res-entry-price">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">累计投入本金</span>
+            <span class="value orange" id="res-principal">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">持有 BTC 数量</span>
+            <span class="value" id="res-btc">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">平均持仓成本</span>
+            <span class="value" id="res-avg-cost">—</span>
+          </div>
+        </div>
+
+        <!-- 当前价值 -->
+        <div class="result-card">
+          <h3>💵 当前价值（对比）</h3>
+          <div class="result-row">
+            <span class="label">今日 BTC 价格</span>
+            <span class="value" id="res-today-price">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">BTC 现价日期</span>
+            <span class="value" id="res-today-date">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">当前总价值</span>
+            <span class="value green" id="res-current-value">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">总收益 / 亏损</span>
+            <span class="value green" id="res-profit">—</span>
+          </div>
+          <div class="result-row">
+            <span class="label">投资回报率（ROI）</span>
+            <span class="value green big-result" id="res-roi" style="font-size:1.4rem">—</span>
+          </div>
+        </div>
+
+        <!-- 可视化对比 -->
+        <div class="compare-chart">
+          <h3>📊 成本 vs 当前价值</h3>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <div class="bar-label">投入本金</div>
+              <div class="bar-track">
+                <div class="bar-fill orange" id="bar-cost" style="width:0%">
+                  <span id="bar-cost-label"></span>
+                </div>
+              </div>
+              <div class="bar-val" id="val-cost">—</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">当前价值</div>
+              <div class="bar-track">
+                <div class="bar-fill green" id="bar-value" style="width:0%">
+                  <span id="bar-value-label"></span>
+                </div>
+              </div>
+              <div class="bar-val" id="val-value">—</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">理论最大*</div>
+              <div class="bar-track">
+                <div class="bar-fill red" id="bar-peak" style="width:0%;display:none">
+                  <span id="bar-peak-label"></span>
+                </div>
+              </div>
+              <div class="bar-val" id="val-peak" style="display:none">—</div>
+            </div>
+          </div>
+          <div class="summary-box" id="result-insight">
+            <p>⬆️ 历史回测仅供参考，<strong>不代表未来收益</strong>。投资有风险，请DYOR（自己研究）。</p>
+          </div>
+        </div>
+
+        <!-- DCA 详细数据 -->
+        <div class="result-card" id="dca-detail-card" style="display:none">
+          <h3>📅 定投明细（月度累计）</h3>
+          <div style="overflow-x:auto;max-height:360px;overflow-y:auto">
+            <table class="halving-table" style="font-size:0.78rem">
+              <thead>
+                <tr>
+                  <th>月份</th>
+                  <th>投入</th>
+                  <th>价格</th>
+                  <th>买 BTC</th>
+                  <th>累计 BTC</th>
+                  <th>累计投入</th>
+                </tr>
+              </thead>
+              <tbody id="dca-detail-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 免责声明 -->
+        <div class="summary-box" style="margin-top:8px">
+          <p>⚠️ <strong>免责声明：</strong>本工具使用历史月度均价数据模拟，实际交易存在点差、滑点等摩擦成本。结果仅供参考，不构成投资建议。加密货币市场波动极大，请DYOR并量力而行。</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../index.html">首页</a> · <a href="index.html">工具</a> · <a href="../reference/index.html">参考</a>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 计算结果仅供参考，不构成投资建议。</p>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>initNav();</script>
+<script>
+// ============================================================
+// 比特币历史月度均价数据（CoinDesk/CoinMarketCap 综合数据）
+// Key 格式：YYYY-MM，Value：USD/BTC
+// ============================================================
+const BTC_PRICES = {
+  // 2009
+  '2009-07': 0.0008, '2009-08': 0.0008, '2009-09': 0.0008,
+  '2009-10': 0.0009, '2009-11': 0.001,  '2009-12': 0.001,
+  // 2010
+  '2010-01': 0.001,  '2010-02': 0.001,  '2010-03': 0.001,
+  '2010-04': 0.003,  '2010-05': 0.003,  '2010-06': 0.004,
+  '2010-07': 0.005,  '2010-08': 0.006,  '2010-09': 0.005,
+  '2010-10': 0.006,  '2010-11': 0.02,   '2010-12': 0.30,
+  // 2011
+  '2011-01': 0.31,   '2011-02': 0.82,   '2011-03': 0.82,
+  '2011-04': 1.10,   '2011-05': 7.50,   '2011-06': 15.0,
+  '2011-07': 13.0,   '2011-08': 8.50,   '2011-09': 5.00,
+  '2011-10': 3.20,   '2011-11': 2.50,   '2011-12': 4.70,
+  // 2012
+  '2012-01': 6.20,   '2012-02': 4.30,   '2012-03': 4.90,
+  '2012-04': 5.10,   '2012-05': 5.20,   '2012-06': 6.60,
+  '2012-07': 8.40,   '2012-08': 10.2,   '2012-09': 12.4,
+  '2012-10': 11.0,   '2012-11': 12.5,   '2012-12': 13.4,
+  // 2013
+  '2013-01': 20.0,   '2013-02': 28.0,   '2013-03': 92.0,
+  '2013-04': 135.0,  '2013-05': 128.0,  '2013-06': 97.0,
+  '2013-07': 98.0,   '2013-08': 129.0,  '2013-09': 140.0,
+  '2013-10': 198.0,  '2013-11': 1075.0, '2013-12': 770.0,
+  // 2014
+  '2014-01': 810.0,  '2014-02': 550.0,  '2014-03': 453.0,
+  '2014-04': 450.0,  '2014-05': 630.0,  '2014-06': 640.0,
+  '2014-07': 585.0,  '2014-08': 480.0,  '2014-09': 390.0,
+  '2014-10': 340.0,  '2014-11': 370.0,  '2014-12': 310.0,
+  // 2015
+  '2015-01': 217.0,  '2015-02': 254.0,  '2015-03': 243.0,
+  '2015-04': 236.0,  '2015-05': 231.0,  '2015-06': 263.0,
+  '2015-07': 284.0,  '2015-08': 230.0,  '2015-09': 237.0,
+  '2015-10': 314.0,  '2015-11': 375.0,  '2015-12': 430.0,
+  // 2016
+  '2016-01': 380.0,  '2016-02': 437.0,  '2016-03': 416.0,
+  '2016-04': 449.0,  '2016-05': 530.0,  '2016-06': 672.0,
+  '2016-07': 630.0,  '2016-08': 572.0,  '2016-09': 609.0,
+  '2016-10': 698.0,  '2016-11': 742.0,  '2016-12': 963.0,
+  // 2017
+  '2017-01': 966.0,  '2017-02': 1190.0, '2017-03': 1080.0,
+  '2017-04': 1340.0, '2017-05': 2280.0, '2017-06': 2490.0,
+  '2017-07': 2870.0, '2017-08': 4760.0, '2017-09': 4370.0,
+  '2017-10': 6120.0, '2017-11': 10900.0,'2017-12': 14780.0,
+  // 2018
+  '2018-01': 10200.0,'2018-02': 10300.0,'2018-03': 6920.0,
+  '2018-04': 9240.0, '2018-05': 7490.0, '2018-06': 5870.0,
+  '2018-07': 8180.0, '2018-08': 7040.0, '2018-09': 6620.0,
+  '2018-10': 6380.0, '2018-11': 4030.0, '2018-12': 3710.0,
+  // 2019
+  '2019-01': 3450.0, '2019-02': 3780.0, '2019-03': 4090.0,
+  '2019-04': 5350.0, '2019-05': 8570.0, '2019-06': 10800.0,
+  '2019-07': 10080.0,'2019-08': 9630.0, '2019-09': 8290.0,
+  '2019-10': 9190.0, '2019-11': 7560.0, '2019-12': 7190.0,
+  // 2020
+  '2020-01': 9350.0, '2020-02': 8600.0, '2020-03': 6420.0,
+  '2020-04': 8590.0, '2020-05': 9450.0, '2020-06': 9130.0,
+  '2020-07': 11350.0,'2020-08': 11650.0,'2020-09': 10780.0,
+  '2020-10': 13800.0,'2020-11': 19700.0,'2020-12': 29000.0,
+  // 2021
+  '2021-01': 33100.0,'2021-02': 45200.0,'2021-03': 58780.0,
+  '2021-04': 57750.0,'2021-05': 37350.0,'2021-06': 35050.0,
+  '2021-07': 41400.0,'2021-08': 47150.0,'2021-09': 43790.0,
+  '2021-10': 61300.0,'2021-11': 57000.0,'2021-12': 46300.0,
+  // 2022
+  '2022-01': 38400.0,'2022-02': 43200.0,'2022-03': 45500.0,
+  '2022-04': 37750.0,'2022-05': 31800.0,'2022-06': 19800.0,
+  '2022-07': 23300.0,'2022-08': 20000.0,'2022-09': 19450.0,
+  '2022-10': 20500.0,'2022-11': 17150.0,'2022-12': 16500.0,
+  // 2023
+  '2023-01': 23100.0,'2023-02': 23100.0,'2023-03': 28450.0,
+  '2023-04': 29300.0,'2023-05': 27200.0,'2023-06': 30400.0,
+  '2023-07': 29200.0,'2023-08': 26000.0,'2023-09': 27000.0,
+  '2023-10': 34500.0,'2023-11': 37800.0,'2023-12': 42300.0,
+  // 2024
+  '2024-01': 42300.0,'2024-02': 51800.0,'2024-03': 70500.0,
+  '2024-04': 63500.0,'2024-05': 68500.0,'2024-06': 60500.0,
+  '2024-07': 64500.0,'2024-08': 58000.0,'2024-09': 64000.0,
+  '2024-10': 70500.0,'2024-11': 98000.0,'2024-12': 92000.0,
+  // 2025
+  '2025-01': 102000.0,'2025-02': 85000.0,'2025-03': 82000.0,
+  '2025-04': 94000.0,'2025-05': 108000.0,'2025-06': 105000.0,
+  '2025-07': 95000.0,'2025-08': 58000.0,
+};
+
+// 最新可用价格
+const LATEST_PRICE_KEY = '2025-08';
+const LATEST_PRICE = BTC_PRICES[LATEST_PRICE_KEY] || 58000;
+
+// ============================================================
+// 工具函数
+// ============================================================
+
+function getMonthKey(year, month) {
+  return year + '-' + String(month).padStart(2, '0');
+}
+
+function parseMonthKey(key) {
+  const [y, m] = key.split('-').map(Number);
+  return { year: y, month: m };
+}
+
+function getPriceForMonth(yearMonth) {
+  // 精确匹配
+  if (BTC_PRICES[yearMonth]) return BTC_PRICES[yearMonth];
+  // 找最近的前一个有数据的月份
+  const { year, month } = parseMonthKey(yearMonth);
+  for (let i = 1; i <= 12; i++) {
+    const m = month - i;
+    const y = month <= i ? year - 1 : year;
+    const mm = month <= i ? 12 + m : month - i;
+    const yy = month <= i ? year - 1 : year;
+    const key = getMonthKey(yy, mm);
+    if (BTC_PRICES[key]) return BTC_PRICES[key];
+  }
+  return 100; // fallback
+}
+
+function fmtUSD(n) {
+  if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(2) + 'M';
+  if (Math.abs(n) >= 1000) return '$' + Math.round(n).toLocaleString();
+  return '$' + n.toFixed(2);
+}
+
+function fmtUSD2(n) {
+  return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtBTC(n) {
+  if (n >= 1) return n.toFixed(4) + ' BTC';
+  if (n >= 0.001) return n.toFixed(6) + ' BTC';
+  return n.toFixed(8) + ' BTC';
+}
+
+function fmtBTC2(n) {
+  return n.toFixed(8) + ' BTC';
+}
+
+function fmtPct(n) {
+  const sign = n >= 0 ? '+' : '';
+  return sign + n.toFixed(2) + '%';
+}
+
+function colorClass(n) {
+  return n >= 0 ? 'green' : 'red';
+}
+
+// ============================================================
+// 一次性买入计算
+// ============================================================
+
+function calculateLump() {
+  const monthKey = document.getElementById('lump-date').value;
+  const usd = parseFloat(document.getElementById('lump-usd').value);
+
+  if (!monthKey || isNaN(usd) || usd <= 0) {
+    showEmptyResult();
+    return;
+  }
+
+  const entryPrice = getPriceForMonth(monthKey);
+  const btc = usd / entryPrice;
+  const todayPrice = getPriceForMonth(LATEST_PRICE_KEY);
+  const currentValue = btc * todayPrice;
+  const profit = currentValue - usd;
+  const roi = (profit / usd) * 100;
+  const avgCost = usd / btc;
+
+  // 更新 DOM
+  document.getElementById('result-desc').textContent =
+    `一次性买入 $${usd} · 买入日期：${monthKey} · 持有至今`;
+
+  document.getElementById('result-mode-title').textContent = '📈 一次性买入 HODL 结果';
+
+  document.getElementById('res-date').textContent = monthKey;
+  document.getElementById('res-entry-price').textContent = fmtUSD2(entryPrice) + ' /BTC';
+  document.getElementById('res-principal').textContent = fmtUSD(usd);
+  document.getElementById('res-btc').textContent = fmtBTC(btc);
+  document.getElementById('res-avg-cost').textContent = fmtUSD2(avgCost) + ' /BTC';
+
+  document.getElementById('res-today-price').textContent = fmtUSD2(todayPrice) + ' /BTC';
+  document.getElementById('res-today-date').textContent = LATEST_PRICE_KEY + '（最新数据）';
+  document.getElementById('res-current-value').textContent = fmtUSD(currentValue);
+
+  document.getElementById('res-profit').textContent = fmtUSD(profit) + ' (' + fmtPct(profit/100+1) + ')';
+  document.getElementById('res-roi').textContent = fmtPct(roi);
+  document.getElementById('res-roi').className = 'value green big-result ' + colorClass(roi);
+
+  // 条形图
+  const maxVal = Math.max(currentValue, usd, 1);
+  document.getElementById('bar-cost').style.width = (usd / maxVal * 100) + '%';
+  document.getElementById('bar-cost-label').textContent = fmtUSD(usd);
+  document.getElementById('val-cost').textContent = fmtUSD(usd);
+
+  document.getElementById('bar-value').style.width = (currentValue / maxVal * 100) + '%';
+  document.getElementById('bar-value-label').textContent = fmtUSD(currentValue);
+  const valEl = document.getElementById('val-value');
+  valEl.textContent = fmtUSD(currentValue) + ' (' + fmtPct(roi) + ')';
+  valEl.style.color = roi >= 0 ? '#22C55E' : '#EF4444';
+
+  // 隐藏定投明细
+  document.getElementById('dca-detail-card').style.display = 'none';
+
+  // Insight
+  const insight = buildInsight(roi, usd, currentValue, monthKey, btc, entryPrice, todayPrice);
+  document.getElementById('result-insight').innerHTML = '<p>' + insight + '</p>';
+}
+
+function buildInsight(roi, principal, currentValue, monthKey, btc, entryPrice, todayPrice) {
+  const gain = roi;
+  let text = '';
+  if (gain >= 500) {
+    text = `🚀 <strong>惊人回报！</strong>如果 ${monthKey} 投入 <strong>${fmtUSD(principal)}</strong> 买入 BTC 持有至今，<br>
+    按今日价格 <strong>${fmtUSD2(todayPrice)}/BTC</strong> 计算，价值已达 <strong>${fmtUSD(currentValue)}</strong>，<br>
+    ROI <strong>+${gain.toFixed(0)}%</strong>，翻了 <strong>${(currentValue/principal).toFixed(1)} 倍</strong>。<br>
+    这就是 HODL 的力量——在波动中坚持持有，穿越牛熊。`;
+  } else if (gain >= 100) {
+    text = `📈 <strong>显著正收益！</strong>${monthKey} 投入 <strong>${fmtUSD(principal)}</strong>，<br>
+    按今日 <strong>${fmtUSD2(todayPrice)}/BTC</strong> 计算，价值 <strong>${fmtUSD(currentValue)}</strong>，<br>
+    ROI <strong>+${gain.toFixed(0)}%</strong>。长期持有的复利效应非常可观。`;
+  } else if (gain >= 0) {
+    text = `✅ <strong>正收益。</strong>${monthKey} 投入 <strong>${fmtUSD(principal)}</strong> 至今 ROI <strong>+${gain.toFixed(1)}%</strong>。<br>
+    买入均价 <strong>${fmtUSD2(entryPrice)}/BTC</strong>，今日 <strong>${fmtUSD2(todayPrice)}/BTC</strong>。`;
+  } else if (gain >= -50) {
+    text = `⚠️ <strong>暂时亏损。</strong>${monthKey} 买入均价 <strong>${fmtUSD2(entryPrice)}/BTC</strong>，<br>
+    今日 <strong>${fmtUSD2(todayPrice)}/BTC</strong>，浮亏 <strong>${gain.toFixed(1)}%</strong>。<br>
+    历史告诉我们：浮亏 ≠ 永久损失。2017 年 12 月 ATH 买入者，到 2021 年 ATH 赚了 <strong>+360%</strong>。`;
+  } else {
+    text = `📉 <strong>较大浮亏。</strong>买入均价 <strong>${fmtUSD2(entryPrice)}/BTC</strong>，<br>
+    今日 <strong>${fmtUSD2(todayPrice)}/BTC</strong>，浮亏 <strong>${gain.toFixed(1)}%</strong>。<br>
+    ${monthKey === '2017-12' ? '注意：2017年12月是历史ATH！' : '继续HODL，下一轮减半周期或带来转机。'}`;
+  }
+  return text;
+}
+
+// ============================================================
+// DCA 每月定投计算
+// ============================================================
+
+function calculateDCA() {
+  const startKey = document.getElementById('dca-start').value;
+  const endKey = document.getElementById('dca-end').value;
+  const monthlyUsd = parseFloat(document.getElementById('dca-usd').value);
+
+  if (!startKey || !endKey || isNaN(monthlyUsd) || monthlyUsd <= 0) {
+    showEmptyResult();
+    return;
+  }
+
+  const [sy, sm] = startKey.split('-').map(Number);
+  const [ey, em] = endKey.split('-').map(Number);
+  const startDate = new Date(sy, sm - 1);
+  const endDate = new Date(ey, em - 1);
+
+  if (endDate < startDate) {
+    document.getElementById('result-desc').textContent = '⚠️ 结束月份必须晚于起始月份';
+    return;
+  }
+
+  const today = new Date(2025, 7); // 2025-08
+  const actualEnd = endDate < today ? endDate : today;
+  const actualEndKey = getMonthKey(actualEnd.getFullYear(), actualEnd.getMonth() + 1);
+
+  // 逐月计算
+  let totalBtc = 0;
+  let totalUsd = 0;
+  const rows = [];
+  let cur = new Date(startDate);
+  while (cur <= actualEnd) {
+    const key = getMonthKey(cur.getFullYear(), cur.getMonth() + 1);
+    const price = getPriceForMonth(key);
+    const btcBought = monthlyUsd / price;
+    totalBtc += btcBought;
+    totalUsd += monthlyUsd;
+    rows.push({
+      key,
+      usd: monthlyUsd,
+      price,
+      btc: btcBought,
+      totalBtc,
+      totalUsd,
+    });
+    cur.setMonth(cur.getMonth() + 1);
+  }
+
+  const todayPrice = getPriceForMonth(LATEST_PRICE_KEY);
+  const currentValue = totalBtc * todayPrice;
+  const profit = currentValue - totalUsd;
+  const roi = (profit / totalUsd) * 100;
+  const avgCost = totalUsd / totalBtc;
+
+  // 更新 DOM
+  document.getElementById('result-desc').textContent =
+    `DCA 定投：${startKey} → ${actualEndKey} · 每月 $${monthlyUsd} · 共 ${rows.length} 期`;
+
+  document.getElementById('result-mode-title').textContent = '📈 DCA 定投 HODL 结果';
+
+  document.getElementById('res-date').textContent = `${startKey} ~ ${actualEndKey}`;
+  document.getElementById('res-entry-price').textContent = '均价 ' + fmtUSD2(avgCost) + ' /BTC';
+  document.getElementById('res-principal').textContent = fmtUSD(totalUsd);
+  document.getElementById('res-btc').textContent = fmtBTC(totalBtc);
+  document.getElementById('res-avg-cost').textContent = fmtUSD2(avgCost) + ' /BTC';
+
+  document.getElementById('res-today-price').textContent = fmtUSD2(todayPrice) + ' /BTC';
+  document.getElementById('res-today-date').textContent = LATEST_PRICE_KEY + '（最新数据）';
+  document.getElementById('res-current-value').textContent = fmtUSD(currentValue);
+
+  document.getElementById('res-profit').textContent = fmtUSD(profit) + ' (' + fmtPct(profit/totalUsd+1) + ')';
+  document.getElementById('res-roi').textContent = fmtPct(roi);
+  document.getElementById('res-roi').className = 'value green big-result ' + colorClass(roi);
+
+  // 条形图
+  const maxVal = Math.max(currentValue, totalUsd, 1);
+  document.getElementById('bar-cost').style.width = (totalUsd / maxVal * 100) + '%';
+  document.getElementById('bar-cost-label').textContent = fmtUSD(totalUsd);
+  document.getElementById('val-cost').textContent = fmtUSD(totalUsd);
+
+  document.getElementById('bar-value').style.width = (currentValue / maxVal * 100) + '%';
+  document.getElementById('bar-value-label').textContent = fmtUSD(currentValue);
+  const valEl = document.getElementById('val-value');
+  valEl.textContent = fmtUSD(currentValue) + ' (' + fmtPct(roi) + ')';
+  valEl.style.color = roi >= 0 ? '#22C55E' : '#EF4444';
+
+  // 定投明细表
+  const detailCard = document.getElementById('dca-detail-card');
+  const tbody = document.getElementById('dca-detail-body');
+  detailCard.style.display = 'block';
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td style="font-family:var(--font-mono)">${r.key}</td>
+      <td>${fmtUSD(r.usd)}</td>
+      <td>${fmtUSD2(r.price)}</td>
+      <td>${fmtBTC2(r.btc)}</td>
+      <td><strong>${fmtBTC2(r.totalBtc)}</strong></td>
+      <td>${fmtUSD(r.totalUsd)}</td>
+    </tr>
+  `).join('');
+
+  // Insight
+  const insight = `📅 DCA 策略：每月固定投入 <strong>${fmtUSD(monthlyUsd)}</strong>，共 <strong>${rows.length} 个月</strong>。<br>
+    总投入 <strong>${fmtUSD(totalUsd)}</strong>，累计买入 <strong>${fmtBTC(totalBtc)}</strong>。<br>
+    今日价值 <strong>${fmtUSD(currentValue)}</strong>，ROI <strong>${fmtPct(roi)}</strong>。<br>
+    DCA 的核心优势：<strong>平滑入场均价</strong>，无需择时，心理压力小。`;
+  document.getElementById('result-insight').innerHTML = '<p>' + insight + '</p>';
+}
+
+// ============================================================
+// 模式切换
+// ============================================================
+
+function switchMode(mode) {
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
+  if (mode === 'lump') {
+    document.getElementById('tab-lump').classList.add('active');
+    document.getElementById('panel-lump').classList.add('active');
+  } else {
+    document.getElementById('tab-dca').classList.add('active');
+    document.getElementById('panel-dca').classList.add('active');
+  }
+}
+
+// ============================================================
+// 快捷填充
+// ============================================================
+
+function quickFill(key, mode, usd) {
+  switchMode(mode);
+  if (mode === 'lump') {
+    document.getElementById('lump-date').value = key;
+    document.getElementById('lump-usd').value = usd;
+    calculateLump();
+  } else {
+    // DCA 模式：key 作为起始月份
+    document.getElementById('dca-start').value = key;
+    document.getElementById('dca-end').value = '2024-01';
+    document.getElementById('dca-usd').value = usd;
+    calculateDCA();
+  }
+}
+
+// ============================================================
+// 空结果
+// ============================================================
+
+function showEmptyResult() {
+  document.getElementById('result-desc').textContent = '请输入参数后点击「模拟 HODL」';
+  document.getElementById('res-date').textContent = '—';
+  document.getElementById('res-entry-price').textContent = '—';
+  document.getElementById('res-principal').textContent = '—';
+  document.getElementById('res-btc').textContent = '—';
+  document.getElementById('res-avg-cost').textContent = '—';
+  document.getElementById('res-today-price').textContent = '—';
+  document.getElementById('res-today-date').textContent = '—';
+  document.getElementById('res-current-value').textContent = '—';
+  document.getElementById('res-profit').textContent = '—';
+  document.getElementById('res-roi').textContent = '—';
+  document.getElementById('bar-cost').style.width = '0%';
+  document.getElementById('bar-value').style.width = '0%';
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+
+function init() {
+  // 设置日期输入 max
+  const lumpDate = document.getElementById('lump-date');
+  const dcaEnd = document.getElementById('dca-end');
+  if (lumpDate) lumpDate.max = LATEST_PRICE_KEY;
+  if (dcaEnd) dcaEnd.max = LATEST_PRICE_KEY;
+
+  // 默认计算
+  calculateLump();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

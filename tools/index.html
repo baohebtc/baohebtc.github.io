@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交互工具 · 比特币学习地图</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+.tools-hero { padding: 56px 0 40px; text-align: center; }
+.tools-hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+.tools-hero p { color: var(--text-secondary); font-size: 0.95rem; }
+.tools-grid { padding: 0 0 60px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 960px; margin: 0 auto; }
+.tool-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 24px; transition: all var(--transition); cursor: pointer; }
+.tool-card:hover { transform: translateY(-4px); border-color: var(--orange); box-shadow: var(--shadow); }
+.tool-card .icon { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+.tool-card h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+.tool-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+@media(max-width:700px){ .tools-grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="index.html" class="nav-link active" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<div class="tools-hero">
+  <div class="container">
+    <h1>🧰 交互工具</h1>
+    <p>动手算一算，比读十遍更清晰。所有计算在本地完成，数据不会上传</p>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:60px">
+  <div class="tools-grid">
+    <div class="tool-card" onclick="location.href='dca-calculator.html'">
+      <span class="icon">📈</span>
+      <h2>DCA 定投计算器</h2>
+      <p>定期定额 vs 一次性买入，长期收益差距有多大？用真实历史数据对比，量化 DCA 的心理优势和数学回报。</p>
+      <button class="btn btn-primary">打开计算器 →</button>
+    </div>
+    <div class="tool-card" onclick="location.href='supply-calculator.html'">
+      <span class="icon">⛏️</span>
+      <h2>比特币供应总量计算器</h2>
+      <p>输入任意日期或区块高度，实时计算比特币的累计产出量、占 2100 万上限的百分比、年化通胀率与 Stock-to-Flow 比率，配有 SVG 供应曲线可视化。</p>
+      <button class="btn btn-primary">打开计算器 →</button>
+    </div>
+    <div class="tool-card" onclick="location.href='hodl-simulator.html'">
+      <span class="icon">💎</span>
+      <h2>HODL 持有模拟器</h2>
+      <p>用真实历史月度价格数据，模拟一次性买入或每月定投的长期回报率，量化持有策略的收益，配有成本与价值对比柱状图。</p>
+      <button class="btn btn-primary">打开模拟器 →</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../index.html">首页</a> · <a href="../learning/00-overview.html">学习区</a> · <a href="index.html">工具</a> · <a href="../reference/index.html">参考</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>initNav();</script>
+</body>
+</html>

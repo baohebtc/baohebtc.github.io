@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>法币 vs 比特币 | 比特币学习地图</title>
+  <meta name="description" content="正面辩论：法币与比特币的货币职能对比、通胀vs通缩、波动性争论、空方质疑与回应、CBDC路线之争。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ===== 对比表 ===== */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 14px 0;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    .compare-table th {
+      background: var(--bg);
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .compare-table td {
+      color: var(--text-secondary);
+    }
+    .compare-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .compare-table .col-fiat { background: rgba(239,68,68,0.04); }
+    .compare-table .col-btc { background: rgba(247,147,26,0.04); }
+    .table-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ===== 辩论框 ===== */
+    .debate-box {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 18px 0;
+    }
+    .debate-header {
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .debate-header.against { background: rgba(239,68,68,0.1); color: #EF4444; }
+    .debate-header.for { background: rgba(16,185,129,0.1); color: #10B981; }
+    .debate-body {
+      padding: 14px 18px;
+      background: var(--bg-card);
+    }
+    .debate-body p, .debate-body ul {
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .debate-body ul { padding-left: 18px; }
+    .debate-body li { margin-bottom: 4px; }
+
+    /* ===== 通胀受益者卡片 ===== */
+    .inflation-impact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0;
+    }
+    .impact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+    .impact-card .impact-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .impact-card .impact-title.winner { color: #10B981; }
+    .impact-card .impact-title.loser { color: #EF4444; }
+    .impact-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .impact-card ul li {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      padding: 3px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .impact-card ul li:last-child { border-bottom: none; }
+
+    /* ===== Volatility Chart SVG ===== */
+    .vol-chart-wrap {
+      background: #111;
+      border: 1.5px solid #2A2A2A;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 14px 0;
+      overflow: hidden;
+    }
+    .vol-chart-wrap svg { border-radius: 8px; display: block; width: 100%; }
+
+    /* ===== Feature Cards ===== */
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: all var(--transition);
+    }
+    .feature-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .feature-card .feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
+    .feature-card h4 { font-size: 0.88rem; margin-bottom: 6px; }
+    .feature-card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ===== 视角卡片 ===== */
+    .perspective-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .perspective-header {
+      padding: 14px 18px;
+      background: rgba(247,147,26,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .ph-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .ph-label-icon { font-size: 1rem; }
+    .perspective-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .p-tab {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .p-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .p-tab.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+    .perspective-body { padding: 16px 18px; }
+    .p-content { display: none; }
+    .p-content.active { display: block; }
+    .p-angle-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .p-quote {
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 12px;
+      margin: 10px 0;
+    }
+    .p-content ul {
+      padding-left: 20px;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .perspective-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .p-dot-indicator { display: flex; gap: 4px; }
+    .p-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .p-dot.active { background: var(--orange); }
+
+    /* ===== 实验区 ===== */
+    .lab-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .lab-section .lab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .lab-section .lab-title { font-size: 0.9rem; font-weight: 700; }
+    .lab-section .lab-list { list-style: none; padding: 0; margin: 0; }
+    .lab-section .lab-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+    }
+    .lab-section .lab-list li:last-child { border-bottom: none; }
+    .lab-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* ===== CBDC 对比 ===== */
+    .cbdc-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0;
+    }
+    .cbdc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .cbdc-card .cbdc-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cbdc-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .cbdc-card ul li {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      padding: 3px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cbdc-card ul li:last-child { border-bottom: none; }
+    .cbdc-card .cbdc-pro { color: #10B981; }
+    .cbdc-card .cbdc-con { color: #EF4444; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 700px) {
+      .inflation-impact, .cbdc-compare { grid-template-columns: 1fr; }
+      .perspective-tabs { gap: 4px; }
+      .p-tab { font-size: 0.65rem; padding: 4px 7px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="03-00-overview.html">经济学篇</a>
+        <span>›</span>
+        <span>法币 vs 比特币</span>
+      </div>
+
+      <h1>⚖️ 法币 vs 比特币：正面辩论</h1>
+      <p class="page-subtitle">两种「信任机器」正面交锋：货币职能逐项PK、通胀与通缩之争、波动性数据、空方质疑与回应、CBDC路线对决。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 18 分钟</span>
+        <span class="page-tag">📊 难度：中等</span>
+        <span class="page-tag">📑 经济学篇 7/8</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>7 / 8 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 87.5%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#compare-table">货币职能对比</a>
+          <a href="#inflation">通胀 vs 通缩</a>
+          <a href="#volatility">波动性争论</a>
+          <a href="#tulip">空方质疑</a>
+          <a href="#future">货币的未来</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 引言 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>法币和比特币是两种截然不同的「信任机器」：</p>
+            <ul>
+              <li><strong>法币</strong>信任的是「政府和央行有能力、有意愿维持货币购买力」</li>
+              <li><strong>比特币</strong>信任的是「数学公式和代码规则，没有人能随意修改」</li>
+            </ul>
+            <p style="margin-top:8px;">两种信任各有代价：法币可能被超发稀释，比特币价格则波动剧烈。承认两者的局限性，才能做出真正知情的判断。</p>
+          </div>
+
+          <!-- ============ 一、货币职能对比 ============ -->
+          <section id="compare-table">
+            <h2>一、货币职能逐项对比</h2>
+            <p>经济学用四个维度衡量一种货币是否「合格」：<strong>交易媒介</strong>（买东西用）、<strong>记账单位</strong>（标价用）、<strong>价值储藏</strong>（存钱用）、<strong>延期支付</strong>（借债合同用）。</p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th style="width:22%">货币职能</th>
+                  <th style="width:36%" class="col-fiat">💵 法币</th>
+                  <th style="width:36%" class="col-btc">₿ 比特币</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>交易媒介</strong></td>
+                  <td class="col-fiat">
+                    <span style="color:#10B981;font-weight:700;">✓ 几乎无处不接受</span><br>
+                    全球通用，商家、银行、线上线下全面支持。日常消费、小额支付、大额转账均无障碍。
+                  </td>
+                  <td class="col-btc">
+                    <span style="color:#F97316;font-weight:700;">⚠ 受众有限但在增长</span><br>
+                    接受比特币的商家约占全球0.1%（2024年）。主要用途：跨境汇款、OTC大额、特定商业生态。闪电网络提升了小额支付体验。
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>记账单位</strong></td>
+                  <td class="col-fiat">
+                    <span style="color:#10B981;font-weight:700;">✓ 全球主流定价基准</span><br>
+                    几乎所有商品、服务、资产均以法币定价。菜市场到股市，计量单位统一为「元/美元/欧元」。
+                  </td>
+                  <td class="col-btc">
+                    <span style="color:#F97316;font-weight:700;">⚠ 极少用 BTC 定价</span><br>
+                    大多数场景用法币参考价（如「这个NFT值0.05 BTC，约2000美元」）。BTC更多作为价值度量工具，而非日常定价单位。
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>价值储藏</strong></td>
+                  <td class="col-fiat">
+                    <span style="color:#EF4444;font-weight:700;">✗ 长期购买力侵蚀</span><br>
+                    温和通胀（每年2-3%）在10-20年时间尺度上显著侵蚀购买力。中国M2增速在某些年份超过GDP增速，存款实际利率常为负。
+                  </td>
+                  <td class="col-btc">
+                    <span style="color:#F97316;font-weight:700;">⚠ 波动大但长期趋势向上</span><br>
+                    历史数据显示长期持有者（LTH）收益显著优于法币储蓄。但波动率仍是主要风险——2017年涨20倍后跌80%，2021年再涨7倍。
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>延期支付标准</strong></td>
+                  <td class="col-fiat">
+                    <span style="color:#10B981;font-weight:700;">✓ 全球通用债务合同基准</span><br>
+                    工资、房贷、企业债、国家借款——几乎所有长期债务合同均以法币计价。法律体系完整配套。
+                  </td>
+                  <td class="col-btc">
+                    <span style="color:#EF4444;font-weight:700;">✗ 几乎不用作延期支付</span><br>
+                    BTC计价合同极为罕见。原因：波动太大，借方和贷方都无法承受汇率不确定性；无成熟法律框架配套。
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="highlight-box">
+              <span class="label">📊 总体评分</span>
+              <div class="text">
+                <p>法币在<strong>交易媒介</strong>和<strong>延期支付</strong>上全面领先，这两点是它作为货币的基础设施优势。</p>
+                <p>比特币在<strong>价值储藏</strong>上展现出长期潜力，但<strong>记账单位</strong>功能仍非常薄弱——它更像「数字黄金」而非「数字现金」。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、通胀 vs 通缩 ============ -->
+          <section id="inflation">
+            <h2>二、通胀 vs 通缩：谁是受害者，谁是受益者？</h2>
+
+            <h3>2.1 法币通胀：谁受损，谁受益？</h3>
+            <p>温和通胀被主流经济学视为「正常现象」，但它实际上是一种<strong>隐性的财富再分配机制</strong>：</p>
+
+            <div class="inflation-impact">
+              <div class="impact-card">
+                <div class="impact-title loser">❌ 通胀受害者</div>
+                <ul>
+                  <li>📉 <strong>储蓄者</strong>：存款利率跑不赢通胀，实际购买力缩水</li>
+                  <li>📉 <strong>固定收入者</strong>：工资调整滞后于物价上涨（如养老金领取者）</li>
+                  <li>📉 <strong>低收入群体</strong>：食品/能源占支出比例更高，通胀冲击更大</li>
+                  <li>📉 <strong>债权人</strong>：借出的钱未来还回来时，购买力已下降</li>
+                </ul>
+              </div>
+              <div class="impact-card">
+                <div class="impact-title winner">✓ 通胀受益者</div>
+                <ul>
+                  <li>📈 <strong>债务人</strong>：以贬值的钱还旧债，实际债务减少</li>
+                  <li>📈 <strong>政府</strong>：政府往往是最大债务人，通胀稀释债务成本</li>
+                  <li>📈 <strong>资产持有者</strong>：房产/股票随通胀升值，仅持有现金者受损</li>
+                  <li>📈 <strong>央行</strong>：通胀带来名义增长，央行政策工具有空间</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>2.2 比特币的「通缩螺旋」争论</h3>
+            <p>比特币的固定2100万上限使其<strong>货币供给几乎绝对刚性</strong>（不考虑丢失币）。这引发了一个核心争论：</p>
+
+            <div class="debate-box">
+              <div class="debate-header against">🔴 反方：「通缩螺旋」警告</div>
+              <div class="debate-body">
+                <p>「如果所有人都预期BTC会升值，理性选择是<strong>持有而不是消费</strong>。消费减少→经济活动萎缩→价格下跌（以BTC计价）→进一步刺激囤积……形成死亡螺旋。」</p>
+                <ul>
+                  <li>比特币 deflationary design（通缩设计）= 内置的「不消费激励」</li>
+                  <li>历史上，大萧条的部分原因被归咎于金本位的通缩特性</li>
+                  <li>货币不是普通商品——人们囤积黄金可以「解冻」，囤积BTC可能永远不通胀</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="debate-box">
+              <div class="debate-header for">🟢 正方：奥地利学派反驳</div>
+              <div class="debate-body">
+                <p>「通缩恐惧是错的——<strong>价格通缩（东西变便宜）≠ 经济通缩（需求崩塌）</strong>。」</p>
+                <ul>
+                  <li><strong>技术进步让商品降价</strong>：电脑从万元降到千元，不是经济危机，是好事。BTC升值+其他商品降价，这是「良性技术通缩」</li>
+                  <li><strong>金本位时代的反驳</strong>：1870-1914年（古典金本位）恰恰是全球经济增长最稳健的时期之一，并非「大通缩灾难」</li>
+                  <li><strong>矿工成本支撑</strong>：BTC挖矿需要持续投入电力和设备，矿工必须出售BTC换取成本，形成自然的市场供给——不会所有人囤积不动</li>
+                  <li><strong>BTC本身的消费需求</strong>：用它支付跨境汇款、商户消费、DeFi/NFT等用途，这些消费不因「升值预期」而消失</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">⚖️ 学术界的共识</span>
+              <div class="text">
+                <p>目前尚无定论。争论的本质是：<strong>货币升值激励 vs 货币贬值激励，哪个更有利于经济长期健康？</strong></p>
+                <p>奥地利学派（哈耶克/米塞斯）支持前者；凯恩斯主义担忧后者。这场辩论本身就是比特币思想价值的体现——它迫使我们重新审视「通胀理所当然」的假设。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、波动性争论 ============ -->
+          <section id="volatility">
+            <h2>三、波动性争论：数字为证</h2>
+
+            <h3>3.1 事实：波动率对比</h3>
+            <p>无论站在哪一方，数据必须先说清楚：比特币的波动率远高于主流资产。</p>
+
+            <div class="vol-chart-wrap">
+              <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:-apple-system,'PingFang SC',sans-serif;">
+                <rect width="700" height="280" rx="10" fill="#14161A"/>
+                <!-- 标题 -->
+                <text x="24" y="28" fill="#F7931A" font-size="13" font-weight="700">年化波动率对比（2013-2024年均值，%）</text>
+                <!-- 网格线 -->
+                <line x1="100" y1="48" x2="100" y2="248" stroke="#2A2A2A" stroke-width="1"/>
+                <line x1="100" y1="248" x2="680" y2="248" stroke="#2A2A2A" stroke-width="1"/>
+                <!-- Y轴刻度 -->
+                <text x="96" y="52" text-anchor="end" fill="#6B7280" font-size="10">100</text>
+                <text x="96" y="102" text-anchor="end" fill="#6B7280" font-size="10">75</text>
+                <text x="96" y="152" text-anchor="end" fill="#6B7280" font-size="10">50</text>
+                <text x="96" y="202" text-anchor="end" fill="#6B7280" font-size="10">25</text>
+                <text x="96" y="252" text-anchor="end" fill="#6B7280" font-size="10">0</text>
+                <!-- 条形 -->
+                <!-- BTC -->
+                <rect x="120" y="58" width="80" height="190" rx="4" fill="#F7931A" fill-opacity="0.85"/>
+                <text x="160" y="50" text-anchor="middle" fill="#F7931A" font-size="11" font-weight="700">~95%</text>
+                <text x="160" y="262" text-anchor="middle" fill="#F5F5F5" font-size="11">BTC</text>
+                <!-- ETH -->
+                <rect x="210" y="128" width="80" height="120" rx="4" fill="#627EEA" fill-opacity="0.75"/>
+                <text x="250" y="120" text-anchor="middle" fill="#627EEA" font-size="11" font-weight="700">~60%</text>
+                <text x="250" y="262" text-anchor="middle" fill="#F5F5F5" font-size="11">ETH</text>
+                <!-- 黄金 -->
+                <rect x="300" y="218" width="80" height="30" rx="4" fill="#EAB308" fill-opacity="0.75"/>
+                <text x="340" y="212" text-anchor="middle" fill="#EAB308" font-size="11" font-weight="700">~15%</text>
+                <text x="340" y="262" text-anchor="middle" fill="#F5F5F5" font-size="11">黄金</text>
+                <!-- S&P500 -->
+                <rect x="390" y="228" width="80" height="20" rx="4" fill="#3B82F6" fill-opacity="0.75"/>
+                <text x="430" y="222" text-anchor="middle" fill="#3B82F6" font-size="11" font-weight="700">~10%</text>
+                <text x="430" y="262" text-anchor="middle" fill="#F5F5F5" font-size="11">标普500</text>
+                <!-- 美债 -->
+                <rect x="480" y="236" width="80" height="12" rx="4" fill="#10B981" fill-opacity="0.75"/>
+                <text x="520" y="232" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">~5%</text>
+                <text x="520" y="262" text-anchor="middle" fill="#F5F5F5" font-size="11">美债（10Y）</text>
+                <!-- 注释 -->
+                <text x="620" y="252" text-anchor="middle" fill="#6B7280" font-size="9">数据：年均日波动率×√252</text>
+                <text x="620" y="264" text-anchor="middle" fill="#6B7280" font-size="9">BTC: 2013-2024 均值估算</text>
+              </svg>
+            </div>
+
+            <h3>3.2 学术证据：波动率的结构特征</h3>
+            <div class="feature-cards">
+              <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h4>长记忆特性（FIGARCH）</h4>
+                <p>《Eurasian Economic Review》(2021) 发现：2013-2020年BTC波动率存在<strong>长记忆</strong>——高波动事件的影响会持续很长时间才衰减。这解释了为什么「V形反转」之后往往还有余震。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h4>期权市场 Smile/Smirk</h4>
+                <p>《Financial Innovation》(2024) 研究BTC期权：<strong>短期限呈微笑曲线</strong>（极端价格上行风险溢价），<strong>长期限呈反向微笑</strong>（所谓「smirk」意味着下行风险被定价得更高），且跳跃参数随时间变化。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h4>市场效率：国别分割</h4>
+                <p>《Research》期刊(2023)：BTC市场整体低效，不同国家/地区存在价格差异；COVID-19<strong>显著放大了波动率分化</strong>——流动性危机期间，各交易所BTC价格一度出现5-10%的价差。</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📉</div>
+                <h4>波动率随市值下降</h4>
+                <p>尽管绝对波动仍高于黄金，但BTC的<strong>年化波动率中位数</strong>从2013年的约150%逐步降至2022-2024年的约50-70%区间。随着市值增长（ETF带来机构资金），波动率有望继续收敛。</p>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">⚠️ 波动性 ≠ 高风险（长期视角）</span>
+              <div class="text">
+                <p>从<strong>日内波动</strong>看，BTC确实不适合作为交易媒介（商家不会接受今天值500元明天变350元的货币）。</p>
+                <p>但从<strong>年收益</strong>看，BTC在2013-2024年间仅有2年（2014、2018）为负收益，且幅度远小于同期A股上证指数。这说明波动性≠投资风险——高波动在牛市中是上涨的同义词。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、空方质疑 ============ -->
+          <section id="tulip">
+            <h2>四、空方观点与回应：比特币=21世纪郁金香？</h2>
+
+            <h3>4.1 最经典的质疑</h3>
+            <p>2011年起，诺贝尔经济学奖得主<strong>保罗·克鲁格曼（Paul Krugman）</strong>和争议学者<strong>努里埃尔·鲁比尼（Nouriel Roubini）</strong>多次将比特币比作「<strong>郁金香泡沫</strong>」或「<strong>庞氏骗局</strong>」。</p>
+            <p>他们的核心论据：</p>
+            <ul>
+              <li>无现金流：不像股票有股息、债券有利息，BTC不产生任何内在收益</li>
+              <li>无监管支撑：无政府背书，货币职能不完备</li>
+              <li>波动无法锚定价值：价格完全由市场情绪驱动，缺乏基本面锚</li>
+              <li>庞氏特征：后来者补贴早期入场者，需要不断有新资金流入</li>
+            </ul>
+
+            <h3>4.2 支持方的回应框架</h3>
+
+            <div class="debate-box">
+              <div class="debate-header" style="background:rgba(247,147,26,0.1);color:#F7931A;">
+                🌷 「比特币是21世纪郁金香」
+              </div>
+              <div class="debate-body">
+                <p>反对者论点：两者都是「热门投机品」，价格脱离任何客观价值。</p>
+                <p style="margin-top:8px;"><strong>支持方六维回应：</strong></p>
+                <ul>
+                  <li><strong>维度1：供应机制</strong> — 郁金香球茎可以无限繁殖（农民可以种更多）；BTC固定2100万枚，数学保证上限，无人可以「多种」</li>
+                  <li><strong>维度2：耐用性</strong> — 郁金香是植物，会腐烂、死亡、BTC永久存在于区块链上，不存在物理损耗</li>
+                  <li><strong>维度3：可分割性</strong> — 郁金香整株交易；BTC可分割到小数点后8位（1 satoshi），适合任何规模的支付</li>
+                  <li><strong>维度4：网络效应</strong> — 郁金香买家只是收藏者，彼此无协同；BTC有超过1亿真实用户、4000亿美元市值、数千家公司接受支付的货币网络，网络价值随用户数非线性增长</li>
+                  <li><strong>维度5：历史长度</strong> — 郁金香狂热持续数月；BTC已运行16年（2009-2025），经历多轮牛熊仍存活</li>
+                  <li><strong>维度6：自我防御</strong> — 郁金香狂热崩溃后无法恢复；BTC通过硬分叉、协议升级、算力调整多次「自我修复」</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">📜 「泡沫 vs 新资产类别」：时间尺度问题</span>
+              <div class="text">
+                <p>「比特币是郁金香」这个判断<strong>在2011年可能是对的</strong>（市值太小、网络效应不明显）。</p>
+                <p>但一个资产是否「泡沫」，需要区分：</p>
+                <ul>
+                  <li><strong>短期（1-3年）</strong>：BTC价格主要由投机资金和情绪驱动，泡沫特征明显</li>
+                  <li><strong>中期（5-10年）</strong>：机构采纳、ETF规模、支付基础设施发展，提供越来越强的基本面支撑</li>
+                  <li><strong>长期（20年+）</strong>：BTC能否成为储备货币？目前完全未知——这是信仰，不是分析</li>
+                </ul>
+                <p>如果「郁金香」比喻成立，它应该崩溃归零——而BTC从未真正归零，每次熊市都保持在上一轮牛市高点的数倍之上。</p>
+              </div>
+            </div>
+
+            <h3>4.3 「无现金流」质疑的深层回应</h3>
+            <p>鲁比尼等人指出BTC「不像股票有股息、债券有利息」，因此没有内在价值。这个论点需要仔细拆解：</p>
+            <ul>
+              <li><strong>黄金也无现金流</strong>——黄金不付股息，不付租金，但它有一个世纪的价值存储历史</li>
+              <li><strong>货币本身是「无现金流」的</strong>——美元不付利息（存款账户才付），但不妨碍它成为全球储备货币</li>
+              <li><strong>BTC的「现金流」是隐性的</strong>：持有一个无审查、无跨境障碍、无法被冻结的货币网络——这是服务现金流，无法折现但有真实效用</li>
+              <li><strong>BTC的价值来源</strong>：稀缺性 + 安全性 + 去中心化 + 可移植性，这些组合在历史上前所未有，其价值来自「第一个满足多个约束条件的货币设计」</li>
+            </ul>
+          </section>
+
+          <!-- ============ 五、货币的未来 ============ -->
+          <section id="future">
+            <h2>五、货币的未来：CBDC vs 比特币</h2>
+            <p>如果说前面的讨论是「现在」，这一节讨论「未来」——两种截然不同的货币演进路线正在并行推进：</p>
+
+            <div class="cbdc-compare">
+              <div class="cbdc-card">
+                <div class="cbdc-title" style="color:#3B82F6;">🏛️ CBDC（央行数字货币）</div>
+                <ul>
+                  <li>✅ <span class="cbdc-pro">国家信用背书，法律地位明确</span></li>
+                  <li>✅ <span class="cbdc-pro">可编程性：定向补贴、税收自动扣缴</span></li>
+                  <li>✅ <span class="cbdc-pro">普惠金融：银行账户非必需品即可触达支付</span></li>
+                  <li>❌ <span class="cbdc-con">可被审查/冻结：政府可限制你的消费</span></li>
+                  <li>❌ <span class="cbdc-con">隐私侵蚀：每一笔交易可被监控</span></li>
+                  <li>❌ <span class="cbdc-con">通胀机制不变：发行量仍由央行决定</span></li>
+                  <li>❌ <span class="cbdc-con">单点故障：技术故障/政治干预可中断系统</span></li>
+                </ul>
+              </div>
+              <div class="cbdc-card">
+                <div class="cbdc-title" style="color:#F7931A;">₿ 比特币（去中心化货币）</div>
+                <ul>
+                  <li>✅ <span class="cbdc-pro">抗审查：私钥在手，任何人无法冻结</span></li>
+                  <li>✅ <span class="cbdc-pro">固定供给：没人能「多印」</span></li>
+                  <li>✅ <span class="cbdc-pro">无需许可：不需要银行账户即可使用</span></li>
+                  <li>❌ <span class="cbdc-con">价格波动大：难以作为日常记账单位</span></li>
+                  <li>❌ <span class="cbdc-con">监管不确定：各国政策差异大</span></li>
+                  <li>❌ <span class="cbdc-con">能耗问题：POW机制的能源争议</span></li>
+                  <li>❌ <span class="cbdc-con">扩容瓶颈：链上吞吐量远低于 Visa</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">🤔 两者是替代还是互补？</span>
+              <div class="text">
+                <p>最可能的未来是<strong>共存而非替代</strong>：</p>
+                <ul>
+                  <li>CBDC处理日常零售支付（高效、可编程、国家背书）</li>
+                  <li>BTC处理大额跨境结算、价值存储、资本管制套利</li>
+                  <li>或者，更激进的预测：比特币成为「数字黄金」（储备资产），CBDC成为「数字现金」（日常工具）</li>
+                </ul>
+                <p>关键问题不是「谁取代谁」，而是「在什么场景下，哪种工具更合适」——就像船舶和飞机不互为替代，而是互补的交通工具。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>六、多视角解读：同一个辩论，不同的底色</h2>
+
+            <div class="perspective-card" id="fiat-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>同一场辩论，六个视角</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab active" data-angle="finance">💰 经济学者</button>
+                  <button class="p-tab" data-angle="investor">🏢 投资者</button>
+                  <button class="p-tab" data-angle="historian">📜 历史学家</button>
+                  <button class="p-tab" data-angle="citizen">🧑‍💼 普通人</button>
+                  <button class="p-tab" data-angle="philosopher">🏛️ 自由意志主义者</button>
+                  <button class="p-tab" data-angle="regulator">🔍 监管者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="finance">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.15);color:#EAB308;">💰 经济学者</span>
+                  <p class="p-quote">「BTC是货币实验的极端样本——2100万固定上限，是对抗通胀的天真乐观，还是理性储备？时间会给出答案。」</p>
+                  <ul>
+                    <li>凯恩斯主义者担忧BTC的通缩螺旋，主张「温和通胀有益」</li>
+                    <li>奥地利学派认为BTC是货币竞争的有力选手，2100万上限是对「国家货币特权」的根本性挑战</li>
+                    <li>货币主义者（Friedman派）会问：BTC能否提供一个稳定的货币规则，还是像金本位一样最终被迫放弃？</li>
+                    <li>BTC波动性对货币职能的阻碍是实证的，但「市值越大波动越小」也有历史先例（黄金）</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="investor">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.15);color:#8B5CF6;">🏢 投资者</span>
+                  <p class="p-quote">「波动性是朋友也是敌人——在牛市里，波动带来收益；在熊市里，波动放大亏损。」</p>
+                  <ul>
+                    <li>短期视角：BTC的高波动性使其适合投机而非储蓄，需要严格的仓位管理和止损纪律</li>
+                    <li>长期视角（5-10年）：DCA（定投）策略在历史上表现优异，尤其在法币高通胀国家</li>
+                    <li>组合视角：将1-5%资产配置BTC作为「彩票式对冲」（尾部风险暴露），有学术依据（《比特币作为一种投资组合分散器》已有多篇论文）</li>
+                    <li>风险：监管黑天鹅（如全面禁止持有BTC）、技术替代（如量子计算破解椭圆曲线）</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="historian">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.15);color:#10B981;">📜 历史学家</span>
+                  <p class="p-quote">「每一次货币制度变革，都有人预言末日——结果往往是变革本身活了下来，批评者错了。」</p>
+                  <ul>
+                    <li>法币体系也「没有内在价值」——1944年布雷顿森林协议说「美元=黄金」，1971年尼克松单方面废除，美元依然活得好好的</li>
+                    <li>货币演化史：贝壳→金属→纸币→电子货币→数字货币——每一步都伴随「这不靠谱」的质疑</li>
+                    <li>BTC16年的存在本身就是反例：「郁金香」「庞氏骗局」「将被政府消灭」——这些预言都落空了</li>
+                    <li>但历史也提醒：曾经的货币霸主（荷兰盾、英镑）最终被取代——BTC能否长期保持竞争力，取决于它能否持续演进</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="citizen">
+                  <span class="p-angle-badge" style="background:rgba(236,72,153,0.15);color:#EC4899;">🧑‍💼 普通人</span>
+                  <p class="p-quote">「我不关心货币理论，我只想知道：存银行缩水，还是买BTC缩水？」</p>
+                  <ul>
+                    <li>在<strong>高通胀国家</strong>（阿根廷、土耳其、尼日利亚）：BTC提供了事实上的储值渠道，尽管有波动，但法币更烂</li>
+                    <li>在中国语境下：普通人关注法币存款跑不赢通胀的问题——但BTC的高波动需要极强的心理承受能力</li>
+                    <li>「闲钱投资」原则：只用5-10%的储蓄（亏光了不心疼的钱）尝试BTC，小额定投优于梭哈</li>
+                    <li>防骗提示：任何「保证BTC收益」的都是骗局；私钥安全比什么都重要</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosopher">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.15);color:#F97316;">🏛️ 自由意志主义者</span>
+                  <p class="p-quote">「BTC的核心价值不是价格——而是证明了一种可能：货币可以不需要国家。」</p>
+                  <ul>
+                    <li>哈耶克《货币的非国家化》(1976)的实践验证：BTC是目前运行时间最长的「去国家化货币」</li>
+                    <li>审查阻力：政府可以关停银行，但无法关停BTC网络（除非物理断网）</li>
+                    <li>这是「反抗金融控制权」的符号：从委内瑞拉到香港，BTC成为特定情境下的生命线</li>
+                    <li>批评：BTC挖矿的能源消耗与其「去中心化」哲学存在内在矛盾——能源密集型的去中心化是真正的自由吗？</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="regulator">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.15);color:#3B82F6;">🔍 监管者</span>
+                  <p class="p-quote">「BTC给监管带来了前所未有的挑战：资产、商品、货币还是证券？每个国家的答案不同。」</p>
+                  <ul>
+                    <li>美国SEC/CFTC立场：BTC是商品（非证券），受CFTC监管；ETH是否证券尚有争议</li>
+                    <li>反洗钱(AML)：BTC地址的 pseudonymity（假名性）使其成为潜在的洗钱工具——但Chainalysis等区块链分析公司已大幅提升了追踪能力</li>
+                    <li>资本管制：BTC使个人可以绕过外汇管制跨境转移财富——这是某些国家严厉打击的原因</li>
+                    <li>ETF批准的意义：从「禁止持有」到「允许ETF投资」，是监管态度的根本转变——意味着BTC已被承认为合法的另类资产</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角 · 同一事实，不同透镜</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 七、动手实验 ============ -->
+          <section id="labs">
+            <h2>七、动手实验区</h2>
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">动手实验：十年购买力对比</span>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;">「如果2014年你有10万元人民币，放银行、买黄金、买BTC，今天各值多少？」</p>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:12px;">
+                <table class="compare-table" style="margin:0;">
+                  <thead>
+                    <tr>
+                      <th>资产</th>
+                      <th>2014年初价格（估算）</th>
+                      <th>当前价格（参考值，2025年）</th>
+                      <th>10万本金结果（估算）</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>🏦 定期存款</td>
+                      <td>基准利率约3.25%</td>
+                      <td>基准约1.5%（持续下降）</td>
+                      <td>约 11.5-13 万元（含复利）</td>
+                    </tr>
+                    <tr>
+                      <td>🥇 黄金</td>
+                      <td>约 240 元/克</td>
+                      <td>约 600+ 元/克</td>
+                      <td>约 25 万元（+150%）</td>
+                    </tr>
+                    <tr>
+                      <td>₿ 比特币</td>
+                      <td>约 4,000 元/BTC</td>
+                      <td>约 60万+ 元/BTC</td>
+                      <td>约 1,500 万元（+150倍）</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p class="table-note" style="margin-top:8px;margin-bottom:0;">
+                  ⚠️ <strong>免责声明：历史回测结果，不代表未来收益。</strong>以上为简化估算（实际需考虑汇率、税费、存取时机等因素）。BTC的高收益伴随极端波动，2022年熊市一度从高点回撤超75%。
+                </p>
+              </div>
+              <ul class="lab-list">
+                <li><span class="lab-icon">🔍</span><div><strong>查询历史价格：</strong>在 <a href="https://coinmarketcap.com" target="_blank" style="color:var(--orange);">CoinMarketCap</a> 或 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">Mempool.space</a> 输入任意日期，查看BTC历史价格。找到2014年1月1日、2017年12月17日（历史高点）、2020年3月（COVID底）的BTC价格。</div></li>
+                <li><span class="lab-icon">🧮</span><div><strong>计算你的购买力侵蚀：</strong>用 <a href="https://www.inflationtool.com/china" target="_blank" style="color:var(--orange);">通胀计算器</a> 查询2014年10万元在2025年的实际购买力——这才是「存款的实际回报」。</div></li>
+                <li><span class="lab-icon">📊</span><div><strong>对比波动率：</strong>在 <a href="https://www.skew.com" target="_blank" style="color:var(--orange);">Skew.com</a> 查看BTC期权隐含波动率，与黄金ETF（GLD）的已实现波动率对比——理解「波动率溢价」的量化含义。</div></li>
+                <li><span class="lab-icon">🌐</span><div><strong>阅读空方观点：</strong>搜索保罗·克鲁格曼2011年、2013年、2018年关于BTC的评论文章（纽约时报专栏），对比他每次立场的演变——这本身就是一堂「学术观点如何随时间修正」的课。</div></li>
+              </ul>
+            </div>
+          </section>
+
+              <!-- ============ 延伸探索 ============ -->
+    <section id="explore">
+      <div class="explorer-box">
+        <div class="exp-header">
+          <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+        </div>
+        <div class="exp-result">
+          <ul class="exp-links">
+        <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space · 不可篡改的货币供应 <span class="exp-go">→</span></a></li>
+        <li><a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener">Blockchain.com · 验证交易透明不可逆 <span class="exp-go">→</span></a></li>
+        <li><a href="https://ccaf.io/cbns" target="_blank" rel="noopener">剑桥比特币耗电指数 CCAF <span class="exp-go">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- ============ 八、大白话总结 ============ -->
+          <section id="summary">
+            <h2>八、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">💡 把这些复杂的放在日常场景中</span>
+              <p><strong>法币 vs 比特币 = 两种不同的「信任机器」</strong></p>
+              <ul>
+                <li>你信任政府能管好货币（不发太多、不贬值太快）→ 你持有法币，忍受通胀换取「方便」</li>
+                <li>你不信任政府（或者你经历过通胀/汇率崩溃）→ 你持有BTC，用波动换取「不被稀释」</li>
+                <li>两种选择各有代价：法币可能慢慢变薄，BTC可能一夜缩水50%</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>通胀螺旋 vs 通缩螺旋</strong></p>
+              <ul>
+                <li>政府超发 → 所有人想赶紧花掉 → 货币流通加速 → 物价涨得更快（通胀螺旋）</li>
+                <li>所有人都预期BTC升值 → 持有不卖 → 流通减少 → 价格涨得更快但没人消费（通缩担忧）</li>
+                <li>奥地利学派的反驳：BTC升值期间，技术进步让其他商品持续降价，这是「好的通缩」——电脑越来越便宜不是危机</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>郁金香 vs BTC</strong></p>
+              <ul>
+                <li>郁金香：可以无限种，价格靠「所有人都觉得它涨」的信念——信念消散即归零</li>
+                <li>BTC：有固定上限、有全球网络、有实际用途（跨境汇款、资本管制绕过）、有16年不间断运行历史</li>
+                <li>但两者也有共同点：价格都由「别人愿意付多少钱」决定——这叫「主观价值论」，股票和房产也一样</li>
+              </ul>
+            </div>
+
+            <div class="story-box orange">
+              <span class="story-label">🏁 经济学篇的关键收获</span>
+              <p>读完这一节，你应该能够：</p>
+              <ul>
+                <li>✅ 用货币四职能（交易媒介/记账单位/价值储藏/延期支付）客观评价BTC的强弱</li>
+                <li>✅ 理解通胀和通缩双方的逻辑，各自的适用范围</li>
+                <li>✅ 阅读BTC波动性的学术文献，区分「波动是问题」和「波动是机会」</li>
+                <li>✅ 用「六维对比」框架回应「BTC=郁金香」的批评</li>
+                <li>✅ 独立判断：法币和BTC，你分别信任它们什么？</li>
+              </ul>
+            </div>
+
+            <div class="cta-box" style="margin-top:40px;">
+              <h3>🚀 下一步</h3>
+              <p>辩论的最后一道关卡：<strong>BTC到底值多少钱？有没有一把「尺子」可以量它的价值？</strong></p>
+              <a href="03-08-valuation-models.html" class="btn btn-primary">继续学习：估值模型 →</a>
+              <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+              <a href="03-06-cycles-narrative.html" class="btn">← 上一章：周期与叙事</a>
+            </div>
+          </section>
+
+        </div> <!-- article-body -->
+      </div> <!-- main-content -->
+    </div> <!-- two-col -->
+  </div> <!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="03-06-cycles-narrative.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">周期与叙事</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 7 / 8
+      </div>
+      <a href="03-08-valuation-models.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">估值模型</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        ₿ 比特币学习地图
+      </div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+    });
+
+    function initFiatPerspectives() {
+      const card = document.getElementById('fiat-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-07-read', isRead);
+    };
+    (function checkRead() {
+      const isRead = localStorage.getItem('btc-ch03-07-read') === 'true';
+      if (isRead) {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+  </script>
+</body>
+</html>

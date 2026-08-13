@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>比特币哲学篇 · 密码朋克与自由金钱 | 比特币学习地图</title>
+  <link rel="stylesheet" href="../../shared/style.css">
+  <script src="../../shared/nav.js" defer></script>
+  <style>
+    :root {
+      --primary: #F7931A;
+      --primary-glow: rgba(247,147,26,0.15);
+      --primary-subtle: rgba(247,147,26,0.06);
+      --accent-dark: #1a0a00;
+      --bg-surface: #0f0a04;
+      --bg-card: #1a1008;
+      --text-primary: #FFF8EE;
+      --text-secondary: #C4A882;
+      --text-muted: #8B7355;
+      --border: rgba(247,147,26,0.18);
+    }
+
+    body {
+      background: var(--bg-surface);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(247,147,26,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(247,147,26,0.04) 0%, transparent 60%);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* Override global nav dark theme for this warm theme */
+    body { --nav-bg: rgba(15,10,4,0.92); --nav-border: rgba(247,147,26,0.15); }
+
+    /* Hero */
+    .phil-hero {
+      position: relative;
+      padding: 80px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .phil-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 100% 80% at 50% -10%, rgba(247,147,26,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .phil-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: var(--primary-glow);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .phil-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    .phil-hero h1 .highlight {
+      color: var(--primary);
+      position: relative;
+    }
+    .phil-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+    /* Epigraph */
+    .epigraph {
+      max-width: 680px;
+      margin: 0 auto 56px;
+      padding: 28px 36px;
+      background: var(--primary-subtle);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 12px 12px 0;
+      position: relative;
+    }
+    .epigraph::before {
+      content: '\201C';
+      position: absolute;
+      top: -20px;
+      left: 16px;
+      font-size: 6rem;
+      color: var(--primary);
+      opacity: 0.2;
+      line-height: 1;
+    }
+    .epigraph blockquote {
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.75;
+      margin: 0 0 12px;
+    }
+    .epigraph cite {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* Sections */
+    .section-wrap { max-width: 900px; margin: 0 auto; padding: 0 24px 80px; }
+
+    .section {
+      margin-bottom: 64px;
+    }
+    .section-number {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .section h2 {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      letter-spacing: -0.015em;
+    }
+    .section h2 .num {
+      color: var(--primary);
+      margin-right: 10px;
+      font-size: 1.1em;
+    }
+    .section-intro {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+      margin: 32px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--primary), rgba(247,147,26,0.1));
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 32px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -34px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid var(--bg-surface);
+      box-shadow: 0 0 12px rgba(247,147,26,0.5);
+    }
+    .timeline-item h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .timeline-item .era {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: var(--primary-glow);
+      padding: 2px 10px;
+      border-radius: 100px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .timeline-item p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.75;
+    }
+
+    /* Problem cards */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+    .problem-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .problem-card:hover {
+      border-color: rgba(247,147,26,0.4);
+      transform: translateY(-2px);
+    }
+    .problem-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+    .problem-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .problem-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .problem-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Quote callout */
+    .callout {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin: 28px 0;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .callout-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .callout h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .callout p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    /* Two-column layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 24px 0;
+    }
+    @media (max-width: 640px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+    .col-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .col-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .col-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .col-card ul li {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(247,147,26,0.06);
+      padding-left: 16px;
+      position: relative;
+    }
+    .col-card ul li:last-child { border-bottom: none; }
+    .col-card ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-size: 0.8rem;
+    }
+
+    /* Manifesto box */
+    .manifesto-box {
+      background: linear-gradient(135deg, #1a1200 0%, #2a1a00 100%);
+      border: 1px solid rgba(247,147,26,0.3);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 28px 0;
+      position: relative;
+    }
+    .manifesto-box::before {
+      content: '📜';
+      position: absolute;
+      top: -14px;
+      left: 24px;
+      font-size: 1.4rem;
+      background: var(--bg-surface);
+      padding: 0 8px;
+    }
+    .manifesto-box h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+    .manifesto-box p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .manifesto-box p:last-child { margin-bottom: 0; }
+
+    /* Austrian School cards */
+    .austrian-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+    .austrian-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .austrian-card .thinker {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+    .austrian-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .austrian-card .title {
+      font-size: 0.75rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .austrian-card p {
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* Orange Pill */
+    .orange-pill-section {
+      background: linear-gradient(135deg, #2a1200 0%, #1a0a00 50%, #2a1500 100%);
+      border: 1px solid rgba(247,147,26,0.3);
+      border-radius: 18px;
+      padding: 40px 36px;
+      margin: 40px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .orange-pill-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(247,147,26,0.08) 0%, transparent 70%);
+    }
+    .orange-pill-emoji {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+    }
+    .orange-pill-section h2 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .orange-pill-section p {
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 24px;
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+    .pill-steps {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .pill-step {
+      background: rgba(247,147,26,0.08);
+      border: 1px solid rgba(247,147,26,0.2);
+      border-radius: 12px;
+      padding: 14px 20px;
+      max-width: 180px;
+    }
+    .pill-step .step-num {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .pill-step p {
+      font-size: 0.82rem;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .pill-arrow {
+      display: flex;
+      align-items: center;
+      color: var(--primary);
+      font-size: 1.4rem;
+      opacity: 0.6;
+    }
+
+    /* Comparison table */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0;
+      font-size: 0.85rem;
+    }
+    .comp-table th {
+      background: rgba(247,147,26,0.12);
+      color: var(--primary);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .comp-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(247,147,26,0.07);
+      color: var(--text-secondary);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+    .comp-table tr:last-child td { border-bottom: none; }
+    .comp-table tr:hover td { background: rgba(247,147,26,0.03); }
+    .comp-table td:first-child { color: var(--text-primary); font-weight: 600; }
+    .comp-table .btc-yes { color: #4ade80; font-weight: 600; }
+    .comp-table .btc-no { color: #f87171; }
+
+    /* Sovereign individual */
+    .sovereign-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 28px 0;
+    }
+    .sovereign-box h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .sovereign-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .sov-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(247,147,26,0.04);
+      border-radius: 10px;
+    }
+    .sov-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .sov-text h4 {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .sov-text p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Navigation */
+    .page-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .page-nav-link {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      text-decoration: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .page-nav-link:hover {
+      border-color: rgba(247,147,26,0.4);
+      background: rgba(247,147,26,0.04);
+    }
+    .page-nav-link.next { text-align: right; }
+    .nav-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .nav-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    @media (max-width: 600px) {
+      .page-nav { grid-template-columns: 1fr; }
+    }
+
+    /* Progress */
+    .reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #F7931A, #FFD580);
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s linear;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .phil-hero { padding: 60px 16px 40px; }
+      .section-wrap { padding: 0 16px 48px; }
+      .callout { padding: 20px; flex-direction: column; }
+      .orange-pill-section { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="reading-progress" id="progressBar"></div>
+  <nav id="mainNav"></nav>
+
+  <!-- HERO -->
+  <header class="phil-hero">
+    <div class="phil-eyebrow">
+      <span>⚡</span>
+      <span data-i18n="phil_eyebrow">哲学篇 · 第四章</span>
+    </div>
+    <h1>
+      <span data-i18n="phil_h1_1">密码朋克、健全货币</span><br>
+      <span class="highlight" data-i18n="phil_h1_2">与自主主权</span>
+    </h1>
+    <p class="phil-subtitle" data-i18n="phil_subtitle">
+      比特币不只是一种技术发明，它是一场跨越40年的思想运动——从密码朋克到奥地利经济学派，从哈耶克的货币非国家化到中本聪的共识机制，所有线索汇聚成一句话：
+    </p>
+    <div class="epigraph">
+      <blockquote data-i18n="epigraph_text">
+        「隐私对于电子时代里的开放社会而言是必不可少的。隐私不是秘密，隐私是你不想让全世界都知道的事，但秘密是你不想让任何人知道的事。隐私是选择性向世界透露自己想法的权利。」
+      </blockquote>
+      <cite data-i18n="epigraph_cite">—— Eric Hughes，《密码朋克宣言》，1993</cite>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="section-wrap">
+
+    <!-- SECTION 1: 货币的千年之问 -->
+    <section class="section">
+      <div class="section-number" data-i18n="s1_num">Chapter 01</div>
+      <h2><span class="num">💰</span> <span data-i18n="s1_title">货币的千年之问</span></h2>
+      <p class="section-intro" data-i18n="s1_intro">
+        货币的本质是什么？它从何而来，又为何走向衰败？比特币之前，人类经历了漫长的货币试错史。每一次"进步"都带来了新的权力，也埋下了新的祸根。
+      </p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="era" data-i18n="era1">~5000年前</span>
+          <h3 data-i18n="era1_title">商品货币：贝壳与金银</h3>
+          <p data-i18n="era1_desc">货币以真实存在的商品形态出现——贝壳、盐、牛、铜、铁，最终稳定为金银。价值来自天然稀缺性，无人可随意"创造"。问题是：携带不便、难以分割、存在假币。</p>
+        </div>
+        <div class="timeline-item">
+          <span class="era" data-i18n="era2">~1000年前</span>
+          <h3 data-i18n="era2_title">金属铸币：国家开始介入</h3>
+          <p data-i18n="era2_desc">政府开始铸造标准化铸币，并逐步掺杂贱金属（「剪币」现象）。铸币权成为权力核心——谁掌控铸币，谁就掌控财富再分配。</p>
+        </div>
+        <div class="timeline-item">
+          <span class="era" data-i18n="era3">1694年</span>
+          <h3 data-i18n="era3_title">中央银行诞生：英格兰银行</h3>
+          <p data-i18n="era3_desc">私人银行家贷款给政府，政府授予其货币发行垄断权。部分准备金制度（fractional reserve）由此诞生——银行只需持有少量黄金便可贷出10倍的"存款"。</p>
+        </div>
+        <div class="timeline-item">
+          <span class="era" data-i18n="era4">1971年</span>
+          <h3 data-i18n="era4_title">布雷顿森林体系终结</h3>
+          <p data-i18n="era4_desc">尼克松宣布美元与黄金脱钩。人类正式进入纯<strong>法定货币（Fiat Money）</strong>时代——「法币」之所以有价值，仅因为政府法令规定它有价值，并强制国民接受纳税。</p>
+        </div>
+        <div class="timeline-item">
+          <span class="era" data-i18n="era5">2009年</span>
+          <h3 data-i18n="era5_title">比特币：数学货币诞生</h3>
+          <p data-i18n="era5_desc">中本聪在创世区块中写入当天《泰晤士报》的头版标题：「财政大臣站在第二轮救助银行业的边缘」。比特币用算法取代国家信用，用数学取代中央银行，用共识取代强制。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: 三大历史缺陷的最终解药 -->
+    <section class="section">
+      <div class="section-number" data-i18n="s2_num">Chapter 02</div>
+      <h2><span class="num">🔓</span> <span data-i18n="s2_title">比特币解决了货币史的三大历史缺陷</span></h2>
+      <p class="section-intro" data-i18n="s2_intro">
+        在<a href="01-02-three-flaws.html" data-i18n="s2_link">第二章</a>我们探讨了货币史上政府操控铸币权导致的三大缺陷——通货膨胀、货币贬值、审查控制。比特币的设计逐一给出了答案：
+      </p>
+
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-icon">⛓️</div>
+          <h3 data-i18n="p1_title">去中心化发行</h3>
+          <p data-i18n="p1_desc">比特币的2100万枚上限写在共识规则里，由全球数万个节点共同执行。没有中央银行可以"开会决定"增发——中本聪将铸币权归还给算法和网络。</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🔐</div>
+          <h3 data-i18n="p2_title">抗通胀设计</h3>
+          <p data-i18n="p2_desc">比特币区块奖励每21万个区块（约4年）减半一次，2140年左右最终产出将趋于零。减半事件（Halving）历史上每次都引发供应紧缩预期，推动价格上涨。</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🌍</div>
+          <h3 data-i18n="p3_title">抗审查 & 跨境</h3>
+          <p data-i18n="p3_desc">只要记住私钥，任何人可以在任何有网络的地方转移比特币。没有任何政府可以冻结链上资产、阻止跨境转账，或对持有者实施金融禁令。</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">📖</div>
+          <h3 data-i18n="p4_title">透明可验证</h3>
+          <p data-i18n="p4_desc">2100万总量、货币政策规则、区块奖励时间表——全部写在开源代码里，任何人可审计。这消除了对任何机构"诚信"的依赖，改为信任数学本身。</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🛡️</div>
+          <h3 data-i18n="p5_title">无交易对手风险</h3>
+          <p data-i18n="p5_desc">持有比特币就是直接持有私钥——没有银行倒闭风险，没有托管机构跑路，没有交易对手违约。真正的「最大可还原财富」（Maximum Extractable Value）属于所有者本人。</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🧬</div>
+          <h3 data-i18n="p6_title">稀缺性传递</h3>
+          <p data-i18n="p6_desc">与黄金一样稀有（2100万枚上限），同时可以无限分割（Satoshi，1 BTC = 1亿聪），还能瞬间传输。这让"数字黄金"比实物黄金更高效、比债券更稀缺。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: 密码朋克运动 -->
+    <section class="section">
+      <div class="section-number" data-i18n="s3_num">Chapter 03</div>
+      <h2><span class="num">🔐</span> <span data-i18n="s3_title">密码朋克运动：比特币的思想祖先</span></h2>
+
+      <div class="manifesto-box">
+        <h3 data-i18n="mf_title">《密码朋克宣言》（Cypherpunk Manifesto, 1993）</h3>
+        <p data-i18n="mf_p1">
+          1993年，Eric Hughes（加州大学伯克利数学家）、Timothy May（英特尔退休高管）和John Gilmore（Sun Microsystems创始人）三人，在加州共同创立了<strong>密码朋克邮件组（Cypherpunks Mailing List）</strong>。
+        </p>
+        <p data-i18n="mf_p2">
+          这个邮件组迅速聚集了 Julian Assange（维基解密创始人）、Nick Szabo（智能合约之父，Bit Gold发明者）、Wei Dai（b-money提出者）、Hal Finney（首笔比特币交易的接收者）等思想家。
+        </p>
+        <p data-i18n="mf_p3">
+          他们的核心信条是：<strong>「密码学是保卫个人自由、抵抗审查压迫的关键武器。」</strong>在互联网时代，隐私不是奢侈品，而是必需品——而强加密是实现隐私的唯一可靠手段。
+        </p>
+      </div>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h3>🔑 <span data-i18n="cp_icons">密码朋克核心思想</span></h3>
+          <ul>
+            <li data-i18n="cp1">隐私权是基本人权，非「有所隐藏」才需要隐私</li>
+            <li data-i18n="cp2">强加密 = 权力从政府向个人的重新分配</li>
+            <li data-i18n="cp3">去中心化系统 > 中央控制系统的安全性</li>
+            <li data-i18n="cp4">代码即法律（Code is Law）</li>
+            <li data-i18n="cp5">开放协议胜于封闭平台</li>
+            <li data-i18n="cp6">信用要最小化——用数学代替对机构的信任</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <h3>🌳 <span data-i18n="cp_tree">密码朋克思想谱系</span></h3>
+          <ul>
+            <li><strong>David Chaum</strong> (1983) — eCash，盲签名，数字现金先驱</li>
+            <li><strong>Wei Dai</strong> (1998) — b-money，首次提出去中心化共识+代币概念</li>
+            <li><strong>Nick Szabo</strong> (1998) — Bit Gold，时间戳+工作量证明的价值存储</li>
+            <li><strong>Adam Back</strong> (2002) — HashCash，工作量证明（比特币PoW前身）</li>
+            <li><strong>Hal Finney</strong> (2004) — RPOW，可重复使用的工作量证明</li>
+            <li><strong>Satoshi</strong> (2008) — 比特币，整合所有前作精华</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon">⚡</div>
+        <div>
+          <h3 data-i18n="callout1_title">比特币是密码朋克理想的「活体实现」</h3>
+          <p data-i18n="callout1_p">
+            中本聪从未在公共场合露面，完美承袭了密码朋克匿名传统。他没有发表哲学论文，而是直接写代码——一个运行在互联网上、完全去中心化、无需许可即可参与、无法被关闭的货币系统。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: 奥地利经济学派 -->
+    <section class="section">
+      <div class="section-number" data-i18n="s4_num">Chapter 04</div>
+      <h2><span class="num">📈</span> <span data-i18n="s4_title">奥地利学派：比特币的经济学血缘</span></h2>
+      <p class="section-intro" data-i18n="s4_intro">
+        比特币的拥趸中相当一部分是奥地利经济学派（Austrian School of Economics）的信徒——他们认为比特币是哈耶克「货币非国家化」理论的技术实践，是对抗凯恩斯主义通胀机器的数字武器。
+      </p>
+
+      <div class="austrian-grid">
+        <div class="austrian-card">
+          <div class="thinker">🏛️</div>
+          <h3>路德维希·冯·米塞斯</h3>
+          <div class="title">Ludwig von Mises（1881-1973）</div>
+          <p data-i18n="mises">「没有价格信号的指引，计划者无法进行任何理性的经济计算。」比特币通过市场价格发现机制，为全球每个人提供统一的价格参照系。</p>
+        </div>
+        <div class="austrian-card">
+          <div class="thinker">📕</div>
+          <h3>弗里德里希·哈耶克</h3>
+          <div class="title">Friedrich Hayek（1899-1992）</div>
+          <p data-i18n="hayek">1976年《货币的非国家化》提出：废除央行货币垄断，允许私人银行发行竞争性货币，市场竞争会让最好的货币胜出。比特币是这一理念的代码实现。</p>
+        </div>
+        <div class="austrian-card">
+          <div class="thinker">📗</div>
+          <h3>穆雷·罗斯巴德</h3>
+          <div class="title">Murray Rothbard（1926-1995）</div>
+          <p data-i18n="rothbard">将奥地利学派推向「自由意志主义」极端，提出「自我所有权」（Self-Ownership）：个人对自己的身体、劳动和财产拥有绝对主权，不受国家强制。比特币是这一权利在数字时代的延伸。</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon">💡</div>
+        <div>
+          <h3 data-i18n="callout2_title">健全货币（Sound Money）vs 法定货币（Fiat Money）</h3>
+          <p data-i18n="callout2_p">
+            奥地利学派区分两种货币：<strong>健全货币</strong>（稀缺、不可伪造、供应量不受政治干预，如黄金和比特币）和<strong>法定货币</strong>（政府任意印发的债务货币）。哈耶克和米塞斯都认为，法定货币的通胀本质是对储户的隐性税收，会扭曲整个经济体的价格信号。
+          </p>
+        </div>
+      </div>
+
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th data-i18n="th_property">货币属性</th>
+            <th data-i18n="th_fiat">法定货币（Fiat）</th>
+            <th data-i18n="th_gold">黄金（Gold）</th>
+            <th data-i18n="th_btc">比特币（Bitcoin）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="td_scarcity">稀缺性上限</td>
+            <td class="btc-no">❌ 无限供应，政府随意印</td>
+            <td>✅ 天然稀缺，约4.2万吨</td>
+            <td class="btc-yes">✅ 数学上限，2100万枚</td>
+          </tr>
+          <tr>
+            <td data-i18n="td_transfer">可转移性</td>
+            <td>✅ 银行转账，全球可达</td>
+            <td class="btc-no">❌ 需实物交割，成本高</td>
+            <td class="btc-yes">✅ 互联网可瞬间传输</td>
+          </tr>
+          <tr>
+            <td data-i18n="td_divisible">可分割性</td>
+            <td>✅ 可到小数点后2位</td>
+            <td>✅ 可分割，但实操困难</td>
+            <td class="btc-yes">✅ 可到1聪（10⁻⁸ BTC）</td>
+          </tr>
+          <tr>
+            <td data-i18n="td_counterfeit">防伪/防双花</td>
+            <td>依赖央行信誉+反伪技术</td>
+            <td>依赖鉴定机构</td>
+            <td class="btc-yes">✅ 数学共识，无双花可能</td>
+          </tr>
+          <tr>
+            <td data-i18n="td_censorship">抗审查</td>
+            <td class="btc-no">❌ 政府可冻结账户</td>
+            <td>✅ 实物持有难冻结</td>
+            <td class="btc-yes">✅ 私钥在手，无法冻结</td>
+          </tr>
+          <tr>
+            <td data-i18n="td_audit">可审计性</td>
+            <td class="btc-no">❌ 银行不公开账本</td>
+            <td>部分（黄金ETF等间接审计）</td>
+            <td class="btc-yes">✅ 完整公开账本，任何人验证</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 5: 自主主权（Self-Sovereignty） -->
+    <section class="section">
+      <div class="section-number" data-i18n="s5_num">Chapter 05</div>
+      <h2><span class="num">🏛️</span> <span data-i18n="s5_title">自主主权：你的钱，你做主</span></h2>
+      <p class="section-intro" data-i18n="s5_intro">
+        「成为你自己的银行」（Be Your Own Bank）是比特币最深刻的哲学宣言。传统金融体系中，你的存款安全依赖于银行的健康运营、政府的监管善意、以及国家的不崩溃。比特币将这一切替换为：<strong>数学 + 你自己</strong>。
+      </p>
+
+      <div class="sovereign-box">
+        <h3>⚖️ <span data-i18n="sov_title">财产权：文明的基础</span></h3>
+        <div class="sovereign-grid">
+          <div class="sov-item">
+            <div class="sov-icon">🏠</div>
+            <div class="sov-text">
+              <h4 data-i18n="sov1_h">自我所有权</h4>
+              <p data-i18n="sov1_p">你对自己的身体、劳动和财产拥有最高主权。任何强制征税或财产征用，原则上需要你的同意。</p>
+            </div>
+          </div>
+          <div class="sov-item">
+            <div class="sov-icon">🔑</div>
+            <div class="sov-text">
+              <h4 data-i18n="sov2_h">私钥即主权</h4>
+              <p data-i18n="sov2_p">在比特币中，持有私钥 = 持有该地址上的全部资产。没有你的私钥，任何人——包括政府——都无法动用你的币。</p>
+            </div>
+          </div>
+          <div class="sov-item">
+            <div class="sov-icon">🚫</div>
+            <div class="sov-text">
+              <h4 data-i18n="sov3_h">无需许可</h4>
+              <p data-i18n="sov3_p">开设银行账户需要身份证明、KYC审核和信用评分。运行比特币节点只需一台电脑和互联网——无需任何人批准。</p>
+            </div>
+          </div>
+          <div class="sov-item">
+            <div class="sov-icon">🌊</div>
+            <div class="sov-text">
+              <h4 data-i18n="sov4_h">跨境自由</h4>
+              <p data-i18n="sov4_p">传统跨境汇款受外汇管制，每人每年5万美元限额。比特币转账没有国界，没有限额，没有审批——只要有网络。</p>
+            </div>
+          </div>
+          <div class="sov-item">
+            <div class="sov-icon">📜</div>
+            <div class="sov-text">
+              <h4 data-i18n="sov5_h">抗没收</h4>
+              <p data-i18n="sov5_p">政府可以通过法院命令冻结银行账户、扣押房产。但只要私钥是分散存储的，链上比特币无法被强制转移。</p>
+            </div>
+          </div>
+          <div class="sov-item">
+            <div class="sov-icon">⏳</div>
+            <div class="sov-text">
+              <h4 data-i18n="sov6_h">时间价值</h4>
+              <p data-i18n="sov6_p">法定货币因通胀持续稀释购买力。比特币的通缩设计（减半+上限）使其成为财富长期保值工具，而非消耗性消费。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: 橙色药丸 -->
+    <section class="section">
+      <div class="orange-pill-section">
+        <div class="orange-pill-emoji">💊</div>
+        <h2 data-i18n="pill_title">「橙色药丸」：被比特币改变的思维方式</h2>
+        <p data-i18n="pill_desc">
+          在电影《黑客帝国》中，Neo 被给予两颗药丸：蓝色代表继续活在虚假的现实中，红色代表接受残酷的真相。比特币社区借用这个隐喻，创造出「橙色药丸」——
+          代表接受了比特币真相后，思维方式发生的根本性转变。
+        </p>
+        <div class="pill-steps">
+          <div class="pill-step">
+            <div class="step-num" data-i18n="pill_s1">Before</div>
+            <p data-i18n="pill_s1p">「政府印钱是为了大家好，通胀是发展必需代价」</p>
+          </div>
+          <div class="pill-arrow">→</div>
+          <div class="pill-step">
+            <div class="step-num" data-i18n="pill_s2">Orange Pill</div>
+            <p data-i18n="pill_s2p">「货币是国家权力的工具，通胀是对储户的隐蔽税收」</p>
+          </div>
+          <div class="pill-arrow">→</div>
+          <div class="pill-step">
+            <div class="step-num" data-i18n="pill_s3">After</div>
+            <p data-i18n="pill_s3p">「健全货币是自由的基础，2100万上限是文明的馈赠」</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: 比特币最大主义 -->
+    <section class="section">
+      <div class="section-number" data-i18n="s6_num">Chapter 06</div>
+      <h2><span class="num">⚔️</span> <span data-i18n="s6_title">比特币主义：一种文化运动的兴起</span></h2>
+      <p class="section-intro" data-i18n="s6_intro">
+        「比特币最大主义」（Bitcoin Maximalism）是一种文化立场：相信比特币是唯一真正值得长期持有的加密资产，其他币（Altcoins）在货币属性上无法与比特币竞争。Vitalik Buterin（以太坊创始人）曾专门撰文为此立场辩护。
+      </p>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h3>🎯 <span data-i18n="max_title">比特币最大主义的核心理由</span></h3>
+          <ul>
+            <li data-i18n="max1">货币的价值来自网络效应——越多人用越好用，比特币拥有最强的网络效应</li>
+            <li data-i18n="max2">「健全货币」的市场只会容纳一种——竞争性货币理论中，赢者通吃</li>
+            <li data-i18n="max3">绝大多数Altcoin本质是证券或庞氏——而非真正的货币</li>
+            <li data-i18n="max4">比特币的开发去中心化程度最高，代码最成熟，安全记录最长</li>
+            <li data-i18n="max5">先发优势 + 抗审查 = 其他币无法复制的「护城河」</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <h3>🤝 <span data-i18n="max_agree">多元声音：V神也认同的比特币价值</span></h3>
+          <ul>
+            <li data-i18n="v1">「在一个充满敌意和不确定性的世界里，比特币最大主义是对欺诈文化的有效防御」</li>
+            <li data-i18n="v2">「健全货币（Sound Money）的理念值得认真对待，而非轻蔑地嘲笑」</li>
+            <li data-i18n="v3">「比特币的文化和结构优势，使其成为值得持有的强大资产」</li>
+            <li data-i18n="v4">「自我主权验证（Self-Sovereign Verification）的意识形态在未来将更加重要」</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 8: 结语 -->
+    <section class="section">
+      <div class="section-number" data-i18n="s7_num">Chapter 07</div>
+      <h2><span class="num">🌅</span> <span data-i18n="s7_title">为什么这一切重要</span></h2>
+
+      <div class="callout">
+        <div class="callout-icon">🌍</div>
+        <div>
+          <h3 data-i18n="why_h">一个更公平的世界需要更公平的货币</h3>
+          <p data-i18n="why_p">
+            比特币的意义远超过价格涨跌。它是一套思想体系——关于隐私、财产权、去中心化信任和自我主权的整套哲学。当人们说「持有比特币」时，他们实际上在说：
+            「我相信数学而非政客，信任代码而非银行，依靠自己而非任何权威。」
+          </p>
+        </div>
+      </div>
+
+      <div class="sovereign-grid" style="margin-top: 24px;">
+        <div class="sov-item">
+          <div class="sov-icon">🏛️</div>
+          <div class="sov-text">
+            <h4 data-i18n="w1_h">对政府的意义</h4>
+            <p data-i18n="w1_p">比特币迫使政府约束货币发行——如果任意超发，持币者会用脚投票</p>
+          </div>
+        </div>
+        <div class="sov-item">
+          <div class="sov-icon">🏦</div>
+          <div class="sov-text">
+            <h4 data-i18n="w2_h">对银行业的意义</h4>
+            <p data-i18n="w2_p">比特币证明了无需银行也可以实现安全、全球、低成本的支付系统</p>
+          </div>
+        </div>
+        <div class="sov-item">
+          <div class="sov-icon">🌾</div>
+          <div class="sov-text">
+            <h4 data-i18n="w3_h">对通胀国家居民的意义</h4>
+            <p data-i18n="w3_p">委内瑞拉、阿根廷、土耳其……比特币为那些无法使用本国货币保值的人提供了避难所</p>
+          </div>
+        </div>
+        <div class="sov-item">
+          <div class="sov-icon">🔓</div>
+          <div class="sov-text">
+            <h4 data-i18n="w4_h">对每个人的意义</h4>
+            <p data-i18n="w4_p">选择自己信任的货币，是个人自由的基本表达——比特币让这种选择第一次真正成为可能</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="orange-pill-section" style="margin-top: 40px; text-align: left; padding: 32px;">
+        <h2 style="text-align:center;" data-i18n="dig_title">🔍 延伸阅读推荐</h2>
+        <div class="two-col" style="margin-top: 20px;">
+          <div>
+            <h3 style="color: var(--primary); font-size: 0.9rem; margin-bottom: 8px;" data-i18n="books_h">📚 必读书籍</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="padding: 6px 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid rgba(247,147,26,0.08); padding-left: 14px; position: relative;" data-i18n="book1">• 《货币的非国家化》— 哈耶克</li>
+              <li style="padding: 6px 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid rgba(247,147,26,0.08); padding-left: 14px; position: relative;" data-i18n="book2">• 《人的行为》— 米塞斯</li>
+              <li style="padding: 6px 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid rgba(247,147,26,0.08); padding-left: 14px; position: relative;" data-i18n="book3">• 《精通比特币》— Andreas M. Antonopoulos</li>
+              <li style="padding: 6px 0; font-size: 0.85rem; color: var(--text-secondary); padding-left: 14px; position: relative;" data-i18n="book4">• 《金钱的秘密》— 比特囤币（ahr999）</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color: var(--primary); font-size: 0.9rem; margin-bottom: 8px;" data-i18n="online_h">🌐 在线资源</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="padding: 6px 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid rgba(247,147,26,0.08); padding-left: 14px; position: relative;" data-i18n="online1">• Bitcoin.org — 官方比特币网站</li>
+              <li style="padding: 6px 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid rgba(247,147,26,0.08); padding-left: 14px; position: relative;" data-i18n="online2">• Cypherpunk Cogitations — Jameson Lopp 博客</li>
+              <li style="padding: 6px 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid rgba(247,147,26,0.08); padding-left: 14px; position: relative;" data-i18n="online3">• Satoshi Nakamoto Institute — 中本聪文库</li>
+              <li style="padding: 6px 0; font-size: 0.85rem; color: var(--text-secondary); padding-left: 14px; position: relative;" data-i18n="online4">• ahr999.com 镜像 — 囤币哲学中文经典</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE NAVIGATION -->
+    <nav class="page-nav">
+      <a href="01-03-bitcoin-answer.html" class="page-nav-link prev">
+        <span class="nav-label">← <span data-i18n="prev_chapter">上一章</span></span>
+        <span class="nav-title" data-i18n="prev_title">比特币的答案</span>
+      </a>
+      <a href="../02-basics/02-01-one-sentence.html" class="page-nav-link next">
+        <span class="nav-label"><span data-i18n="next_chapter">入门篇</span> →</span>
+        <span class="nav-title" data-i18n="next_title">一句话入门</span>
+      </a>
+    </nav>
+
+  </div>
+
+  
+    <!-- ============ 延伸探索 ============ -->
+    <div class="explorer-box">
+      <div class="exp-header">
+        <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+      </div>
+      <div class="exp-result">
+        <ul class="exp-links">
+          <li><a href="https://www.econlib.org/library/Hayek.html" target="_blank" rel="noopener">哈耶克《货币的非国家化》 <span class="exp-go">→</span></a></li>
+          <li><a href="https://mises.org" target="_blank" rel="noopener">米塞斯研究所 (Mises Institute) <span class="exp-go">→</span></a></li>
+          <li><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币白皮书 (Bitcoin.org) <span class="exp-go">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+<footer id="siteFooter" style="text-align:center; padding: 40px 24px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 40px;">
+    <p data-i18n="footer">© 2026 比特币学习地图 · Bitcoin Learning Map</p>
+  </footer>
+
+  <script>
+    // I18N
+    const I18N_TEXT = {
+      phil_eyebrow: { zh: '哲学篇 · 第四章', en: 'Philosophy · Chapter 4' },
+      phil_h1_1: { zh: '密码朋克、健全货币', en: 'Cypherpunks, Sound Money' },
+      phil_h1_2: { zh: '与自主主权', en: 'and Self-Sovereignty' },
+      phil_subtitle: { zh: '比特币不只是一种技术发明，它是一场跨越40年的思想运动——从密码朋克到奥地利经济学派，从哈耶克的货币非国家化到中本聪的共识机制，所有线索汇聚成一句话：', en: "Bitcoin is not merely a technological invention — it's an intellectual movement spanning 40 years. From Cypherpunks to the Austrian School, from Hayek's denationalization of money to Nakamoto's consensus mechanism, all threads converge into one statement:" },
+      epigraph_text: { zh: '「隐私对于电子时代里的开放社会而言是必不可少的。隐私不是秘密，隐私是你不想让全世界都知道的事，但秘密是你不想让任何人知道的事。隐私是选择性向世界透露自己想法的权利。」', en: '"Privacy is necessary for an open society in the electronic age. Privacy is not secrecy. Privacy is the power to selectively reveal oneself to the world."' },
+      epigraph_cite: { zh: '—— Eric Hughes，《密码朋克宣言》，1993', en: '— Eric Hughes, Cypherpunk Manifesto, 1993' },
+      s1_num: { zh: '第一章', en: 'Chapter 01' },
+      s1_title: { zh: '货币的千年之问', en: 'The Millennial Question of Money' },
+      s1_intro: { zh: '货币的本质是什么？它从何而来，又为何走向衰败？比特币之前，人类经历了漫长的货币试错史。每一次"进步"都带来了新的权力，也埋下了新的祸根。', en: "What is the essence of money? Where did it come from, and why does it fail? Before Bitcoin, humanity went through a long history of monetary trial and error. Every 'advance' brought new power — and planted new seeds of disaster." },
+      era1: '~5000年前', era1_title: '商品货币：贝壳与金银', era1_desc: '货币以真实存在的商品形态出现——贝壳、盐、牛、铜、铁，最终稳定为金银。价值来自天然稀缺性，无人可随意"创造"。问题是：携带不便、难以分割、存在假币。',
+      era2: '~1000年前', era2_title: '金属铸币：国家开始介入', era2_desc: '政府开始铸造标准化铸币，并逐步掺杂贱金属（"剪币"现象）。铸币权成为权力核心——谁掌控铸币，谁就掌控财富再分配。',
+      era3: '1694年', era3_title: '中央银行诞生：英格兰银行', era3_desc: '私人银行家贷款给政府，政府授予其货币发行垄断权。部分准备金制度（fractional reserve）由此诞生——银行只需持有少量黄金便可贷出10倍的"存款"。',
+      era4: '1971年', era4_title: '布雷顿森林体系终结', era4_desc: '尼克松宣布美元与黄金脱钩。人类正式进入纯法定货币（Fiat Money）时代——"法币"之所以有价值，仅因为政府法令规定它有价值，并强制国民接受纳税。',
+      era5: '2009年', era5_title: '比特币：数学货币诞生', era5_desc: '中本聪在创世区块中写入当天《泰晤士报》的头版标题："财政大臣站在第二轮救助银行业的边缘"。比特币用算法取代国家信用，用数学取代中央银行，用共识取代强制。',
+      s2_num: { zh: '第二章', en: 'Chapter 02' },
+      s2_title: { zh: '比特币解决了货币史的三大历史缺陷', en: "Bitcoin Solves the Three Historical Flaws of Money" },
+      s2_intro: { zh: '在第二章我们探讨了货币史上政府操控铸币权导致的三大缺陷——通货膨胀、货币贬值、审查控制。比特币的设计逐一给出了答案：', en: "In Chapter 2 we explored the three major flaws caused by government control over money creation — inflation, currency debasement, and financial censorship. Bitcoin's design provides answers to each:" },
+      s2_link: '第二章',
+      p1_title: '去中心化发行', p1_desc: '比特币的2100万枚上限写在共识规则里，由全球数万个节点共同执行。没有中央银行可以"开会决定"增发——中本聪将铸币权归还给算法和网络。',
+      p2_title: '抗通胀设计', p2_desc: '比特币区块奖励每21万个区块（约4年）减半一次，2140年左右最终产出将趋于零。减半事件（Halving）历史上每次都引发供应紧缩预期，推动价格上涨。',
+      p3_title: '抗审查 & 跨境', p3_desc: '只要记住私钥，任何人可以在任何有网络的地方转移比特币。没有任何政府可以冻结链上资产、阻止跨境转账，或对持有者实施金融禁令。',
+      p4_title: '透明可验证', p4_desc: '2100万总量、货币政策规则、区块奖励时间表——全部写在开源代码里，任何人可审计。这消除了对任何机构"诚信"的依赖，改为信任数学本身。',
+      p5_title: '无交易对手风险', p5_desc: '持有比特币就是直接持有私钥——没有银行倒闭风险，没有托管机构跑路，没有交易对手违约。真正的价值属于所有者本人。',
+      p6_title: '稀缺性传递', p6_desc: '与黄金一样稀有（2100万枚上限），同时可以无限分割（Satoshi，1 BTC = 1亿聪），还能瞬间传输。这让"数字黄金"比实物黄金更高效、比债券更稀缺。',
+      s3_num: { zh: '第三章', en: 'Chapter 03' },
+      s3_title: { zh: '密码朋克运动：比特币的思想祖先', en: "The Cypherpunk Movement: Bitcoin's Intellectual Ancestors" },
+      mf_title: '《密码朋克宣言》（Cypherpunk Manifesto, 1993）',
+      mf_p1: '1993年，Eric Hughes（加州大学伯克利数学家）、Timothy May（英特尔退休高管）和John Gilmore（Sun Microsystems创始人）三人，在加州共同创立了密码朋克邮件组（Cypherpunks Mailing List）。',
+      mf_p2: '这个邮件组迅速聚集了 Julian Assange（维基解密创始人）、Nick Szabo（智能合约之父，Bit Gold发明者）、Wei Dai（b-money提出者）、Hal Finney（首笔比特币交易的接收者）等思想家。',
+      mf_p3: '他们的核心信条是："密码学是保卫个人自由、抵抗审查压迫的关键武器。"在互联网时代，隐私不是奢侈品，而是必需品——而强加密是实现隐私的唯一可靠手段。',
+      cp_icons: '密码朋克核心思想',
+      cp1: '隐私权是基本人权，非"有所隐藏"才需要隐私',
+      cp2: '强加密 = 权力从政府向个人的重新分配',
+      cp3: '去中心化系统 > 中央控制系统的安全性',
+      cp4: '代码即法律（Code is Law）',
+      cp5: '开放协议胜于封闭平台',
+      cp6: '信用要最小化——用数学代替对机构的信任',
+      cp_tree: '密码朋克思想谱系',
+      callout1_title: '比特币是密码朋克理想的"活体实现"',
+      callout1_p: '中本聪从未在公共场合露面，完美承袭了密码朋克匿名传统。他没有发表哲学论文，而是直接写代码——一个运行在互联网上、完全去中心化、无需许可即可参与、无法被关闭的货币系统。',
+      s4_num: { zh: '第四章', en: 'Chapter 04' },
+      s4_title: { zh: '奥地利学派：比特币的经济学血缘', en: "The Austrian School: Bitcoin's Economic Lineage" },
+      s4_intro: { zh: '比特币的拥趸中相当一部分是奥地利经济学派（Austrian School of Economics）的信徒——他们认为比特币是哈耶克"货币非国家化"理论的技术实践，是对抗凯恩斯主义通胀机器的数字武器。', en: "Many Bitcoin supporters are adherents of the Austrian School of Economics — they view Bitcoin as the technical implementation of Hayek's theory of denationalization of money, a digital weapon against the Keynesian inflation machine." },
+      mises: '"没有价格信号的指引，计划者无法进行任何理性的经济计算。"比特币通过市场价格发现机制，为全球每个人提供统一的价格参照系。',
+      hayek: '1976年《货币的非国家化》提出：废除央行货币垄断，允许私人银行发行竞争性货币，市场竞争会让最好的货币胜出。比特币是这一理念的代码实现。',
+      rothbard: '将奥地利学派推向"自由意志主义"极端，提出"自我所有权"（Self-Ownership）：个人对自己的身体、劳动和财产拥有绝对主权，不受国家强制。比特币是这一权利在数字时代的延伸。',
+      callout2_title: '健全货币（Sound Money）vs 法定货币（Fiat Money）',
+      callout2_p: '奥地利学派区分两种货币：健全货币（稀缺、不可伪造、供应量不受政治干预，如黄金和比特币）和法定货币（政府任意印发的债务货币）。哈耶克和米塞斯都认为，法定货币的通胀本质是对储户的隐性税收，会扭曲整个经济体的价格信号。',
+      th_property: '货币属性', th_fiat: '法定货币（Fiat）', th_gold: '黄金（Gold）', th_btc: '比特币（Bitcoin）',
+      td_scarcity: '稀缺性上限', td_transfer: '可转移性', td_divisible: '可分割性',
+      td_counterfeit: '防伪/防双花', td_censorship: '抗审查', td_audit: '可审计性',
+      s5_num: { zh: '第五章', en: 'Chapter 05' },
+      s5_title: { zh: '自主主权：你的钱，你做主', en: "Self-Sovereignty: Your Money, Your Rules" },
+      s5_intro: { zh: '"成为你自己的银行"（Be Your Own Bank）是比特币最深刻的哲学宣言。传统金融体系中，你的存款安全依赖于银行的健康运营、政府的监管善意、以及国家的不崩溃。比特币将这一切替换为：数学 + 你自己。', en: '"Be Your Own Bank" is Bitcoin\'s deepest philosophical declaration. In traditional finance, your deposit security depends on the bank\'s health, government goodwill, and national stability. Bitcoin replaces all of this with: mathematics + yourself.' },
+      sov_title: '财产权：文明的基础',
+      sov1_h: '自我所有权', sov1_p: '你对自己的身体、劳动和财产拥有最高主权。任何强制征税或财产征用，原则上需要你的同意。',
+      sov2_h: '私钥即主权', sov2_p: '在比特币中，持有私钥 = 持有该地址上的全部资产。没有你的私钥，任何人——包括政府——都无法动用你的币。',
+      sov3_h: '无需许可', sov3_p: '开设银行账户需要身份证明、KYC审核和信用评分。运行比特币节点只需一台电脑和互联网——无需任何人批准。',
+      sov4_h: '跨境自由', sov4_p: '传统跨境汇款受外汇管制，每人每年5万美元限额。比特币转账没有国界，没有限额，没有审批——只要有网络。',
+      sov5_h: '抗没收', sov5_p: '政府可以通过法院命令冻结银行账户、扣押房产。但只要私钥是分散存储的，链上比特币无法被强制转移。',
+      sov6_h: '时间价值', sov6_p: '法定货币因通胀持续稀释购买力。比特币的通缩设计（减半+上限）使其成为财富长期保值工具，而非消耗性消费。',
+      pill_title: '"橙色药丸"：被比特币改变的思维方式',
+      pill_desc: '在电影《黑客帝国》中，Neo 被给予两颗药丸：蓝色代表继续活在虚假的现实中，红色代表接受残酷的真相。比特币社区借用这个隐喻，创造出"橙色药丸"——代表接受了比特币真相后，思维方式发生的根本性转变。',
+      pill_s1: 'Before', pill_s1p: '"政府印钱是为了大家好，通胀是发展必需代价"',
+      pill_s2: 'Orange Pill', pill_s2p: '"货币是国家权力的工具，通胀是对储户的隐蔽税收"',
+      pill_s3: 'After', pill_s3p: '"健全货币是自由的基础，2100万上限是文明的馈赠"',
+      s6_num: { zh: '第六章', en: 'Chapter 06' },
+      s6_title: { zh: '比特币主义：一种文化运动的兴起', en: "Bitcoin Maximalism: The Rise of a Cultural Movement" },
+      s6_intro: { zh: '"比特币最大主义"（Bitcoin Maximalism）是一种文化立场：相信比特币是唯一真正值得长期持有的加密资产，其他币（Altcoins）在货币属性上无法与比特币竞争。Vitalik Buterin（以太坊创始人）曾专门撰文为此立场辩护。', en: '"Bitcoin Maximalism" is a cultural stance: Bitcoin is the only truly sound monetary asset, and other cryptocurrencies cannot compete with it in monetary properties. Vitalik Buterin (Ethereum founder) wrote an essay specifically defending this position.' },
+      max_title: '比特币最大主义的核心理由',
+      max1: '货币的价值来自网络效应——越多人用越好用，比特币拥有最强的网络效应',
+      max2: '"健全货币"的市场只会容纳一种——竞争性货币理论中，赢者通吃',
+      max3: '绝大多数Altcoin本质是证券或庞氏——而非真正的货币',
+      max4: '比特币的开发去中心化程度最高，代码最成熟，安全记录最长',
+      max5: '先发优势 + 抗审查 = 其他币无法复制的"护城河"',
+      max_agree: '多元声音：V神也认同的比特币价值',
+      v1: '"在一个充满敌意和不确定性的世界里，比特币最大主义是对欺诈文化的有效防御"',
+      v2: '"健全货币（Sound Money）的理念值得认真对待，而非轻蔑地嘲笑"',
+      v3: '"比特币的文化和结构优势，使其成为值得持有的强大资产"',
+      v4: '"自我主权验证（Self-Sovereign Verification）的意识形态在未来将更加重要"',
+      s7_num: { zh: '第七章', en: 'Chapter 07' },
+      s7_title: { zh: '为什么这一切重要', en: 'Why This Matters' },
+      why_h: '一个更公平的世界需要更公平的货币',
+      why_p: '比特币的意义远超过价格涨跌。它是一套思想体系——关于隐私、财产权、去中心化信任和自我主权的整套哲学。当人们说"持有比特币"时，他们实际上在说："我相信数学而非政客，信任代码而非银行，依靠自己而非任何权威。"',
+      w1_h: '对政府的意义', w1_p: '比特币迫使政府约束货币发行——如果任意超发，持币者会用脚投票',
+      w2_h: '对银行业的意义', w2_p: '比特币证明了无需银行也可以实现安全、全球、低成本的支付系统',
+      w3_h: '对通胀国家居民的意义', w3_p: '委内瑞拉、阿根廷、土耳其……比特币为那些无法使用本国货币保值的人提供了避难所',
+      w4_h: '对每个人的意义', w4_p: '选择自己信任的货币，是个人自由的基本表达——比特币让这种选择第一次真正成为可能',
+      dig_title: '🔍 延伸阅读推荐',
+      books_h: '📚 必读书籍',
+      book1: '• 《货币的非国家化》— 哈耶克',
+      book2: '• 《人的行为》— 米塞斯',
+      book3: '• 《精通比特币》— Andreas M. Antonopoulos',
+      book4: '• 《金钱的秘密》— 比特囤币（ahr999）',
+      online_h: '🌐 在线资源',
+      online1: '• Bitcoin.org — 官方比特币网站',
+      online2: '• Cypherpunk Cogitations — Jameson Lopp 博客',
+      online3: '• Satoshi Nakamoto Institute — 中本聪文库',
+      online4: '• ahr999.com 镜像 — 囤币哲学中文经典',
+      prev_chapter: '上一章', prev_title: '比特币的答案',
+      next_chapter: '入门篇', next_title: '一句话入门',
+      footer: '© 2026 比特币学习地图 · Bitcoin Learning Map'
+    };
+
+    // Apply I18N
+    const savedLang = localStorage.getItem('lang') || 'zh';
+
+    function applyLang(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const txt = I18N_TEXT[key];
+        if (txt) el.textContent = txt[lang] || txt.zh;
+      });
+      // Era labels (no zh/en variant — just HTML text)
+      document.querySelectorAll('.era').forEach(el => {
+        if (!el.hasAttribute('data-i18n')) {
+          const parent = el.closest('.timeline-item');
+          if (parent) {
+            const titleEl = parent.querySelector('h3');
+            if (titleEl && titleEl.dataset.i18n) {
+              // already handled
+            }
+          }
+        }
+      });
+    }
+
+    applyLang(savedLang);
+
+    // Progress bar
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+    });
+
+    // Mark as read in localStorage
+    const PAGE_ID = '01-04-cypherpunk';
+    const readKey = 'btc_map_read_' + PAGE_ID;
+    if (!localStorage.getItem(readKey)) {
+      localStorage.setItem(readKey, JSON.stringify({ read: true, ts: Date.now() }));
+    }
+  
+    // 初始化密码朋克多视角卡片
+    (function() {
+      const card = document.getElementById('cypherpunk-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+      // 触摸滑动
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+      show(0);
+    })();
+    </script>
+
+          <!-- 多视角重新解释 -->
+          <section class="section" style="margin-top:40px;">
+            <div class="section-number">Chapter Extra</div>
+            <h2><span class="num">🔄</span> 多视角：密码朋克运动</h2>
+            <p class="section-intro">密码朋克运动不是比特币的前传——它是比特币之所以可能的土壤。同一段历史，六种视角带来不同启发。</p>
+
+            <div class="perspective-card" id="cypherpunk-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>多视角 · 密码朋克运动</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab" data-angle="tech">💻 技术史家</button>
+                  <button class="p-tab" data-angle="politics">⚖️ 政治思想家</button>
+                  <button class="p-tab" data-angle="finance">💰 经济学家</button>
+                  <button class="p-tab" data-angle="philosophy">🧠 哲学家</button>
+                  <button class="p-tab" data-angle="humanity">🌍 全球化研究者</button>
+                  <button class="p-tab" data-angle="future">🔮 未来学家</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content" data-angle="tech">
+                  <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">💻 技术史家</div>
+                  <div class="p-quote">"密码朋克不是一群理想主义者——他们是一群解决具体问题的工程师，只不过他们解决的问题是：如何在数字世界建立信任。"</div>
+                  <ul>
+                    <li><strong>密码学的民用化</strong>：1990 年代以前，密码学是军事情报领域的专属。PGP 的出现让普通公民第一次拥有了银行级别的加密能力</li>
+                    <li><strong>密码战争的序幕</strong>：1990 年代初，美国政府试图禁止强加密（Clipper Chip提案），密码朋克们成功阻止了这场"后门"立法</li>
+                    <li><strong>密码朋克宣言（1993）</strong>：Eric Hughes 写道："隐私对于开放社会中的电子时代至关重要……我们必须捍卫自己的隐私。" 这句话至今有效</li>
+                    <li><strong>比特币的直接先驱</strong>：Dai Wei 的 b-money（1998）、Nick Szabo 的 Bit Gold（1998）、Hal Finney 的 RPOW（2004）——比特币并非横空出世，而是密码朋克社区数十年探索的结晶</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="politics">
+                  <div class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">⚖️ 政治思想家</div>
+                  <div class="p-quote">"比特币不是无政府主义的胜利——它是技术与市场共同演化出的第三条路。"</div>
+                  <ul>
+                    <li><strong>无政府资本主义</strong>：David Chaum 的盲签名、Wei Dai 的 b-money——早期密码朋克对国家货币持根本否定态度</li>
+                    <li><strong>自由意志主义</strong>：比特币早期支持者多数来自美国自由意志主义阵营——他们反对美联储、支持金银本位的呼声在比特币找到了技术出口</li>
+                    <li><strong>全球治理真空</strong>：比特币在失败国家（委内瑞拉、阿根廷）成为事实上的储备货币——不是因为意识形态，而是因为它比本国货币更可靠</li>
+                    <li><strong>治理悖论</strong>：比特币社区内部的治理斗争（SegWit vs 大区块）表明，去中心化不等于无政府——它只是把权力从国家转移到了代码和算力</li>
+                    <li><strong>监管博弈</strong>：萨尔瓦多将比特币设为法币（2021）是国家vs技术的标志性碰撞，而美国监管机构的每一步都在重塑比特币的演化方向</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="finance">
+                  <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学家</div>
+                  <div class="p-quote">"比特币的 2100 万上限是它的核心价值主张——一个不受任何单一机构操控的固定供给规则。"</div>
+                  <ul>
+                    <li><strong>奥地利学派货币理论</strong>：比特币与米塞斯"回归定理"的张力——货币需要"锚定"历史用途（黄金），而比特币完全从数字虚无中诞生</li>
+                    <li><strong>哈耶克自发秩序</strong>：比特币是哈耶克"货币非国家化"预言的技术实现——市场而非政府决定了最好的货币</li>
+                    <li><strong>郁金香还是储备资产？</strong>：批评者认为比特币无内在价值，是投机泡沫；支持者认为它是"数字黄金"，价值来自网络效应和算法稀缺性</li>
+                    <li><strong>减半周期论</strong>：每 4 年区块奖励减半，供需关系突变。2024 年第四次减半后，矿工收入从 6.25 BTC/块降至 3.125 BTC/块——安全预算问题引发广泛关注</li>
+                    <li><strong>作为宏观对冲工具</strong>：机构投资者将比特币纳入资产组合（MicroStrategy 模式），使其成为"科技股中的黄金"——与传统资产的相关性正在被重新定价</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🧠 哲学家</div>
+                  <div class="p-quote">"比特币提出了一个根本问题：什么是'真实'？在数字时代，这个问题没有看起来那么简单。"</div>
+                  <ul>
+                    <li><strong>价值的主观性</strong>：比特币的价值完全来自集体共识——没有任何物理属性赋予它价值。这是对主观价值论的最纯粹例证</li>
+                    <li><strong>主权的重新定义</strong>：《主权个人》1999 年的预言：信息时代，国家的征税能力将受到挑战。比特币是这一预言最具体的技术实现</li>
+                    <li><strong>时间与稀缺性</strong>：比特币用算法创造绝对稀缺（2100 万单位，精确到小数点后 8 位）——在物理世界不可能做到的事，在数学世界做到了</li>
+                    <li><strong>数字存在的伦理</strong>：一个人可以同时是比特币持有者和主权公民——数字货币模糊了政治边界的传统定义</li>
+                    <li><strong>信任的再分配</strong>：从信任机构（银行、政府）到信任数学（哈希算法、数字签名）——比特币是人类信任机制史上最大的一次重新配置</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="humanity">
+                  <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">🌍 全球化研究者</div>
+                  <div class="p-quote">"比特币不只是货币实验——它是第一份真正无国界的价值存储媒介。"</div>
+                  <ul>
+                    <li><strong>跨境汇款革命</strong>：全球汇款市场年规模 1 万亿美元，传统渠道收费 5-7%。比特币可以在 1 小时内、以几分钱手续费完成跨境转移</li>
+                    <li><strong>失败国家的生命线</strong>：委内瑞拉、黎巴嫩、尼日利亚——在高通胀国家，比特币是普通人对抗货币崩溃的唯一工具</li>
+                    <li><strong>数字身份与金融排斥</strong>：全球 17 亿人没有银行账户。比特币只需网络连接，不需要银行开户——第一次，真正普惠的全球货币成为可能</li>
+                    <li><strong>文化摩擦</strong>：不同文化对隐私、匿名、国家权威的态度差异巨大——比特币的全球采用必然伴随着持续的文化冲突与调和</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="future">
+                  <div class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">🔮 未来学家</div>
+                  <div class="p-quote">"我们正处于货币形态演进的开端——比特币只是起点，不是终点。"</div>
+                  <ul>
+                    <li><strong>协议层的进化</strong>：Taproot 升级（2021）让比特币变得更私密、更高效。下一步：OP_CAT、CTV 等操作码提案可能带来更多可能性</li>
+                    <li><strong>Layer2 的涌现</strong>：闪电网络、Stacks、RGB——比特币正在成为"价值互联网"的基础协议，而非单纯的点对点现金系统</li>
+                    <li><strong>比特币与 AI 的交汇</strong>：AI 生成内容的时代，Proof-of-Work 提供了对抗深度伪造的时间戳证明。比特币的不可篡改性在信息时代有了新的意义</li>
+                    <li><strong>太空时代货币？</strong>：比特币的精确可分割性（1 BTC = 1亿 satoshi）和无地域性，使其成为太空殖民时代货币的自然候选者</li>
+                    <li><strong>比特币 ETF 的意义</strong>：2024 年美国批准比特币现货 ETF，数十亿美元传统资本流入。比特币正在被纳入全球金融体系的核心架构——这是它成为"主流资产"的标志性事件</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <div class="p-footer-left">
+                  <span style="font-size:0.7rem;color:var(--text-muted);">点击标签切换视角</span>
+                </div>
+                <div class="p-dot-indicator">
+                  <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+                  <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="highlight-box">
+            <span class="label">密码朋克的遗产</span>
+            <div class="text">
+              <p>从 Cypherpunk 邮件组到中本聪，一条主线始终未变：<strong>与其请求权力者仁慈，不如用密码学在数学上剥夺其作恶的能力</strong>。</p>
+              <p>比特币不是凭空出现，而是三十年隐私技术（盲签名、数字现金、P2P 网络）的必然结晶。</p>
+            </div>
+          </div>
+
+</body>
+</html>

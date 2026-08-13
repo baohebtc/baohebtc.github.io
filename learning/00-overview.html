@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学习路径总览 · 比特币学习地图</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+/* 本页专属 */
+.page-hero { padding: 56px 0 40px; }
+
+/* 路线卡片 */
+.route-section { padding: 48px 0 60px; }
+
+.route-category { margin-bottom: 48px; }
+.route-category-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.route-category-header .cat-icon { font-size: 1.6rem; }
+.route-category-header h2 { font-size: 1.2rem; font-weight: 700; }
+.route-category-header .cat-count { font-size: 0.78rem; color: var(--text-muted); margin-left: 4px; }
+
+.chapter-list { display: flex; flex-direction: column; gap: 12px; }
+.chapter-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: all var(--transition);
+}
+.chapter-item:hover { border-color: var(--orange); transform: translateX(4px); box-shadow: var(--shadow); }
+.chapter-item .item-num {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--orange);
+  font-weight: 700;
+  background: rgba(247,147,26,0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.chapter-item .item-body { flex: 1; min-width: 0; }
+.chapter-item .item-title { font-size: 0.92rem; font-weight: 600; margin-bottom: 2px; }
+.chapter-item .item-desc { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chapter-item .item-tags { display: flex; gap: 4px; flex-shrink: 0; }
+.chapter-item .item-arrow { color: var(--text-muted); font-size: 1.1rem; }
+
+/* 总体进度 */
+.progress-overview { padding: 32px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 48px; }
+.progress-overview h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+.progress-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.progress-cat { text-align: center; }
+.progress-cat .cat-icon { font-size: 1.5rem; margin-bottom: 4px; display: block; }
+.progress-cat .cat-name { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 8px; }
+.progress-bar-sm { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+.progress-bar-sm .fill { height: 100%; background: var(--orange); border-radius: 2px; transition: width 0.6s ease; width: 0%; }
+.progress-cat .cat-stat { font-size: 0.68rem; color: var(--text-muted); }
+
+@media (max-width: 700px) {
+  .progress-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 500px) {
+  .progress-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="00-overview.html" class="nav-link active" data-section="learning">📚 学习区</a>
+        <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<!-- 进度概览 -->
+<div class="container">
+  <div class="progress-overview">
+    <h3>📊 学习进度（本地记录）</h3>
+    <div class="progress-grid">
+      <div class="progress-cat">
+        <span class="cat-icon">❓</span>
+        <div class="cat-name">哲学篇</div>
+        <div class="progress-bar-sm"><div class="fill" id="prog-phil" style="width:0%"></div></div>
+        <div class="cat-stat" id="stat-phil">0 / 3 章</div>
+      </div>
+      <div class="progress-cat">
+        <span class="cat-icon">⚙️</span>
+        <div class="cat-name">入门篇</div>
+        <div class="progress-bar-sm"><div class="fill" id="prog-basics" style="width:0%"></div></div>
+        <div class="cat-stat" id="stat-basics">0 / 4 章</div>
+      </div>
+      <div class="progress-cat">
+        <span class="cat-icon">📊</span>
+        <div class="cat-name">经济学篇</div>
+        <div class="progress-bar-sm"><div class="fill" id="prog-econ" style="width:0%"></div></div>
+        <div class="cat-stat" id="stat-econ">0 / 5 章</div>
+      </div>
+      <div class="progress-cat">
+        <span class="cat-icon">🔐</span>
+        <div class="cat-name">技术篇</div>
+        <div class="progress-bar-sm"><div class="fill" id="prog-tech" style="width:0%"></div></div>
+        <div class="cat-stat" id="stat-tech">0 / 5 章</div>
+      </div>
+      <div class="progress-cat">
+        <span class="cat-icon">🌐</span>
+        <div class="cat-name">生态篇</div>
+        <div class="progress-bar-sm"><div class="fill" id="prog-eco" style="width:0%"></div></div>
+        <div class="cat-stat" id="stat-eco">0 / 4 章</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 页面标题 -->
+<header class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">首页</a><span>›</span><span>学习区</span>
+    </div>
+    <h1>📚 学习路径总览</h1>
+    <p class="page-subtitle">5个阶段 · 21个章节 · 从「为什么存在」到「怎么做」。选择你的起点，按自己的节奏前进。</p>
+    <div class="page-meta">
+      <span class="page-tag">🌱 推荐从哲学篇开始</span>
+      <span class="page-tag" style="background:rgba(59,130,246,0.1);color:#3B82F6;border-color:rgba(59,130,246,0.2)">🔬 技术深度可选</span>
+      <span class="page-tag" style="background:rgba(34,197,94,0.1);color:#22C55E;border-color:rgba(34,197,94,0.2)">🏦 囤币策略内含</span>
+    </div>
+  </div>
+</header>
+
+<!-- 学习路线 -->
+<main class="route-section">
+  <div class="container">
+
+    <!-- 哲学篇 -->
+    <div class="route-category">
+      <div class="route-category-header">
+        <span class="cat-icon">❓</span>
+        <h2>阶段一 · 哲学篇：认知觉醒</h2>
+        <span class="cat-count">4章节</span>
+      </div>
+      <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:16px;padding-left:2px">
+        先问「为什么」，再学「是什么」。这一篇解决一个根本问题：<strong>比特币为什么会存在？</strong>当你真正理解这一点，后面的所有内容都会变得清晰。
+      </p>
+      <div class="chapter-list">
+
+        <a href="01-philosophy/01-01-money.html" class="chapter-item">
+          <span class="item-num">01-01-money</span>
+          <div class="item-body">
+            <div class="item-title">货币的千年之问</div>
+            <div class="item-desc">从贝壳到比特币，人类花了5000年，才找到「不依赖信任的货币」</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🏛️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="01-philosophy/01-02-three-flaws.html" class="chapter-item">
+          <span class="item-num">01-02-three-flaws</span>
+          <div class="item-body">
+            <div class="item-title">货币的三大历史缺陷</div>
+            <div class="item-desc">通胀稀释、法币超发、审查与没收——5000年的货币史，也是普通人的储蓄被反复收割的历史</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🏛️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="01-philosophy/01-03-bitcoin-answer.html" class="chapter-item">
+          <span class="item-num">01-03-bitcoin-answer</span>
+          <div class="item-body">
+            <div class="item-title">比特币的答案</div>
+            <div class="item-desc">把「记账权」从人手里夺走，交给数学。中本聪做了一个极其聪明的事情：它把「信任」从人类的游戏中…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🏛️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="01-philosophy/01-04-cypherpunk.html" class="chapter-item">
+          <span class="item-num">01-04-cypherpunk</span>
+          <div class="item-body">
+            <div class="item-title">比特币哲学篇</div>
+            <div class="item-desc">密码朋克、健全货币 与自主主权</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🏛️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        </div>
+    </div>
+
+    <!-- 入门篇 -->
+    <div class="route-category">
+      <div class="route-category-header">
+        <span class="cat-icon">⚙️</span>
+        <h2>阶段二 · 入门篇：技术直觉</h2>
+        <span class="cat-count">8章节</span>
+      </div>
+      <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:16px;padding-left:2px">
+        不需要懂代码，但需要懂原理。这四篇让你对「比特币是如何工作的」建立直觉——尤其是<strong>「私钥=所有权」</strong>这个比特币世界最重要的原则。
+      </p>
+      <div class="chapter-list">
+
+        <a href="02-basics/02-00-overview.html" class="chapter-item">
+          <span class="item-num">02-00-overview</span>
+          <div class="item-body">
+            <div class="item-title">入门篇</div>
+            <div class="item-desc"></div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🔰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="02-basics/02-01-one-sentence.html" class="chapter-item">
+          <span class="item-num">02-01-one-sentence</span>
+          <div class="item-body">
+            <div class="item-title">一句话理解比特币</div>
+            <div class="item-desc">大多数人对比特币的描述是错的——要么太技术，要么太投机。这一篇用六个真实视角，给出比特币的准…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🔰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="02-basics/02-02-keys-ownership.html" class="chapter-item">
+          <span class="item-num">02-02-keys-ownership</span>
+          <div class="item-body">
+            <div class="item-title">私钥与所有权</div>
+            <div class="item-desc">比特币世界最重要的铁律：谁拥有私钥，谁就拥有比特币。没有例外，没有客服，没有找回。</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🔰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="02-basics/02-03-blockchain.html" class="chapter-item">
+          <span class="item-num">02-03-blockchain</span>
+          <div class="item-body">
+            <div class="item-title">区块链原理</div>
+            <div class="item-desc">区块链是比特币的「账本」——一个由数学和密码学保护、任何人可以验证、没有人可以篡改的共享数据…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🔰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="02-basics/02-04-mining.html" class="chapter-item">
+          <span class="item-num">02-04-mining</span>
+          <div class="item-body">
+            <div class="item-title">挖矿原理</div>
+            <div class="item-desc">「挖矿」不是挖黄金，而是用真实能量换取网络安全——它是比特币最反直觉、也最优雅的创新。</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🔰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="02-basics/02-05-buy-hold.html" class="chapter-item">
+          <span class="item-num">02-05-buy-hold</span>
+          <div class="item-body">
+            <div class="item-title">入门篇 05</div>
+            <div class="item-desc">买币 · 入金 · 持币</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🔰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="02-basics/02-06-security.html" class="chapter-item">
+          <span class="item-num">02-06-security</span>
+          <div class="item-body">
+            <div class="item-title">入门篇 06</div>
+            <div class="item-desc">安全存储 · 守护你的比特币</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🔰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="02-basics/02-07-payment.html" class="chapter-item">
+          <span class="item-num">02-07-payment</span>
+          <div class="item-body">
+            <div class="item-title">入门篇 07</div>
+            <div class="item-desc">支付 · 闪电网络 · 未来</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🔰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        </div>
+    </div>
+
+    <!-- 经济学篇 -->
+    <div class="route-category">
+      <div class="route-category-header">
+        <span class="cat-icon">📊</span>
+        <h2>阶段三 · 经济学篇：稀缺性与周期</h2>
+        <span class="cat-count">9章节</span>
+      </div>
+      <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:16px;padding-left:2px">
+        <strong>这是比特币与其他所有资产最不同的核心。</strong>从货币本质到估值模型，回答「比特币为什么值钱」——包含九神（ahr999）的周期理论与定投方法，中文比特币社区最成熟的投资思想。
+      </p>
+      <div class="chapter-list">
+
+        <a href="03-economics/03-00-overview.html" class="chapter-item">
+          <span class="item-num">03-00-overview</span>
+          <div class="item-body">
+            <div class="item-title">经济学篇总览</div>
+            <div class="item-desc">比特币不只是技术，更是一场货币实验。理解「钱为什么值钱」——从货币本质、货币政策到周期与估值…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="03-economics/03-01-money-inflation.html" class="chapter-item">
+          <span class="item-num">03-01-money-inflation</span>
+          <div class="item-body">
+            <div class="item-title">货币与通胀</div>
+            <div class="item-desc">钱为什么越来越「毛」？政府多印钞票的背后逻辑是什么？用购买力计算器，算算你的钱被通胀偷走了多…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="03-economics/03-02-austrian-hayek.html" class="chapter-item">
+          <span class="item-num">03-02-austrian-hayek</span>
+          <div class="item-body">
+            <div class="item-title">奥地利学派与哈耶克</div>
+            <div class="item-desc">比特币不是凭空出现的——它的思想源头是 1970 年代一场关于「货币能不能由私人发行」的论战…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="03-economics/03-03-monetary-policy.html" class="chapter-item">
+          <span class="item-num">03-03-monetary-policy</span>
+          <div class="item-body">
+            <div class="item-title">比特币的货币政策</div>
+            <div class="item-desc">2100 万上限从哪来？减半机制为什么"不可篡改"？理解比特币最核心的经济设计——通缩型货币…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="03-economics/03-04-store-of-value.html" class="chapter-item">
+          <span class="item-num">03-04-store-of-value</span>
+          <div class="item-body">
+            <div class="item-title">价值存储</div>
+            <div class="item-desc">比特币是"数字黄金"还是"数字郁金香"？从货币职能、黄金对比到机构采纳，全面审视比特币作为价…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="03-economics/03-05-fee-market.html" class="chapter-item">
+          <span class="item-num">03-05-fee-market</span>
+          <div class="item-body">
+            <div class="item-title">手续费市场与区块空间</div>
+            <div class="item-desc">区块空间是比特币世界里唯一被拍卖的稀缺资源。谁出的价格高，谁的交易先上链——这不是后台操作，…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="03-economics/03-06-cycles-narrative.html" class="chapter-item">
+          <span class="item-num">03-06-cycles-narrative</span>
+          <div class="item-body">
+            <div class="item-title">周期与叙事</div>
+            <div class="item-desc">比特币每四年发生一次"定时减产"。每一次减半，都像按下了一个供需失衡的开关——这是理解比特币…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="03-economics/03-07-fiat-vs-btc.html" class="chapter-item">
+          <span class="item-num">03-07-fiat-vs-btc</span>
+          <div class="item-body">
+            <div class="item-title">法币 vs 比特币</div>
+            <div class="item-desc">两种「信任机器」正面交锋：货币职能逐项PK、通胀与通缩之争、波动性数据、空方质疑与回应、CB…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="03-economics/03-08-valuation-models.html" class="chapter-item">
+          <span class="item-num">03-08-valuation-models</span>
+          <div class="item-body">
+            <div class="item-title">估值模型</div>
+            <div class="item-desc">传统资产用现金流贴现，比特币没有现金流。S2F稀缺性、梅特卡夫网络定律、幂律轨迹、能量成本底…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">💰</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        </div>
+    </div>
+
+    <!-- 技术篇 -->
+    <div class="route-category">
+      <div class="route-category-header">
+        <span class="cat-icon">🔐</span>
+        <h2>阶段四 · 技术篇：深入原理</h2>
+        <span class="cat-count">9章节</span>
+      </div>
+      <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:16px;padding-left:2px">
+        为想深入理解「比特币为什么这样设计」的人。看完这五篇，你会对「为什么比特币不可能被攻破」有数学层面的理解。
+      </p>
+      <div class="chapter-list">
+
+        <a href="04-technology/04-00-overview.html" class="chapter-item">
+          <span class="item-num">04-00-overview</span>
+          <div class="item-body">
+            <div class="item-title">技术篇总览</div>
+            <div class="item-desc">拆开比特币这台"全球超级账本机器"，看清每个零件如何运转。从密码学基石到闪电网络，共 9 页…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="04-technology/04-01-cryptography.html" class="chapter-item">
+          <span class="item-num">04-01-cryptography</span>
+          <div class="item-body">
+            <div class="item-title">密码学基石</div>
+            <div class="item-desc">哈希、签名、椭圆曲线——比特币的"数学锁芯"，为什么只有你能动你的币？</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="04-technology/04-02-keys-addresses.html" class="chapter-item">
+          <span class="item-num">04-02-keys-addresses</span>
+          <div class="item-body">
+            <div class="item-title">密钥、地址与钱包工程</div>
+            <div class="item-desc">从随机数到助记词，从种子到无限地址——比特币钱包的完整数学之旅。一个12词短语，如何掌管你所…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="04-technology/04-03-transactions.html" class="chapter-item">
+          <span class="item-num">04-03-transactions</span>
+          <div class="item-body">
+            <div class="item-title">交易与脚本</div>
+            <div class="item-desc">当你"发一笔比特币"，背后到底发生了什么？UTXO 模型、Script 脚本、从 P2PKH…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="04-technology/04-04-blockchain-structure.html" class="chapter-item">
+          <span class="item-num">04-04-blockchain-structure</span>
+          <div class="item-body">
+            <div class="item-title">区块与区块链结构</div>
+            <div class="item-desc">区块是比特币账本的"一页"。这一章拆开这页：80 字节区块头、Merkle 树、链式哈希，以…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="04-technology/04-05-mining-consensus.html" class="chapter-item">
+          <span class="item-num">04-05-mining-consensus</span>
+          <div class="item-body">
+            <div class="item-title">挖矿与工作量证明</div>
+            <div class="item-desc">比特币的"全球竞赛"——谁先用算力解开数学题，谁就有权记下一页账本，并获得新铸造的比特币。这…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="04-technology/04-06-nodes-network.html" class="chapter-item">
+          <span class="item-num">04-06-nodes-network</span>
+          <div class="item-body">
+            <div class="item-title">节点与 P2P 网络</div>
+            <div class="item-desc">比特币没有总部——每台全节点都是"记账员"。理解去中心化网络如何运转：节点类型、P2P 传播…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="04-technology/04-07-upgrades.html" class="chapter-item">
+          <span class="item-num">04-07-upgrades</span>
+          <div class="item-body">
+            <div class="item-title">协议升级与治理</div>
+            <div class="item-desc">给运转中的机器换零件——比特币如何安全升级。软硬分叉对比、BIP 生命周期、SegWit/T…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="04-technology/04-08-scaling-layer2.html" class="chapter-item">
+          <span class="item-num">04-08-scaling-layer2</span>
+          <div class="item-body">
+            <div class="item-title">扩容与 Layer2</div>
+            <div class="item-desc">主链是高速公路，Layer2 是高架快线。闪电网络、侧链、RGB、铭文——理解比特币如何扩容…</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">⚙️</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        </div>
+    </div>
+
+    <!-- 生态篇 -->
+    <div class="route-category">
+      <div class="route-category-header">
+        <span class="cat-icon">🌐</span>
+        <h2>阶段五 · 生态篇：行动与落地</h2>
+        <span class="cat-count">7章节</span>
+      </div>
+      <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:16px;padding-left:2px">
+        理解了前面的内容，现在可以真正行动了。从钱包选择到购买第一枚比特币，从生态系统全景到安全实践。
+      </p>
+      <div class="chapter-list">
+
+        <a href="05-ecosystem/05-00-overview.html" class="chapter-item">
+          <span class="item-num">05-00-overview</span>
+          <div class="item-body">
+            <div class="item-title">生态篇总览</div>
+            <div class="item-desc">本篇导航地图 · 全景与进度</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🌐</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="05-ecosystem/05-01-ecosystem-panorama.html" class="chapter-item">
+          <span class="item-num">05-01-ecosystem-panorama</span>
+          <div class="item-body">
+            <div class="item-title">生态系统全景</div>
+            <div class="item-desc">矿工、节点、钱包、交易所、L2、应用各自扮演什么角色</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🌐</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="05-ecosystem/05-02-wallets-keys.html" class="chapter-item">
+          <span class="item-num">05-02-wallets-keys</span>
+          <div class="item-body">
+            <div class="item-title">钱包与密钥</div>
+            <div class="item-desc">热钱包、冷钱包、硬件钱包与助记词安全</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🌐</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="05-ecosystem/05-03-exchanges-custody.html" class="chapter-item">
+          <span class="item-num">05-03-exchanges-custody</span>
+          <div class="item-body">
+            <div class="item-title">交易所与托管</div>
+            <div class="item-desc">CEX/DEX/自托管权衡；不是你的私钥就不是你的币</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🌐</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="05-ecosystem/05-04-institutions-etf.html" class="chapter-item">
+          <span class="item-num">05-04-institutions-etf</span>
+          <div class="item-body">
+            <div class="item-title">机构采纳与 ETF</div>
+            <div class="item-desc">2024 现货 ETF、MicroStrategy、萨尔瓦多比特币法</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🌐</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="05-ecosystem/05-05-mining-industry.html" class="chapter-item">
+          <span class="item-num">05-05-mining-industry</span>
+          <div class="item-body">
+            <div class="item-title">矿业生态</div>
+            <div class="item-desc">矿池集中度、难度调整、2021 中国清退、绿色能源</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🌐</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        <a href="05-ecosystem/05-06-protocol-layer.html" class="chapter-item">
+          <span class="item-num">05-06-protocol-layer</span>
+          <div class="item-body">
+            <div class="item-title">协议层：Ordinals / 稳定币</div>
+            <div class="item-desc">BRC-20/Runes 与 Tether 稳定币的争议与价值</div>
+          </div>
+          <div class="item-tags">
+            <span class="tag tag-green">🌐</span>
+          </div>
+          <span class="item-arrow">→</span>
+        </a>
+        </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../index.html">首页</a> · <a href="00-overview.html">学习区</a> · <a href="../tools/index.html">工具</a> · <a href="../reference/index.html">参考</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://bitcoin.org" target="_blank">Bitcoin.org</a>
+        <a href="https://learnmeabitcoin.com" target="_blank">Learn Me A Bitcoin</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>
+initNav();
+
+// 进度追踪（使用 localStorage）
+const TOTAL = { phil: 4, basics: 8, econ: 9, tech: 9, eco: 7 };
+const readKey = 'btc-read-chapters';
+
+function markRead(phase, chapter) {
+  try {
+    let read = JSON.parse(localStorage.getItem(readKey) || '{}');
+    read[phase] = read[phase] || {};
+    read[phase][chapter] = true;
+    localStorage.setItem(readKey, JSON.stringify(read));
+  } catch(e) {}
+}
+
+function updateProgress() {
+  try {
+    let read = JSON.parse(localStorage.getItem(readKey) || '{}');
+    Object.keys(TOTAL).forEach(key => {
+      const readCount = Object.keys(read[key] || {}).length;
+      const pct = Math.round((readCount / TOTAL[key]) * 100);
+      const bar = document.getElementById(`prog-${key}`);
+      const stat = document.getElementById(`stat-${key}`);
+      if (bar) bar.style.width = pct + '%';
+      if (stat) stat.textContent = `${readCount} / ${TOTAL[key]} 章`;
+    });
+  } catch(e) {}
+}
+
+// 监听从子页面标记已读
+window.addEventListener('storage', updateProgress);
+updateProgress();
+</script>
+</body>
+</html>

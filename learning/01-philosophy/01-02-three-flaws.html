@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>货币的三大历史缺陷 · 比特币学习地图</title>
+<meta name="description" content="通货膨胀、债务货币、无锚点——法币体系的三大结构性缺陷，以及它们共同的根源：货币权力被少数人垄断。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+/* ---- 文章基础 ---- */
+.article-wrap { padding: 32px 0 60px; }
+.reading-progress { position:fixed; top:56px; left:0; right:0; height:3px; background:var(--border); z-index:99; }
+.reading-progress .fill { height:100%; background:linear-gradient(90deg,var(--orange),var(--orange-light)); width:0%; transition:width 0.2s linear; }
+.article-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.article-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; line-height: 1.25; }
+.article-header h1 .emoji { font-size: 1.8rem; margin-right: 8px; }
+.article-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; }
+.article-body { max-width: 820px; }
+.article-body p { font-size: 0.98rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.85; }
+.article-body h2 { font-size: 1.3rem; font-weight: 700; margin: 36px 0 14px; color: var(--text); }
+.article-body h3 { font-size: 1.05rem; font-weight: 600; margin: 20px 0 10px; color: var(--text); }
+.article-body ul, .article-body ol { padding-left: 22px; margin-bottom: 16px; }
+.article-body li { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.7; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body blockquote { border-left: 3px solid var(--orange); padding: 12px 16px; margin: 20px 0; background: rgba(247,147,26,0.06); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-style: italic; color: var(--text-secondary); }
+.article-body code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--orange); }
+.article-body section { scroll-margin-top: calc(var(--nav-h) + 20px); }
+
+/* 故事盒子（红色变体，本页保留） */
+.story-box.red { background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02)); border-color: rgba(239,68,68,0.15); }
+.story-box.red .story-label { color: #EF4444; }
+
+/* 缺陷卡 */
+.defect-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 20px 0; }
+.defect-card .defect-num { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+.defect-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--text); margin-top: 0; }
+.defect-card p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.7; }
+.defect-card .impact { font-size: 0.82rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px; }
+
+.reading-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(247,147,26,0.1); border: 1px solid rgba(247,147,26,0.2); border-radius: 20px; font-size: 0.75rem; color: var(--orange); cursor: pointer; transition: all var(--transition); }
+.reading-indicator:hover { background: rgba(247,147,26,0.15); }
+.reading-indicator.read { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.2); color: #22C55E; }
+
+/* ---- 概览区 ---- */
+.overview-section { background: var(--bg-gem); border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: var(--radius); padding: 22px 26px; margin: 24px 0 8px; }
+.overview-section h3 { margin-top: 0; font-size: 1.05rem; font-weight: 700; }
+.overview-section p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.75; margin-bottom: 10px; }
+.overview-section .ov-chain { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; font-size: 0.8rem; }
+.overview-section .ov-node { padding: 6px 12px; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); }
+.overview-section .ov-arrow { color: var(--orange); font-weight: 700; }
+
+/* ---- 关键概念卡片网格 ---- */
+.feature-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin: 18px 0; }
+.feature-cards.cols-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.feature-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; transition: all var(--transition); }
+.feature-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+.feature-card .feature-icon { font-size: 1.3rem; margin-bottom: 6px; }
+.feature-card h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.feature-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 6px; }
+.feature-card .fc-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: rgba(239,68,68,0.12); color: #EF4444; }
+
+/* ---- 动手实验区 ---- */
+.explorer-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin: 20px 0; }
+.explorer-box .exp-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.explorer-box .exp-title { font-weight: 700; font-size: 0.92rem; }
+.explorer-box .exp-result { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; }
+.explorer-box .exp-result p { font-size: 0.86rem; margin-bottom: 8px; line-height: 1.7; }
+.explorer-box .exp-result p:last-child { margin-bottom: 0; }
+.explorer-box .exp-link { color: var(--orange); text-decoration: none; font-weight: 600; }
+.explorer-box .exp-link:hover { text-decoration: underline; }
+.explorer-box .calc-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.explorer-box .calc-row label { font-size: 0.85rem; color: var(--text-secondary); min-width: 130px; }
+.explorer-box input, .explorer-box select { padding: 7px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.85rem; width: 130px; }
+.explorer-box input:focus, .explorer-box select:focus { outline: none; border-color: var(--orange); }
+.exp-out { font-family: var(--font-mono); font-size: 0.92rem; color: var(--orange); font-weight: 700; }
+.formula { font-family: var(--font-mono); font-size: 0.82rem; background: var(--bg); border: 1px dashed var(--border); border-radius: 6px; padding: 10px 14px; color: var(--text-secondary); margin: 10px 0; overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="navbar top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../00-overview.html" class="nav-link active" data-section="learning">📚 学习区</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap">
+  <div class="container two-col">
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar-nav">
+      <h4>本页导航</h4>
+      <nav id="toc">
+        <a href="#inflation">通货膨胀</a>
+        <a href="#debt">债务货币</a>
+        <a href="#no-anchor">无锚点</a>
+        <a href="#bitcoin">比特币的答案</a>
+      </nav>
+    </aside>
+
+    <div class="main-content">
+
+      <div class="breadcrumb" id="page-breadcrumb">
+        <a href="../../index.html">首页</a><span>›</span>
+        <a href="../00-overview.html">学习路径</a><span>›</span>
+        <a href="../00-overview.html">哲学篇</a><span>›</span>
+        <span>货币的三大历史缺陷</span>
+      </div>
+
+      <header class="article-header">
+        <h1><span class="emoji">⚠️</span>货币的三大历史缺陷</h1>
+        <p class="page-subtitle" style="margin-bottom:0">通胀稀释、法币超发、审查与没收——5000年的货币史，也是普通人的储蓄被反复收割的历史</p>
+        <div class="article-meta">
+          <span class="page-tag">❓ 哲学篇</span>
+          <span>预计阅读 10 分钟</span>
+          <span>🌱 适合所有人</span>
+          <button class="reading-indicator" id="read-btn" onclick="markRead()">
+            <span id="read-icon">⬜</span> <span id="read-text">标记为已读</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="article-body">
+
+        <!-- ============ 核心直觉 ============ -->
+        <div class="story-box orange">
+          <span class="story-label">💡 核心直觉</span>
+          <p>三大缺陷看上去是三个独立问题，其实是<strong>同一个问题的三种表现</strong>：货币的规则由「人」来定，而定规则的人永远有滥用它的动机。</p>
+          <p style="margin-top:8px;">通胀是<strong>结果</strong>，债务是<strong>动机</strong>，无锚点是<strong>前提</strong>。三者环环相扣，构成一个自我强化的闭环。</p>
+        </div>
+
+        <h2>🎭 一个被忽视的真相</h2>
+
+        <p>我们每天都在使用货币，但很少有人追问一个根本问题：<strong>货币体系的运行规则是谁制定的？谁有权修改它？</strong></p>
+
+        <p>答案是：政府、央行、银行。他们有能力印钱，有权力决定货币的发行量，有权力冻结账户、没收资产。</p>
+
+        <p>这带来了三个结构性的致命缺陷：</p>
+
+        <ol>
+          <li><strong>通胀税（Inflation Tax）</strong>：货币增发悄悄稀释每个人的购买力</li>
+          <li><strong>债务货币化</strong>：政府可以无限制借钱，然后让央行印钱还债</li>
+          <li><strong>单点故障与审查</strong>：你财富的安全取决于「掌权者的善意」</li>
+        </ol>
+
+        <!-- ============ 概览：三大缺陷的共同本质 ============ -->
+        <div class="overview-section">
+          <h3>🧭 概览：三大缺陷的共同本质</h3>
+          <p>如果只记住这一页的一句话，请记住这句：<strong>三大缺陷都是「货币权力被少数人垄断」的结果，而不是三个彼此独立的技术故障。</strong></p>
+          <p>顺序其实是倒过来的——<strong>先有「无锚点」，才有「债务货币」，最后才表现为「通货膨胀」</strong>：</p>
+          <div class="ov-chain">
+            <span class="ov-node">🔓 无锚点：货币不再兑换任何实物</span>
+            <span class="ov-arrow">→</span>
+            <span class="ov-node">🏦 债务货币：发行量可以随债务无限扩张</span>
+            <span class="ov-arrow">→</span>
+            <span class="ov-node">💸 通货膨胀：购买力被静默稀释</span>
+            <span class="ov-arrow">→</span>
+            <span class="ov-node">🔒 审查没收：账本掌握在同一批人手里</span>
+          </div>
+          <p style="margin-top:14px;">这个链条的每一环，都可以用一句话概括：<strong>只要有人能改规则，规则迟早会被改到对他有利的方向。</strong>这不是道德判断，而是激励结构的必然结果——把任何一群人放到这个位置上，结局都一样。</p>
+          <p style="margin-bottom:0;">因此，真正的解决方案不可能是「换一批更正直的人」，而只能是<strong>让规则本身不可被单方修改</strong>。这正是下一章比特币的切入点。</p>
+        </div>
+
+        <!-- 三大缺陷对比卡片 -->
+        <h3>📇 三大缺陷速览</h3>
+        <div class="feature-cards cols-3">
+          <div class="feature-card">
+            <div class="feature-icon">💸</div>
+            <h4>缺陷 01 · 通货膨胀</h4>
+            <p><strong>机制</strong>：增发货币 → 商品总量不变 → 物价上涨 → 现金购买力下降。</p>
+            <p><strong>受害者</strong>：持有现金和固定收入的人，尤其是储蓄者与退休者。</p>
+            <p><strong>隐蔽性</strong>：没有账单、没有通知、无需投票。</p>
+            <span class="fc-tag">无声的税</span>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🏦</div>
+            <h4>缺陷 02 · 债务货币</h4>
+            <p><strong>机制</strong>：政府发债 → 央行购债 → 凭空创造货币 → 债务永不真正偿还。</p>
+            <p><strong>受害者</strong>：所有货币持有者；受益者是最先拿到新钱的人（坎蒂隆效应）。</p>
+            <p><strong>隐蔽性</strong>：包装成「财政刺激」「量化宽松」。</p>
+            <span class="fc-tag">无限信用卡</span>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔓</div>
+            <h4>缺陷 03 · 无锚点</h4>
+            <p><strong>机制</strong>：1971 年后货币不再兑换黄金，唯一的锚是「政府信用」。</p>
+            <p><strong>受害者</strong>：所有把财富托管给机构的人——账户可被冻结、存款可被征收。</p>
+            <p><strong>隐蔽性</strong>：平时毫无感觉，危机时一夜生效。</p>
+            <span class="fc-tag">承诺即抵押</span>
+          </div>
+        </div>
+
+        <!-- ============ 缺陷1：通货膨胀 ============ -->
+        <section id="inflation">
+          <h2>💸 缺陷 01 · 通货膨胀</h2>
+
+          <div class="story-box orange">
+            <span class="story-label">💡 一句话直觉</span>
+            <p><strong>通货膨胀是一种隐蔽的税收——政府通过印钱稀释所有人的购买力。</strong></p>
+            <p style="margin-top:8px;">加税需要立法、辩论和选票；印钱只需要一次会议纪要。前者你会愤怒，后者你甚至不会察觉。</p>
+          </div>
+
+          <div class="defect-card" id="defect-1">
+            <div class="defect-num">缺陷 01</div>
+            <h3>💸 通胀税：偷走你的财富于无声无息</h3>
+            <p>当央行决定「多印一些钱」，会发生什么？</p>
+            <p>社会的商品总量没有变，但流通中的货币变多了。结果：物价上涨。</p>
+            <p>如果你持有现金，你的购买力在下降——但没有人来敲门告诉你「你的钱贬值了10%」。</p>
+            <p><strong>这就是「通胀税」的本质：政府通过印钱，实际上向你征收了一笔税，而你甚至没有投票权。</strong></p>
+
+            <div class="story-box">
+              <span class="story-label">📖 数字</span>
+              <p>根据官方数据，过去20年（2000-2020），中国M2货币供应量从13.5万亿增长到219万亿，增长了约16倍。同样的100元，20年前能买的东西，现在是「贫穷」的代名词。这不是你的收入没涨——是货币在稀释。</p>
+            </div>
+
+            <div class="story-box">
+              <span class="story-label">📖 数字</span>
+              <p>1971年布雷顿森林体系崩溃时，1盎司黄金=35美元。50年后（2021年），1盎司黄金≈1800美元。美元对黄金贬值了98%。你存在银行里的钱，购买力只有50年前的五十分之一。</p>
+            </div>
+
+            <div class="impact">💡 <strong>关键点：</strong>通胀税是「无声的抢劫」。它不经过你的同意，不需要任何人批准，不需要任何人道歉。它只是每年、每月、每天都在发生。</div>
+          </div>
+        </section>
+
+        <!-- ============ 缺陷2：债务货币 ============ -->
+        <section id="debt">
+          <h2>🏦 缺陷 02 · 债务货币</h2>
+
+          <div class="story-box orange">
+            <span class="story-label">💡 一句话直觉</span>
+            <p><strong>现代货币体系是债务货币——每 1 美元存款背后对应着 10 美元的贷款。</strong></p>
+            <p style="margin-top:8px;">在部分准备金制度下，货币不是被「印」出来的，而是被<strong>借</strong>出来的：银行每放一笔贷款，就凭空创造了一笔新存款。这意味着——如果所有人同时还清债务，流通中的货币会几乎消失。</p>
+          </div>
+
+          <div class="defect-card" id="defect-2">
+            <div class="defect-num">缺陷 02</div>
+            <h3>🏦 债务货币化：政府的无限信用卡</h3>
+            <p>传统货币体系的另一个问题：政府可以无节制地借钱，然后让央行「印钱还债」。</p>
+            <p>这创造了一个危险的循环：政府花钱→没钱→发债→央行买债→印钱→稀释所有人→政府继续花钱→继续发债……</p>
+
+            <div class="story-box red">
+              <span class="story-label">📖 数字</span>
+              <p><strong>2020年新冠疫情期间</strong>：美国政府推出史无前例的财政刺激，总规模超过5万亿美元。美联储资产负债表从4万亿膨胀到9万亿——一年内印了以前几十年的钱。</p>
+              <p style="margin-top:8px">这导致的后果：2021年美国通胀率达到7%，是40年来的最高值。普通美国人的生活成本大幅上升。</p>
+            </div>
+
+            <p><strong>为什么政府会这么做？因为「印钱还债」比「削减开支」或「加税」在政治上容易得多。</strong></p>
+            <p>当一个政府面临债务危机，它有两个选择：削减开支（民怨沸腾）或印钱还债（无人察觉）。历史告诉我们，政府几乎永远选择后者。</p>
+
+            <div class="impact">💡 <strong>关键点：</strong>法定货币的本质是「政府的无限信用卡」。当政府可以把债务转嫁给货币本身，谁来制约政府的花钱欲望？答案是：没有。</div>
+          </div>
+        </section>
+
+        <!-- ============ 缺陷3：无锚点 ============ -->
+        <section id="no-anchor">
+          <h2>🔓 缺陷 03 · 无锚点</h2>
+
+          <div class="story-box orange">
+            <span class="story-label">💡 一句话直觉</span>
+            <p><strong>法币的锚是政府的信用——但政府有无限印钞的动机。</strong></p>
+            <p style="margin-top:8px;">1971 年 8 月 15 日，尼克松宣布美元停止兑换黄金，人类历史上第一次进入<strong>全球范围内没有任何实物锚定</strong>的货币时代。从那天起，货币的价值只剩下一句承诺：「我们不会滥发。」而承诺，是唯一可以被单方面撕毁的抵押品。</p>
+          </div>
+
+          <div class="defect-card" id="defect-3">
+            <div class="defect-num">缺陷 03</div>
+            <h3>🔒 审查与没收：你以为的「安全」其实很脆弱</h3>
+            <p>第三个缺陷，也是最隐蔽的一个：<strong>你存放在银行或其他机构里的资产，本质上是「对机构的债权」，而不是「你拥有的财富」。</strong></p>
+            <p>如果你所在的机构决定冻结你的账户、没收你的资产，你几乎没有任何反抗手段。</p>
+
+            <div class="story-box red">
+              <span class="story-label">📖 真实事件</span>
+              <p><strong>2022年，加拿大卡车司机抗议运动</strong>：加拿大政府援引《紧急状态法》，冻结了组织抗议活动的组织者和捐款者的银行账户。没有法院令，没有正当程序，直接冻结。这向世界展示了一件事：<strong>你的银行账户，随时可以被政府冻结——只需要一个「紧急状态」。</strong></p>
+            </div>
+
+            <div class="story-box red">
+              <span class="story-label">📖 真实事件</span>
+              <p><strong>2013年，塞浦路斯银行危机</strong>：政府直接「没收」超过10万欧元银行存款的约48%作为救助条件。这笔钱不是被偷走的——是被政府合法地「征收」的。</p>
+            </div>
+
+            <div class="story-box red">
+              <span class="story-label">📖 真实事件</span>
+              <p><strong>2022年，Terraform Labs/UST崩盘</strong>：韩国超过50万人在Terra/LUNA项目上损失了总计超过400亿美元。这些钱存入的是「韩国最大加密交易所」Bithumb——不是他们的错，但钱还是没了。</p>
+            </div>
+
+            <div class="impact">💡 <strong>关键点：</strong>「Too Big To Fail」（大到不能倒）不只是对银行说的，也是对储户说的。当风险真的来临，受损的永远是普通人。传统金融体系的「保护」，依赖的是掌权者的善意——而善意不是保证。</div>
+          </div>
+        </section>
+
+        <!-- ============ 多视角重新解释 ============ -->
+        <h2 id="perspectives">🔄 多视角重新解释：同一场稀释，六种看法</h2>
+        <div class="perspective-card" id="flaws-perspectives">
+          <div class="perspective-header">
+            <div class="ph-label">
+              <span class="ph-label-icon">🔄</span>
+              <span>多视角 · 三大缺陷的六种读法</span>
+            </div>
+            <div class="perspective-tabs">
+              <button class="p-tab" data-angle="technology">👨‍💻 开发者</button>
+              <button class="p-tab" data-angle="finance">💰 经济学家</button>
+              <button class="p-tab" data-angle="history">📜 历史学家</button>
+              <button class="p-tab" data-angle="philosophy">🧠 哲学家</button>
+              <button class="p-tab" data-angle="business">🏛️ 政治家</button>
+              <button class="p-tab" data-angle="humanity">🙋 普通人</button>
+            </div>
+          </div>
+          <div class="perspective-body">
+            <div class="p-content" data-angle="technology">
+              <div class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">⚙️ 开发者</div>
+              <div class="p-quote">"这三个缺陷在工程上只有一个名字：可变的全局状态 + 无权限控制的管理员后门。"</div>
+              <ul>
+                <li>央行相当于一个拥有 <code>admin</code> 权限的账户，可以随时调用 <code>mint()</code> 增发余额</li>
+                <li>银行账户则是 <code>freeze(address)</code> 接口——单个管理员即可冻结任意用户</li>
+                <li>任何有后门的系统，安全性上限就等于<strong>掌握后门那个人的操守</strong>，而这在工程上不可审计</li>
+                <li>正确的修法不是「加强审计」，而是<strong>从架构上删掉这些接口</strong>——比特币的做法</li>
+              </ul>
+            </div>
+            <div class="p-content" data-angle="finance">
+              <div class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 经济学家</div>
+              <div class="p-quote">"通胀的分配效应比通胀本身更值得关注——坎蒂隆效应决定了谁被稀释、谁被喂饱。"</div>
+              <ul>
+                <li><strong>坎蒂隆效应</strong>：新钱不是同时到达所有人手里。最先拿到的（政府、大银行、资产持有者）以旧价格买入资产</li>
+                <li>最后拿到的（工薪阶层）只看到物价已经涨完了——<strong>通胀是一次从末端到顶端的财富转移</strong></li>
+                <li>这解释了为什么 QE 时代资产价格暴涨而工资停滞：新钱先进入资产市场，而不是工资单</li>
+                <li>反方观点也需要认真对待：温和通胀被主流认为可以润滑经济、避免债务通缩螺旋。<strong>争论的焦点是「谁有权决定这个度」</strong></li>
+              </ul>
+            </div>
+            <div class="p-content" data-angle="history">
+              <div class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</div>
+              <div class="p-quote">"没有一种法币活过 300 年，历史上所有法币的终点都是归零或改制。"</div>
+              <ul>
+                <li><strong>罗马帝国</strong>：银币德纳里乌斯含银量从 98% 一路稀释到 5%，帝国财政随之崩解</li>
+                <li><strong>1923 年魏玛德国</strong>：物价每两天翻一倍，一车钞票换不到一条面包</li>
+                <li><strong>1949 年金圆券</strong>：发行 10 个月贬值数百万倍，居民一生积蓄化为废纸</li>
+                <li><strong>2008 年津巴布韦</strong>：发行面额 100 万亿的钞票，最终彻底放弃本国货币</li>
+                <li>共同剧本：战争或危机 → 财政缺口 → 货币稀释 → 信心崩塌。<strong>五千年来，一字未改</strong></li>
+              </ul>
+            </div>
+            <div class="p-content" data-angle="philosophy">
+              <div class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">🧠 哲学家</div>
+              <div class="p-quote">"这不是坏人的问题，是坏结构的问题——把任何人放在那个位置上，都会做同样的事。"</div>
+              <ul>
+                <li>核心是<strong>委托代理困境</strong>：代理人（央行）掌握着委托人（全体货币持有者）无法监督的权力</li>
+                <li>「谁来看守看守者？」（Quis custodiet ipsos custodes?）——两千年前罗马人的问题，至今无解</li>
+                <li>制度设计的经典答案是「分权与制衡」，但货币发行权恰恰是<strong>最难分权的那一项</strong></li>
+                <li>比特币提出了第三条路：<strong>不监督权力，而是取消这项权力</strong>——把它交给谁都不掌握的算法</li>
+              </ul>
+            </div>
+            <div class="p-content" data-angle="business">
+              <div class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🏛️ 政治家</div>
+              <div class="p-quote">"通胀是唯一不需要立法就能征收的税。"</div>
+              <ul>
+                <li>凯恩斯早已点破：「通过持续的通货膨胀，政府可以秘密地、不为人知地没收公民的部分财富。」</li>
+                <li>削减福利会失去选票，加税会失去选票，<strong>印钱不会</strong>——三选一的结果毫无悬念</li>
+                <li>债务货币化把成本转移到<strong>未来和不投票的人</strong>（下一代、外国持币者）身上，这是理性的政治选择</li>
+                <li>诚实的政治家会承认：<strong>问题不在个人品格，而在于这个按钮不该存在于任何人的桌上</strong></li>
+              </ul>
+            </div>
+            <div class="p-content" data-angle="humanity">
+              <div class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">🙋 普通人</div>
+              <div class="p-quote">"我努力工作、努力存钱，却发现存钱本身就是亏钱。"</div>
+              <ul>
+                <li>存款利率 1.5%，真实通胀 5%——<strong>越存越穷，储蓄这个美德被系统性惩罚</strong></li>
+                <li>于是所有人被迫成为投机者：买房、炒股、追风口，因为不投资就是确定性亏损</li>
+                <li>阿根廷人的日常：发工资当天就去换美元；黎巴嫩人的日常：银行门口排队却取不出自己的钱</li>
+                <li>普通人要的从来不多——<strong>只是希望今天存下的一块钱，十年后还是一块钱</strong></li>
+              </ul>
+            </div>
+          </div>
+          <div class="perspective-footer">
+            <div class="p-footer-left">
+              <span style="font-size:0.7rem;color:var(--text-muted);">点击标签或左右滑动</span>
+            </div>
+            <div class="p-dot-indicator">
+              <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+              <span class="p-dot"></span><span class="p-dot"></span><span class="p-dot"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 动手实验区 ============ -->
+        <h2 id="labs">🧪 动手实验区</h2>
+
+        <div class="explorer-box">
+          <div class="exp-header">
+            <span class="exp-title">🔍 实验 1：查询美国 CPI 历史数据（BLS 官方）</span>
+          </div>
+          <div class="exp-result">
+            <p>不要相信任何人转述的通胀数字，包括本页——自己去看原始数据：</p>
+            <p>① <a class="exp-link" href="https://www.bls.gov/cpi/" target="_blank" rel="noopener">BLS · Consumer Price Index 官方首页 ↗</a><br>
+            美国劳工统计局，CPI 的原始发布方，每月更新。</p>
+            <p>② <a class="exp-link" href="https://data.bls.gov/cgi-bin/surveymost?cu" target="_blank" rel="noopener">BLS · CPI 数据检索工具（可拉取 1913 年至今全序列）↗</a><br>
+            勾选「CPI for All Urban Consumers (CPI-U)」，可直接导出 CSV。</p>
+            <p>③ <a class="exp-link" href="https://www.bls.gov/data/inflation_calculator.htm" target="_blank" rel="noopener">BLS · 官方通胀计算器 ↗</a><br>
+            输入任意年份和金额，立刻得到今天的等值购买力。</p>
+            <p style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
+            🔎 <strong>观察任务</strong>：找出 1971 年（脱钩黄金）和 2020 年（大规模 QE）这两个断点，看 CPI 曲线的斜率是否明显变陡。</p>
+          </div>
+        </div>
+
+        <div class="explorer-box">
+          <div class="exp-header">
+            <span class="exp-title">🧮 实验 2：购买力计算器 —— 100 元人民币 1970 年 vs 2024 年</span>
+          </div>
+          <div class="exp-result">
+            <p><strong>计算原理</strong>：购买力按复利逐年衰减，公式为——</p>
+            <div class="formula">
+              今日等值购买力 = 本金 ÷ (1 + 年均通胀率)<sup>年数</sup><br>
+              购买力损失比例 = 1 − 1 ÷ (1 + i)<sup>n</sup>
+            </div>
+            <p>若要反过来问「当年的 100 元相当于今天多少钱」，则用：</p>
+            <div class="formula">
+              今日名义等值 = 本金 × (1 + i)<sup>n</sup>
+            </div>
+            <div class="calc-row" style="margin-top:14px;">
+              <label>本金（元）</label>
+              <input type="number" id="pv" value="100" min="1" oninput="calcPower()">
+            </div>
+            <div class="calc-row">
+              <label>起始年份</label>
+              <input type="number" id="y0" value="1970" min="1900" max="2024" oninput="calcPower()">
+            </div>
+            <div class="calc-row">
+              <label>结束年份</label>
+              <input type="number" id="y1" value="2024" min="1901" max="2100" oninput="calcPower()">
+            </div>
+            <div class="calc-row">
+              <label>年均通胀率（%）</label>
+              <input type="number" id="rate" value="6" step="0.1" oninput="calcPower()">
+            </div>
+            <p style="border-top:1px solid var(--border);padding-top:12px;margin-top:12px;">
+              📉 <strong>结论 A</strong>：当年的本金，按今天的物价只相当于 <span class="exp-out" id="out-a">—</span><br>
+              📈 <strong>结论 B</strong>：要买到当年 100 元能买的东西，今天需要 <span class="exp-out" id="out-b">—</span><br>
+              🕳 <strong>购买力损失</strong>：<span class="exp-out" id="out-c">—</span>
+            </p>
+            <p style="font-size:0.8rem;color:var(--text-muted);">
+              ※ 6% 为示意值。中国 1970–2024 年官方 CPI 口径年均约 4%–5%，但若以 M2 增速（年均约 15%）或房价、教育、医疗口径衡量，实际感受远高于此。改动上面的数字，看看不同假设下的差距有多大。</p>
+          </div>
+        </div>
+
+        <!-- ============ 比特币的答案 ============ -->
+        <section id="bitcoin">
+          <h2>📊 三种货币体系对比</h2>
+
+          <div class="table-wrap">
+            <table class="compare-table">
+              <tr>
+                <th>缺陷类型</th>
+                <th>黄金/商品货币</th>
+                <th>法定货币（法币）</th>
+                <th>比特币</th>
+              </tr>
+              <tr>
+                <td>通胀稀释</td>
+                <td>供应增长缓慢（~1-2%/年）</td>
+                <td>央行随意决定，想印多少印多少</td>
+                <td>严格上限2100万，无法增发</td>
+              </tr>
+              <tr>
+                <td>债务货币化</td>
+                <td>不可能（黄金不能凭空产生）</td>
+                <td>政府可以无限发债让央行购买</td>
+                <td>不可能（代码控制发行量）</td>
+              </tr>
+              <tr>
+                <td>审查/没收</td>
+                <td>物理上可以没收黄金</td>
+                <td>政府可以冻结账户、没收资产</td>
+                <td>私钥在手，物理上无法强制夺取</td>
+              </tr>
+              <tr>
+                <td>验证方式</td>
+                <td>需要鉴定机构</td>
+                <td>依赖银行/央行记录</td>
+                <td>任何人都可以运行全节点验证</td>
+              </tr>
+            </table>
+          </div>
+
+          <h2>🤔 一个值得思考的问题</h2>
+
+          <blockquote>
+            如果「不持有实物黄金」意味着你信任银行不会丢失你的黄金——那为什么不干脆直接信任银行有足够的意愿和能力保护你的钱？
+          </blockquote>
+
+          <p>这引出了一个更深层的问题：我们真的需要「信任」一个货币系统吗？</p>
+          <p>还是说，存在一种货币，让「信任」变得<strong>不必要</strong>？</p>
+
+          <div class="treasure-box">
+            <h3>💎 比特币如何逐条拆掉这三个缺陷</h3>
+            <ul>
+              <li><strong>对通货膨胀</strong>：发行曲线写死在代码里，每 21 万个区块减半一次，总量 2100 万。没有任何机构可以调用 <code>mint()</code></li>
+              <li><strong>对债务货币</strong>：比特币不是任何人的负债——它没有对手方。持有它不等于持有对某个机构的债权</li>
+              <li><strong>对无锚点</strong>：它的锚不是政府承诺，而是<strong>真实消耗的电力与算力</strong>，以及全球数万个节点各自独立的验证</li>
+            </ul>
+            <p style="margin-top:10px;">下一章会完整展开：中本聪具体是怎么做到的。</p>
+          </div>
+
+          <div class="highlight-box">
+            <span class="label">💡 本章小结</span>
+            <span class="text">货币史上的三大缺陷——通胀税、债务货币化、审查与没收——都来自于同一个根源：<strong>货币的规则由「人」来控制和修改，而不是由「数学」来约束。</strong><br><br>只要是人控制的系统，就永远存在「被滥用」的可能性。这个问题在历史上从未被真正解决过。</span>
+          </div>
+
+          <div class="highlight-box">
+            <span class="label">🎯 关键观点</span>
+            <span class="text">三大缺陷不是三个 bug，而是<strong>同一个架构缺陷的三种症状</strong>：只要「改规则的权力」存在，它就一定会被使用。<br><br>历史上所有的补救方案——独立央行、通胀目标制、财政纪律——都是在<strong>约束使用这个权力的人</strong>；比特币是第一次尝试<strong>删除这个权力本身</strong>。</span>
+          </div>
+
+          <div class="cta-box" style="text-align:left">
+            <h3>→ 下一篇：比特币的答案</h3>
+            <p>理解了问题，下一步：比特币是如何从根本上解决这三大缺陷的？中本聪做了什么？</p>
+            <a href="01-03-bitcoin-answer.html" class="btn btn-primary" style="display:inline-flex;margin-top:4px">继续阅读 →</a>
+            <a href="01-01-money.html" class="btn" style="display:inline-flex;margin-top:4px;margin-left:8px">← 回顾：货币的千年之问</a>
+          </div>
+        </section>
+
+      </div><!-- /article-body -->
+    </div><!-- /main-content -->
+  </div><!-- /two-col -->
+</main>
+
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center">
+    <a href="01-01-money.html" class="nav-prev" style="text-decoration:none">
+      <span class="nav-icon">←</span>
+      <div class="nav-text">
+        <div class="nav-label">上一篇</div>
+        <div class="nav-title">← 货币的起源</div>
+      </div>
+    </a>
+    <a href="01-03-bitcoin-answer.html" class="nav-next" style="text-decoration:none">
+      <div class="nav-text">
+        <div class="nav-label">下一篇</div>
+        <div class="nav-title">比特币的答案 →</div>
+      </div>
+      <span class="nav-icon">→</span>
+    </a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../../index.html">首页</a> · <a href="../00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+<script>
+// 保存静态面包屑（initNav 会重建它，这里恢复本页专属层级）
+const __crumbHTML = document.getElementById('page-breadcrumb').innerHTML;
+initNav();
+document.getElementById('page-breadcrumb').innerHTML = __crumbHTML;
+
+const PHASE = 'phil';
+const CHAPTER = '01-02-three-flaws';
+
+function markRead() {
+  try {
+    let read = JSON.parse(localStorage.getItem('btc-read-chapters') || '{}');
+    read[PHASE] = read[PHASE] || {};
+    read[PHASE][CHAPTER] = true;
+    localStorage.setItem('btc-read-chapters', JSON.stringify(read));
+    document.getElementById('read-btn').classList.add('read');
+    document.getElementById('read-icon').textContent = '✅';
+    document.getElementById('read-text').textContent = '已读完';
+    localStorage.setItem('btc-progress-update', Date.now().toString());
+  } catch(e) {}
+}
+
+function initReadState() {
+  try {
+    let read = JSON.parse(localStorage.getItem('btc-read-chapters') || '{}');
+    if (read[PHASE] && read[PHASE][CHAPTER]) {
+      document.getElementById('read-btn').classList.add('read');
+      document.getElementById('read-icon').textContent = '✅';
+      document.getElementById('read-text').textContent = '已读完';
+    }
+  } catch(e) {}
+}
+initReadState();
+
+// Scroll progress
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+// 购买力计算器
+function calcPower() {
+  const pv = parseFloat(document.getElementById('pv').value) || 0;
+  const y0 = parseInt(document.getElementById('y0').value, 10) || 0;
+  const y1 = parseInt(document.getElementById('y1').value, 10) || 0;
+  const i  = (parseFloat(document.getElementById('rate').value) || 0) / 100;
+  const n = Math.max(0, y1 - y0);
+  const factor = Math.pow(1 + i, n);
+  const realValue = pv / factor;        // 当年本金在今天的实际购买力
+  const nominal   = pv * factor;        // 今天需要多少钱才买得到当年的东西
+  const loss = factor > 0 ? (1 - 1 / factor) * 100 : 0;
+  document.getElementById('out-a').textContent = realValue.toFixed(2) + ' 元（今天的钱）';
+  document.getElementById('out-b').textContent = nominal.toFixed(2) + ' 元';
+  document.getElementById('out-c').textContent = loss.toFixed(2) + '%（历时 ' + n + ' 年）';
+}
+calcPower();
+
+// 侧边栏锚点高亮
+(function initTocSpy() {
+  const links = Array.from(document.querySelectorAll('#toc a'));
+  const sections = links
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+  if (!sections.length) return;
+  function onScroll() {
+    const y = window.scrollY + 120;
+    let idx = 0;
+    sections.forEach((s, i) => { if (s.offsetTop <= y) idx = i; });
+    links.forEach((a, i) => a.classList.toggle('active', i === idx));
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>

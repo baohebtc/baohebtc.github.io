@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>周期与叙事 | 比特币学习地图</title>
+  <meta name="description" content="比特币四年周期的经济学机制：减半→供需失衡→价格上行。ahr999指数、LTH/STH链上信号、币本位心态——用数据读懂周期。">
+  <link rel="stylesheet" href="../../shared/style.css">
+  <style>
+    /* ---- 周期时间线 ---- */
+    .cycle-timeline {
+      position: relative;
+      margin: 20px 0;
+      padding: 10px 0;
+    }
+    .cycle-track {
+      position: relative;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .cycle-dot {
+      position: absolute;
+      top: -8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fff;
+      transform: translateX(-50%);
+    }
+    .cycle-events {
+      display: flex;
+      gap: 0;
+      margin-top: 16px;
+    }
+    .cycle-col {
+      flex: 1;
+      min-width: 0;
+      padding: 0 6px;
+      text-align: center;
+      border-left: 1px dashed var(--border);
+    }
+    .cycle-col:first-child { border-left: none; }
+    .cycle-col .halving-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .cycle-col .halving-date {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .cycle-col .halving-price {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .cycle-col .cycle-peak {
+      font-size: 0.72rem;
+      color: #EF4444;
+      margin-top: 2px;
+    }
+    .cycle-col .cycle-btm {
+      font-size: 0.72rem;
+      color: #10B981;
+      margin-top: 2px;
+    }
+    .cycle-arrow {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      margin: 4px 0;
+    }
+
+    /* ---- ahr999 仪表盘 ---- */
+    .ahr999-dashboard {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .ahr999-formula {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      text-align: center;
+      color: var(--text);
+    }
+    .ahr999-formula .formula-main {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 6px;
+    }
+    .ahr999-formula .formula-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    .ahr-zones {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 14px 0;
+    }
+    .ahr-zone {
+      padding: 10px 8px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid transparent;
+    }
+    .ahr-zone.oversold {
+      background: rgba(239,68,68,0.1);
+      border-color: rgba(239,68,68,0.3);
+    }
+    .ahr-zone.buy {
+      background: rgba(234,179,8,0.1);
+      border-color: rgba(234,179,8,0.3);
+    }
+    .ahr-zone.hold {
+      background: rgba(59,130,246,0.1);
+      border-color: rgba(59,130,246,0.3);
+    }
+    .ahr-zone.crazy {
+      background: rgba(139,92,246,0.1);
+      border-color: rgba(139,92,246,0.3);
+    }
+    .ahr-zone .zone-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .ahr-zone.oversold .zone-label { color: #EF4444; }
+    .ahr-zone.buy .zone-label { color: #EAB308; }
+    .ahr-zone.hold .zone-label { color: #3B82F6; }
+    .ahr-zone.crazy .zone-label { color: #8B5CF6; }
+    .ahr-zone .zone-range {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .ahr-zone .zone-pct {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .ahr999x-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .ahr999x-box strong { color: var(--purple); }
+
+    /* ---- 心态对比卡 ---- */
+    .mind-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .mind-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .mind-card .mind-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mind-card .mind-quote {
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      border-left: 2px solid var(--border);
+      padding-left: 10px;
+    }
+    .mind-card .mind-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .mind-card .mind-emoji {
+      font-size: 1.5rem;
+      margin-top: 6px;
+    }
+    .mind-card .dca-eg {
+      background: var(--bg);
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-top: 8px;
+      font-size: 0.78rem;
+    }
+
+    /* ---- LTH/STH 图示 ---- */
+    .holder-chart {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .holder-bar {
+      display: flex;
+      height: 36px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .holder-seg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .holder-seg.lth { background: var(--orange); }
+    .holder-seg.sth { background: var(--purple); }
+    .holder-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ---- DCA 计算 ---- */
+    .dca-calc {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 16px 0;
+    }
+    .dca-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .dca-row label {
+      min-width: 90px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .dca-row input {
+      flex: 1;
+      min-width: 100px;
+      padding: 7px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.82rem;
+    }
+    .dca-row input:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+    .dca-result {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-top: 10px;
+    }
+    .dca-result .dca-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.82rem;
+    }
+    .dca-result .dca-val { font-weight: 600; color: var(--orange); }
+
+    /* ---- 供需框架 ---- */
+    .supply-demand {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin: 16px 0;
+    }
+    .sd-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .sd-badge {
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      min-width: 80px;
+      text-align: center;
+    }
+    .sd-badge.supply {
+      background: rgba(239,68,68,0.12);
+      color: #EF4444;
+    }
+    .sd-badge.demand {
+      background: rgba(16,185,129,0.12);
+      color: #10B981;
+    }
+    .sd-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    /* ---- 响应式 ---- */
+    @media (max-width: 700px) {
+      .ahr-zones { grid-template-columns: 1fr 1fr; }
+      .mind-cards { grid-template-columns: 1fr; }
+      .cycle-col { min-width: 80px; }
+      .holder-bar { flex-direction: column; height: auto; }
+      .holder-seg { min-height: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar top-nav">
+    <div class="container nav-inner">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-icon">₿</span>
+        <span class="logo-text">学习地图</span>
+        <span class="logo-sub">Learning Map</span>
+      </a>
+      <div class="nav-center">
+        <div class="nav-links">
+          <a href="../../index.html" class="nav-link" data-section="home">首页</a>
+          <a href="../00-overview.html" class="nav-link active" data-section="learning">学习路径</a>
+          <a href="../../tools/index.html" class="nav-link" data-section="tools">工具</a>
+          <a href="../../reference/index.html" class="nav-link" data-section="reference">参考</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+        </div>
+        <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 阅读进度条 -->
+  <div class="reading-progress"><div class="fill"></div></div>
+
+  <!-- 页面 Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../index.html">首页</a>
+        <span>›</span>
+        <a href="../00-overview.html">学习路径</a>
+        <span>›</span>
+        <a href="../00-overview.html">经济学篇</a>
+        <span>›</span>
+        <span>周期与叙事</span>
+      </div>
+
+      <h1>📅 周期与叙事</h1>
+      <p class="page-subtitle">比特币每四年发生一次"定时减产"。每一次减半，都像按下了一个供需失衡的开关——这是理解比特币价格波动的核心框架，也是最难不被情绪裹挟的考验。</p>
+      <div class="page-meta">
+        <span class="page-tag">⏱ 阅读时间：约 20 分钟</span>
+        <span class="page-tag">📊 难度：中等</span>
+        <span class="page-tag">📑 经济学篇 6/8</span>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>经济学篇进度</span>
+          <span>6 / 8 页</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 75%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容 -->
+  <div class="article-wrap">
+    <div class="container two-col">
+      <!-- 侧栏 -->
+      <aside class="sidebar-nav">
+        <h4>本页导航</h4>
+        <nav>
+          <a href="#intro">核心直觉</a>
+          <a href="#mechanism">四年周期机制</a>
+          <a href="#history">历史周期回顾</a>
+          <a href="#onchain">链上指标</a>
+          <a href="#ahr999">ahr999 指数</a>
+          <a href="#mindset">币本位 vs 金本位</a>
+          <a href="#dca">DCA 定投逻辑</a>
+          <a href="#perspectives">多视角解读</a>
+          <a href="#labs">动手实验</a>
+          <a href="#summary">大白话总结</a>
+        </nav>
+      </aside>
+
+      <!-- 正文 -->
+      <div class="main-content">
+        <div class="article-body">
+
+          <!-- ============ 核心直觉 ============ -->
+          <div class="story-box orange">
+            <span class="story-label">💡 核心直觉</span>
+            <p>比特币的四年周期不是阴谋，而是<strong>写进代码的定时机制</strong>——每 21 万个区块（≈ 4 年），新增供给自动减半。这个"定时减产"与市场需求相遇，就产生了价格波动的基本节奏。</p>
+            <p style="margin-top:8px;">理解周期不是为了预测价格，而是为了在情绪的浪潮里保持清醒：<em>别人在顶点贪婪时，你知道"该收了"；别人在底部恐惧时，你知道"该买了"</em>。</p>
+          </div>
+
+          <!-- ============ 一、四年周期机制 ============ -->
+          <section id="mechanism">
+            <h2>一、四年周期的经济学机制</h2>
+
+            <h3>1.1 供给刚性与需求弹性：刘教链框架</h3>
+            <p>刘教链（blockcoach.com）提出，比特币周期的根本矛盾是<strong>「减半供给刚性 vs 需求价格弹性」</strong>：</p>
+
+            <div class="supply-demand">
+              <div class="sd-row">
+                <div class="sd-badge supply">供给（刚）</div>
+                <div class="sd-desc">每 4 年新增比特币数量自动减半，提前 4 年就知道具体数字，无弹性可言。</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-badge supply">→ 减半时刻</div>
+                <div class="sd-desc">市场已知的新增供给突然减半——上一次牛市顶峰到下一次减半之间，累计新增 BTC 约是之前的一半。</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-badge demand">需求（弹）</div>
+                <div class="sd-desc">需求随价格、叙事、宏观环境大幅波动——牛市时新入场者追涨，熊市时抛盘减少。</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-badge demand">→ 供需失衡</div>
+                <div class="sd-desc">供给收缩 + 需求未同步下降（或上升）= 价格上涨。历史三轮减半后都出现了显著上涨。</div>
+              </div>
+            </div>
+
+            <h3>1.2 矿工成本线：天然支撑</h3>
+            <p>减半不仅影响供给，还影响矿工成本结构。当币价跌破<strong>关机价</strong>（电费 / 矿机效率），低效矿工开始关机：</p>
+            <ul>
+              <li>低效矿机 → 关机（算力下降）</li>
+              <li>算力下降 → 难度下调 → 剩余矿工收益相对提升</li>
+              <li>算力在更低水平重新平衡 → 市场找到新的成本支撑</li>
+            </ul>
+            <p>这个机制让币价在熊市底部有一个<strong>准自动的"矿工成本底线"</strong>——当然，前提是电价和矿机效率不大幅变化。</p>
+
+            <h3>1.3 叙事周期的放大器</h3>
+            <p>经济学机制解释了「为什么涨」，但<strong>涨多少</strong>还受叙事影响：</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:14px 0;">
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.1rem;">🏦</div>
+                <h4>机构叙事</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">ETF 通过 → 大量被动资金入场，改变供需结构</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.1rem;">🗺️</div>
+                <h4>国家叙事</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">萨尔瓦多、法匹等采纳案例，每次都引发媒体关注</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.1rem;">⚡</div>
+                <h4>技术叙事</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">Taproot、Lightning、Ordinals 等技术创新吸引开发者</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 二、历史周期回顾 ============ -->
+          <section id="history">
+            <h2>二、三轮历史周期回顾</h2>
+
+            <div class="cycle-timeline">
+              <div style="font-weight:700;font-size:0.85rem;margin-bottom:8px;">比特币历史价格周期（2012–2024）</div>
+              <div class="cycle-events">
+                <div class="cycle-col">
+                  <div class="halving-badge" style="background:rgba(247,147,26,0.2);color:var(--orange);">第一次减半</div>
+                  <div class="halving-date">2012-11-28</div>
+                  <div class="halving-price">~12 USD</div>
+                  <div class="cycle-peak">🔥 约 1,100 USD<br><span style="font-size:0.65rem;">（2013-11）</span></div>
+                  <div class="cycle-btm">📉 约 200 USD<br><span style="font-size:0.65rem;">（熊市底部）</span></div>
+                  <div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px;">+~90x</div>
+                </div>
+                <div class="cycle-col">
+                  <div class="halving-badge" style="background:rgba(247,147,26,0.2);color:var(--orange);">第二次减半</div>
+                  <div class="halving-date">2016-07-09</div>
+                  <div class="halving-price">~650 USD</div>
+                  <div class="cycle-peak">🔥 约 19,500 USD<br><span style="font-size:0.65rem;">（2017-12）</span></div>
+                  <div class="cycle-btm">📉 约 3,200 USD<br><span style="font-size:0.65rem;">（熊市底部）</span></div>
+                  <div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px;">+~30x</div>
+                </div>
+                <div class="cycle-col">
+                  <div class="halving-badge" style="background:rgba(247,147,26,0.2);color:var(--orange);">第三次减半</div>
+                  <div class="halving-date">2020-05-11</div>
+                  <div class="halving-price">~8,600 USD</div>
+                  <div class="cycle-peak">🔥 约 69,000 USD<br><span style="font-size:0.65rem;">（2021-11）</span></div>
+                  <div class="cycle-btm">📉 约 16,000 USD<br><span style="font-size:0.65rem;">（2022-11）</span></div>
+                  <div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px;">+~8x</div>
+                </div>
+                <div class="cycle-col">
+                  <div class="halving-badge" style="background:rgba(247,147,26,0.2);color:var(--orange);">第四次减半</div>
+                  <div class="halving-date">2024-04-19</div>
+                  <div class="halving-price">~64,000 USD</div>
+                  <div class="cycle-peak">📈 进行中<br><span style="font-size:0.65rem;">（本轮周期尚未结束）</span></div>
+                  <div class="cycle-btm">📉 —</div>
+                  <div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px;">待验证</div>
+                </div>
+              </div>
+              <p style="font-size:0.7rem;color:var(--text-muted);margin-top:10px;">
+                ⚠️ 价格数据为近似值，取自公开历史数据。比特币历史有限，样本量小，过往表现不代表未来收益。本页不对任何投资负责。
+              </p>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">三轮周期的规律与差异</span>
+              <div class="text">
+                <p><strong>规律：</strong>每次减半后 12–18 个月出现价格峰值；熊市底部出现在减半后 24–36 个月。</p>
+                <p><strong>差异：</strong>每一轮牛市的涨幅都比上一轮小（90x → 30x → 8x）——这是「市场规模扩大后的自然稀释」。</p>
+                <p><strong>例外：</strong>2025 年走势部分脱离了历史复刻模式（刘教链称为「周期荒野」），说明宏观环境、ETF 等新变量正在重塑经典叙事。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 三、链上指标 ============ -->
+          <section id="onchain">
+            <h2>三、链上指标看周期：LTH vs STH</h2>
+
+            <h3>3.1 两种持有者，两种信号</h3>
+            <p>比特币持有者可分为两大阵营，它们的行为模式传递出不同的市场信号：</p>
+
+            <div class="holder-chart">
+              <div style="font-weight:700;font-size:0.85rem;margin-bottom:6px;">链上持仓结构（示意）</div>
+              <div class="holder-bar" id="lthSthBar">
+                <div class="holder-seg lth" style="width:65%;">LTH 长期持有者 65%</div>
+                <div class="holder-seg sth" style="width:35%;">STH 短期持有者 35%</div>
+              </div>
+              <div class="holder-labels">
+                <div><div style="width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block;"></div> LTH（>155 天未动）</div>
+                <div><div style="width:8px;height:8px;border-radius:50%;background:var(--purple);display:inline-block;"></div> STH（< 155 天）</div>
+                <span style="font-size:0.68rem;">注：比例随市场周期变化，此为示意</span>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;">
+              <div class="chapter-card" style="background:rgba(247,147,26,0.06);border:1px solid rgba(247,147,26,0.2);border-radius:var(--radius-sm);padding:16px;">
+                <h4 style="font-size:0.88rem;margin-bottom:6px;">🔶 LTH（Long-Term Holder）</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">持有 > 155 天未动的币。"聪明钱"——倾向于在熊市积累，在牛市派发。</p>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin-top:6px;"><strong>信号：</strong>LTH 积累 → 底部区域；LTH 派发 → 顶部预警</p>
+              </div>
+              <div class="chapter-card" style="background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.2);border-radius:var(--radius-sm);padding:16px;">
+                <h4 style="font-size:0.88rem;margin-bottom:6px;">🟣 STH（Short-Term Holder）</h4>
+                <p style="font-size:0.78rem;color:var(--text-secondary);">持有 < 155 天的币。多为新入场的投机者，情绪驱动，"最后接棒"的往往也是他们。</p>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin-top:6px;"><strong>信号：</strong>STH 主导 → 市场由情绪驱动，波动剧烈</p>
+              </div>
+            </div>
+
+            <h3>3.2 聪明钱的积累与派发</h3>
+            <div class="highlight-box">
+              <span class="label">"聪明钱在积累，新手在接盘"</span>
+              <div class="text">
+                <p>这是链上分析最核心的规律之一：</p>
+                <ul>
+                  <li><strong>熊市底部</strong>：LTH 在低价持续买入积累（链上显示"旧币被转出"）；STH 大幅亏损，情绪极度悲观</li>
+                  <li><strong>牛市爬升</strong>：早期持有者逐渐派发（利润实现）；STH 追涨入场，持仓成本逐渐升高</li>
+                  <li><strong>牛市顶峰</strong>：LTH 基本完成派发（链上显示大量旧币在顶部附近转移）；STH 持仓成本最高，信心最强（最危险）</li>
+                  <li><strong>熊市初期</strong>：STH 大量割肉止损；LTH 开始重新积累（新一轮循环开始）</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 四、ahr999 指数 ============ -->
+          <section id="ahr999">
+            <h2>四、ahr999 指数：中文社区的周期工具</h2>
+
+            <p><strong>ahr999</strong>（又称「ahr999 定投指数」）是中文社区最广泛使用的链上估值指标之一，由 Twitter/X 用户 @Ahr999 创建。它的核心理念是：把「当前币价」与「200 日定投成本」和「指数增长估值」做比较，来判断当前是「贵」还是「便宜」。</p>
+
+            <div class="ahr999-dashboard">
+              <div class="ahr999-formula">
+                <div class="formula-main">ahr999 = (BTC 价格²) / (200 日定投成本 × 指数增长估值)</div>
+                <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:6px;">
+                  <div>指数增长估值 ≈ 0.3 × e^(10年内累计购买力增长)</div>
+                </div>
+                <div class="formula-desc">
+                  💡 通俗理解：分母 = "你现在每月定投的成本相对于历史均值贵了多少"；分子 = "当前价格相对于历史均值涨了多少"。两者相除得出相对位置。
+                </div>
+              </div>
+
+              <div class="ahr-zones">
+                <div class="ahr-zone oversold">
+                  <div class="zone-label">🔥 抄底区</div>
+                  <div class="zone-range">ahr999 &lt; 0.45</div>
+                  <div class="zone-pct">历史约 8.5% 时间</div>
+                </div>
+                <div class="ahr-zone buy">
+                  <div class="zone-label">🟡 定投区</div>
+                  <div class="zone-range">0.45–1.2</div>
+                  <div class="zone-pct">历史约 46.3% 时间</div>
+                </div>
+                <div class="ahr-zone hold">
+                  <div class="zone-label">🔵 等待区</div>
+                  <div class="zone-range">1.2–5</div>
+                  <div class="zone-pct">历史约 29.3% 时间</div>
+                </div>
+                <div class="ahr-zone crazy">
+                  <div class="zone-label">🟣 只卖不买</div>
+                  <div class="zone-range">ahr999 &gt; 5</div>
+                  <div class="zone-pct">历史约 15.9% 时间</div>
+                </div>
+              </div>
+
+              <div class="ahr999x-box">
+                <strong>ahr999x</strong> = 3 / ahr999，专门用于判断顶部区域：<br>
+                <span style="font-size:0.75rem;color:var(--text-muted);">ahr999x &lt; 0.2 → 接近历史顶部区间（历史上仅约 10% 时间低于此值）</span>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">⚠️ 使用 ahr999 的重要提醒</span>
+              <div class="text">
+                <ul>
+                  <li>这是<strong>概率工具，不是预言</strong>——"抄底区"不代表明天就涨；"只卖不买"也不代表明天就跌</li>
+                  <li>历史分位基于有限样本（比特币约 15 年数据），未来未必重复</li>
+                  <li>每次周期的顶部/底部具体数值不同，但<strong>「在低位坚持定投」这个策略</strong>在历史上是有效的</li>
+                  <li>建议配合 LTH/STH 数据一起看——指数低 + LTH 积累 = 更强的底部信号</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 五、币本位 vs 金本位 ============ -->
+          <section id="mindset">
+            <h2>五、币本位 vs 金本位心态（刘教链框架）</h2>
+
+            <p>刘教链提出：比特币世界存在两种根本不同的投资心态，它们的差别决定了持有体验和决策质量。</p>
+
+            <div class="mind-cards">
+              <div class="mind-card" style="border-color:rgba(234,179,8,0.3);">
+                <div class="mind-title">🪙 币本位（BTC Denominated）</div>
+                <div class="mind-quote">"我不关心 1 BTC 值多少人民币，我只关心我攒了多少 BTC。"</div>
+                <p class="mind-desc"><strong>关注持有数量</strong>，不在乎法币价格短期波动。</p>
+                <ul style="font-size:0.78rem;color:var(--text-secondary);padding-left:16px;">
+                  <li>币价跌 = 同样的钱能买更多 BTC → 开心（逢低加码）</li>
+                  <li>币价涨 = 同样的钱买少了 BTC → 不急卖</li>
+                  <li>目标是<strong>积累更多 sat</strong></li>
+                </ul>
+                <div class="mind-emoji">📈📉</div>
+              </div>
+              <div class="mind-card" style="border-color:rgba(139,92,246,0.3);">
+                <div class="mind-title">💵 金本位（Fiat Denominated）</div>
+                <div class="mind-quote">"我买了 10 万块钱的比特币，现在涨到 20 万了吗？"</div>
+                <p class="mind-desc"><strong>关注法币价值</strong>，把比特币当作法币的替代品来衡量。</p>
+                <ul style="font-size:0.78rem;color:var(--text-secondary);padding-left:16px;">
+                  <li>币价涨 = 账面盈利 → 开心，想卖</li>
+                  <li>币价跌 = 账面亏损 → 恐惧，想割肉</li>
+                  <li>目标是<strong>积累更多法币价值</strong></li>
+                </ul>
+                <div class="mind-emoji">😭😄</div>
+              </div>
+            </div>
+
+            <div class="highlight-box">
+              <span class="label">💡 刘教链的核心洞察</span>
+              <div class="text">
+                <p><strong>比特币用币本位，山寨币用金本位。</strong></p>
+                <p>比特币有固定上限（2100 万），长期看供应量不会增加——所以「持有 BTC」这件事本身就在积累价值。用币本位思考比特币，是把比特币当作一种<strong>新的记账单位</strong>。</p>
+                <p>山寨币不同：它们可以增发、锁仓释放、团队解锁——持有数量不必然增值，必须用法币来衡量。所以看山寨的「盈亏」，只能用金本位。</p>
+                <p>这种心态切换，也是区分「真正的比特币信仰者」和「短期投机者」的标志。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 六、DCA 定投逻辑 ============ -->
+          <section id="dca">
+            <h2>六、DCA 定投逻辑：为什么「不要试图抄底」</h2>
+
+            <h3>6.1 DCA 的核心逻辑</h3>
+            <p><strong>DCA</strong>（Dollar Cost Averaging，定投）= 定期定额，不择时。</p>
+            <div class="dca-calc">
+              <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">DCA 心理实验</div>
+              <div class="dca-row">
+                <label>每月定投金额</label>
+                <input type="number" id="dcaAmt" value="1000" onchange="calcDCA()">
+              </div>
+              <div class="dca-row">
+                <label>假设币价</label>
+                <input type="number" id="dcaPrice" value="60000" onchange="calcDCA()">
+              </div>
+              <div class="dca-result" id="dcaResult">
+                <div class="dca-item"><span>每月购入 BTC</span><span class="dca-val" id="dcaBtc">0.01667 BTC</span></div>
+                <div class="dca-item"><span>坚持 12 个月后累计</span><span class="dca-val" id="dcaTotal">0.2 BTC（约 1.2 万 USD）</span></div>
+                <div class="dca-item" style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;">
+                  <span>若第 13 个月币价跌至 3 万 USD<br>你的成本均摊效果开始体现</span>
+                </div>
+              </div>
+              <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);">
+                💡 实际定投结果取决于坚持时长和市场表现。此计算仅供理解 DCA 的「均摊成本」逻辑。
+              </div>
+            </div>
+
+            <h3>6.2 为什么「不要试图抄底」？</h3>
+            <div class="story-box purple">
+              <span class="story-label">⚠️ 抄底的三重陷阱</span>
+              <ul style="font-size:0.83rem;color:var(--text-secondary);padding-left:18px;">
+                <li><strong>认知陷阱</strong>：「这是底」是后验的——没有人能准确预测底部在哪</li>
+                <li><strong>情绪陷阱</strong>：跌了还等更低 → 越等越不敢买 → 错过整个反弹</li>
+                <li><strong>资金陷阱</strong>：梭哈在"半山腰"，后面没有子弹加仓了</li>
+              </ul>
+            </div>
+
+            <h3>6.3 DCA + ahr999：最佳拍档</h3>
+            <p>两个工具配合使用，效果更好：</p>
+            <ul>
+              <li><strong>平时</strong>：固定 DCA，不关注价格</li>
+              <li><strong>ahr999 < 0.45（抄底区）</strong>：加大定投额（1.5x–2x），因为胜率更高</li>
+              <li><strong>ahr999 > 5（只卖不买区）</strong>：停止定投，可以考虑分批止盈（但这不是卖光的理由）</li>
+              <li><strong>长期持有</strong>：至少跨越一个减半周期（4 年），才能真正验证 DCA 效果</li>
+            </ul>
+          </section>
+
+          <!-- ============ 七、多视角解读 ============ -->
+          <section id="perspectives">
+            <h2>七、多视角解读：周期与叙事</h2>
+
+            <div class="perspective-card" id="cycle-perspectives">
+              <div class="perspective-header">
+                <div class="ph-label">
+                  <span class="ph-label-icon">🔄</span>
+                  <span>同一个周期，六种看法</span>
+                </div>
+                <div class="perspective-tabs">
+                  <button class="p-tab active" data-angle="finance">💰 投资者</button>
+                  <button class="p-tab" data-angle="business">🔬 链上分析师</button>
+                  <button class="p-tab" data-angle="history">📜 历史学家</button>
+                  <button class="p-tab" data-angle="philosophy">🧠 哲学家</button>
+                  <button class="p-tab" data-angle="humanity">🏠 普通人</button>
+                  <button class="p-tab" data-angle="technology">⚙️ 宏观研究者</button>
+                </div>
+              </div>
+              <div class="perspective-body">
+                <div class="p-content active" data-angle="finance">
+                  <span class="p-angle-badge" style="background:rgba(234,179,8,0.12);color:#EAB308;">💰 投资者</span>
+                  <p class="p-quote">"周期是概率分布，不是精确预测。看懂周期不是为了抄底逃顶，而是让自己的情绪不被市场利用。"</p>
+                  <ul>
+                    <li><strong>胜率思维</strong>：ahr999 < 0.45 时，历史胜率偏向多方；> 5 时偏向空方——但"历史"不等于"未来"</li>
+                    <li><strong>仓位管理</strong>：牛市顶峰附近逐步减仓，熊市底部附近逐步加仓——不在于预测，在于有纪律的执行</li>
+                    <li><strong>DCA 优先于择时</strong>：对大多数普通人，固定 DCA + 定期再平衡，比试图抄底逃顶更有效</li>
+                    <li><strong>与 ahr999 结合</strong>：在 ahr999 抄底区加大定投，是中文社区最成熟的量化策略</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="business">
+                  <span class="p-angle-badge" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">🔬 链上分析师</span>
+                  <p class="p-quote">"LTH 的每一次派发都在链上留下痕迹。学会读懂这些痕迹，就知道市场真正发生了什么。"</p>
+                  <ul>
+                    <li><strong>关键指标</strong>：LTH 持仓占比、STH 平均成本、MVRV（市值/真实市值比率）、NUPL（未实现净损益）</li>
+                    <li><strong>LTH 积累信号</strong>：长期未动的大额 UTXO 开始转移，往往是机构/聪明钱在低位换手</li>
+                    <li><strong>MVRV > 3.5</strong>：历史上通常对应市场顶部区域；MVRV < 1 通常对应底部</li>
+                    <li><strong>ahr999 的链上本质</strong>：ahr999 本质是价格与链上累积成本的比值，反映的是"相对历史均值的偏离程度"</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="history">
+                  <span class="p-angle-badge" style="background:rgba(16,185,129,0.12);color:#10B981;">📜 历史学家</span>
+                  <p class="p-quote">"比特币的周期历史太短——三轮牛市不足以建立可靠的统计规律。但每一轮都有相似的贪婪与恐惧。"</p>
+                  <ul>
+                    <li><strong>每一轮的叙事</strong>：2013（自由货币）→ 2017（ICO 泡沫）→ 2021（ETF 预期 + 机构采纳）→ 2024+（减半后，持续中）</li>
+                    <li><strong>涨幅递减</strong>：90x → 30x → 8x，是市场规模扩大的自然结果，第四轮很难超过这个比例</li>
+                    <li><strong>2025 年的"周期荒野"</strong>：ETF 通过后机构资金改变了传统的周期节奏——这是新变量，历史数据需要修正</li>
+                    <li><strong>教训</strong>：每一次"这次不一样"最终都被证明"历史总是押韵"</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="philosophy">
+                  <span class="p-angle-badge" style="background:rgba(249,115,22,0.12);color:#F97316;">🧠 哲学家</span>
+                  <p class="p-quote">"周期揭示的不是市场规律，而是人类面对不确定性时的集体情绪模式。理解周期，首先要理解自己。"</p>
+                  <ul>
+                    <li><strong>叙事是意义的建构</strong>：「数字黄金」「货币非国家化」「抗审查货币」——这些叙事在不同阶段被不同群体激活</li>
+                    <li><strong>周期是认知偏差的放大器</strong>：损失厌恶导致"跌了更恐惧"，FOMO 导致"涨了更贪婪"——这是写在人类神经里的程序</li>
+                    <li><strong>币本位的哲学意义</strong>：用 BTC 计量一切，是把比特币当作记账单位来接受——这是真正的货币思维</li>
+                    <li><strong>「看透周期不是为了赢，是为了不输」</strong>：不在底部割肉，不在顶部梭哈——这是最朴素的生存策略</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="humanity">
+                  <span class="p-angle-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;">🏠 普通人</span>
+                  <p class="p-quote">"我不是专业投资者，我只想让我的存款不要被通胀吃掉。"</p>
+                  <ul>
+                    <li><strong>最小行动清单</strong>：① 每月固定金额 DCA（哪怕 500 元）；② 关闭行情推送通知；③ 坚持至少 4 年；④ 用 ahr999 大概判断阶段，不过度依赖</li>
+                    <li><strong>不要做的事</strong>：不要杠杆、不要 FOMO、不要 ALL IN、不要天天盯盘</li>
+                    <li><strong>最重要的事</strong>：在最恐惧的时候不卖（最难做到，也是最重要的事）</li>
+                    <li><strong>心态建设</strong>：把比特币定投当作「每月强制存款」，而不是「炒币」</li>
+                  </ul>
+                </div>
+                <div class="p-content" data-angle="technology">
+                  <span class="p-angle-badge" style="background:rgba(59,130,246,0.12);color:#3B82F6;">⚙️ 宏观研究者</span>
+                  <p class="p-quote">"比特币的周期不再是独立的——它越来越与美元周期、利率、股市联动，尤其在 ETF 时代。"</p>
+                  <ul>
+                    <li><strong>传统周期 vs 新周期</strong>：2020 年前，比特币与美股相关性低；2020 年后相关性显著提升（尤其 2022 年）</li>
+                    <li><strong>ETF 的影响</strong>：机构通过 ETF 持有比特币，将 BTC 定价权部分交给了传统金融市场的风险偏好</li>
+                    <li><strong>美元利率</strong>：高利率环境 → 风险资产承压 → 比特币与纳指同跌；降息周期 → 比特币往往表现强劲</li>
+                    <li><strong>宏观周期的「双重叠加」</strong>：比特币四年小周期（减半）× 美联储十年大周期（利率）——两种周期的叠加增加了预测难度</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="perspective-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">点击切换视角</span>
+                <div class="p-dot-indicator">
+                  <span class="p-dot active"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                  <span class="p-dot"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 八、动手实验 ============ -->
+          <section id="labs">
+            <h2>八、动手实验区</h2>
+
+            <div class="lab-section">
+              <div class="lab-header">
+                <span class="lab-icon">🧪</span>
+                <span class="lab-title">动手实验清单</span>
+              </div>
+              <ul class="lab-list">
+                <li>
+                  <span class="lab-icon">📊</span>
+                  <div>
+                    <strong>实验 1：查询 ahr999 当前值</strong><br>
+                    访问 <a href="https://www.okx.com/zh-hans/earn/ahr999" target="_blank" style="color:var(--orange);">OKX ahr999 工具</a> 或 <a href="https://www.bybit.com/zh-CN/" target="_blank" style="color:var(--orange);">bybit 数据页</a>，查看当前 ahr999 指数值，对照本页阈值，判断当前大概处于哪个区域（抄底区/定投区/等待区/只卖不买区）。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">⛓️</span>
+                  <div>
+                    <strong>实验 2：观察 LTH/STH 持仓变化</strong><br>
+                    访问 <a href="https://studio.glassnode.com" target="_blank" style="color:var(--orange);">Glassnode Studio</a>（付费）或 <a href="https://lookintobitcoin.com" target="_blank" style="color:var(--orange);">Look Into Bitcoin</a>（部分免费），查看「LTH 持仓量」随时间的变化曲线。重点观察：在最近一次减半前后，LTH 持仓量是积累还是派发？
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">📈</span>
+                  <div>
+                    <strong>实验 3：MVRV 指标观察</strong><br>
+                    在 Look Into Bitcoin 上查看 MVRV（Market Value to Realized Value）图表：<br>
+                    MVRV > 3.5 → 市场偏热；MVRV < 1 → 市场偏冷。结合 ahr999 一起看，两个指标同时发出信号时，参考价值更高。
+                  </div>
+                </li>
+                <li>
+                  <span class="lab-icon">💰</span>
+                  <div>
+                    <strong>实验 4：定投回测</strong><br>
+                    在 <a href="https://dcabtc.com" target="_blank" style="color:var(--orange);">dcabtc.com</a> 进行 DCA 回测：输入"每月定投 100 USD，从 2017 年 1 月开始"——看看到今天的累计 BTC 数量和平均成本。对比"在最高点一次买入"的收益差异。
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+
+              <!-- ============ 延伸探索 ============ -->
+    <section id="explore">
+      <div class="explorer-box">
+        <div class="exp-header">
+          <span style="font-weight:600;font-size:0.9rem;">🔗 延伸探索 · 真实数据源</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">动手验证文中结论</span>
+        </div>
+        <div class="exp-result">
+          <ul class="exp-links">
+        <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space · 观察周期与费率 <span class="exp-go">→</span></a></li>
+        <li><a href="https://planbtc.com" target="_blank" rel="noopener">PlanB S2F 与周期模型 <span class="exp-go">→</span></a></li>
+        <li><a href="https://www.8btc.com" target="_blank" rel="noopener">8btc · 九神(ahr999)文章社区 <span class="exp-go">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- ============ 九、大白话总结 ============ -->
+          <section id="summary">
+            <h2>九、大白话总结</h2>
+
+            <div class="story-box green">
+              <span class="story-label">🗣️ 把这一切放在日常生活里</span>
+              <p><strong>比特币的四年周期 = 机器定时减产 → 市场重新定价</strong></p>
+              <p>想象一个国家每年减少 50% 的黄金开采量——但这个决定提前 4 年就写在法律里，所有人都知道。这种「供给冲击」是比特币周期最底层的驱动力。</p>
+              <p>周期的上半程（减半后）：供给突然减少，已经持有的人在等更高价格，新入场的人在追涨——三方合力把价格往上推。涨到一定程度，新资金跟不上，聪明钱开始撤出，进入熊市。</p>
+              <p>周期的下半程（熊市）：悲观情绪蔓延，大多数人不再关注。但有一批人在悄悄积累——他们知道减半还在倒计时，供给还会再减半一次。这些人是 LTH，是周期的「慢变量」。</p>
+
+              <p style="margin-top:10px;"><strong>看懂周期，不是为了预测，而是为了不被情绪裹挟。</strong></p>
+              <ul>
+                <li>在顶点（ahr999 > 5，LTH 大规模派发），<strong>不要被"比特币永远涨"的故事冲昏头脑</strong></li>
+                <li>在底部（ahr999 < 0.45，LTH 积累），<strong>不要被"比特币归零"的故事吓退</strong></li>
+                <li>最好的策略，往往是<strong>最无聊的策略</strong>——每月 DCA，不择时，不看行情</li>
+              </ul>
+              <p style="margin-top:8px;">刘教链说的好：<em>「币本位的人，下跌时开心——因为同样的钱可以买更多 BTC。这不是反人性，这是真正理解了比特币的价值来源。」</em></p>
+            </div>
+          </section>
+
+          <!-- 核心要点 -->
+          <section style="margin-top:40px;">
+            <h2>本章核心要点</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.2rem;">1️⃣</div>
+                <p style="font-size:0.82rem;"><strong>四年周期</strong>源于减半的「定时供给冲击」：每次减半新增 BTC 减半，与需求波动相遇产生价格周期。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.2rem;">2️⃣</div>
+                <p style="font-size:0.82rem;"><strong>LTH vs STH</strong>：长期持有者（聪明钱）积累在熊市、派发在牛市；短期持有者是情绪的放大器。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.2rem;">3️⃣</div>
+                <p style="font-size:0.82rem;"><strong>ahr999 指数</strong>：< 0.45 抄底区，0.45–1.2 定投区，1.2–5 等待区，> 5 只卖不买。</p>
+              </div>
+              <div class="chapter-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-size:1.2rem;">4️⃣</div>
+                <p style="font-size:0.82rem;"><strong>币本位</strong>：关注 BTC 数量而非法币价格——下跌时「可以买更多」而非「亏了多少」。</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 行动召唤 -->
+          <div class="cta-box" style="margin-top:40px;">
+            <h3>🚀 下一步</h3>
+            <p>理解了周期与叙事，下一个问题是：<strong>比特币的批评者们到底说得有没有道理？</strong>波动性、通缩螺旋、郁金香泡沫——让我们正面回应。</p>
+            <a href="03-07-fiat-vs-btc.html" class="btn btn-primary">继续学习：法币 vs 比特币 →</a>
+            <span style="display:inline-block;margin-left:12px;color:var(--text-muted);font-size:0.85rem;">或</span>
+            <a href="03-05-fee-market.html" class="btn">← 回顾：手续费市场</a>
+          </div>
+
+        </div><!-- article-body -->
+      </div><!-- main-content -->
+    </div><!-- two-col -->
+  </div><!-- article-wrap -->
+
+  <!-- 章节底部导航 -->
+  <nav class="chapter-nav">
+    <div class="container">
+      <a href="03-05-fee-market.html" class="nav-prev">
+        <span class="nav-icon">←</span>
+        <span class="nav-text">
+          <span class="nav-label">上一章</span>
+          <span class="nav-title">手续费市场与区块空间</span>
+        </span>
+      </a>
+      <div class="nav-center" style="font-size:0.8rem;color:var(--text-muted);text-align:center;">
+        经济学篇 · 6 / 8
+      </div>
+      <a href="03-07-fiat-vs-btc.html" class="nav-next">
+        <span class="nav-text">
+          <span class="nav-label">下一章</span>
+          <span class="nav-title">法币 vs 比特币</span>
+        </span>
+        <span class="nav-icon">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">₿ 比特币学习地图</div>
+      <div class="footer-links">
+        <a href="../../index.html">首页</a>
+        <a href="../00-overview.html">学习路径</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../shared/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      BTCMap.initNav();
+      calcDCA();
+    });
+
+    // 已读标记
+    window.toggleBookmark = function(btn) {
+      const isRead = btn.classList.toggle('active');
+      btn.textContent = isRead ? '✅ 已读' : '📑 标记已读';
+      localStorage.setItem('btc-ch03-06-read', isRead);
+    };
+    (function checkRead() {
+      if (localStorage.getItem('btc-ch03-06-read') === 'true') {
+        const btn = document.querySelector('.btn-bookmark');
+        if (btn) { btn.classList.add('active'); btn.textContent = '✅ 已读'; }
+      }
+    })();
+
+    // 多视角卡片
+    function initCyclePerspectives() {
+      const card = document.getElementById('cycle-perspectives');
+      if (!card) return;
+      const tabs = card.querySelectorAll('.p-tab');
+      const contents = card.querySelectorAll('.p-content');
+      const dots = card.querySelectorAll('.p-dot');
+      let current = 0;
+
+      function show(idx) {
+        current = ((idx % tabs.length) + tabs.length) % tabs.length;
+        tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+        contents.forEach((c, i) => c.classList.toggle('active', i === current));
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+      dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+
+      let tx = 0;
+      card.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+
+      show(0);
+    }
+
+    // DCA 计算器
+    function calcDCA() {
+      const amt = parseFloat(document.getElementById('dcaAmt')?.value) || 1000;
+      const price = parseFloat(document.getElementById('dcaPrice')?.value) || 60000;
+      const btcMonthly = amt / (price * 1000); // amt in CNY assumed, price in USD, approx
+      const totalBtc = btcMonthly * 12;
+      const totalUsd = amt * 12 / 7.2; // approx CNY/USD
+      const elBtc = document.getElementById('dcaBtc');
+      const elTotal = document.getElementById('dcaTotal');
+      if (elBtc) elBtc.textContent = btcMonthly.toFixed(5) + ' BTC';
+      if (elTotal) elTotal.textContent = totalBtc.toFixed(4) + ' BTC（约 ' + Math.round(totalUsd) + ' USD）';
+    }
+  </script>
+</body>
+</html>
