@@ -749,3 +749,69 @@ if (document.readyState === 'loading') {
 } else {
   initNav();
 }
+
+/* ================================================
+   2026-08-14 改进轮：PWA + Giscus 论坛（纯增量，零破坏）
+   - PWA：注册根作用域 Service Worker，使站点可安装、可离线
+   - Giscus：每篇 /learning/ 页自动成为独立讨论帖（默认关闭，配好即开）
+   ================================================ */
+
+// PWA：注册 Service Worker（仅 https 或 localhost，失败静默忽略）
+function initPWA() {
+  if (!('serviceWorker' in navigator)) return;
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
+  navigator.serviceWorker.register('/sw.js').catch(function () {});
+}
+
+// Giscus 评论/论坛配置：enabled 改为 true 并填好 id 后生效（见 docs/GISCUS-SETUP.md）
+const GISCUS_CONFIG = {
+  repo: 'baohebtc/baohebtc.github.io',
+  repoId: 'REPO_ID',
+  category: '讨论区',
+  categoryId: 'CAT_ID',
+  theme: 'dark',
+  lang: 'zh-CN',
+  reactions: '1',
+  enabled: false
+};
+
+function initGiscus() {
+  if (!GISCUS_CONFIG.enabled) return;
+  if (GISCUS_CONFIG.repoId === 'REPO_ID') return; // 未配置则不渲染
+  if (!location.pathname.includes('/learning/')) return; // 仅学习页开启讨论
+  var mount = document.querySelector('main') || document.body;
+  if (!mount || mount.querySelector('.giscus')) return;
+  var box = document.createElement('div');
+  box.className = 'giscus';
+  box.style.marginTop = '48px';
+  mount.appendChild(box);
+  var s = document.createElement('script');
+  s.src = 'https://giscus.app/client.js';
+  s.async = true;
+  s.crossOrigin = 'anonymous';
+  s.setAttribute('data-repo', GISCUS_CONFIG.repo);
+  s.setAttribute('data-repo-id', GISCUS_CONFIG.repoId);
+  s.setAttribute('data-category', GISCUS_CONFIG.category);
+  s.setAttribute('data-category-id', GISCUS_CONFIG.categoryId);
+  s.setAttribute('data-mapping', 'pathname');
+  s.setAttribute('data-strict', '0');
+  s.setAttribute('data-reactions-enabled', GISCUS_CONFIG.reactions);
+  s.setAttribute('data-emit-metadata', '0');
+  s.setAttribute('data-input-position', 'bottom');
+  s.setAttribute('data-theme', GISCUS_CONFIG.theme);
+  s.setAttribute('data-lang', GISCUS_CONFIG.lang);
+  s.setAttribute('data-loading', 'lazy');
+  box.appendChild(s);
+}
+
+(function enhance() {
+  function run() {
+    try { initPWA(); } catch (e) {}
+    try { initGiscus(); } catch (e) {}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();

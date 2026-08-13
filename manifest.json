@@ -1,0 +1,22 @@
+{
+  "name": "比特币学习地图 · 宝盒比特币",
+  "short_name": "宝盒比特币",
+  "description": "六个视角理解比特币：交互工具 + 精选资料 + 学习路线图，帮你打开财富宝盒的第一把钥匙。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d1117",
+  "theme_color": "#f7931a",
+  "categories": ["education", "finance"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
