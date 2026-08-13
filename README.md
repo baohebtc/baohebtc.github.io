@@ -92,7 +92,7 @@ python3 -m http.server 8080
 ```bash
 cd ~/Desktop/宝盒知识库/比特币学习地图/
 git branch -M main                      # 把默认分支统一为 main（GitHub Pages 推荐）
-git remote add origin https://github.com/你的用户名/bitcoin-learning-map.git
+git remote add origin https://github.com/baohebtc/baohebtc.github.io.git
 git push -u origin main
 ```
 
@@ -101,7 +101,9 @@ git push -u origin main
 
 然后在仓库 **Settings → Pages → Build and deployment** 选 `main` 分支、`/ (root)` 目录，
 点击 Save，等待约 1–2 分钟上线：
-`https://你的用户名.github.io/bitcoin-learning-map`
+`https://baohebtc.github.io/`
+
+> 注：本站采用 GitHub **用户站（user site）** 模式 —— 仓库名必须精确为 `baohebtc.github.io`（与账号名一致）才能拿到根域名 `https://baohebtc.github.io/`，网址即品牌。若用任意其他仓库名则是项目站，网址会带 `/仓库名` 路径。
 
 > - 已内置 `.gitignore`，自动排除 `node_modules/`、`.DS_Store` 等无关文件。
 > - 已内置 `.nojekyll`，关闭 GitHub 的 Jekyll 处理，确保纯静态文件原样托管。
