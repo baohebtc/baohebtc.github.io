@@ -1,9 +1,8 @@
-# macOS 系统文件
-.DS_Store
-*.fileloc
+# 保密：业务策略与品牌记忆不进入公开仓库（已移入私有仓库）
+运营总体规划*.md
+memory/
 
-# 依赖（仅本地开发用，非站点内容）
+# 依赖与系统文件
 node_modules/
-
-# qclaw 早期内容修复脚本（已移出发布目录，单独归档）
-_qclaw_dev_scripts/
+.DS_Store
+*.log
