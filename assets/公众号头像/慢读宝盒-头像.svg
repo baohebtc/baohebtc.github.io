@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="72%">
+      <stop offset="0%" stop-color="#46331c"/>
+      <stop offset="100%" stop-color="#160e07"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe9a8"/>
+      <stop offset="45%" stop-color="#f3b53f"/>
+      <stop offset="100%" stop-color="#a86d18"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a9692f"/>
+      <stop offset="100%" stop-color="#5e3a18"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe9a8" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffe9a8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cavity" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff6df" stop-opacity="1"/>
+      <stop offset="55%" stop-color="#f3b53f" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#f3b53f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <circle cx="320" cy="320" r="298" fill="none" stroke="#f3b53f" stroke-opacity="0.32" stroke-width="5"/>
+
+  <!-- 暖光从开盖溢出 -->
+  <ellipse cx="320" cy="360" rx="160" ry="130" fill="url(#glow)"/>
+
+  <!-- 开盖（向上掀起的圆润盖） -->
+  <g transform="rotate(-15 320 332)">
+    <path d="M198,358 Q320,298 442,358 L442,334 Q320,274 198,334 Z" fill="url(#wood)" stroke="#3a2410" stroke-width="5"/>
+    <path d="M212,346 Q320,298 428,346" fill="none" stroke="#d89145" stroke-width="7" stroke-linecap="round" opacity="0.75"/>
+  </g>
+
+  <!-- 盒身（圆润） -->
+  <rect x="194" y="356" width="252" height="146" rx="30" fill="url(#wood)" stroke="#3a2410" stroke-width="5"/>
+
+  <!-- 盒口发光（内部宝藏） -->
+  <ellipse cx="320" cy="360" rx="116" ry="28" fill="url(#cavity)"/>
+
+  <!-- 金箍（简化圆角） -->
+  <rect x="194" y="412" width="252" height="17" rx="6" fill="url(#gold)" opacity="0.92"/>
+  <rect x="304" y="356" width="32" height="146" rx="10" fill="url(#gold)" opacity="0.88"/>
+
+  <!-- 锁扣 -->
+  <circle cx="320" cy="440" r="17" fill="url(#gold)" stroke="#7a4d12" stroke-width="3"/>
+  <rect x="315" y="433" width="10" height="15" rx="4" fill="#3a2a16"/>
+
+  <!-- 星点（知识/宝藏闪现） -->
+  <g fill="#ffe9a8">
+    <path d="M320,246 L327,263 L344,270 L327,277 L320,294 L313,277 L296,270 L313,263 Z"/>
+    <path d="M252,298 L257,309 L268,314 L257,319 L252,330 L247,319 L236,314 L247,309 Z"/>
+    <path d="M392,306 L397,317 L408,322 L397,327 L392,338 L387,327 L376,322 L387,317 Z"/>
+  </g>
+</svg>
