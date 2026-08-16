@@ -80,7 +80,10 @@ for (const f of untracked) {
 
 // 3) 密钥形态：检查暂存区内容与已跟踪文本
 const textExt = /\.(md|js|mjs|ts|json|html|css|txt|yml|yaml|env|sh|py)$/;
-const filesToScan = [...new Set([...staged, ...trackedFiles].filter(f => textExt.test(f)))];
+// 跳过 tools/dev 自身（检查脚本源码含秘密形态字样的正则定义，会自匹配）
+const filesToScan = [...new Set([...staged, ...trackedFiles]
+  .filter(f => textExt.test(f) && !f.includes('tools/dev/')))
+];
 for (const f of filesToScan) {
   const abs = path.join(ROOT, f);
   if (!fs.existsSync(abs)) continue;
