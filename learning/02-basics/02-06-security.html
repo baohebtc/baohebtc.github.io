@@ -141,6 +141,28 @@ body { background: #0a0806; color: #FFF3E0; font-family: 'Inter', system-ui, -ap
 </style>
 </head>
 <body>
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
 
 <div class="basics-page">
   <nav class="top-bar">
