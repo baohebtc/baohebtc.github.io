@@ -1,0 +1,9 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFF8E1', 'primaryTextColor': '#3E2723', 'primaryBorderColor': '#3E2723', 'lineColor': '#8D6E63', 'secondaryColor': '#FFE0B2', 'tertiaryColor': '#F7931A'}}}%%
+flowchart LR
+    A[新交易产生] --> B[矿工竞争解数学题]
+    B --> C[第一个解出者]<strong>获准记账</strong>
+    C --> D[新比特币奖励]
+    C --> E[交易被打包成新区块]
+    E --> F[区块接在旧链尾部]
+    F --> G[篡改需重算后续所有题<br/>成本&gt;收益]
+    style C fill:#F7931A
