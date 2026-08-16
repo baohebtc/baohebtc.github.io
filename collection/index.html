@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>文集 · 比特币学习地图</title>
+<meta name="description" content="比特币延伸阅读策展：大家说比特币、比特币文集、论文集、视频集，以及九神集、李笑来集等名家专栏。">
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+.coll-hero { padding: 56px 0 32px; }
+.coll-hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+.coll-hero p { color: var(--text-secondary); font-size: 0.95rem; max-width: 640px; }
+.axis-section { padding: 24px 0 8px; }
+.axis-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.axis-header .axis-icon { font-size: 1.5rem; }
+.axis-header h2 { font-size: 1.25rem; font-weight: 700; margin: 0; }
+.axis-header .axis-sub { font-size: 0.78rem; color: var(--text-muted); margin-left: 6px; }
+.coll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-bottom: 40px; }
+.coll-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px 20px; transition: all var(--transition); text-decoration: none; color: var(--text); display: block; }
+.coll-card:hover { border-color: var(--orange); transform: translateY(-2px); box-shadow: var(--shadow); }
+.coll-card .c-title { font-size: 0.98rem; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.coll-card .c-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+.coll-card .c-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+.coll-card.planned { opacity: 0.72; border-style: dashed; }
+.coll-card.planned .c-title { color: var(--text-secondary); }
+.tag { font-size: 0.66rem; padding: 2px 8px; border-radius: 10px; background: rgba(247,147,26,0.12); color: var(--orange); font-weight: 600; }
+.tag-blue { background: rgba(59,130,246,0.14); color: #6aa6ff; }
+.tag-green { background: rgba(16,185,129,0.14); color: #4ade80; }
+.disclaimer { margin: 8px 0 48px; padding: 16px 18px; border: 1px dashed var(--border-light); border-radius: var(--radius-sm); background: rgba(247,147,26,0.05); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+.disclaimer strong { color: var(--orange); }
+@media (max-width: 600px) { .coll-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="index.html" class="nav-link active" data-section="collection">🗂️ 文集</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="coll-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">首页</a><span>›</span><span>文集</span></div>
+    <h1>🗂️ 文集</h1>
+    <p>学完「学习区」的系统课之后，这里把圈子里的好书、好文、好视频、好论文，按<strong>主题</strong>和<strong>作者</strong>两条轴线聚起来。像一座开放式书架——你按兴趣随便取阅，读完再回到课程里印证。</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- 作者轴 -->
+    <section class="axis-section" data-axis="authors">
+      <div class="axis-header">
+        <span class="axis-icon">👤</span>
+        <h2>作者轴</h2>
+        <span class="axis-sub">按人归类：把某位作者的公开作品收在一起</span>
+      </div>
+      <div class="coll-grid">
+        <a class="coll-card" href="authors/ahr999.html">
+          <div class="c-title">🟠 九神集</div>
+          <div class="c-desc">ahr999（九神）的《囤比特币》系列与微博合集——中文社区最系统的囤币思想。</div>
+          <div class="c-tags"><span class="tag">已上线</span><span class="tag tag-orange">必读</span></div>
+        </a>
+        <a class="coll-card" href="authors/lixiaolai.html">
+          <div class="c-title">🔵 李笑来集</div>
+          <div class="c-desc">《把时间当作朋友》《自学是门手艺》《定投改变命运》等多本开源著作。</div>
+          <div class="c-tags"><span class="tag">已上线</span><span class="tag tag-blue">开源</span></div>
+        </a>
+        <a class="coll-card planned" href="authors/satoshi.html">
+          <div class="c-title">🛡️ 中本聪集</div>
+          <div class="c-desc">白皮书、邮件列表发言、创世区块留言——比特币创世者的原始文本。</div>
+          <div class="c-tags"><span class="tag">整理中</span></div>
+        </a>
+        <a class="coll-card planned" href="authors/community.html">
+          <div class="c-title">🌐 官方与社区</div>
+          <div class="c-desc">Bitcoin.org、BTCStudy、中本聪研究所等权威公开资料。</div>
+          <div class="c-tags"><span class="tag">整理中</span></div>
+        </a>
+        <a class="coll-card planned" href="authors/others.html">
+          <div class="c-title">📚 其他名家</div>
+          <div class="c-desc">Saifedean Ammous《比特币标准》、Nick Szabo 等更多公开作品，持续收录。</div>
+          <div class="c-tags"><span class="tag">规划中</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 主题轴 -->
+    <section class="axis-section" data-axis="themes">
+      <div class="axis-header">
+        <span class="axis-icon">🧭</span>
+        <h2>主题轴</h2>
+        <span class="axis-sub">按内容形态归类：观点、文集、论文、视频、白皮书</span>
+      </div>
+      <div class="coll-grid">
+        <a class="coll-card planned" href="themes/voices.html">
+          <div class="c-title">💬 大家说比特币</div>
+          <div class="c-desc">多方观点摘录 Anthology——中性策展，不站队，只呈现不同视角。</div>
+          <div class="c-tags"><span class="tag">整理中</span></div>
+        </a>
+        <a class="coll-card planned" href="themes/essays.html">
+          <div class="c-title">📝 比特币文集</div>
+          <div class="c-desc">慢读宝盒公众号文章 + 社区优质长文，按主题归并的阅读合集。</div>
+          <div class="c-tags"><span class="tag">整理中</span></div>
+        </a>
+        <a class="coll-card planned" href="themes/papers.html">
+          <div class="c-title">📄 比特币论文集</div>
+          <div class="c-desc">白皮书、技术论文、学术论文的索引与导读。</div>
+          <div class="c-tags"><span class="tag">整理中</span></div>
+        </a>
+        <a class="coll-card planned" href="themes/videos.html">
+          <div class="c-title">🎬 比特币视频集</div>
+          <div class="c-desc">高质量科普视频、演讲、纪录片清单。</div>
+          <div class="c-tags"><span class="tag">整理中</span></div>
+        </a>
+        <a class="coll-card planned" href="themes/whitepapers.html">
+          <div class="c-title">📜 白皮书与官方文档</div>
+          <div class="c-desc">比特币白皮书（中英）、官方文档、BIP 索引。</div>
+          <div class="c-tags"><span class="tag">整理中</span></div>
+        </a>
+      </div>
+    </section>
+
+    <div class="disclaimer">
+      <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。本站仅做公开资料的整理与索引，转载内容均保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。投资有风险，决策需独立。
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../index.html">首页</a> · <a href="../learning/00-overview.html">学习区</a> · <a href="../tools/index.html">工具</a> · <a href="../reference/index.html">参考</a> · <a href="index.html">文集</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

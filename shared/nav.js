@@ -389,6 +389,8 @@ function buildBreadcrumb() {
     crumbs.push({ label: lang === 'zh' ? '工具' : 'Tools' });
   } else if (path.includes('/reference/')) {
     crumbs.push({ label: lang === 'zh' ? '参考' : 'Reference' });
+  } else if (path.includes('/collection/')) {
+    crumbs.push({ label: lang === 'zh' ? '文集' : 'Collections', href: '../index.html' });
   }
 
   el.innerHTML = crumbs.map((c, i) => {
@@ -479,8 +481,9 @@ function updateActiveNavLink() {
     if (section === 'home' && (path.endsWith('index.html') || path.endsWith('/') || path.endsWith('index'))) active = true;
     if (section === 'learning' && path.includes('/learning/')) active = true;
     if (section === 'tools' && path.includes('/tools/')) active = true;
-    if (section === 'reference' && path.includes('/reference/')) active = true;
-    link.classList.toggle('active', active);
+  if (section === 'reference' && path.includes('/reference/')) active = true;
+  if (section === 'collection' && path.includes('/collection/')) active = true;
+  link.classList.toggle('active', active);
   });
 }
 
