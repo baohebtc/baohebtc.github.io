@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 2400" width="1600" height="2400" font-family="'Songti SC','STSong','SimSun','Noto Serif CJK SC',serif">
+  <defs>
+    <radialGradient id="parch" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#f3e7c6"/>
+      <stop offset="55%" stop-color="#e7d4a8"/>
+      <stop offset="100%" stop-color="#cdb27e"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7c14b"/>
+      <stop offset="45%" stop-color="#f7931a"/>
+      <stop offset="100%" stop-color="#b9650c"/>
+    </linearGradient>
+    <linearGradient id="brown" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7a4f24"/>
+      <stop offset="100%" stop-color="#4a2d12"/>
+    </linearGradient>
+    <radialGradient id="vign" cx="50%" cy="50%" r="72%">
+      <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#3a230c" stop-opacity="0.45"/>
+    </radialGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.016" numOctaves="3" seed="7" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.55  0 0 0 0 0.42  0 0 0 0 0.22  0 0 0 0.06 0"/>
+    </filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#3a230c" flood-opacity="0.35"/>
+    </filter>
+    <style>
+      .ttl{font-size:74px;font-weight:700;fill:url(#gold);letter-spacing:4px}
+      .sub{font-size:27px;fill:#6b4423;letter-spacing:3px}
+      .mod{font-size:30px;font-weight:700;fill:#3a230c}
+      .modt{font-size:19px;fill:#5b3a1a}
+      .tag{font-size:21px;fill:#4a2d12}
+      .leg{font-size:21px;fill:#3a230c}
+      .legt{font-size:18px;fill:#5b3a1a}
+      .foot{font-size:18px;fill:#7a5a32}
+      .node{fill:#fbf3da;stroke:#8a5a2b;stroke-width:3}
+      .nodeb{fill:#fff6e0;stroke:#f7931a;stroke-width:4}
+    </style>
+  </defs>
+
+  <!-- background (grain filter removed for 4K render friendliness; SVG remains crisp at any scale) -->
+  <rect x="0" y="0" width="1600" height="2400" fill="url(#parch)"/>
+  <rect x="0" y="0" width="1600" height="2400" fill="url(#vign)"/>
+
+  <!-- ornamental border -->
+  <rect x="34" y="34" width="1532" height="2332" fill="none" stroke="url(#brown)" stroke-width="10"/>
+  <rect x="52" y="52" width="1496" height="2296" fill="none" stroke="#8a5a2b" stroke-width="2.5"/>
+  <!-- corner compass dots -->
+  <g fill="#8a5a2b">
+    <circle cx="52" cy="52" r="9"/><circle cx="1548" cy="52" r="9"/>
+    <circle cx="52" cy="2348" r="9"/><circle cx="1548" cy="2348" r="9"/>
+  </g>
+
+  <!-- TITLE -->
+  <g text-anchor="middle" filter="url(#soft)">
+    <text x="800" y="150" class="ttl">一张比特币学习地图</text>
+  </g>
+  <text x="800" y="200" text-anchor="middle" class="sub">宝盒比特币 · 开启你的比特币认知宝藏</text>
+  <line x1="560" y1="222" x2="1040" y2="222" stroke="#8a5a2b" stroke-width="2"/>
+  <circle cx="550" cy="222" r="5" fill="#f7931a"/><circle cx="1050" cy="222" r="5" fill="#f7931a"/>
+
+  <!-- COMPASS ROSE (top-right) -->
+  <g transform="translate(1390,300)" filter="url(#soft)">
+    <circle r="86" fill="#fbf3da" stroke="#8a5a2b" stroke-width="3"/>
+    <circle r="70" fill="none" stroke="#b9650c" stroke-width="1.5" stroke-dasharray="4 5"/>
+    <polygon points="0,-78 14,0 0,78 -14,0" fill="#7a4f24"/>
+    <polygon points="-78,0 0,14 78,0 0,-14" fill="#f7931a"/>
+    <polygon points="0,-78 9,0 0,0" fill="#4a2d12"/>
+    <polygon points="0,78 9,0 0,0" fill="#4a2d12"/>
+    <polygon points="-78,0 0,9 0,0" fill="#b9650c"/>
+    <polygon points="78,0 0,9 0,0" fill="#b9650c"/>
+    <text x="0" y="-92" text-anchor="middle" font-size="20" fill="#3a230c" font-weight="700">N</text>
+  </g>
+
+  <!-- WINDING ROUTE -->
+  <path d="M 360 330 C 700 420, 1180 500, 1180 660 C 1180 820, 420 880, 420 1010 C 420 1160, 1200 1180, 1200 1330 C 1200 1480, 460 1520, 520 1700 C 560 1880, 780 1980, 800 2120"
+        fill="none" stroke="#8a5a2b" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round"/>
+  <!-- footprint dots along route -->
+  <g fill="#b9650c">
+    <circle cx="360" cy="330" r="7"/><circle cx="1180" cy="660" r="7"/>
+    <circle cx="420" cy="1010" r="7"/><circle cx="1200" cy="1330" r="7"/>
+    <circle cx="520" cy="1700" r="7"/>
+  </g>
+
+  <!-- MODULE NODES -->
+  <!-- ① 货币哲学 -->
+  <g filter="url(#soft)">
+    <circle cx="360" cy="330" r="66" class="nodeb"/>
+    <text x="360" y="318" text-anchor="middle" font-size="40" font-weight="700" fill="#f7931a">①</text>
+    <text x="360" y="352" text-anchor="middle" class="mod">货币哲学</text>
+    <text x="360" y="378" text-anchor="middle" class="modt">Why · 为什么</text>
+  </g>
+  <!-- ② 新手入门 -->
+  <g filter="url(#soft)">
+    <circle cx="1180" cy="660" r="66" class="node"/>
+    <text x="1180" y="648" text-anchor="middle" font-size="40" font-weight="700" fill="#8a5a2b">②</text>
+    <text x="1180" y="682" text-anchor="middle" class="mod">新手入门</text>
+    <text x="1180" y="708" text-anchor="middle" class="modt">Basics</text>
+  </g>
+  <!-- ③ 货币经济学 -->
+  <g filter="url(#soft)">
+    <circle cx="420" cy="1010" r="66" class="node"/>
+    <text x="420" y="998" text-anchor="middle" font-size="40" font-weight="700" fill="#8a5a2b">③</text>
+    <text x="420" y="1032" text-anchor="middle" class="mod">货币经济学</text>
+    <text x="420" y="1058" text-anchor="middle" class="modt">Economics</text>
+  </g>
+  <!-- ④ 技术原理·安全 -->
+  <g filter="url(#soft)">
+    <circle cx="1200" cy="1330" r="66" class="node"/>
+    <text x="1200" y="1318" text-anchor="middle" font-size="40" font-weight="700" fill="#8a5a2b">④</text>
+    <text x="1200" y="1352" text-anchor="middle" class="mod">技术·安全</text>
+    <text x="1200" y="1378" text-anchor="middle" class="modt">Tech &amp; Safety</text>
+  </g>
+  <!-- ⑤ 生态前沿 -->
+  <g filter="url(#soft)">
+    <circle cx="520" cy="1700" r="66" class="node"/>
+    <text x="520" y="1688" text-anchor="middle" font-size="40" font-weight="700" fill="#8a5a2b">⑤</text>
+    <text x="520" y="1722" text-anchor="middle" class="mod">生态前沿</text>
+    <text x="520" y="1748" text-anchor="middle" class="modt">Ecosystem</text>
+  </g>
+
+  <!-- KEY CONCEPT TAGS (parchment chips) -->
+  <g>
+    <g transform="translate(250,560)"><rect x="-92" y="-26" width="184" height="52" rx="14" class="node"/><text x="0" y="8" text-anchor="middle" class="tag">去中心化</text></g>
+    <g transform="translate(900,860)"><rect x="-86" y="-26" width="172" height="52" rx="14" class="node"/><text x="0" y="8" text-anchor="middle" class="tag">区块链账本</text></g>
+    <g transform="translate(820,1180)"><rect x="-86" y="-26" width="172" height="52" rx="14" class="node"/><text x="0" y="8" text-anchor="middle" class="tag">2100 万上限</text></g>
+    <g transform="translate(300,1280)"><rect x="-86" y="-26" width="172" height="52" rx="14" class="node"/><text x="0" y="8" text-anchor="middle" class="tag">减半周期</text></g>
+    <g transform="translate(900,1560)"><rect x="-100" y="-26" width="200" height="52" rx="14" class="nodeb"/><text x="0" y="8" text-anchor="middle" class="tag">私钥 = 所有权</text></g>
+    <g transform="translate(300,1900)"><rect x="-86" y="-26" width="172" height="52" rx="14" class="node"/><text x="0" y="8" text-anchor="middle" class="tag">波动与风险</text></g>
+    <g transform="translate(1100,1900)"><rect x="-92" y="-26" width="184" height="52" rx="14" class="node"/><text x="0" y="8" text-anchor="middle" class="tag">闪电网络</text></g>
+  </g>
+
+  <!-- DECISION DIAMOND -->
+  <g transform="translate(1230,1700)" filter="url(#soft)">
+    <polygon points="0,-70 90,0 0,70 -90,0" fill="#fff6e0" stroke="#f7931a" stroke-width="4"/>
+    <text x="0" y="-6" text-anchor="middle" font-size="22" font-weight="700" fill="#3a230c">何时</text>
+    <text x="0" y="22" text-anchor="middle" font-size="22" font-weight="700" fill="#3a230c">想到它？</text>
+    <text x="120" y="-30" font-size="18" fill="#5b3a1a">转账→无许可</text>
+    <text x="120" y="0" font-size="18" fill="#5b3a1a">储蓄→抗通胀</text>
+    <text x="120" y="30" font-size="18" fill="#5b3a1a">识骗→查真伪</text>
+  </g>
+
+  <!-- TREASURE CHEST (the 宝盒) at the end -->
+  <g transform="translate(800,2120)" filter="url(#soft)">
+    <rect x="-110" y="-10" width="220" height="120" rx="10" fill="#8a5a2b" stroke="#4a2d12" stroke-width="4"/>
+    <path d="M -110 -10 Q 0 -110 110 -10 Z" fill="#a06a30" stroke="#4a2d12" stroke-width="4"/>
+    <rect x="-14" y="40" width="28" height="34" rx="5" fill="#f7c14b" stroke="#4a2d12" stroke-width="3"/>
+    <text x="0" y="68" text-anchor="middle" font-size="40" font-weight="700" fill="#f7931a">₿</text>
+    <text x="0" y="150" text-anchor="middle" font-size="24" font-weight="700" fill="#3a230c">宝藏：完整心智模型</text>
+  </g>
+
+  <!-- LEGEND -->
+  <g transform="translate(70,1980)" filter="url(#soft)">
+    <rect x="0" y="0" width="470" height="300" rx="14" fill="#fbf3da" stroke="#8a5a2b" stroke-width="3"/>
+    <text x="24" y="42" font-size="26" font-weight="700" fill="#3a230c">图例 Legend</text>
+    <line x1="24" y1="56" x2="446" y2="56" stroke="#8a5a2b" stroke-width="1.5"/>
+    <g class="legt">
+      <circle cx="46" cy="96" r="14" fill="#fff6e0" stroke="#f7931a" stroke-width="3"/><text x="74" y="102" class="leg">主线模块 ①②③④⑤（连载路线）</text>
+      <circle cx="46" cy="146" r="13" fill="#fbf3da" stroke="#8a5a2b" stroke-width="3"/><text x="74" y="152" class="leg">关键概念节点（名词卡片）</text>
+      <path d="M30 196 Q 46 186 62 196" fill="none" stroke="#8a5a2b" stroke-width="4" stroke-dasharray="2 8" stroke-linecap="round"/><text x="74" y="202" class="leg">学习路线（虚线足迹）</text>
+      <polygon points="46,236 60,250 46,264 32,250" fill="#fff6e0" stroke="#f7931a" stroke-width="3"/><text x="74" y="256" class="leg">决策路径（何时想到它）</text>
+      <rect x="32" y="284" width="28" height="20" rx="4" fill="#8a5a2b"/><text x="74" y="300" class="leg">宝盒 = 完整心智模型（终点）</text>
+    </g>
+  </g>
+
+  <!-- FOOTER -->
+  <text x="800" y="2310" text-anchor="middle" class="foot">© 宝盒比特币 · baohebtc.github.io ｜ 中立科普 · 不构成投资建议 · 投资需谨慎盈亏自负</text>
+</svg>

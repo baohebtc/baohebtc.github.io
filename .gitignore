@@ -6,3 +6,7 @@ memory/
 node_modules/
 .DS_Store
 *.log
+
+# 编辑器临时文件
+*.fileloc
+
