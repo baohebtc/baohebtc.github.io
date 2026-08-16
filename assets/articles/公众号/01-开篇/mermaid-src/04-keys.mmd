@@ -1,0 +1,9 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFF8E1', 'primaryTextColor': '#3E2723', 'primaryBorderColor': '#3E2723', 'lineColor': '#8D6E63', 'secondaryColor': '#FFE0B2', 'tertiaryColor': '#F7931A'}}}%%
+flowchart LR
+    A[私钥] -->|唯一能签字| B[证明所有权]
+    B --> C[花费比特币]
+    D[公钥 / 地址] -->|可以公开| E[别人用来给你打钱]
+    A -.->|数学上单向推导| D
+    F[丢了私钥] --> G[比特币永久不可动用]
+    style A fill:#F7931A
+    style D fill:#FFE0B2

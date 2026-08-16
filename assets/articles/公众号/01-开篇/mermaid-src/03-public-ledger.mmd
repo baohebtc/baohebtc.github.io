@@ -1,0 +1,17 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFF8E1', 'primaryTextColor': '#3E2723', 'primaryBorderColor': '#3E2723', 'lineColor': '#8D6E63', 'secondaryColor': '#FFE0B2', 'tertiaryColor': '#F7931A'}}}%%
+flowchart TB
+    subgraph VIL["🛖 村账：人情信任"]
+        V1[村民A] --> V2[村长记账]
+        V3[村民B] --> V2
+        V2 --> V4[大家认村长的本子]
+    end
+    subgraph NET["🌐 比特币账本：陌生人互信"]
+        N1[节点1] --> N5[规则 + 奖励]
+        N2[节点2] --> N5
+        N3[节点3] --> N5
+        N4[节点N] --> N5
+        N5 --> N6[人人手里<br/>同一本账]
+    end
+    VIL -->|升级 | NET
+    style VIL fill:#FFE0B2
+    style NET fill:#F7931A

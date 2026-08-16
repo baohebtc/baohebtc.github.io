@@ -1,0 +1,11 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFF8E1', 'primaryTextColor': '#3E2723', 'primaryBorderColor': '#3E2723', 'lineColor': '#8D6E63', 'secondaryColor': '#FFE0B2', 'tertiaryColor': '#F7931A'}}}%%
+flowchart TD
+    A[同一笔数字钱<br/>能复制多少次？] --> B{有没有中心账本？}
+    B -->|有：银行/支付宝| C[中心机构判定<br/>谁先花、谁后花]
+    B -->|无：比特币| D[全网公开账本 + 时间顺序]
+    D --> E[第一笔有效<br/>后续复制无效]
+    C --> F[你信的是公司]
+    E --> G[你信的是数学 + 经济激励]
+    style A fill:#FFF8E1
+    style C fill:#FFE0B2
+    style G fill:#F7931A
