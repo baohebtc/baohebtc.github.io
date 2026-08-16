@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>李笑来集 · 文集 · 比特币学习地图</title>
+<meta name="description" content="李笑来公开著作合集：《把时间当作朋友》《自学是门手艺》《七年就是一辈子》《韭菜的自我修养》《定投改变命运》等。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+.author-hero { padding: 56px 0 28px; }
+.author-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:#6aa6ff; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
+.author-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
+.author-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
+.disclaimer { margin:0 0 28px; padding:14px 16px; border:1px dashed var(--border-light); border-radius:var(--radius-sm); background:rgba(247,147,26,0.05); font-size:0.8rem; color:var(--text-secondary); line-height:1.6; }
+.disclaimer strong { color:var(--orange); }
+.collection-list { display:flex; flex-direction:column; gap:14px; margin-bottom:48px; }
+.collection-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px 20px; transition:all var(--transition); }
+.collection-item:hover { border-color:var(--border-light); box-shadow:var(--shadow); }
+.ci-head { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.ci-title { font-size:1.02rem; font-weight:700; margin-bottom:6px; }
+.ci-summary { font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+.ci-meta { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); }
+.ci-meta a { color:var(--orange); text-decoration:none; }
+.tag { font-size:0.66rem; padding:2px 9px; border-radius:10px; background:rgba(247,147,26,0.12); color:var(--orange); font-weight:600; }
+.tag-orange { background:rgba(247,147,26,0.18); }
+.tag-blue { background:rgba(59,130,246,0.14); color:#6aa6ff; }
+@media (max-width:600px){ .ci-meta{ gap:8px; } }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../index.html" class="nav-link active" data-section="collection">🗂️ 文集</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="author-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../../index.html">首页</a><span>›</span><a href="../index.html">文集</a><span>›</span><span>李笑来集</span></div>
+    <span class="badge">作者轴 · 李笑来</span>
+    <h1>🔵 李笑来集</h1>
+    <p>李笑来是多本畅销个人成长与思维类著作的作者，也是最早向公众系统讲解比特币的华人写作者之一。他的多本著作已开源到 GitHub。本集整理其公开、可自由阅读的作品，供读者延伸阅读。</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="disclaimer">
+      <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。以下均为作者开源/公开作品整理，转载保留原作者署名；所载观点为李笑来个人意见，不构成任何投资建议。
+    </div>
+
+    <div class="collection-list">
+      <div class="collection-item" data-title="《把时间当作朋友》" data-author="李笑来" data-type="图书（开源）" data-source="https://github.com/xiaolai/time-as-a-friend" data-license="转载（开源许可，保留署名）">
+        <div class="ci-head"><span class="tag tag-blue">图书</span><span class="tag tag-orange">开源·保留署名</span></div>
+        <h3 class="ci-title">《把时间当作朋友》</h3>
+        <p class="ci-summary">关于时间管理、自我管理与认知升级的经典之作，影响了大量中文读者。已开源电子版。</p>
+        <div class="ci-meta">
+          <span>作者：李笑来</span>
+          <a href="https://github.com/xiaolai/time-as-a-friend" target="_blank" rel="noopener">来源：GitHub ↗</a>
+          <span>许可：开源（保留署名）</span>
+        </div>
+      </div>
+
+      <div class="collection-item" data-title="《自学是门手艺》" data-author="李笑来" data-type="图书（开源）" data-source="https://github.com/selfteaching/the-craft-of-selfteaching" data-license="转载（开源许可，保留署名）">
+        <div class="ci-head"><span class="tag tag-blue">图书</span><span class="tag tag-orange">开源·保留署名</span></div>
+        <h3 class="ci-title">《自学是门手艺》</h3>
+        <p class="ci-summary">系统讲解「如何自学」的方法论，尤其适合想独立掌握编程、比特币等硬知识的人。</p>
+        <div class="ci-meta">
+          <span>作者：李笑来</span>
+          <a href="https://github.com/selfteaching/the-craft-of-selfteaching" target="_blank" rel="noopener">来源：GitHub ↗</a>
+          <span>许可：开源（保留署名）</span>
+        </div>
+      </div>
+
+      <div class="collection-item" data-title="《七年就是一辈子》" data-author="李笑来" data-type="图书（开源）" data-source="https://github.com/xiaolai/reborn" data-license="转载（开源许可，保留署名）">
+        <div class="ci-head"><span class="tag tag-blue">图书</span><span class="tag tag-orange">开源·保留署名</span></div>
+        <h3 class="ci-title">《七年就是一辈子》</h3>
+        <p class="ci-summary">关于持续成长、认知迭代与人生阶段的思考合集。</p>
+        <div class="ci-meta">
+          <span>作者：李笑来</span>
+          <a href="https://github.com/xiaolai/reborn" target="_blank" rel="noopener">来源：GitHub ↗</a>
+          <span>许可：开源（保留署名）</span>
+        </div>
+      </div>
+
+      <div class="collection-item" data-title="《韭菜的自我修养》" data-author="李笑来" data-type="图书（开源）" data-source="https://github.com/xiaolai/the-self-cultivation-of-leeks" data-license="转载（开源许可，保留署名）">
+        <div class="ci-head"><span class="tag tag-blue">图书</span><span class="tag tag-orange">开源·保留署名</span></div>
+        <h3 class="ci-title">《韭菜的自我修养》</h3>
+        <p class="ci-summary">以幽默笔调写就的「市场生存手册」，讲清楚新手常见的认知误区与情绪陷阱。本站收录仅为学习其风险教育视角。</p>
+        <div class="ci-meta">
+          <span>作者：李笑来</span>
+          <a href="https://github.com/xiaolai/the-self-cultivation-of-leeks" target="_blank" rel="noopener">来源：GitHub ↗</a>
+          <span>许可：开源（保留署名）</span>
+        </div>
+      </div>
+
+      <div class="collection-item" data-title="《定投改变命运》" data-author="李笑来" data-type="图书（公开）" data-source="https://github.com/xiaolai" data-license="转载（保留署名）">
+        <div class="ci-head"><span class="tag tag-blue">图书</span><span class="tag tag-orange">公开·保留署名</span></div>
+        <h3 class="ci-title">《定投改变命运》</h3>
+        <p class="ci-summary">关于长期定投策略的公开作品。本站仅作阅读索引，提醒读者：任何定投策略都需独立判断，非投资建议。</p>
+        <div class="ci-meta">
+          <span>作者：李笑来</span>
+          <a href="https://github.com/xiaolai" target="_blank" rel="noopener">来源：作者 GitHub ↗</a>
+          <span>许可：保留署名</span>
+        </div>
+      </div>
+
+      <div class="collection-item" data-title="比特币白皮书中英对照" data-author="李笑来（整理）" data-type="文档（公开）" data-source="https://github.com/xiaolai" data-license="转载（保留署名）">
+        <div class="ci-head"><span class="tag tag-blue">文档</span><span class="tag tag-orange">公开·保留署名</span></div>
+        <h3 class="ci-title">比特币白皮书 · 中英对照（整理版）</h3>
+        <p class="ci-summary">中本聪比特币白皮书的中英对照整理，便于对照原文精读。原始版权归中本聪所有。</p>
+        <div class="ci-meta">
+          <span>整理：李笑来</span>
+          <a href="https://github.com/xiaolai" target="_blank" rel="noopener">来源：作者 GitHub ↗</a>
+          <span>许可：保留署名</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../../index.html">首页</a> · <a href="../../learning/00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a> · <a href="../index.html">文集</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+</body>
+</html>
