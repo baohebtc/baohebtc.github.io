@@ -44,20 +44,20 @@ const SECRET_RE = [
 // 1) 取暂存区 + 已跟踪文件清单
 let trackedFiles = [];
 try {
-  trackedFiles = execSync('git ls-files', { cwd: ROOT, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  trackedFiles = execSync('git -c core.quotepath=false ls-files', { cwd: ROOT, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
 } catch {
   trackedFiles = [];
 }
 let staged = [];
 try {
-  staged = execSync('git diff --cached --name-only', { cwd: ROOT, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  staged = execSync('git -c core.quotepath=false diff --cached --name-only', { cwd: ROOT, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
 } catch {
   staged = [];
 }
 // 未跟踪但匹配私密路径（只告警）
 let untracked = [];
 try {
-  const out = execSync('git status --porcelain', { cwd: ROOT, encoding: 'utf8' });
+  const out = execSync('git -c core.quotepath=false status --porcelain', { cwd: ROOT, encoding: 'utf8' });
   untracked = out.split('\n').filter(l => l.startsWith('??')).map(l => l.slice(3).trim());
 } catch {
   untracked = [];
