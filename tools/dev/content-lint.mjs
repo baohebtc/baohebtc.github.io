@@ -50,13 +50,21 @@ const problems = [];
 const warnings = [];
 
 function check(name, cond, detail) {
-  if (cond) problems.push(`🔴 ${name} — ${detail}`);
+  // cond = true 表示「该项通过」；false 才是有问题（红灯）
+  if (!cond) problems.push(`🔴 ${name} — ${detail}`);
   else console.log(`🟢 ${name}`);
 }
 
-// 1. 敏感词
-const hitSens = SENSITIVE.filter(w => md.includes(w));
-check('敏感词/诱导交易表述 = 0', hitSens.length === 0, hitSens.join('、'));
+// 1. 敏感词（否定 / 澄清 / 引用语境豁免，避免科普文"不是稳赚""讲成暴富神话"被误红）
+const NEG_CTX = ['不', '不是', '≠', '并非', '别', '勿', '请勿', '没有', '无', '避免',
+  '误解', '有人', '传说', '被说成', '讲成', '而非'];
+function inNegContext(line) { return NEG_CTX.some(n => line.includes(n)); }
+const lines = md.split('\n');
+const hitSens = [];
+for (const w of SENSITIVE) {
+  if (lines.some(l => l.includes(w) && !inNegContext(l))) hitSens.push(w);
+}
+check('敏感词/诱导交易表述 = 0（否定/澄清语境已豁免）', hitSens.length === 0, hitSens.join('、'));
 
 // 2. 极限词（允许出现在「不是…」的否定句里会被误伤，故仅报告 + 强提醒）
 const hitExt = EXTREME.filter(w => md.includes(w));
@@ -64,7 +72,7 @@ if (hitExt.length) warnings.push(`⚠️ 极限词出现: ${hitExt.join('、')}�
 else console.log('🟢 极限词 = 0（或仅安全语境）');
 
 // 3. 摘要 ≤ 120 字
-const m = md.match(/摘要[:：]\s*(.+)/);
+const m = md.match(/摘要[^:：]*[:：]\s*(.+)/);
 if (m) {
   const sum = m[1].trim();
   check('摘要 ≤ 120 字', sum.length <= 120, `当前 ${sum.length} 字: ${sum.slice(0, 30)}…`);
@@ -79,11 +87,12 @@ const hasRisk = md.includes('风险') && (md.includes('不构成') || md.include
 check('尾板齐全（关注语 + 风险提示）', hasFollow && hasRisk,
   `关注语:${hasFollow ? '有' : '缺'} 风险提示:${hasRisk ? '有' : '缺'}`);
 
-// 5. 图片路径真实存在
+// 5. 图片路径真实存在（先剔除反引号包裹的行内代码，避免 `![](path)` 说明文字被误判）
+const mdForImg = md.replace(/`[^`]*`/g, '');
 const imgRe = /!\[[^\]]*\]\(([^)]+)\)/g;
 let im;
 const broken = [];
-while ((im = imgRe.exec(md))) {
+while ((im = imgRe.exec(mdForImg))) {
   const p = im[1].trim();
   if (p.startsWith('http')) continue;
   const target = path.resolve(base, p);
