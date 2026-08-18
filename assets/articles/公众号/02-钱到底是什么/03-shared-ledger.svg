@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 300" width="680">
+<rect x="0" y="0" width="680" height="300" fill="#f4ecd8"/>
+<rect x="14" y="14" width="652" height="272" rx="14" fill="none" stroke="#c9a86a" stroke-width="1.2"/>
+
+<text x="340" y="50" fill="#3a2c1a" font-family="sans-serif" font-size="16" font-weight="500" text-anchor="middle">钱 = 一群人共同的记账约定</text>
+<circle cx="130" cy="165" r="48" fill="#efe3c8" stroke="#c9a86a" stroke-width="1.2"/>
+<text x="130" y="170" fill="#3a2c1a" font-family="sans-serif" font-size="18" font-weight="500" text-anchor="middle">A</text>
+<circle cx="550" cy="165" r="48" fill="#efe3c8" stroke="#c9a86a" stroke-width="1.2"/>
+<text x="550" y="170" fill="#3a2c1a" font-family="sans-serif" font-size="18" font-weight="500" text-anchor="middle">B</text>
+<rect x="235" y="125" width="210" height="80" rx="10" fill="#efe3c8" stroke="#F7931A" stroke-width="1.6"/>
+<text x="340" y="158" fill="#3a2c1a" font-family="sans-serif" font-size="14" font-weight="500" text-anchor="middle">账本：A 欠 B 10 元</text>
+<text x="340" y="182" fill="#6b5a3e" font-family="sans-serif" font-size="12" font-weight="400" text-anchor="middle">（全村都记着这一笔）</text>
+<line x1="178" y1="165" x2="233" y2="165" stroke="#c9a86a" stroke-width="1.5"/>
+<line x1="447" y1="165" x2="502" y2="165" stroke="#c9a86a" stroke-width="1.5"/>
+<text x="340" y="250" fill="#6b5a3e" font-family="sans-serif" font-size="12" font-weight="400" text-anchor="middle">只要「大家都认这页账」，钱就成立了——不是纸有用，是约定有用</text>
+
+</svg>
