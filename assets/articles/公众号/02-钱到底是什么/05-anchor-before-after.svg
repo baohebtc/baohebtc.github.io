@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 300" width="680">
+<rect x="0" y="0" width="680" height="300" fill="#f4ecd8"/>
+<rect x="14" y="14" width="652" height="272" rx="14" fill="none" stroke="#c9a86a" stroke-width="1.2"/>
+
+<text x="340" y="50" fill="#3a2c1a" font-family="sans-serif" font-size="16" font-weight="500" text-anchor="middle">比特币换掉了信任锚点</text>
+<rect x="40" y="90" width="265" height="170" rx="12" fill="#efe3c8" stroke="#c9a86a" stroke-width="1.2"/>
+<text x="172" y="124" fill="#3a2c1a" font-family="sans-serif" font-size="15" font-weight="500" text-anchor="middle">传统法币：机构兜底</text>
+<rect x="80" y="140" width="40" height="40" rx="6" fill="#6b5a3e"/>
+<text x="172" y="200" fill="#6b5a3e" font-family="sans-serif" font-size="12" font-weight="400" text-anchor="middle">规则由机构制定</text>
+<text x="172" y="222" fill="#A32D2D" font-family="sans-serif" font-size="12" font-weight="400" text-anchor="middle">也可由机构调整</text>
+<rect x="375" y="90" width="265" height="170" rx="12" fill="#efe3c8" stroke="#F7931A" stroke-width="2"/>
+<text x="507" y="124" fill="#F7931A" font-family="sans-serif" font-size="15" font-weight="500" text-anchor="middle">比特币：代码规则</text>
+<g fill="#c9a86a">
+<rect x="420" y="140" width="14" height="14"/><rect x="440" y="140" width="14" height="14"/><rect x="460" y="140" width="14" height="14"/>
+<rect x="420" y="158" width="14" height="14"/><rect x="440" y="158" width="14" height="14"/><rect x="460" y="158" width="14" height="14"/>
+</g>
+<text x="507" y="200" fill="#6b5a3e" font-family="sans-serif" font-size="12" font-weight="400" text-anchor="middle">规则写死在协议</text>
+<text x="507" y="222" fill="#3B6D11" font-family="sans-serif" font-size="12" font-weight="500" text-anchor="middle">无人能单方更改</text>
+<line x1="305" y1="175" x2="372" y2="175" stroke="#c9a86a" stroke-width="2" marker-end="url(#ar5)"/>
+<defs><marker id="ar5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#c9a86a" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+
+</svg>
