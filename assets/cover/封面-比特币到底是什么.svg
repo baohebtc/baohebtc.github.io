@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 383" width="900">
+  <defs>
+    <radialGradient id="paper" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="0" stop-color="#f1deb4"/>
+      <stop offset="0.7" stop-color="#e6d09f"/>
+      <stop offset="1" stop-color="#c8a972"/>
+    </radialGradient>
+    <radialGradient id="coin" cx="0.35" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#fde9a3"/>
+      <stop offset="0.55" stop-color="#f4d27a"/>
+      <stop offset="1" stop-color="#c39a3a"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fde9a3" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#fde9a3" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="900" height="383" fill="url(#paper)"/>
+
+  <g fill="#9a6a28" opacity="0.09">
+    <ellipse cx="130" cy="80" rx="80" ry="44"/>
+    <ellipse cx="770" cy="300" rx="95" ry="52"/>
+    <ellipse cx="700" cy="70" rx="55" ry="32"/>
+    <ellipse cx="210" cy="320" rx="65" ry="36"/>
+    <ellipse cx="450" cy="200" rx="120" ry="40" opacity="0.5"/>
+  </g>
+
+  <rect x="14" y="14" width="872" height="355" fill="none" stroke="#5b3a1e" stroke-width="2.5"/>
+  <rect x="22" y="22" width="856" height="339" fill="none" stroke="#5b3a1e" stroke-width="0.9" stroke-dasharray="2 4"/>
+  <g fill="#5b3a1e">
+    <polygon points="30,20 39,29 30,38 21,29"/>
+    <polygon points="870,20 879,29 870,38 861,29"/>
+    <polygon points="30,345 39,354 30,363 21,354"/>
+    <polygon points="870,345 879,354 870,363 861,354"/>
+  </g>
+
+  <text x="48" y="58" fill="#b8651a" font-family="'PingFang SC','Heiti SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="15" font-weight="700" letter-spacing="2">No. 01</text>
+
+  <path d="M 60 120 Q 200 80 280 130 T 380 110" fill="none" stroke="#8b5a2b" stroke-width="1.4" stroke-dasharray="3 4" opacity="0.55"/>
+  <path d="M 520 110 Q 600 80 700 130 T 840 110" fill="none" stroke="#8b5a2b" stroke-width="1.4" stroke-dasharray="3 4" opacity="0.55"/>
+  <g fill="#8b5a2b" opacity="0.6">
+    <polygon points="60,120 65,115 70,120 65,125"/>
+    <polygon points="280,130 285,125 290,130 285,135"/>
+    <polygon points="520,110 525,105 530,110 525,115"/>
+    <polygon points="700,130 705,125 710,130 705,135"/>
+  </g>
+
+  <circle cx="450" cy="115" r="58" fill="url(#glow)"/>
+
+  <g transform="translate(450 115) rotate(-20)">
+    <circle cx="-32" cy="0" r="18" fill="none" stroke="#7a4a10" stroke-width="5"/>
+    <circle cx="-32" cy="0" r="6" fill="none" stroke="#7a4a10" stroke-width="3"/>
+    <line x1="-14" y1="0" x2="44" y2="0" stroke="#7a4a10" stroke-width="5" stroke-linecap="round"/>
+    <rect x="20" y="0" width="6" height="11" fill="#7a4a10"/>
+    <rect x="30" y="0" width="6" height="15" fill="#7a4a10"/>
+    <rect x="40" y="0" width="4" height="9" fill="#7a4a10"/>
+  </g>
+
+  <circle cx="450" cy="115" r="27" fill="url(#coin)" stroke="#a87a2a" stroke-width="2.5"/>
+  <text x="450" y="124" fill="#7a4a10" font-family="'PingFang SC','Heiti SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="25" font-weight="800" text-anchor="middle">B</text>
+  <line x1="440" y1="96" x2="440" y2="106" stroke="#7a4a10" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="440" y1="127" x2="440" y2="137" stroke="#7a4a10" stroke-width="2.5" stroke-linecap="round"/>
+
+  <rect x="125" y="220" width="650" height="68" rx="8" fill="#f3e1b6" opacity="0.82"/>
+  <text x="450" y="276" fill="#2d1a0a" font-family="'PingFang SC','Heiti SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="62" font-weight="800" text-anchor="middle" letter-spacing="4">什么是比特币</text>
+
+  <text x="450" y="316" fill="#d97824" font-family="'PingFang SC','Heiti SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="19" font-weight="700" text-anchor="middle" letter-spacing="2">比特币学习地图 &#183; 开篇</text>
+  <text x="450" y="342" fill="#7a5630" font-family="'PingFang SC','Heiti SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="13" text-anchor="middle" letter-spacing="1">一张地图 &#183; 从 0 读懂比特币</text>
+
+  <text x="450" y="365" fill="#6b4a2a" font-family="'PingFang SC','Heiti SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="13" font-weight="600" text-anchor="middle" letter-spacing="6">慢 读 宝 盒</text>
+</svg>
