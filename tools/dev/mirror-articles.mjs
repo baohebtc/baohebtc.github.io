@@ -7,8 +7,8 @@
  *       不入 git 历史；一旦改丢或盘坏即无法恢复。
  *
  * 做法：把上述目录所有 *.md 复制到私有仓 articles/ 镜像目录，
- *       然后 git add + commit。私有仓为本地仓库（默认路径 ../宝盒运营私有），
- *       一旦加了 remote 即可同步上云。
+ *       然后 git add + commit + （若已配置 origin remote）push 上云，
+ *       形成「本地 + 云端」双重备份，彻底解决 untracked 改丢/盘坏问题。
  *
  * 用法：
  *   node tools/dev/mirror-articles.mjs                # 自动生成日期 commit message
@@ -87,7 +87,22 @@ try {
 
   gitIn(PRIVATE, 'commit', '-m', msg);
   log(`✅  已 commit: ${msg}`);
-  log(`💡  私有仓加了 remote 之后会自动推送到云端；目前仅本地，请尽快配置 remote（参考产物清单.md）`);
+
+  // 若已配置 origin remote，自动推送到云端（真备份，否则只在本机）
+  let remotes = '';
+  try { remotes = gitIn(PRIVATE, 'remote').trim(); } catch (_) {}
+  if (remotes.includes('origin')) {
+    try {
+      gitIn(PRIVATE, 'push');
+      log(`☁️  已推送到 origin（云端备份完成）`);
+    } catch (e) {
+      const firstLine = String(e.message).split('\n')[0];
+      log(`⚠️  推送失败（本地备份仍在）：${firstLine}`);
+      log(`    手动推送：git -C ${PRIVATE} push`);
+    }
+  } else {
+    log(`💡  私有仓尚未配置 remote，仅本地备份；配置后下次会自动推送（参考产物清单.md）`);
+  }
   process.exit(0);
 } catch (e) {
   console.error('[mirror] ❌  失败:', e.message);
