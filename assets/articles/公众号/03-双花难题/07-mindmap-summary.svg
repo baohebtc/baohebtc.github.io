@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900">
+<rect width="900" height="300" fill="#f4ecd8"/>
+<rect x="14" y="14" width="872" height="272" rx="14" fill="none" stroke="#c9a86a" stroke-width="1.2"/>
+<text x="450" y="50" fill="#3a2c1a" font-family="sans-serif" font-size="16" font-weight="500" text-anchor="middle">三句话带走《双花难题》</text>
+<rect x="40" y="80" width="250" height="180" rx="12" fill="#efe3c8" stroke="#c9a86a" stroke-width="1.2"/>
+<text x="165" y="115" fill="#F7931A" font-family="sans-serif" font-size="15" font-weight="600" text-anchor="middle">① 双花是啥</text>
+<text x="165" y="150" fill="#3a2c1a" font-family="sans-serif" font-size="12" text-anchor="middle">同一笔钱</text>
+<text x="165" y="172" fill="#3a2c1a" font-family="sans-serif" font-size="12" text-anchor="middle">被花两次</text>
+<text x="165" y="200" fill="#6b5a3e" font-family="sans-serif" font-size="11" text-anchor="middle">根因：数字能</text>
+<text x="165" y="218" fill="#6b5a3e" font-family="sans-serif" font-size="11" text-anchor="middle">零成本复制</text>
+<rect x="325" y="80" width="250" height="180" rx="12" fill="#efe3c8" stroke="#c9a86a" stroke-width="1.2"/>
+<text x="450" y="115" fill="#F7931A" font-family="sans-serif" font-size="15" font-weight="600" text-anchor="middle">② 银行靠中介</text>
+<text x="450" y="150" fill="#3a2c1a" font-family="sans-serif" font-size="12" text-anchor="middle">中央账本</text>
+<text x="450" y="172" fill="#3a2c1a" font-family="sans-serif" font-size="12" text-anchor="middle">兜底防双花</text>
+<text x="450" y="200" fill="#6b5a3e" font-family="sans-serif" font-size="11" text-anchor="middle">代价：得信任</text>
+<text x="450" y="218" fill="#6b5a3e" font-family="sans-serif" font-size="11" text-anchor="middle">那个中介</text>
+<rect x="610" y="80" width="250" height="180" rx="12" fill="#efe3c8" stroke="#F7931A" stroke-width="2"/>
+<text x="735" y="115" fill="#F7931A" font-family="sans-serif" font-size="15" font-weight="600" text-anchor="middle">③ 中本聪靠机制</text>
+<text x="735" y="150" fill="#3a2c1a" font-family="sans-serif" font-size="12" text-anchor="middle">五件套 + 博弈</text>
+<text x="735" y="172" fill="#3a2c1a" font-family="sans-serif" font-size="12" text-anchor="middle">没有银行也行</text>
+<text x="735" y="200" fill="#6b5a3e" font-family="sans-serif" font-size="11" text-anchor="middle">让诚实成为</text>
+<text x="735" y="218" fill="#6b5a3e" font-family="sans-serif" font-size="11" text-anchor="middle">更划算选择</text>
+</svg>
