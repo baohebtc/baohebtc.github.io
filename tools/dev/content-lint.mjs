@@ -41,13 +41,19 @@ const SENSITIVE = [
   '百分百', ' guaranteed', '稳赚不赔', '闭眼买', '上车', '财富自由捷径',
   '立即买入', '马上买', '只涨不跌', '翻仓', '倍增',
 ];
+// 极限词改为「褒义极致词组」，避免「最后/最早/争议最大」等普通词被误匹
+// 单字「最」不再列出（已涵盖在「最强/最好/最高…」词组里）
 const EXTREME = [
-  '最', '第一', '唯一', '国家级', '顶级', '极致', '全网首发', '绝对',
+  '最强', '最好', '最高', '最优', '最简单', '最重要', '最优秀', '最极致', '最完美', '最棒',
+  '第一', '唯一', '国家级', '顶级', '极致', '全网首发', '绝对',
   '史上最', '全球第一', '独一无二', '100%',
 ];
 
 const problems = [];
 const warnings = [];
+
+// 母库（content-source/topics/）无摘要/尾板/发布配置，是源文而非发布版，自动豁免这两项
+const isSource = abs.includes('content-source/topics/');
 
 function check(name, cond, detail) {
   // cond = true 表示「该项通过」；false 才是有问题（红灯）
@@ -71,9 +77,11 @@ const hitExt = EXTREME.filter(w => md.includes(w));
 if (hitExt.length) warnings.push(`⚠️ 极限词出现: ${hitExt.join('、')}（请确认是否在否定/引用语境）`);
 else console.log('🟢 极限词 = 0（或仅安全语境）');
 
-// 3. 摘要 ≤ 120 字
+// 3. 摘要 ≤ 120 字（发布版才检查；母库无摘要字段）
 const m = md.match(/摘要[^:：]*[:：]\s*(.+)/);
-if (m) {
+if (isSource) {
+  console.log('🟢 摘要字段（母库豁免）');
+} else if (m) {
   const sum = m[1].trim();
   check('摘要 ≤ 120 字', sum.length <= 120, `当前 ${sum.length} 字: ${sum.slice(0, 30)}…`);
 } else {
@@ -81,11 +89,15 @@ if (m) {
   console.log('🟡 摘要字段未检测');
 }
 
-// 4. 尾板齐全
+// 4. 尾板齐全（发布版才检查；母库无尾板）
 const hasFollow = md.includes('慢读宝盒');
 const hasRisk = md.includes('风险') && (md.includes('不构成') || md.includes('投资'));
-check('尾板齐全（关注语 + 风险提示）', hasFollow && hasRisk,
-  `关注语:${hasFollow ? '有' : '缺'} 风险提示:${hasRisk ? '有' : '缺'}`);
+if (isSource) {
+  console.log('🟢 尾板齐全（母库豁免）');
+} else {
+  check('尾板齐全（关注语 + 风险提示）', hasFollow && hasRisk,
+    `关注语:${hasFollow ? '有' : '缺'} 风险提示:${hasRisk ? '有' : '缺'}`);
+}
 
 // 5. 图片路径真实存在（先剔除反引号包裹的行内代码，避免 `![](path)` 说明文字被误判）
 const mdForImg = md.replace(/`[^`]*`/g, '');
