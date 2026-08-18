@@ -22,6 +22,7 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { generateAllHtml } from './md-to-html.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.resolve(__dirname, '../..');
@@ -56,7 +57,8 @@ function gitIn(repo, ...args) {
   );
 }
 
-try {
+(async () => {
+ try {
   log('===== 开始镜像 =====');
   log(`公开仓: ${PUBLIC}`);
   log(`私有仓: ${PRIVATE}`);
@@ -65,6 +67,10 @@ try {
   const n2 = sync(SRC_TOPICS, DST_TOPICS, '母文  ');
   const total = n1 + n2;
   log(`共同步 ${total} 篇`);
+
+  // 生成图文 HTML（不在此处提交，随 MD 一起统一提交上云）
+  log('===== 生成图文 HTML =====');
+  await generateAllHtml({ commit: false });
 
   log('===== 提交到私有仓 =====');
   gitIn(PRIVATE, 'add', 'articles/');
@@ -107,4 +113,5 @@ try {
 } catch (e) {
   console.error('[mirror] ❌  失败:', e.message);
   process.exit(1);
-}
+ }
+})();

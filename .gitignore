@@ -10,3 +10,6 @@ node_modules/
 # 编辑器临时文件
 *.fileloc
 
+
+# 公众号文章源文件：保持 untracked，由镜像脚本单独备份到私有仓
+content-source/
