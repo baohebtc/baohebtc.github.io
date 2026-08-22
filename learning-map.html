@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>比特币学习地图 · 9 站寻宝路线</title>
+<meta name="description" content="一张比特币学习地图：把比特币想象成人类知识大陆上凸起的一座山地，9 个站点串成一条从现金湾到代码之巅的寻宝路线。点击地图上的站点，直达对应学习章节。">
+<link rel="stylesheet" href="shared/style.css">
+<style>
+  /* 页面专属样式 */
+  .map-hero { padding: 72px 0 40px; text-align: center; position: relative; overflow: hidden; }
+  .map-hero::before {
+    content: ''; position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
+    width: 640px; height: 520px;
+    background: radial-gradient(ellipse, rgba(247,147,26,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .map-hero h1 { font-size: 2.4rem; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.5px; }
+  .map-hero h1 .accent { color: var(--orange); }
+  .map-hero .subtitle { max-width: 640px; margin: 0 auto; color: var(--text-secondary); line-height: 1.7; font-size: 1.02rem; }
+
+  /* 地图容器 + 热点叠加 */
+  .map-stage { max-width: 760px; margin: 28px auto 8px; position: relative; }
+  .map-stage img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+  .map-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hotspot { pointer-events: auto; cursor: pointer; display: block; }
+  /* 透明大圆 → 用户点标签任何位置均命中跳转 */
+  .hotspot .hit-area { fill: rgba(255,255,255,0.001); pointer-events: auto; }
+  /* 视觉指示 */
+  .hotspot circle.halo { transition: r var(--transition), fill-opacity var(--transition); }
+  .hotspot circle.ring { transition: r var(--transition), stroke-width var(--transition); }
+  .hotspot circle.dot  { transition: r var(--transition), filter var(--transition); }
+  /* hover 放大 */
+  .hotspot:hover circle.halo { r: 50; fill-opacity: 0.45; }
+  .hotspot:hover circle.ring { r: 50; stroke-width: 3; }
+  .hotspot:hover circle.dot  { r: 24; filter: drop-shadow(0 0 10px currentColor); }
+  .hotspot:hover .bubble { opacity: 1; transform: translate(-50%, 0); }
+  /* 默认隐约可见 */
+  .hotspot circle.halo { opacity: 0.9; }
+  .hotspot text { font: bold 22px var(--font-sans); fill: #0E0805; pointer-events: none; }
+  .hotspot .ring { fill: none; stroke-width: 2.5; opacity: 0.95; }
+/* 站点框：hover 放大(magnify) 作为「可点击」反馈，气泡仅在 hover 时浮现且不遮站点 */
+  .hotspot .frame {
+    fill: rgba(255,255,255,0.07);
+    stroke: currentColor; stroke-width: 2; opacity: 0; rx: 12;
+    transform-box: fill-box; transform-origin: center;
+    transition: opacity .2s ease, transform .2s ease; pointer-events: none;
+  }
+  .hotspot:hover .frame { opacity: 1; transform: scale(1.12); }
+  /* 气泡：默认隐藏、轻微上移；hover 时淡入并归位。pointer-events:none 不挡图 */
+  .bubble { opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; transform: translate(-50%, -12px); }
+  .hotspot:hover .bubble { opacity: 1; transform: translate(-50%, 0); }
+  .hotspot:hover .dot { filter: drop-shadow(0 0 12px currentColor); }
+
+  /* 站名气泡 */
+  .bubble {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    transform: translate(-50%, -10px);
+  }
+
+  /* 六视角图例 */
+  .legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; max-width: 760px; margin: 14px auto 40px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; font-size: 0.82rem; color: var(--text-secondary); }
+  .legend i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+  /* 站点卡片 */
+  .stations { max-width: var(--max-w); margin: 0 auto 60px; }
+  .stations h2 { text-align: center; font-size: 1.5rem; margin-bottom: 6px; }
+  .stations .lead { text-align: center; color: var(--text-muted); margin-bottom: 26px; font-size: 0.92rem; }
+  .station-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .station-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--c, var(--orange));
+    border-radius: var(--radius-sm); padding: 18px 18px 16px; transition: all var(--transition); display: block; text-decoration: none; color: inherit;
+  }
+  .station-card:hover { transform: translateY(-3px); background: var(--bg-card-hover); box-shadow: var(--shadow); }
+  .station-card .sc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .station-card .sc-num { width: 30px; height: 30px; border-radius: 50%; background: var(--c, var(--orange)); color: #0E0805; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex: none; }
+  .station-card .sc-name { font-size: 1.12rem; font-weight: 700; color: var(--text); }
+  .station-card .sc-en { font-size: 0.7rem; letter-spacing: 1px; color: var(--text-muted); font-family: var(--font-mono); }
+  .station-card .sc-view { font-size: 0.72rem; color: var(--c, var(--orange)); border: 1px solid var(--c, var(--orange)); border-radius: 20px; padding: 1px 9px; margin-left: auto; }
+  .station-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
+  .station-card .sc-go { margin-top: 12px; font-size: 0.8rem; color: var(--orange); font-weight: 600; }
+
+  .back-note { text-align: center; color: var(--text-muted); font-size: 0.82rem; margin: 0 auto 50px; max-width: 640px; line-height: 1.7; }
+  .back-note a { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<nav class="top-nav" role="navigation" aria-label="主导航">
+  <div class="nav-inner container">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="learning-map.html" class="nav-link active" data-section="map">🗺️ 学习地图</a>
+        <a href="tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle" role="group" aria-label="语言切换">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<section class="map-hero">
+  <div class="container">
+    <h1>一张<span class="accent">比特币</span>学习地图</h1>
+    <p class="subtitle">把比特币想象成人类知识大陆上凸起的一座山地。9 个站点串成一条从 <strong>现金湾</strong> 到 <strong>代码之巅</strong> 的寻宝路线——越往上，越接近"它到底是什么"。<br>点击地图上的站点，直达对应学习章节。</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="map-stage">
+    <img src="assets/比特币学习地图/比特币学习地图-P1-0822-可灵版-9站-v5.png" alt="比特币学习地图：9 站寻宝路线" />
+    <svg class="map-overlay" viewBox="0 0 1440 1920" preserveAspectRatio="none" aria-hidden="false" aria-label="9 站可点击热点">
+
+      <a class="hotspot" href="learning/01-philosophy/01-01-money.html" style="color:#FFD700">
+        <title>1 · 现金湾（金融视角）→ 货币的千年之问</title>
+        <rect class="frame" x="354" y="1532" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="420" cy="1555" r="100"/>
+        <circle class="halo"  cx="420" cy="1555" r="36" fill="#FFD700" fill-opacity="0.30"/>
+        <circle class="ring"  cx="420" cy="1555" r="36" fill="none" stroke="#FFD700" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="420" cy="1555" r="22" fill="#FFD700"/>
+        <text x="420" y="1564" text-anchor="middle">1</text>
+        <g class="bubble" transform="translate(420 1500)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">现金湾 · 金融</text>
+        </g>
+      </a>
+
+      <a class="hotspot" href="learning/01-philosophy/01-02-three-flaws.html" style="color:#A78BFA">
+        <title>2 · 银行堡（商业视角）→ 货币的三大历史缺陷</title>
+        <rect class="frame" x="810" y="1270" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="876" cy="1293" r="100"/>
+        <circle class="halo"  cx="876" cy="1293" r="36" fill="#A78BFA" fill-opacity="0.30"/>
+        <circle class="ring"  cx="876" cy="1293" r="36" fill="none" stroke="#A78BFA" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="876" cy="1293" r="22" fill="#A78BFA"/>
+        <text x="876" y="1302" text-anchor="middle">2</text>
+        <g class="bubble" transform="translate(876 1238)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#A78BFA" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">银行堡 · 商业</text>
+        </g>
+      </a>
+
+      <a class="hotspot" href="learning/01-philosophy/01-03-bitcoin-answer.html" style="color:#3B82F6">
+        <title>3 · 双花峡（技术视角）→ 比特币的答案</title>
+        <rect class="frame" x="684" y="984" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="750" cy="1007" r="100"/>
+        <circle class="halo"  cx="750" cy="1007" r="36" fill="#3B82F6" fill-opacity="0.30"/>
+        <circle class="ring"  cx="750" cy="1007" r="36" fill="none" stroke="#3B82F6" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="750" cy="1007" r="22" fill="#3B82F6"/>
+        <text x="750" y="1016" text-anchor="middle">3</text>
+        <g class="bubble" transform="translate(750 952)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#3B82F6" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">双花峡 · 技术</text>
+        </g>
+      </a>
+
+      <a class="hotspot" href="learning/02-basics/02-03-blockchain.html" style="color:#22C55E">
+        <title>4 · 账本海（历史视角）→ 区块链原理</title>
+        <rect class="frame" x="358" y="1084" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="424" cy="1107" r="100"/>
+        <circle class="halo"  cx="424" cy="1107" r="36" fill="#22C55E" fill-opacity="0.30"/>
+        <circle class="ring"  cx="424" cy="1107" r="36" fill="none" stroke="#22C55E" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="424" cy="1107" r="22" fill="#22C55E"/>
+        <text x="424" y="1116" text-anchor="middle">4</text>
+        <g class="bubble" transform="translate(424 1052)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#22C55E" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">账本海 · 历史</text>
+        </g>
+      </a>
+
+      <a class="hotspot" href="learning/04-technology/04-01-cryptography.html" style="color:#FFFFFF">
+        <title>5 · 哈希岭（密码学）→ 密码学基石</title>
+        <rect class="frame" x="706" y="612" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="772" cy="635" r="100"/>
+        <circle class="halo"  cx="772" cy="635" r="36" fill="#FFFFFF" fill-opacity="0.30"/>
+        <circle class="ring"  cx="772" cy="635" r="36" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="772" cy="635" r="22" fill="#FFFFFF"/>
+        <text x="772" y="644" text-anchor="middle">5</text>
+        <g class="bubble" transform="translate(772 580)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#FFFFFF" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">哈希岭 · 技术</text>
+        </g>
+      </a>
+
+      <a class="hotspot" href="learning/04-technology/04-05-mining-consensus.html" style="color:#F7931A">
+        <title>6 · 共识峰（哲学视角）→ 挖矿与工作量证明</title>
+        <rect class="frame" x="644" y="448" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="710" cy="471" r="100"/>
+        <circle class="halo"  cx="710" cy="471" r="36" fill="#F7931A" fill-opacity="0.30"/>
+        <circle class="ring"  cx="710" cy="471" r="36" fill="none" stroke="#F7931A" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="710" cy="471" r="22" fill="#F7931A"/>
+        <text x="710" y="480" text-anchor="middle">6</text>
+        <g class="bubble" transform="translate(710 416)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#F7931A" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">共识峰 · 哲学</text>
+        </g>
+      </a>
+
+      <a class="hotspot" href="learning/02-basics/02-04-mining.html" style="color:#F472B6">
+        <title>7 · 矿工谷（人性视角）→ 挖矿原理</title>
+        <rect class="frame" x="214" y="148" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="280" cy="171" r="100"/>
+        <circle class="halo"  cx="280" cy="171" r="36" fill="#F472B6" fill-opacity="0.30"/>
+        <circle class="ring"  cx="280" cy="171" r="36" fill="none" stroke="#F472B6" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="280" cy="171" r="22" fill="#F472B6"/>
+        <text x="280" y="180" text-anchor="middle">7</text>
+        <g class="bubble" transform="translate(280 116)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#F472B6" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">矿工谷 · 人性</text>
+        </g>
+      </a>
+
+      <a class="hotspot" href="learning/02-basics/02-02-keys-ownership.html" style="color:#22C55E">
+        <title>8 · 私钥崖（历史视角）→ 私钥与所有权</title>
+        <rect class="frame" x="120" y="312" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="186" cy="335" r="100"/>
+        <circle class="halo"  cx="186" cy="335" r="36" fill="#22C55E" fill-opacity="0.30"/>
+        <circle class="ring"  cx="186" cy="335" r="36" fill="none" stroke="#22C55E" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="186" cy="335" r="22" fill="#22C55E"/>
+        <text x="186" y="344" text-anchor="middle">8</text>
+        <g class="bubble" transform="translate(186 280)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#22C55E" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">私钥崖 · 历史</text>
+        </g>
+      </a>
+
+      <a class="hotspot" href="learning/04-technology/04-00-overview.html" style="color:#F7931A">
+        <title>9 · 代码之巅（哲学视角）→ 技术篇总览</title>
+        <rect class="frame" x="968" y="240" width="132" height="46" rx="12"/>
+        <circle class="hit-area" cx="1034" cy="263" r="100"/>
+        <circle class="halo"  cx="1034" cy="263" r="36" fill="#F7931A" fill-opacity="0.30"/>
+        <circle class="ring"  cx="1034" cy="263" r="36" fill="none" stroke="#F7931A" stroke-width="2.5" opacity="0.95"/>
+        <circle class="dot"   cx="1034" cy="263" r="22" fill="#F7931A"/>
+        <text x="1034" y="272" text-anchor="middle">9</text>
+        <g class="bubble" transform="translate(1034 208)">
+          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#F7931A" stroke-width="1.5"/>
+          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">代码之巅 · 哲学</text>
+        </g>
+      </a>
+
+    </svg>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:#F7931A"></i>哲学</span>
+    <span><i style="background:#3B82F6"></i>技术</span>
+    <span><i style="background:#22C55E"></i>历史</span>
+    <span><i style="background:#F472B6"></i>人性</span>
+    <span><i style="background:#FFD700"></i>金融</span>
+    <span><i style="background:#A78BFA"></i>商业</span>
+  </div>
+
+  <section class="stations">
+    <h2>9 站寻宝路线</h2>
+    <p class="lead">从最贴近日常的"钱"，一路攀到最抽象的"代码与协议"。每一站都是理解比特币的一块拼图。</p>
+    <div class="station-grid">
+
+      <a class="station-card" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700">
+        <div class="sc-head"><span class="sc-num">1</span><span class="sc-name">现金湾</span><span class="sc-view">金融</span></div>
+        <div class="sc-en">CASH BAY</div>
+        <p>钱的本质是共识。从贝壳到法币，看清你手里那张纸到底值什么、又凭什么值。</p>
+        <div class="sc-go">前往：货币的千年之问 →</div>
+      </a>
+
+      <a class="station-card" href="learning/01-philosophy/01-02-three-flaws.html" style="--c:#A78BFA">
+        <div class="sc-head"><span class="sc-num">2</span><span class="sc-name">银行堡</span><span class="sc-view">商业</span></div>
+        <div class="sc-en">BANK FORT</div>
+        <p>银行替我们记账，也替我们担风险。货币的三大历史缺陷，正是比特币要解决的。</p>
+        <div class="sc-go">前往：货币的三大历史缺陷 →</div>
+      </a>
+
+      <a class="station-card" href="learning/01-philosophy/01-03-bitcoin-answer.html" style="--c:#3B82F6">
+        <div class="sc-head"><span class="sc-num">3</span><span class="sc-name">双花峡</span><span class="sc-view">技术</span></div>
+        <div class="sc-en">DOUBLE-SPEND GORGE</div>
+        <p>没有银行，怎么防止同一笔钱花两次？这是比特币回答的第一个核心难题。</p>
+        <div class="sc-go">前往：比特币的答案 →</div>
+      </a>
+
+      <a class="station-card" href="learning/02-basics/02-03-blockchain.html" style="--c:#22C55E">
+        <div class="sc-head"><span class="sc-num">4</span><span class="sc-name">账本海</span><span class="sc-view">历史</span></div>
+        <div class="sc-en">LEDGER SEA</div>
+        <p>所有人共有一本公开账本，谁都能核对，谁都不能偷偷篡改——区块链由此而来。</p>
+        <div class="sc-go">前往：区块链原理 →</div>
+      </a>
+
+      <a class="station-card" href="learning/04-technology/04-01-cryptography.html" style="--c:#FFFFFF">
+        <div class="sc-head"><span class="sc-num">5</span><span class="sc-name">哈希岭</span><span class="sc-view">技术</span></div>
+        <div class="sc-en">HASH RIDGE</div>
+        <p>哈希函数把任意信息压成固定指纹，是比特币防篡改、串起区块的密码学地基。</p>
+        <div class="sc-go">前往：密码学基石 →</div>
+      </a>
+
+      <a class="station-card" href="learning/04-technology/04-05-mining-consensus.html" style="--c:#F7931A">
+        <div class="sc-head"><span class="sc-num">6</span><span class="sc-name">共识峰</span><span class="sc-view">哲学</span></div>
+        <div class="sc-en">CONSENSUS PEAK</div>
+        <p>成千上万台机器如何就"谁的交易有效"达成一致？工作量证明给出反直觉的答案。</p>
+        <div class="sc-go">前往：挖矿与工作量证明 →</div>
+      </a>
+
+      <a class="station-card" href="learning/02-basics/02-04-mining.html" style="--c:#F472B6">
+        <div class="sc-head"><span class="sc-num">7</span><span class="sc-name">矿工谷</span><span class="sc-view">人性</span></div>
+        <div class="sc-en">MINER VALLEY</div>
+        <p>矿工用电力竞争记账权，自私的人性被机制设计成维护网络安全的力量。</p>
+        <div class="sc-go">前往：挖矿原理 →</div>
+      </a>
+
+      <a class="station-card" href="learning/02-basics/02-02-keys-ownership.html" style="--c:#22C55E">
+        <div class="sc-head"><span class="sc-num">8</span><span class="sc-name">私钥崖</span><span class="sc-view">历史</span></div>
+        <div class="sc-en">KEY CLIFF</div>
+        <p>一串私钥就是所有权本身。失去它，比特币就永远不再属于你——这是最古老的教训。</p>
+        <div class="sc-go">前往：私钥与所有权 →</div>
+      </a>
+
+      <a class="station-card" href="learning/04-technology/04-00-overview.html" style="--c:#F7931A">
+        <div class="sc-head"><span class="sc-num">9</span><span class="sc-name">代码之巅</span><span class="sc-view">哲学</span></div>
+        <div class="sc-en">CODE SUMMIT</div>
+        <p>站在代码之巅俯瞰：比特币不是一家公司，而是一套谁都无法单方面改写的规则。</p>
+        <div class="sc-go">前往：技术篇总览 →</div>
+      </a>
+
+    </div>
+  </section>
+
+  <p class="back-note">这张地图是「比特币学习地图」系列的知识骨架。完整的 38 篇分章内容在 <a href="learning/00-overview.html">学习区</a>；想从零开始，先读 <a href="learning/01-philosophy/01-01-money.html">货币的千年之问</a>。<br>⚠️ 本文仅作区块链科普，不构成任何投资建议。比特币价格波动剧烈，投资需谨慎。</p>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span>₿ 比特币学习地图</span> ·
+        <a href="index.html">首页</a> ·
+        <a href="learning/00-overview.html">学习区</a> ·
+        <a href="tools/index.html">工具</a> ·
+        <a href="reference/index.html">参考</a> · <a href="collection/index.html">文集</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://bitcoin.org" target="_blank" rel="noopener">Bitcoin.org</a>
+        <a href="https://learnmeabitcoin.com" target="_blank" rel="noopener">Learn Me A Bitcoin</a>
+        <a href="https://river.com/learn" target="_blank" rel="noopener">River Learn</a>
+      </div>
+    </div>
+    <p style="margin-top:16px;font-size:0.75rem;color:var(--text-muted)">
+      🧠 心智模型优先 · AI 时代的学习方式 · 开放、免费、中立<br>
+      ⚠️ 教育目的，不构成投资建议。比特币有风险，请自行研究。
+    </p>
+  </div>
+</footer>
+
+<script src="shared/nav.js"></script>
+</body>
+</html>
