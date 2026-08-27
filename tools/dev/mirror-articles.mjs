@@ -31,8 +31,10 @@ const PRIVATE = process.env.MIRROR_PRIVATE_REPO
 
 const SRC_ARTICLES = path.join(PUBLIC, 'content-source/articles/公众号');
 const SRC_TOPICS = path.join(PUBLIC, 'content-source/topics');
+const SRC_X = path.join(PUBLIC, 'content-source/articles/x-version');
 const DST_ARTICLES = path.join(PRIVATE, 'articles/公众号');
 const DST_TOPICS = path.join(PRIVATE, 'articles/topics');
+const DST_X = path.join(PRIVATE, 'articles/x-version');
 
 function log(s) { console.log(`[mirror] ${s}`); }
 
@@ -65,8 +67,9 @@ function gitIn(repo, ...args) {
 
   const n1 = sync(SRC_ARTICLES, DST_ARTICLES, '公众号文章');
   const n2 = sync(SRC_TOPICS, DST_TOPICS, '母文  ');
-  const total = n1 + n2;
-  log(`共同步 ${total} 篇`);
+  const n3 = sync(SRC_X, DST_X, 'X版   ');
+  const total = n1 + n2 + n3;
+  log(`共同步 ${total} 篇（公众号 ${n1} · 母文 ${n2} · X版 ${n3}）`);
 
   // 生成图文 HTML（不在此处提交，随 MD 一起统一提交上云）
   log('===== 生成图文 HTML =====');

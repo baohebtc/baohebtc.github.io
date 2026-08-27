@@ -185,6 +185,13 @@ export async function generateAllHtml({ dry = false, commit = true } = {}) {
       if (/\.md$/.test(f)) targets.push({ md: path.join(topicDir, f), out: f.replace(/\.md$/, '-母文.html') });
     }
   }
+  // X（推特）开放版：扫描 content-source/articles/x-version/，文件名原样 .html
+  const xDir = path.join(PUBLIC_REPO, 'content-source', 'articles', 'x-version');
+  if (fs.existsSync(xDir)) {
+    for (const f of fs.readdirSync(xDir)) {
+      if (/\.md$/.test(f)) targets.push({ md: path.join(xDir, f), out: f.replace(/\.md$/, '.html') });
+    }
+  }
 
   fs.mkdirSync(HTML_DIR, { recursive: true });
   const results = [];
