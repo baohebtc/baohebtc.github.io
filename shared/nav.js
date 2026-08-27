@@ -21,6 +21,8 @@ function initNav() {
   __btcNavInited = true;
   applyTheme(BTCMap.theme);
   applyLanguage();
+  buildNav();
+  wireControls();
   buildBreadcrumb();
   buildAutoTOC();
   initScrollProgress();
@@ -174,6 +176,18 @@ function switchLang(lang) {
   });
   initSidebarHighlight();
   initPerspectiveCards(); // 重新初始化多视角卡片
+}
+
+/* 统一绑定主题/语言按钮（不再依赖页内联 onclick；移除内联防双触发） */
+function wireControls() {
+  document.querySelectorAll('[data-action="toggle-theme"]').forEach(btn => {
+    btn.addEventListener('click', toggleTheme);
+    btn.removeAttribute('onclick');
+  });
+  document.querySelectorAll('[data-lang]').forEach(btn => {
+    btn.addEventListener('click', () => switchLang(btn.dataset.lang));
+    btn.removeAttribute('onclick');
+  });
 }
 
 function applyLanguage() {
@@ -473,13 +487,36 @@ function initSectionScrollSpy() {
   setActive(sections[0].id); // 初始高亮第一节
 }
 
+/* ================================================
+   全局导航：由 JS 统一注入（根治逐页复制 drift + 深度错位 404）
+   相对路径按当前页面深度自动计算 → 部署在根目录或子路径都能用
+   ================================================ */
+const NAV_HREF = {
+  home: 'index.html', learning: 'learning/00-overview.html', map: 'learning-map.html',
+  tools: 'tools/index.html', reference: 'reference/index.html', collection: 'collection/index.html',
+};
+const NAV_ITEMS = [
+  ['home', '🏠 首页'], ['learning', '📚 学习区'], ['map', '🗺️ 学习地图'],
+  ['tools', '🛠️ 工具'], ['reference', '📖 参考'], ['collection', '🗂️ 文集'],
+];
+function buildNav() {
+  const links = document.querySelector('.top-nav .nav-links');
+  if (!links) return;
+  const segs = location.pathname.split('/').filter(Boolean);
+  const prefix = '../'.repeat(Math.max(0, segs.length - 1)); // 按深度回到根
+  links.innerHTML = NAV_ITEMS
+    .map(([s, t]) => `<a href="${prefix}${NAV_HREF[s]}" class="nav-link" data-section="${s}">${t}</a>`)
+    .join('');
+}
+
 function updateActiveNavLink() {
   const path = window.location.pathname;
   document.querySelectorAll('.nav-link[data-section]').forEach(link => {
     const section = link.dataset.section;
     let active = false;
-    if (section === 'home' && (path.endsWith('index.html') || path.endsWith('/') || path.endsWith('index'))) active = true;
+    if (section === 'home' && (path === '/index.html' || path.endsWith('/'))) active = true;
     if (section === 'learning' && path.includes('/learning/')) active = true;
+    if (section === 'map' && path.includes('/learning-map.html')) active = true;
     if (section === 'tools' && path.includes('/tools/')) active = true;
   if (section === 'reference' && path.includes('/reference/')) active = true;
   if (section === 'collection' && path.includes('/collection/')) active = true;
