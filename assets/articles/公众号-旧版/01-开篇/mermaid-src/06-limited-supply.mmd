@@ -1,0 +1,14 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFF8E1', 'primaryTextColor': '#3E2723', 'primaryBorderColor': '#3E2723', 'lineColor': '#8D6E63', 'secondaryColor': '#FFE0B2', 'tertiaryColor': '#F7931A'}}}%%
+flowchart TB
+    subgraph GOLD["🥇 黄金"]
+        G1[稀缺] --> G2[地壳含量有限]
+        G3[新增供应] --> G4[发现新矿可再增]
+    end
+    subgraph BTC["₿ 比特币"]
+        B1[稀缺] --> B2[代码写死 2100 万上限]
+        B3[新增供应] --> B4[约每 4 年减半<br/>直到接近 0]
+        B5[上限可改吗？] --> B6[需要全网绝大多数节点同意<br/>现实中几乎不可能]
+    end
+    GOLD -->|类比但不一样 | BTC
+    style GOLD fill:#FFE0B2
+    style BTC fill:#F7931A

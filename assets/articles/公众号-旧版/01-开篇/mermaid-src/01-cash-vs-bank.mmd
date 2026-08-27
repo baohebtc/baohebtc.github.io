@@ -1,0 +1,15 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFF8E1', 'primaryTextColor': '#3E2723', 'primaryBorderColor': '#3E2723', 'lineColor': '#8D6E63', 'secondaryColor': '#FFE0B2', 'tertiaryColor': '#F7931A', 'background': '#FFF8E1'}}}%%
+flowchart LR
+    subgraph BANK["🏦 银行转账：有一个中间人"]
+        A1[你] --> A2[银行 / 支付公司]
+        A2 --> A3[朋友]
+        A2 -.-> A4[账本由公司保管]
+    end
+    subgraph BTC["₿ 比特币转账：没有中间人"]
+        B1[你] -->|用私钥签名| B2[广播到全网]
+        B2 --> B3[朋友]
+        B2 -.-> B4[人人手里一份账本]
+    end
+    BANK -->|对比 | BTC
+    style BANK fill:#FFE0B2,stroke:#3E2723
+    style BTC fill:#F7931A,stroke:#3E2723

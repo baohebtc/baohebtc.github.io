@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="900" height="520">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#3E2723" flood-opacity="0.15"/>
+    </filter>
+    <linearGradient id="parch" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFF8E1"/>
+      <stop offset="100%" stop-color="#FFECB3"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="520" fill="url(#parch)"/>
+  <rect x="30" y="30" width="390" height="440" rx="16" fill="#FFE0B2" stroke="#3E2723" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="480" y="30" width="390" height="440" rx="16" fill="#F7931A" stroke="#3E2723" stroke-width="2" filter="url(#shadow)" opacity="0.9"/>
+  <text x="225" y="70" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#3E2723" text-anchor="middle">🏦 银行转账</text>
+  <text x="225" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#5D4037" text-anchor="middle">有一个中间人替你记账</text>
+  <text x="675" y="70" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#3E2723" text-anchor="middle">₿ 比特币转账</text>
+  <text x="675" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#3E2723" text-anchor="middle">没有中间人，人人有账本</text>
+
+  <circle cx="100" cy="170" r="28" fill="#FFF8E1" stroke="#3E2723" stroke-width="2"/>
+  <text x="100" y="178" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#3E2723" text-anchor="middle">你</text>
+  <rect x="160" y="150" width="130" height="40" rx="20" fill="#FFF8E1" stroke="#3E2723" stroke-width="2"/>
+  <text x="225" y="177" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#3E2723" text-anchor="middle">银行 / 公司</text>
+  <circle cx="350" cy="170" r="28" fill="#FFF8E1" stroke="#3E2723" stroke-width="2"/>
+  <text x="350" y="178" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#3E2723" text-anchor="middle">朋友</text>
+  <line x1="128" y1="170" x2="160" y2="170" stroke="#3E2723" stroke-width="2"/>
+  <line x1="290" y1="170" x2="322" y2="170" stroke="#3E2723" stroke-width="2"/>
+
+  <rect x="150" y="260" width="150" height="50" rx="8" fill="#FFF8E1" stroke="#3E2723" stroke-width="1.5"/>
+  <text x="225" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#3E2723" text-anchor="middle">账本由一家公司</text>
+  <text x="225" y="299" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#3E2723" text-anchor="middle">集中保管</text>
+  <path d="M225 242 L225 260" stroke="#3E2723" stroke-width="1.5" stroke-dasharray="4"/>
+
+  <circle cx="550" cy="170" r="28" fill="#FFF8E1" stroke="#3E2723" stroke-width="2"/>
+  <text x="550" y="178" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#3E2723" text-anchor="middle">你</text>
+  <rect x="610" y="150" width="130" height="40" rx="20" fill="#FFF8E1" stroke="#3E2723" stroke-width="2"/>
+  <text x="675" y="177" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#3E2723" text-anchor="middle">广播到全网</text>
+  <circle cx="800" cy="170" r="28" fill="#FFF8E1" stroke="#3E2723" stroke-width="2"/>
+  <text x="800" y="178" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#3E2723" text-anchor="middle">朋友</text>
+  <line x1="578" y1="170" x2="610" y2="170" stroke="#3E2723" stroke-width="2"/>
+  <line x1="740" y1="170" x2="772" y2="170" stroke="#3E2723" stroke-width="2"/>
+
+  <rect x="620" y="260" width="150" height="50" rx="8" fill="#FFF8E1" stroke="#3E2723" stroke-width="1.5"/>
+  <text x="695" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#3E2723" text-anchor="middle">人人手里一份账本</text>
+  <text x="695" y="299" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#3E2723" text-anchor="middle">用数学规则对齐</text>
+  <path d="M675 242 L675 260" stroke="#3E2723" stroke-width="1.5" stroke-dasharray="4"/>
+
+  <line x1="420" y1="250" x2="480" y2="250" stroke="#3E2723" stroke-width="2" marker-end="url(#arrow)"/>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#3E2723"/></marker></defs>
+  <text x="450" y="240" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#3E2723" text-anchor="middle">对比</text>
+
+  <text x="450" y="430" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#3E2723" text-anchor="middle">关键差别：有没有一个"说了算"的中间人</text>
+</svg>
