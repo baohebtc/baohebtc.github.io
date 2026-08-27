@@ -26,41 +26,26 @@
   .map-stage img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); }
   .map-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .hotspot { pointer-events: auto; cursor: pointer; display: block; }
+
   /* 透明大圆 → 用户点标签任何位置均命中跳转 */
   .hotspot .hit-area { fill: rgba(255,255,255,0.001); pointer-events: auto; }
-  /* 视觉指示 */
-  .hotspot circle.halo { transition: r var(--transition), fill-opacity var(--transition); }
-  .hotspot circle.ring { transition: r var(--transition), stroke-width var(--transition); }
-  .hotspot circle.dot  { transition: r var(--transition), filter var(--transition); }
-  /* hover 放大 */
-  .hotspot:hover circle.halo { r: 50; fill-opacity: 0.45; }
-  .hotspot:hover circle.ring { r: 50; stroke-width: 3; }
-  .hotspot:hover circle.dot  { r: 24; filter: drop-shadow(0 0 10px currentColor); }
-  .hotspot:hover .bubble { opacity: 1; transform: translate(-50%, 0); }
-  /* 默认隐约可见 */
-  .hotspot circle.halo { opacity: 0.9; }
-  .hotspot text { font: bold 22px var(--font-sans); fill: #0E0805; pointer-events: none; }
-  .hotspot .ring { fill: none; stroke-width: 2.5; opacity: 0.95; }
-/* 站点框：hover 放大(magnify) 作为「可点击」反馈，气泡仅在 hover 时浮现且不遮站点 */
-  .hotspot .frame {
-    fill: rgba(255,255,255,0.07);
-    stroke: currentColor; stroke-width: 2; opacity: 0; rx: 12;
-    transform-box: fill-box; transform-origin: center;
-    transition: opacity .2s ease, transform .2s ease; pointer-events: none;
-  }
-  .hotspot:hover .frame { opacity: 1; transform: scale(1.12); }
-  /* 气泡：默认隐藏、轻微上移；hover 时淡入并归位。pointer-events:none 不挡图 */
-  .bubble { opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; transform: translate(-50%, -12px); }
-  .hotspot:hover .bubble { opacity: 1; transform: translate(-50%, 0); }
-  .hotspot:hover .dot { filter: drop-shadow(0 0 12px currentColor); }
 
-  /* 站名气泡 */
-  .bubble {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s, transform 0.2s;
-    transform: translate(-50%, -10px);
+  /* 持久标记：站点序号圆点，提示「可点击」 */
+  .hotspot .dot { fill: var(--c); transition: filter var(--transition); }
+  .hotspot:hover .dot { filter: drop-shadow(0 0 10px currentColor); }
+  .hotspot .num { font: 800 20px var(--font-sans); fill: #0E0805; text-anchor: middle; pointer-events: none; }
+
+  /* 站点名字框：hover 时浮现并放大(magnify)，作为「可点击跳转」反馈。
+     框钉在 PNG 标签位置（不浮动到别处），故不会遮挡地图其他部分。 */
+  .hotspot .name-box {
+    opacity: 0; pointer-events: none;
+    transform-box: fill-box; transform-origin: center;
+    transition: opacity .18s ease, transform .18s ease;
   }
+  .hotspot:hover .name-box { opacity: 1; transform: scale(1.14); }
+  .hotspot .nb-bg   { fill: rgba(13,13,13,0.88); stroke: var(--c); stroke-width: 2; }
+  .hotspot .nb-cn   { fill: #FFFFFF; font: 700 19px var(--font-sans); text-anchor: middle; pointer-events: none; }
+  .hotspot .nb-view { fill: var(--c); font: 600 13px var(--font-sans); text-anchor: middle; pointer-events: none; }
 
   /* 六视角图例 */
   .legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; max-width: 760px; margin: 14px auto 40px; }
@@ -130,129 +115,111 @@
     <img src="assets/比特币学习地图/比特币学习地图-P1-0822-可灵版-9站-v5.png" alt="比特币学习地图：9 站寻宝路线" />
     <svg class="map-overlay" viewBox="0 0 1440 1920" preserveAspectRatio="none" aria-hidden="false" aria-label="9 站可点击热点">
 
-      <a class="hotspot" href="learning/01-philosophy/01-01-money.html" style="color:#FFD700">
+      <a class="hotspot" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700;color:#FFD700">
         <title>1 · 现金湾（金融视角）→ 货币的千年之问</title>
-        <rect class="frame" x="354" y="1532" width="132" height="46" rx="12"/>
         <circle class="hit-area" cx="420" cy="1555" r="100"/>
-        <circle class="halo"  cx="420" cy="1555" r="36" fill="#FFD700" fill-opacity="0.30"/>
-        <circle class="ring"  cx="420" cy="1555" r="36" fill="none" stroke="#FFD700" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="420" cy="1555" r="22" fill="#FFD700"/>
-        <text x="420" y="1564" text-anchor="middle">1</text>
-        <g class="bubble" transform="translate(420 1500)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#FFD700" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">现金湾 · 金融</text>
+        <circle class="dot" cx="420" cy="1555" r="18"/>
+        <text class="num" x="420" y="1562">1</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="345" y="1529" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="420" y="1552">现金湾</text>
+          <text class="nb-view" x="420" y="1571">金融视角</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/01-philosophy/01-02-three-flaws.html" style="color:#A78BFA">
+      <a class="hotspot" href="learning/01-philosophy/01-02-three-flaws.html" style="--c:#A78BFA;color:#A78BFA">
         <title>2 · 银行堡（商业视角）→ 货币的三大历史缺陷</title>
-        <rect class="frame" x="810" y="1270" width="132" height="46" rx="12"/>
         <circle class="hit-area" cx="876" cy="1293" r="100"/>
-        <circle class="halo"  cx="876" cy="1293" r="36" fill="#A78BFA" fill-opacity="0.30"/>
-        <circle class="ring"  cx="876" cy="1293" r="36" fill="none" stroke="#A78BFA" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="876" cy="1293" r="22" fill="#A78BFA"/>
-        <text x="876" y="1302" text-anchor="middle">2</text>
-        <g class="bubble" transform="translate(876 1238)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#A78BFA" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">银行堡 · 商业</text>
+        <circle class="dot" cx="876" cy="1293" r="18"/>
+        <text class="num" x="876" y="1300">2</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="801" y="1267" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="876" y="1286">银行堡</text>
+          <text class="nb-view" x="876" y="1305">商业视角</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/01-philosophy/01-03-bitcoin-answer.html" style="color:#3B82F6">
+      <a class="hotspot" href="learning/01-philosophy/01-03-bitcoin-answer.html" style="--c:#3B82F6;color:#3B82F6">
         <title>3 · 双花峡（技术视角）→ 比特币的答案</title>
-        <rect class="frame" x="684" y="984" width="132" height="46" rx="12"/>
         <circle class="hit-area" cx="750" cy="1007" r="100"/>
-        <circle class="halo"  cx="750" cy="1007" r="36" fill="#3B82F6" fill-opacity="0.30"/>
-        <circle class="ring"  cx="750" cy="1007" r="36" fill="none" stroke="#3B82F6" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="750" cy="1007" r="22" fill="#3B82F6"/>
-        <text x="750" y="1016" text-anchor="middle">3</text>
-        <g class="bubble" transform="translate(750 952)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#3B82F6" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">双花峡 · 技术</text>
+        <circle class="dot" cx="750" cy="1007" r="18"/>
+        <text class="num" x="750" y="1014">3</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="675" y="981" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="750" y="1000">双花峡</text>
+          <text class="nb-view" x="750" y="1019">技术视角</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/02-basics/02-03-blockchain.html" style="color:#22C55E">
+      <a class="hotspot" href="learning/02-basics/02-03-blockchain.html" style="--c:#22C55E;color:#22C55E">
         <title>4 · 账本海（历史视角）→ 区块链原理</title>
-        <rect class="frame" x="358" y="1084" width="132" height="46" rx="12"/>
         <circle class="hit-area" cx="424" cy="1107" r="100"/>
-        <circle class="halo"  cx="424" cy="1107" r="36" fill="#22C55E" fill-opacity="0.30"/>
-        <circle class="ring"  cx="424" cy="1107" r="36" fill="none" stroke="#22C55E" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="424" cy="1107" r="22" fill="#22C55E"/>
-        <text x="424" y="1116" text-anchor="middle">4</text>
-        <g class="bubble" transform="translate(424 1052)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#22C55E" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">账本海 · 历史</text>
+        <circle class="dot" cx="424" cy="1107" r="18"/>
+        <text class="num" x="424" y="1114">4</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="349" y="1081" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="424" y="1100">账本海</text>
+          <text class="nb-view" x="424" y="1119">历史视角</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/04-technology/04-01-cryptography.html" style="color:#FFFFFF">
-        <title>5 · 哈希岭（密码学）→ 密码学基石</title>
-        <rect class="frame" x="706" y="612" width="132" height="46" rx="12"/>
+      <a class="hotspot" href="learning/04-technology/04-01-cryptography.html" style="--c:#FFFFFF;color:#FFFFFF">
+        <title>5 · 哈希岭（技术视角）→ 密码学基石</title>
         <circle class="hit-area" cx="772" cy="635" r="100"/>
-        <circle class="halo"  cx="772" cy="635" r="36" fill="#FFFFFF" fill-opacity="0.30"/>
-        <circle class="ring"  cx="772" cy="635" r="36" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="772" cy="635" r="22" fill="#FFFFFF"/>
-        <text x="772" y="644" text-anchor="middle">5</text>
-        <g class="bubble" transform="translate(772 580)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#FFFFFF" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">哈希岭 · 技术</text>
+        <circle class="dot" cx="772" cy="635" r="18"/>
+        <text class="num" x="772" y="642">5</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="697" y="609" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="772" y="628">哈希岭</text>
+          <text class="nb-view" x="772" y="647">技术视角</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/04-technology/04-05-mining-consensus.html" style="color:#F7931A">
+      <a class="hotspot" href="learning/04-technology/04-05-mining-consensus.html" style="--c:#F7931A;color:#F7931A">
         <title>6 · 共识峰（哲学视角）→ 挖矿与工作量证明</title>
-        <rect class="frame" x="644" y="448" width="132" height="46" rx="12"/>
         <circle class="hit-area" cx="710" cy="471" r="100"/>
-        <circle class="halo"  cx="710" cy="471" r="36" fill="#F7931A" fill-opacity="0.30"/>
-        <circle class="ring"  cx="710" cy="471" r="36" fill="none" stroke="#F7931A" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="710" cy="471" r="22" fill="#F7931A"/>
-        <text x="710" y="480" text-anchor="middle">6</text>
-        <g class="bubble" transform="translate(710 416)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#F7931A" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">共识峰 · 哲学</text>
+        <circle class="dot" cx="710" cy="471" r="18"/>
+        <text class="num" x="710" y="478">6</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="635" y="445" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="710" y="464">共识峰</text>
+          <text class="nb-view" x="710" y="483">哲学视角</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/02-basics/02-04-mining.html" style="color:#F472B6">
+      <a class="hotspot" href="learning/02-basics/02-04-mining.html" style="--c:#F472B6;color:#F472B6">
         <title>7 · 矿工谷（人性视角）→ 挖矿原理</title>
-        <rect class="frame" x="214" y="148" width="132" height="46" rx="12"/>
         <circle class="hit-area" cx="280" cy="171" r="100"/>
-        <circle class="halo"  cx="280" cy="171" r="36" fill="#F472B6" fill-opacity="0.30"/>
-        <circle class="ring"  cx="280" cy="171" r="36" fill="none" stroke="#F472B6" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="280" cy="171" r="22" fill="#F472B6"/>
-        <text x="280" y="180" text-anchor="middle">7</text>
-        <g class="bubble" transform="translate(280 116)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#F472B6" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">矿工谷 · 人性</text>
+        <circle class="dot" cx="280" cy="171" r="18"/>
+        <text class="num" x="280" y="178">7</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="205" y="145" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="280" y="164">矿工谷</text>
+          <text class="nb-view" x="280" y="183">人性视角</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/02-basics/02-02-keys-ownership.html" style="color:#22C55E">
+      <a class="hotspot" href="learning/02-basics/02-02-keys-ownership.html" style="--c:#22C55E;color:#22C55E">
         <title>8 · 私钥崖（历史视角）→ 私钥与所有权</title>
-        <rect class="frame" x="120" y="312" width="132" height="46" rx="12"/>
         <circle class="hit-area" cx="186" cy="335" r="100"/>
-        <circle class="halo"  cx="186" cy="335" r="36" fill="#22C55E" fill-opacity="0.30"/>
-        <circle class="ring"  cx="186" cy="335" r="36" fill="none" stroke="#22C55E" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="186" cy="335" r="22" fill="#22C55E"/>
-        <text x="186" y="344" text-anchor="middle">8</text>
-        <g class="bubble" transform="translate(186 280)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#22C55E" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">私钥崖 · 历史</text>
+        <circle class="dot" cx="186" cy="335" r="18"/>
+        <text class="num" x="186" y="342">8</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="111" y="309" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="186" y="328">私钥崖</text>
+          <text class="nb-view" x="186" y="347">历史视角</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/04-technology/04-00-overview.html" style="color:#F7931A">
+      <a class="hotspot" href="learning/04-technology/04-00-overview.html" style="--c:#F7931A;color:#F7931A">
         <title>9 · 代码之巅（哲学视角）→ 技术篇总览</title>
-        <rect class="frame" x="968" y="240" width="132" height="46" rx="12"/>
         <circle class="hit-area" cx="1034" cy="263" r="100"/>
-        <circle class="halo"  cx="1034" cy="263" r="36" fill="#F7931A" fill-opacity="0.30"/>
-        <circle class="ring"  cx="1034" cy="263" r="36" fill="none" stroke="#F7931A" stroke-width="2.5" opacity="0.95"/>
-        <circle class="dot"   cx="1034" cy="263" r="22" fill="#F7931A"/>
-        <text x="1034" y="272" text-anchor="middle">9</text>
-        <g class="bubble" transform="translate(1034 208)">
-          <rect x="-74" y="-17" width="148" height="34" rx="17" fill="#0E0805" fill-opacity="0.93" stroke="#F7931A" stroke-width="1.5"/>
-          <text x="0" y="6" text-anchor="middle" font-weight="600" font-size="14" font-family="PingFang SC,Microsoft YaHei,sans-serif" fill="#FFF6E0">代码之巅 · 哲学</text>
+        <circle class="dot" cx="1034" cy="263" r="18"/>
+        <text class="num" x="1034" y="270">9</text>
+        <g class="name-box">
+          <rect class="nb-bg" x="959" y="237" width="150" height="52" rx="13"/>
+          <text class="nb-cn" x="1034" y="256">代码之巅</text>
+          <text class="nb-view" x="1034" y="275">哲学视角</text>
         </g>
       </a>
 
