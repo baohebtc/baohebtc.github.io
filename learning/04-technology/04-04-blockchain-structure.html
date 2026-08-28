@@ -628,8 +628,8 @@ Hash1  Hash2   Hash3  Hash4
               <button class="btn-lab" onclick="loadBlock()">查看区块</button>
             </div>
           </div>
-          <iframe id="blockEmbed" class="explorer-embed" src="https://mempool.space/embed/block/latest" title="区块浏览器" loading="lazy"></iframe>
-          <div class="lab-note">提示：嵌入式浏览器来自 mempool.space（公开数据）。若嵌入被网络拦截，可点下方按钮在新标签打开。</div>
+          <a id="blockEmbed" class="explorer-embed-fallback" href="https://mempool.space/block/latest" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;min-height:140px;padding:24px;margin:12px 0;background:linear-gradient(135deg,rgba(247,147,26,0.08),rgba(247,147,26,0.02));border:1px dashed rgba(247,147,26,0.3);border-radius:var(--radius);color:var(--orange);text-decoration:none;font-weight:600;text-align:center;font-size:0.92rem;">🔗 在 mempool.space 查看区块浏览器（新标签打开）↗</a>
+          <div class="lab-note">区块数据来自 mempool.space（公开数据源）。点击上方卡片或下方按钮即可在新标签查看 ↗</div>
           <div class="lab-btns" style="margin-top:10px">
             <button class="btn-lab-secondary" onclick="openBlockNewTab()">在新标签打开查询的区块 ↗</button>
           </div>
@@ -1011,7 +1011,10 @@ function jsSha256(msg) {
 function loadBlock() {
   const q = document.getElementById('blockQuery').value.trim();
   if (!q) return;
-  document.getElementById('blockEmbed').src = 'https://mempool.space/embed/block/' + encodeURIComponent(q);
+  const url = 'https://mempool.space/block/' + encodeURIComponent(q);
+  const el = document.getElementById('blockEmbed');
+  if (el) el.href = url;
+  window.open(url, '_blank');
 }
 function openBlockNewTab() {
   const q = document.getElementById('blockQuery').value.trim() || 'latest';

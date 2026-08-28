@@ -12,6 +12,7 @@
 .calc-body { padding: 0 0 60px; }
 .calc-grid { display: grid; grid-template-columns: 360px 1fr; gap: 28px; align-items: start; }
 @media(max-width:800px){ .calc-grid{grid-template-columns:1fr} }
+@media(max-width:600px){ .calc-panel, .result-panel { min-width: 0; } }
 .calc-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: sticky; top: 72px; }
 .calc-panel h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 20px; }
 .field { margin-bottom: 16px; }
@@ -464,7 +465,9 @@ function buildSupplyCurve() {
   const areaPts = [];
 
   for (let year = startYear; year <= endYear; year += 0.5) {
-    const yearStart = new Date(year + '-01-01');
+    const yInt = Math.floor(year);
+    const month = Math.round((year - yInt) * 12); // 0=Jan, 6=Jul for half-year points
+    const yearStart = new Date(yInt, month, 1);
     const days = (yearStart - GENESIS_TIMESTAMP) / 86400000;
     const height = Math.max(0, days) * BLOCKS_PER_DAY;
     const supply = getCumulativeSupply(Math.floor(height));
