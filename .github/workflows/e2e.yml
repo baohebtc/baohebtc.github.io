@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      RUN_FULL_E2E: '1'   # 全量 e2e-site.mjs 作为 ADVISORY 运行（见 ci-run.mjs）
+      RUN_FULL_E2E: '1'   # 全量 e2e-site.mjs 作为 HARD 阻断闸运行（见 ci-run.mjs）
     steps:
       - uses: actions/checkout@v4
 
