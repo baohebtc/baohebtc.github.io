@@ -505,7 +505,28 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; margin-top: 60px;
   .compare-table th, .compare-table td { padding: 7px 8px; }
   .nav-right .mode-selector { display: none; }
   .nav-center { display: none; }
-  .table-wrap { margin: 12px -16px; }
+  .table-wrap { margin: 12px -16px; max-width: 100%; }
+  /* N7 修复: 窄视口防横向溢出 (2026-08-28, fix/e2e-observations) */
+  .cta-box, .treasure-box, .highlight-box, .result-card,
+  .flow-node, .image-wrapper, .block, .main-content {
+    max-width: 100%; min-width: 0; width: auto; box-sizing: border-box;
+  }
+  /* 响应式表格: 在窄屏让表格自身可横向滚动 */
+  .compare-table, .halving-table { display: block; overflow-x: auto; max-width: 100%; width: 100%; }
+  .cta-box, .highlight-box, .treasure-box { padding: 14px 16px; }
+  img { max-width: 100%; height: auto; }
+  svg { max-width: 100%; height: auto; }
+  .flow-diagram { flex-direction: column; align-items: center; width: 100%; max-width: 100%; box-sizing: border-box; gap: 6px; }
+  .flow-arrow { transform: rotate(90deg); padding: 2px 0; }
+  .flow-node { width: 100%; max-width: 300px; min-width: 0; }
+  /* 修 04-00：lab-list 含 64 位 TXID 等长令牌，flex 子项需可收缩且允许断行 */
+  .lab-section .lab-list li { min-width: 0; }
+  .lab-section .lab-list li > div { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+  .hash-output, .hash-result, .hash-input, .hash-demo {
+    word-break: break-all; overflow-wrap: anywhere;
+  }
+  pre { overflow-x: auto; max-width: 100%; }
+  iframe { max-width: 100%; }
 }
 
 /* ===== Explorer Box（动手探索 / 真实数据源）===== */

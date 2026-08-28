@@ -486,6 +486,10 @@
     .comp-table td:first-child { color: var(--text-primary); font-weight: 600; }
     .comp-table .btc-yes { color: #4ade80; font-weight: 600; }
     .comp-table .btc-no { color: #f87171; }
+    /* N7 移动端：窄视口让对照表横向滚动，避免撑宽页面（中英文均适用） */
+    @media (max-width: 600px) {
+      .comp-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+    }
 
     /* Sovereign individual */
     .sovereign-box {
