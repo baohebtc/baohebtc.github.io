@@ -1,0 +1,44 @@
+name: E2E CI (site gates)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # 每日 02:00 CST（18:00 UTC）跑一次，防止静默回归
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RUN_FULL_E2E: '1'   # 全量 e2e-site.mjs 作为 ADVISORY 运行（见 ci-run.mjs）
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dev deps (playwright)
+        working-directory: tools/dev
+        run: npm install
+
+      - name: Install Chromium (with deps)
+        working-directory: tools/dev
+        run: npx playwright install --with-deps chromium
+
+      - name: Run e2e gate runner
+        working-directory: tools/dev
+        run: node ci-run.mjs
