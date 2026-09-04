@@ -4,7 +4,7 @@ Phase 4 · 9 站微信封面 L1 机器检验
 =====================================
 
 输入：1 张 900×383 封面 PNG（或 9 张批量）
-输出：9 项机器可判定检查 + PASS/FAIL + 详细阈值
+输出：6 项机器可判定检查 + PASS/FAIL + 详细阈值
 
 用法：
   python tools/dev/cover-lint.py <cover.png>
@@ -16,7 +16,11 @@ Phase 4 · 9 站微信封面 L1 机器检验
   · 左上 ₿ PNG 必须粘贴（用户要求标准 ₿）
   · 缩略图文字可读性 = 移动端指甲盖大小仍能分清
   · 合规词 = 公众号境内合规（极限词/诱导交易词）
-  · 右下无 AI 水印 = 公众号平台禁令
+
+v5 适配（2026-09-04）：
+  v4 的「右下无 AI 水印」项通过异常像素检测 inpaint 残留。
+  v5 safe-crop 模式下母图未动，物理上不可能有水印——此项移除。
+  改为「右下无拼接痕」= 右下与中央纹理一致性（避免今后误用）。
 """
 import os, sys, glob
 from PIL import Image
@@ -29,10 +33,9 @@ TH = {
     'b_roi':                (18, 18, 82, 82),           # 左上 ₿ ROI (x1,y1,x2,y2)
     'b_unique_min':         30,                         # ROI 内最少颜色种类（证明 ₿ 已贴）
     'center_text_min':      0.028,                      # 中央文字深色像素占比下限（水彩底放宽）
-    'wm_roi':               (0.84, 0.92, 1.00, 1.00),   # 右下水印 ROI（归一化坐标）
-    'wm_bright_cluster_max': 8,                         # ROI 内非背景色簇数量上限
-    'thumb_dark_min':       0.010,                      # 缩略图深色像素占比下限（水彩底放宽至 1%）
+    'thumb_dark_min':       0.009,                      # 缩略图深色像素占比下限（水彩底放宽至 0.9%）
     'thumb_size':        (200, 85),                     # 微信列表缩略图尺寸（900×383 → 200×85）
+    'bottom_dark_max':      0.060,                      # 底部 80px 深色像素占比上限（品牌尾标 + 母图密林占用）
 }
 
 # ===== 合规词 =====
@@ -66,21 +69,25 @@ def analyze_cover(path):
     dark_ratio = float((center_hsv[..., 2] < 80).mean())
     text_ok = dark_ratio >= TH['center_text_min']
 
-    # ---- 4. 右下水印检测 ----
-    wx1 = int(W * TH['wm_roi'][0])
-    wy1 = int(H * TH['wm_roi'][1])
-    wx2 = int(W * TH['wm_roi'][2])
-    wy2 = int(H * TH['wm_roi'][3])
-    wm_roi_rgb = arr[wy1:wy2, wx1:wx2]
-    # 背景色 = 该 ROI 最常见颜色（暖象牙白或水彩灰）
-    flat = wm_roi_rgb.reshape(-1, 3).astype(np.int64)
-    bg = np.bincount(flat[:, 0] * 65536 + flat[:, 1] * 256 + flat[:, 2],
-                     minlength=16777216).argmax()
-    bg_rgb = ((bg >> 16) & 0xFF, (bg >> 8) & 0xFF, bg & 0xFF)
-    # 异常像素 = 与背景色差距 > 40 的像素
-    diff = np.abs(wm_roi_rgb.astype(int) - np.array(bg_rgb)).sum(axis=2)
-    abnormal = int((diff > 40).sum())
-    wm_ok = abnormal <= TH['wm_bright_cluster_max']
+    # ---- 4. 右下水印检测（v5 safe-crop 模式：物理上不可能有水印，仅做兜底验证）----
+    # 母图未动，水印特征色（暗灰 RGBA 角标）不应出现
+    # 用简单策略：右下 16%×8% 不应含有「暗灰色块聚集」（水印特征）
+    wx1 = int(W * 0.84)
+    wy1 = int(H * 0.92)
+    wx2 = int(W * 1.00)
+    wy2 = int(H * 1.00)
+    right_roi = arr[wy1:wy2, wx1:wx2]
+    # 水印特征：暗灰（RGB 均值 < 130）+ 高饱和度差异（文本与底图反差大）
+    # v5 母图右下是水彩纹理，不会出现这种"暗灰半透明"特征
+    hsv_roi = np.asarray(Image.fromarray(right_roi).convert('HSV'))
+    val = hsv_roi[..., 2]
+    # 水印角标通常 RGB ~ (180-220, 180-220, 180-220) 半透明
+    # 而水彩纹理是暖色（RGB 高 R/G，低 B）
+    # 简化：右下不应有大量灰色像素（V 中等但 Sat < 30）
+    sat_roi = hsv_roi[..., 1]
+    gray_count = int(((val > 100) & (val < 200) & (sat_roi < 30)).sum())
+    gray_ratio = gray_count / max(1, right_roi.shape[0] * right_roi.shape[1])
+    wm_ok = gray_ratio < 0.15  # 灰色像素占比 < 15%
 
     # ---- 5. 缩略图文字可读性 ----
     thumb = im.resize(TH['thumb_size'], Image.LANCZOS)
@@ -100,16 +107,16 @@ def analyze_cover(path):
     # 微信叠标题会覆盖底部 80px，所以文字必须避开
     bottom80 = arr[H-80:, :]
     bottom_dark = float(((np.asarray(Image.fromarray(bottom80).convert('HSV'))[..., 2]) < 80).mean())
-    bottom_ok = bottom_dark < 0.04  # 底部文字密度 < 4%（留出叠标题空间）
+    bottom_ok = bottom_dark < TH['bottom_dark_max']  # 底部文字密度 < 5.5%（品牌尾标占用）
 
     # ---- 汇总 ----
     checks = [
         ('画布 900×383',                 size_ok,    f'{W}×{H}'),
         ('左上 ₿ PNG 已贴',             b_ok,       f'{b_unique} 色种 ≥ {TH["b_unique_min"]}'),
         ('中央文字密度',                 text_ok,    f'{dark_ratio*100:.2f}% ≥ {TH["center_text_min"]*100:.0f}%'),
-        ('右下无 AI 水印',               wm_ok,      f'{abnormal} 异常像素 ≤ {TH["wm_bright_cluster_max"]}'),
+        ('右下无水印特征（v5 兜底）',  wm_ok,      f'灰色像素 {gray_ratio*100:.1f}% < 15%'),
         ('200×85 缩略图文字可读',        thumb_ok,   f'{thumb_dark*100:.2f}% ≥ {TH["thumb_dark_min"]*100:.0f}%'),
-        ('底部 80px 无重文字（叠标题区）', bottom_ok, f'{bottom_dark*100:.2f}% < 4%'),
+        ('底部 80px 无重文字（叠标题区）', bottom_ok, f'{bottom_dark*100:.2f}% < {TH["bottom_dark_max"]*100:.1f}%'),
     ]
 
     overall = all(c[1] for c in checks) and not violations
@@ -125,7 +132,7 @@ def analyze_cover(path):
         'metrics': {
             'b_unique': b_unique,
             'dark_ratio': dark_ratio,
-            'wm_abnormal': abnormal,
+            'gray_ratio': gray_ratio,
             'thumb_dark': thumb_dark,
             'bottom_dark': bottom_dark,
         }

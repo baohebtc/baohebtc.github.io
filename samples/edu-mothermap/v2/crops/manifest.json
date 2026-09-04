@@ -1,0 +1,392 @@
+[
+  {
+    "station": "1",
+    "zh": "现金湾",
+    "en": "Bitcoin Bay",
+    "sub": "货币的第一声",
+    "y_center": 1450,
+    "y_range": [
+      1076,
+      1825
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-1.png",
+    "sample_bottomright_rgb": [
+      [
+        214,
+        211,
+        167
+      ],
+      [
+        243,
+        236,
+        220
+      ],
+      [
+        240,
+        235,
+        221
+      ],
+      [
+        217,
+        212,
+        169
+      ],
+      [
+        236,
+        232,
+        211
+      ]
+    ]
+  },
+  {
+    "station": "1.5",
+    "zh": "钱到底是什么",
+    "en": "What is Money",
+    "sub": "货币哲学插篇",
+    "y_center": 1280,
+    "y_range": [
+      906,
+      1655
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-1.5.png",
+    "sample_bottomright_rgb": [
+      [
+        125,
+        134,
+        106
+      ],
+      [
+        203,
+        200,
+        145
+      ],
+      [
+        242,
+        235,
+        217
+      ],
+      [
+        119,
+        128,
+        100
+      ],
+      [
+        197,
+        195,
+        137
+      ]
+    ]
+  },
+  {
+    "station": "2",
+    "zh": "银行堡",
+    "en": "Bank Fortress",
+    "sub": "货币的三大缺陷",
+    "y_center": 380,
+    "y_range": [
+      6,
+      755
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-2.png",
+    "sample_bottomright_rgb": [
+      [
+        238,
+        231,
+        211
+      ],
+      [
+        237,
+        228,
+        209
+      ],
+      [
+        234,
+        226,
+        204
+      ],
+      [
+        242,
+        235,
+        215
+      ],
+      [
+        237,
+        229,
+        207
+      ]
+    ]
+  },
+  {
+    "station": "3",
+    "zh": "双花峡",
+    "en": "Double-Spend Gorge",
+    "sub": "一笔钱能花两次吗",
+    "y_center": 1100,
+    "y_range": [
+      726,
+      1475
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-3.png",
+    "sample_bottomright_rgb": [
+      [
+        29,
+        36,
+        4
+      ],
+      [
+        122,
+        129,
+        85
+      ],
+      [
+        178,
+        175,
+        122
+      ],
+      [
+        154,
+        160,
+        108
+      ],
+      [
+        138,
+        145,
+        97
+      ]
+    ]
+  },
+  {
+    "station": "4",
+    "zh": "账本海",
+    "en": "Ledger Sea",
+    "sub": "谁来记这本账",
+    "y_center": 1620,
+    "y_range": [
+      1246,
+      1995
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-4.png",
+    "sample_bottomright_rgb": [
+      [
+        101,
+        111,
+        74
+      ],
+      [
+        138,
+        145,
+        97
+      ],
+      [
+        240,
+        229,
+        210
+      ],
+      [
+        138,
+        143,
+        111
+      ],
+      [
+        144,
+        150,
+        100
+      ]
+    ]
+  },
+  {
+    "station": "5",
+    "zh": "哈希岭",
+    "en": "Hash Ridge",
+    "sub": "一道数学封印",
+    "y_center": 700,
+    "y_range": [
+      326,
+      1075
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-5.png",
+    "sample_bottomright_rgb": [
+      [
+        191,
+        170,
+        145
+      ],
+      [
+        233,
+        219,
+        194
+      ],
+      [
+        241,
+        224,
+        196
+      ],
+      [
+        191,
+        170,
+        145
+      ],
+      [
+        233,
+        219,
+        194
+      ]
+    ]
+  },
+  {
+    "station": "6",
+    "zh": "共识峰",
+    "en": "Consensus Peak",
+    "sub": "陌生人如何达成一致",
+    "y_center": 460,
+    "y_range": [
+      86,
+      835
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-6.png",
+    "sample_bottomright_rgb": [
+      [
+        219,
+        221,
+        218
+      ],
+      [
+        243,
+        236,
+        218
+      ],
+      [
+        241,
+        236,
+        222
+      ],
+      [
+        204,
+        206,
+        201
+      ],
+      [
+        241,
+        234,
+        216
+      ]
+    ]
+  },
+  {
+    "station": "7",
+    "zh": "矿工谷",
+    "en": "Miner Valley",
+    "sub": "谁来添加新的一页",
+    "y_center": 900,
+    "y_range": [
+      526,
+      1275
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-7.png",
+    "sample_bottomright_rgb": [
+      [
+        242,
+        225,
+        197
+      ],
+      [
+        79,
+        94,
+        66
+      ],
+      [
+        240,
+        235,
+        221
+      ],
+      [
+        240,
+        226,
+        197
+      ],
+      [
+        98,
+        107,
+        79
+      ]
+    ]
+  },
+  {
+    "station": "8",
+    "zh": "私钥崖",
+    "en": "Key Cliff",
+    "sub": "你就是自己的银行",
+    "y_center": 1300,
+    "y_range": [
+      926,
+      1675
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-8.png",
+    "sample_bottomright_rgb": [
+      [
+        74,
+        82,
+        59
+      ],
+      [
+        213,
+        210,
+        157
+      ],
+      [
+        243,
+        239,
+        222
+      ],
+      [
+        72,
+        78,
+        51
+      ],
+      [
+        212,
+        207,
+        154
+      ]
+    ]
+  },
+  {
+    "station": "9",
+    "zh": "代码之巅",
+    "en": "Code Summit",
+    "sub": "比特币的全部秘密",
+    "y_center": 400,
+    "y_range": [
+      26,
+      775
+    ],
+    "out": "samples/edu-mothermap/v2/crops/crop-station-9.png",
+    "sample_bottomright_rgb": [
+      [
+        240,
+        233,
+        213
+      ],
+      [
+        239,
+        231,
+        209
+      ],
+      [
+        234,
+        226,
+        204
+      ],
+      [
+        240,
+        233,
+        215
+      ],
+      [
+        238,
+        229,
+        210
+      ]
+    ]
+  }
+]
