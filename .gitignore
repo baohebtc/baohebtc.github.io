@@ -13,3 +13,6 @@ node_modules/
 
 # 公众号文章源文件：保持 untracked，由镜像脚本单独备份到私有仓
 content-source/
+
+# 本地产物输出（md-preview 生成的 HTML 预览等，仅供本机阅读）
+out/
