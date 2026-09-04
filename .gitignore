@@ -19,3 +19,8 @@ out/
 
 # WorkBuddy 会话数据（automations/ + memory/，含私密笔记，绝不进公开仓）
 .workbuddy/
+
+# 历史归档资产：本地磁盘保留，但不进版本库
+# 原因：archive/ 已达 213M（0822老源94M + 风格试验61M + 地图迭代53M + v4产物5M），
+#       进 git 会把 .git 撑到 300M+。这些是历史试验资产，本地保留即可，丢了不影响当前工作。
+archive/
