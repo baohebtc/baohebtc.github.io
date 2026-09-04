@@ -34,8 +34,8 @@ import sys
 from PIL import Image, ImageDraw, ImageFont
 
 # ============ 配置 ============
-MOTHER_PATH = 'assets/比特币学习地图/v2-B-01-教育风.png'
-OUT_PATH = 'assets/比特币学习地图/v2-B-01-教育风-with-stations.png'
+MOTHER_PATH = 'assets/learning-map/v2-B-01-教育风.png'
+OUT_PATH = 'assets/learning-map/v2-B-01-教育风-with-stations.png'
 
 # 9 站定义：(id, cn_name, en_name, x, y, color, view_label)
 STATIONS = [

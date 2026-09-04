@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="72%">
+      <stop offset="0%" stop-color="#46331c"/>
+      <stop offset="100%" stop-color="#1b1209"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe9a8"/>
+      <stop offset="45%" stop-color="#f3b53f"/>
+      <stop offset="100%" stop-color="#a86d18"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9a6230"/>
+      <stop offset="100%" stop-color="#5e3a18"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe9a8" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffe9a8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <circle cx="320" cy="320" r="298" fill="none" stroke="#f3b53f" stroke-opacity="0.35" stroke-width="5"/>
+  <circle cx="320" cy="190" r="95" fill="url(#glow)"/>
+
+  <!-- 对话气泡：你好（主角，人设感） -->
+  <g>
+    <rect x="244" y="118" width="200" height="94" rx="24" fill="#fff6df" stroke="#f3b53f" stroke-width="4"/>
+    <path d="M298,210 L320,246 L342,210 Z" fill="#fff6df" stroke="#f3b53f" stroke-width="4"/>
+    <text x="344" y="182" font-size="52" font-family="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-weight="700" fill="#7a4d12" text-anchor="middle">你好</text>
+  </g>
+
+  <!-- 宝盒（藏宝箱） -->
+  <g>
+    <rect x="222" y="356" width="196" height="112" rx="14" fill="url(#wood)" stroke="#3a2410" stroke-width="4"/>
+    <path d="M222,360 Q320,300 418,360 Z" fill="url(#wood)" stroke="#3a2410" stroke-width="4"/>
+    <path d="M222,360 Q320,300 418,360" fill="none" stroke="url(#gold)" stroke-width="9"/>
+    <rect x="308" y="356" width="24" height="112" fill="url(#gold)" opacity="0.85"/>
+    <rect x="222" y="404" width="196" height="13" fill="url(#gold)" opacity="0.9"/>
+    <circle cx="320" cy="430" r="14" fill="url(#gold)" stroke="#7a4d12" stroke-width="3"/>
+    <rect x="317" y="424" width="6" height="12" rx="3" fill="#3a2a16"/>
+  </g>
+
+  <!-- 小比特币金币（侧边点缀，暗示主题） -->
+  <circle cx="470" cy="430" r="34" fill="url(#gold)" stroke="#7a4d12" stroke-width="3"/>
+  <g stroke="#3a2a16" stroke-width="6" stroke-linecap="round" fill="none">
+    <line x1="462" y1="412" x2="462" y2="448"/>
+    <path d="M462,412 C476,412 480,424 470,430 C480,436 476,448 462,448"/>
+    <line x1="452" y1="420" x2="482" y2="420"/>
+    <line x1="452" y1="440" x2="482" y2="440"/>
+  </g>
+</svg>

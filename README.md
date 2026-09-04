@@ -6,6 +6,41 @@
 
 ---
 
+## 🗺️ 项目地图 · 文件速查（1 分钟找到任何文件）
+
+> 完整规范见 [`plans/2026-09-04-方案E-项目文件管理规范v1.0.md`](plans/2026-09-04-方案E-项目文件管理规范v1.0.md)。
+> 规则速记：**图片进 `assets/`、文章进 `content-source/`、工具进 `tools/`、方案进 `plans/`、历史进 `archive/`、母图源进 `samples/`**。
+
+| 我要找… | 在… |
+|---|---|
+| 站 N 公众号文章（微信版 MD） | `content-source/articles/公众号/站N-站名/` |
+| 站 N 的 X 版文章 | `content-source/articles/x-version/` 或 `content-source/articles/公众号/站N-站名-X版.md` |
+| 母文（btc- 命名） | `content-source/topics/btc-*.md` |
+| 文章配图 | `assets/articles/公众号/站N-站名/` |
+| 微信封面（头条/方形） | `assets/cover/封面-站N-站名-{900x383,方形}.png` |
+| 学习地图母图 | `assets/learning-map/v2-B-01-教育风.png` |
+| 学习地图（已烧 9 站标注） | `assets/learning-map/v2-B-01-教育风-with-stations.png` |
+| 比特币 ₿ 标志 / logo | `assets/brand/` |
+| 公众号头像 | `assets/avatar/` |
+| 母图源 / 早期试验（不进 git） | `samples/edu-mothermap/v{N}/` |
+| L1 检验脚本（文章/站点/封面） | `tools/dev/{content-lint.mjs, site-check.mjs, cover-lint.py}` |
+| 封面产线模板（在用） | `tools/templates/{cover_template_v5.py, crop_9_safe.py, make_stations_overlay.py}` |
+| 文章→HTML / 镜像私有仓 | `tools/dev/{md-to-html.mjs, mirror-articles.mjs}` |
+| 历史版本工具 | `tools/archive/` |
+| 规划/方案/调研文档 | `plans/` |
+| 历史资产归档 | `archive/` |
+| 站点设计规范 | `brand/`（design tokens）+ `docs/`（开发文档） |
+| 9 站封面产出 | `out/cover-A-batch/` |
+
+### 关键规则（违反会乱）
+
+1. **不删只移**：归档一律 `mv` 到 `archive/` 或 `*-旧版/`，绝不用 `rm`。
+2. **新版本落地 → 旧版本立即归档**，不堆在 `tools/dev/`。
+3. **命名不带日期后缀**：`站N-站名-微信版.md`，版本号用「站号」或「vN 前缀」表达。
+4. **母图绝不用 inpaint** 去水印——只能「避开」（安全区裁切）或「覆盖」（整片遮罩）。
+
+---
+
 ## 📁 项目结构（多页静态站点）
 
 整个网站由 **多个文件** 组成，靠相对路径互相引用，需整体保留、整体部署：
