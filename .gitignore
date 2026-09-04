@@ -16,3 +16,6 @@ content-source/
 
 # 本地产物输出（md-preview 生成的 HTML 预览等，仅供本机阅读）
 out/
+
+# WorkBuddy 会话数据（automations/ + memory/，含私密笔记，绝不进公开仓）
+.workbuddy/
