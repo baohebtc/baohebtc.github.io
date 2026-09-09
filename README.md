@@ -18,8 +18,9 @@
 | 母文（btc- 命名） | `content-source/topics/btc-*.md` |
 | 文章配图 | `assets/articles/公众号/站N-站名/` |
 | 微信封面（头条/方形） | `assets/cover/封面-站N-站名-{900x383,方形}.png` |
-| 学习地图母图 | `assets/learning-map/v2-B-01-教育风.png` |
-| 学习地图（已烧 9 站标注） | `assets/learning-map/v2-B-01-教育风-with-stations.png` |
+| **学习地图（网站在用 · v3.3）** | `assets/learning-map/v3.3-地图-10站立体-1760x2368.png` |
+| 学习地图 v3.3 源图 + 站点坐标 | `archive/learning-map-v33-源图-2026-09/` |
+| 学习地图 v2 母图（已停用，留档） | `assets/learning-map/v2-B-01-教育风{,-with-stations}.png` |
 | 比特币 ₿ 标志 / logo | `assets/brand/` |
 | 公众号头像 | `assets/avatar/` |
 | 母图源 / 早期试验（不进 git） | `samples/edu-mothermap/v{N}/` |

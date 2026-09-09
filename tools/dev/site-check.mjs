@@ -30,7 +30,9 @@ const DISCLAIMER = '学习资料索引 · 非投资建议 · 观点不代表本�
 // —— 收集所有 html ——
 function walk(dir, acc = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (e.name === '.git' || e.name === 'node_modules' || e.name === 'assets') continue;
+    // 排除：版本库内部 / 依赖 / 静态资源 / 历史归档 / 本地临时产物
+    // archive、out 里的 HTML 不是线上页面（且均已 gitignore），扫描它们只会产生 R1/R7 误报
+    if (['.git', 'node_modules', 'assets', 'archive', 'out', 'samples', 'content-source'].includes(e.name)) continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, acc);
     else if (e.name.endsWith('.html')) acc.push(p);
