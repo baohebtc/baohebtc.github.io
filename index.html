@@ -291,6 +291,24 @@
   .cta-buttons { flex-direction: column; align-items: center; }
   .btn-primary, .btn-secondary { width: 100%; justify-content: center; max-width: 300px; }
 }
+
+/* 学习地图入口：全站最有辨识度的资产，之前只藏在导航栏里，正文 0 处入口 */
+.mapentry-section { padding: 56px 0; background: var(--bg-section); }
+.mapentry { display: grid; grid-template-columns: 1.05fr .95fr; gap: 28px; align-items: center;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px; text-decoration: none; color: inherit; transition: all var(--transition); }
+.mapentry:hover { transform: translateY(-3px); border-color: var(--orange); box-shadow: var(--shadow); }
+.me-figure { position: relative; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); }
+.me-figure img { display: block; width: 100%; height: auto; }
+.me-badge { position: absolute; left: 12px; top: 12px; background: rgba(13,13,13,.78); color: #FFD700;
+  border: 1px solid rgba(255,215,0,.5); border-radius: 99px; padding: 3px 12px;
+  font-size: .72rem; font-weight: 700; }
+.me-kicker { font-size: .78rem; color: var(--orange); font-weight: 700; letter-spacing: .5px; }
+.me-body h2 { font-size: 1.5rem; margin: 8px 0 10px; }
+.me-body p { color: var(--text-secondary); line-height: 1.75; font-size: .92rem; margin: 0 0 16px; }
+.me-body strong { color: var(--text); }
+.me-cta { display: inline-block; color: var(--orange); font-weight: 700; font-size: .92rem; }
+@media (max-width: 760px) { .mapentry { grid-template-columns: 1fr; gap: 18px; } }
 </style>
 
 <script type="application/ld+json">
@@ -464,8 +482,31 @@
   </div>
 </section>
 
-<!-- 学习路线图 -->
-<section class="roadmap-section">
+  <!-- 学习地图入口 -->
+  <section class="mapentry-section">
+    <div class="container">
+      <a class="mapentry" href="learning-map.html">
+        <div class="me-figure">
+          <img src="assets/learning-map/v3.3-地图-横版-880w.png"
+               srcset="assets/learning-map/v3.3-地图-横版-880w.png 880w,
+                       assets/learning-map/v3.3-地图-横版-1760x1030.png 1760w"
+               sizes="(max-width: 760px) 92vw, 45vw"
+               width="880" height="515" loading="lazy" decoding="async"
+               alt="比特币学习地图：10 站寻宝路线" />
+          <span class="me-badge">10 站</span>
+        </div>
+        <div class="me-body">
+          <span class="me-kicker">🗺️ 一图看懂全局</span>
+          <h2>比特币学习地图</h2>
+          <p>把比特币想成知识大陆上凸起的一座山地：从<strong>现金湾</strong>出发，经过双花峡、账本海、哈希岭，一路攀到<strong>代码之巅</strong>。点地图上的站点，直达对应章节。</p>
+          <span class="me-cta">打开地图 →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 学习路线图 -->
+  <section class="roadmap-section">
   <div class="container-wide">
     <div class="section-title">
       <h2>🗺️ 学习路线图</h2>

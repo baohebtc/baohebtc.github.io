@@ -38,21 +38,23 @@
   .hotspot:hover .dot { filter: drop-shadow(0 0 14px currentColor); }
   .hotspot .num { font: 800 34px var(--font-sans); fill: #0E0805; text-anchor: middle; pointer-events: none; }
 
-  /* 站名框：默认常驻可见（不再 hover 才出现）。
-     字号是 SVG 用户单位；容器 760px 时缩放比约 0.432 → 中文实际约 17px。 */
+  /* 站名框 = A 羊皮纸牌：米色底 + 深棕边 + 深棕字，与母图 PNG 同一套语言
+     （原为深色半透明 UI 框，与古地图母图违和，2026-09-10 随标签风格定稿替换） */
   .hotspot .name-box {
     opacity: 1; pointer-events: none;
     transform-box: fill-box; transform-origin: center;
     transition: transform .18s ease;
   }
   .hotspot:hover .name-box { transform: scale(1.12); }
-  .hotspot .nb-bg   { fill: rgba(13,13,13,0.9); stroke: var(--c); stroke-width: 3; }
-  .hotspot .nb-cn   { fill: #FFFFFF; font: 700 40px var(--font-sans); text-anchor: middle; pointer-events: none; }
-  .hotspot .nb-view { fill: var(--c); font: 600 26px var(--font-sans); text-anchor: middle; pointer-events: none; }
+  .hotspot .leader  { stroke: rgba(48,32,18,0.6); stroke-width: 3; }
+  .hotspot .nb-bg   { fill: #F5EBD6; fill-opacity: .93; stroke: #5C4028; stroke-width: 3; }
+  .hotspot .nb-cn   { fill: #3A2818; font: 700 40px var(--font-sans); text-anchor: middle; pointer-events: none; }
+  .hotspot .nb-view { fill: #765636; font: 600 26px var(--font-sans); text-anchor: middle; pointer-events: none; }
 
   /* 小屏：地图整体缩小后站名会糊成一团 → 只留大号序号，站名交给下方卡片 */
   @media (max-width: 700px) {
     .hotspot .name-box { opacity: 0; }
+    .hotspot .leader { opacity: 0; }
     .hotspot .dot { stroke-width: 6; }
   }
 
@@ -78,6 +80,32 @@
   .station-card .sc-view { font-size: 0.72rem; color: var(--c, var(--orange)); border: 1px solid var(--c, var(--orange)); border-radius: 20px; padding: 1px 9px; margin-left: auto; }
   .station-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.65; margin: 0; }
   .station-card .sc-go { margin-top: 12px; font-size: 0.8rem; color: var(--orange); font-weight: 600; }
+
+  /* 已读进度：回答「我学到哪了」——地图不只是张好看的图 */
+  .map-progress { max-width: 760px; margin: 0 auto 16px; }
+  .mp-head { display: flex; align-items: center; justify-content: space-between;
+             font-size: .85rem; color: var(--text-secondary); margin-bottom: 7px; }
+  .mp-head b { color: var(--orange); font-size: 1rem; }
+  .mp-bar { height: 8px; border-radius: 99px; background: var(--bg-card);
+            border: 1px solid var(--border); overflow: hidden; }
+  .mp-bar i { display: block; height: 100%; width: 0;
+              background: linear-gradient(90deg, var(--orange), #FFD700); transition: width .3s ease; }
+  .mp-reset { background: none; border: 1px solid var(--border); border-radius: 99px;
+              padding: 2px 10px; font-size: .72rem; color: var(--text-muted); cursor: pointer; }
+  .mp-reset:hover { color: var(--orange); border-color: var(--orange); }
+
+  /* 已读标记按钮 + 已读态 */
+  .sc-read { flex: none; width: 22px; height: 22px; border-radius: 50%; display: inline-flex;
+             align-items: center; justify-content: center; font-size: .78rem; cursor: pointer;
+             border: 1px solid var(--border); color: var(--text-muted);
+             background: var(--bg-card); transition: all var(--transition); }
+  .sc-read:hover { border-color: var(--orange); color: var(--orange); }
+  .station-card { position: relative; }
+  .station-card.is-read { border-left-color: #FFD700; }
+  .station-card.is-read .sc-name::after { content: ' ✓'; color: #FFD700; }
+  .station-card.is-read .sc-read { background: #FFD700; border-color: #FFD700; color: #0E0805; }
+  /* 地图上已读站点：圆点换金边，一眼看出走过哪几站 */
+  .hotspot.is-read .dot { stroke: #FFD700; stroke-width: 6; }
 
   .back-note { text-align: center; color: var(--text-muted); font-size: 0.82rem; margin: 0 auto 50px; max-width: 640px; line-height: 1.7; }
   .back-note a { color: var(--orange); }
@@ -120,128 +148,154 @@
 </section>
 
 <div class="container">
+  <div class="map-progress" id="mapProgress">
+    <div class="mp-head">
+      <span>已读 <b id="mpDone">0</b> / <span id="mpTotal">10</span> 站 · <span id="mpTip">点卡片右上角的圈，记录你的进度</span></span>
+      <button class="mp-reset" id="mpReset" type="button">重置</button>
+    </div>
+    <div class="mp-bar"><i id="mpFill"></i></div>
+  </div>
+
   <div class="map-stage">
-    <img src="assets/learning-map/v3.3-地图-10站立体-1760x2368.png" alt="比特币学习地图：10 站寻宝路线（含 1.5 站）" />
+    <!-- srcset：手机 880w(0.58MB)、高 DPR 屏 1320w(1.27MB)、大屏 1760w(2.07MB)，
+         不再让移动端硬扛 2MB 单档原图 -->
+    <img src="assets/learning-map/v3.3-地图-10站立体-1760x2368.png"
+         srcset="assets/learning-map/v3.3-地图-10站立体-880w.png 880w,
+                 assets/learning-map/v3.3-地图-10站立体-1320w.png 1320w,
+                 assets/learning-map/v3.3-地图-10站立体-1760x2368.png 1760w"
+         sizes="(max-width: 700px) 92vw, 760px"
+         width="1760" height="2368" decoding="async"
+         alt="比特币学习地图：10 站寻宝路线（含 1.5 站）" />
     <svg class="map-overlay" viewBox="0 0 1760 2368" preserveAspectRatio="xMidYMid meet"
          aria-hidden="false" aria-label="10 站可点击热点（含 1.5 站）">
 
-      <a class="hotspot" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700;color:#FFD700">
+      <a class="hotspot" data-num="1" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700;color:#FFD700">
         <title>1 · 现金湾（金融视角）</title>
-        <rect class="hit-area" x="310" y="1588" width="170" height="220"/>
+        <rect class="hit-area" x="310" y="1418" width="170" height="268"/>
+        <line class="leader" x1="395" y1="1610" x2="395" y2="1518"/>
         <circle class="dot" cx="395" cy="1648" r="38"/>
         <text class="num" x="395" y="1660">1</text>
         <g class="name-box">
-          <rect class="nb-bg" x="310" y="1708" width="170" height="100" rx="16"/>
-          <text class="nb-cn" x="395" y="1758">现金湾</text>
-          <text class="nb-view" x="395" y="1794">金融</text>
+          <rect class="nb-bg" x="310" y="1418" width="170" height="100" rx="16"/>
+          <text class="nb-cn" x="395" y="1468">现金湾</text>
+          <text class="nb-view" x="395" y="1504">金融</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700;color:#FFD700">
+      <a class="hotspot" data-num="1.5" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700;color:#FFD700">
         <title>1.5 · 钱到底是什么（金融视角）</title>
-        <rect class="hit-area" x="681" y="1630" width="290" height="220"/>
+        <rect class="hit-area" x="681" y="1460" width="290" height="268"/>
+        <line class="leader" x1="826" y1="1652" x2="826" y2="1560"/>
         <circle class="dot" cx="826" cy="1690" r="38"/>
         <text class="num" x="826" y="1702">1.5</text>
         <g class="name-box">
-          <rect class="nb-bg" x="681" y="1750" width="290" height="100" rx="16"/>
-          <text class="nb-cn" x="826" y="1800">钱到底是什么</text>
-          <text class="nb-view" x="826" y="1836">金融</text>
+          <rect class="nb-bg" x="681" y="1460" width="290" height="100" rx="16"/>
+          <text class="nb-cn" x="826" y="1510">钱到底是什么</text>
+          <text class="nb-view" x="826" y="1546">金融</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/01-philosophy/01-02-three-flaws.html" style="--c:#A78BFA;color:#A78BFA">
+      <a class="hotspot" data-num="2" href="learning/01-philosophy/01-02-three-flaws.html" style="--c:#A78BFA;color:#A78BFA">
         <title>2 · 银行堡（商业视角）</title>
-        <rect class="hit-area" x="303" y="1016" width="170" height="220"/>
+        <rect class="hit-area" x="303" y="846" width="170" height="268"/>
+        <line class="leader" x1="388" y1="1038" x2="388" y2="946"/>
         <circle class="dot" cx="388" cy="1076" r="38"/>
         <text class="num" x="388" y="1088">2</text>
         <g class="name-box">
-          <rect class="nb-bg" x="303" y="1136" width="170" height="100" rx="16"/>
-          <text class="nb-cn" x="388" y="1186">银行堡</text>
-          <text class="nb-view" x="388" y="1222">商业</text>
+          <rect class="nb-bg" x="303" y="846" width="170" height="100" rx="16"/>
+          <text class="nb-cn" x="388" y="896">银行堡</text>
+          <text class="nb-view" x="388" y="932">商业</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/01-philosophy/01-03-bitcoin-answer.html" style="--c:#3B82F6;color:#3B82F6">
+      <a class="hotspot" data-num="3" href="learning/01-philosophy/01-03-bitcoin-answer.html" style="--c:#3B82F6;color:#3B82F6">
         <title>3 · 双花峡（技术视角）</title>
-        <rect class="hit-area" x="876" y="1061" width="170" height="220"/>
+        <rect class="hit-area" x="916" y="891" width="170" height="268"/>
+        <line class="leader" x1="961" y1="1083" x2="961" y2="991"/>
         <circle class="dot" cx="961" cy="1121" r="38"/>
         <text class="num" x="961" y="1133">3</text>
         <g class="name-box">
-          <rect class="nb-bg" x="876" y="1181" width="170" height="100" rx="16"/>
-          <text class="nb-cn" x="961" y="1231">双花峡</text>
-          <text class="nb-view" x="961" y="1267">技术</text>
+          <rect class="nb-bg" x="916" y="891" width="170" height="100" rx="16"/>
+          <text class="nb-cn" x="1001" y="941">双花峡</text>
+          <text class="nb-view" x="1001" y="977">技术</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/02-basics/02-03-blockchain.html" style="--c:#22C55E;color:#22C55E">
+      <a class="hotspot" data-num="4" href="learning/02-basics/02-03-blockchain.html" style="--c:#22C55E;color:#22C55E">
         <title>4 · 账本海（历史视角）</title>
-        <rect class="hit-area" x="708" y="783" width="170" height="220"/>
+        <rect class="hit-area" x="708" y="613" width="170" height="268"/>
+        <line class="leader" x1="793" y1="805" x2="793" y2="713"/>
         <circle class="dot" cx="793" cy="843" r="38"/>
         <text class="num" x="793" y="855">4</text>
         <g class="name-box">
-          <rect class="nb-bg" x="708" y="903" width="170" height="100" rx="16"/>
-          <text class="nb-cn" x="793" y="953">账本海</text>
-          <text class="nb-view" x="793" y="989">历史</text>
+          <rect class="nb-bg" x="708" y="613" width="170" height="100" rx="16"/>
+          <text class="nb-cn" x="793" y="663">账本海</text>
+          <text class="nb-view" x="793" y="699">历史</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/04-technology/04-01-cryptography.html" style="--c:#3B82F6;color:#3B82F6">
+      <a class="hotspot" data-num="5" href="learning/04-technology/04-01-cryptography.html" style="--c:#3B82F6;color:#3B82F6">
         <title>5 · 哈希岭（技术视角）</title>
-        <rect class="hit-area" x="1227" y="540" width="170" height="220"/>
+        <rect class="hit-area" x="1274" y="370" width="203" height="268"/>
+        <line class="leader" x1="1312" y1="562" x2="1312" y2="470"/>
         <circle class="dot" cx="1312" cy="600" r="38"/>
         <text class="num" x="1312" y="612">5</text>
         <g class="name-box">
-          <rect class="nb-bg" x="1227" y="660" width="170" height="100" rx="16"/>
-          <text class="nb-cn" x="1312" y="710">哈希岭</text>
-          <text class="nb-view" x="1312" y="746">技术</text>
+          <rect class="nb-bg" x="1307" y="370" width="170" height="100" rx="16"/>
+          <text class="nb-cn" x="1392" y="420">哈希岭</text>
+          <text class="nb-view" x="1392" y="456">技术</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/04-technology/04-05-mining-consensus.html" style="--c:#F7931A;color:#F7931A">
+      <a class="hotspot" data-num="6" href="learning/04-technology/04-05-mining-consensus.html" style="--c:#F7931A;color:#F7931A">
         <title>6 · 共识峰（哲学视角）</title>
-        <rect class="hit-area" x="384" y="478" width="170" height="220"/>
+        <rect class="hit-area" x="384" y="308" width="170" height="268"/>
+        <line class="leader" x1="469" y1="500" x2="469" y2="408"/>
         <circle class="dot" cx="469" cy="538" r="38"/>
         <text class="num" x="469" y="550">6</text>
         <g class="name-box">
-          <rect class="nb-bg" x="384" y="598" width="170" height="100" rx="16"/>
-          <text class="nb-cn" x="469" y="648">共识峰</text>
-          <text class="nb-view" x="469" y="684">哲学</text>
+          <rect class="nb-bg" x="384" y="308" width="170" height="100" rx="16"/>
+          <text class="nb-cn" x="469" y="358">共识峰</text>
+          <text class="nb-view" x="469" y="394">哲学</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/02-basics/02-04-mining.html" style="--c:#F472B6;color:#F472B6">
+      <a class="hotspot" data-num="7" href="learning/02-basics/02-04-mining.html" style="--c:#F472B6;color:#F472B6">
         <title>7 · 矿工谷（人性视角）</title>
-        <rect class="hit-area" x="1439" y="669" width="170" height="220"/>
+        <rect class="hit-area" x="1224" y="691" width="338" height="128"/>
+        <line class="leader" x1="1486" y1="729" x2="1394" y2="729"/>
         <circle class="dot" cx="1524" cy="729" r="38"/>
         <text class="num" x="1524" y="741">7</text>
         <g class="name-box">
-          <rect class="nb-bg" x="1439" y="789" width="170" height="100" rx="16"/>
-          <text class="nb-cn" x="1524" y="839">矿工谷</text>
-          <text class="nb-view" x="1524" y="875">人性</text>
+          <rect class="nb-bg" x="1224" y="719" width="170" height="100" rx="16"/>
+          <text class="nb-cn" x="1309" y="769">矿工谷</text>
+          <text class="nb-view" x="1309" y="805">人性</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/02-basics/02-02-keys-ownership.html" style="--c:#22C55E;color:#22C55E">
+      <a class="hotspot" data-num="8" href="learning/02-basics/02-02-keys-ownership.html" style="--c:#22C55E;color:#22C55E">
         <title>8 · 私钥崖（历史视角）</title>
-        <rect class="hit-area" x="1101" y="300" width="170" height="220"/>
+        <rect class="hit-area" x="1101" y="130" width="170" height="268"/>
+        <line class="leader" x1="1186" y1="322" x2="1186" y2="230"/>
         <circle class="dot" cx="1186" cy="360" r="38"/>
         <text class="num" x="1186" y="372">8</text>
         <g class="name-box">
-          <rect class="nb-bg" x="1101" y="420" width="170" height="100" rx="16"/>
-          <text class="nb-cn" x="1186" y="470">私钥崖</text>
-          <text class="nb-view" x="1186" y="506">历史</text>
+          <rect class="nb-bg" x="1101" y="130" width="170" height="100" rx="16"/>
+          <text class="nb-cn" x="1186" y="180">私钥崖</text>
+          <text class="nb-view" x="1186" y="216">历史</text>
         </g>
       </a>
 
-      <a class="hotspot" href="learning/04-technology/04-00-overview.html" style="--c:#F7931A;color:#F7931A">
+      <a class="hotspot" data-num="9" href="learning/04-technology/04-00-overview.html" style="--c:#F7931A;color:#F7931A">
         <title>9 · 代码之巅（哲学视角）</title>
-        <rect class="hit-area" x="826" y="147" width="210" height="220"/>
+        <rect class="hit-area" x="591" y="157" width="378" height="100"/>
+        <line class="leader" x1="893" y1="207" x2="801" y2="207"/>
         <circle class="dot" cx="931" cy="207" r="38"/>
         <text class="num" x="931" y="219">9</text>
         <g class="name-box">
-          <rect class="nb-bg" x="826" y="267" width="210" height="100" rx="16"/>
-          <text class="nb-cn" x="931" y="317">代码之巅</text>
-          <text class="nb-view" x="931" y="353">哲学</text>
+          <rect class="nb-bg" x="591" y="157" width="210" height="100" rx="16"/>
+          <text class="nb-cn" x="696" y="207">代码之巅</text>
+          <text class="nb-view" x="696" y="243">哲学</text>
         </g>
       </a>
 
@@ -262,71 +316,71 @@
     <p class="lead">从最贴近日常的"钱"，一路攀到最抽象的"代码与协议"。每一站都是理解比特币的一块拼图。</p>
     <div class="station-grid">
 
-      <a class="station-card" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700">
-        <div class="sc-head"><span class="sc-num">1</span><span class="sc-name">现金湾</span><span class="sc-view">金融</span></div>
+      <a class="station-card" data-num="1" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700">
+        <div class="sc-head"><span class="sc-num">1</span><span class="sc-name">现金湾</span><span class="sc-view">金融</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">CASH BAY</div>
         <p>钱的本质是共识。从贝壳到法币，看清你手里那张纸到底值什么、又凭什么值。</p>
         <div class="sc-go">前往：货币的千年之问 →</div>
       </a>
 
-      <a class="station-card" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700">
-        <div class="sc-head"><span class="sc-num" style="font-size:0.72rem">1.5</span><span class="sc-name">钱到底是什么</span><span class="sc-view">金融</span></div>
+      <a class="station-card" data-num="1.5" href="learning/01-philosophy/01-01-money.html" style="--c:#FFD700">
+        <div class="sc-head"><span class="sc-num" style="font-size:0.72rem">1.5</span><span class="sc-name">钱到底是什么</span><span class="sc-view">金融</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">WHAT IS MONEY</div>
         <p>钱不是贝壳也不是纸，而是一群人共同相信的故事。先搞清楚它凭什么值钱，才懂比特币究竟在改什么。</p>
         <div class="sc-go">前往：货币的千年之问（延伸） →</div>
       </a>
 
-      <a class="station-card" href="learning/01-philosophy/01-02-three-flaws.html" style="--c:#A78BFA">
-        <div class="sc-head"><span class="sc-num">2</span><span class="sc-name">银行堡</span><span class="sc-view">商业</span></div>
+      <a class="station-card" data-num="2" href="learning/01-philosophy/01-02-three-flaws.html" style="--c:#A78BFA">
+        <div class="sc-head"><span class="sc-num">2</span><span class="sc-name">银行堡</span><span class="sc-view">商业</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">BANK FORT</div>
         <p>银行替我们记账，也替我们担风险。货币的三大历史缺陷，正是比特币要解决的。</p>
         <div class="sc-go">前往：货币的三大历史缺陷 →</div>
       </a>
 
-      <a class="station-card" href="learning/01-philosophy/01-03-bitcoin-answer.html" style="--c:#3B82F6">
-        <div class="sc-head"><span class="sc-num">3</span><span class="sc-name">双花峡</span><span class="sc-view">技术</span></div>
+      <a class="station-card" data-num="3" href="learning/01-philosophy/01-03-bitcoin-answer.html" style="--c:#3B82F6">
+        <div class="sc-head"><span class="sc-num">3</span><span class="sc-name">双花峡</span><span class="sc-view">技术</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">DOUBLE-SPEND GORGE</div>
         <p>没有银行，怎么防止同一笔钱花两次？这是比特币回答的第一个核心难题。</p>
         <div class="sc-go">前往：比特币的答案 →</div>
       </a>
 
-      <a class="station-card" href="learning/02-basics/02-03-blockchain.html" style="--c:#22C55E">
-        <div class="sc-head"><span class="sc-num">4</span><span class="sc-name">账本海</span><span class="sc-view">历史</span></div>
+      <a class="station-card" data-num="4" href="learning/02-basics/02-03-blockchain.html" style="--c:#22C55E">
+        <div class="sc-head"><span class="sc-num">4</span><span class="sc-name">账本海</span><span class="sc-view">历史</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">LEDGER SEA</div>
         <p>所有人共有一本公开账本，谁都能核对，谁都不能偷偷篡改——区块链由此而来。</p>
         <div class="sc-go">前往：区块链原理 →</div>
       </a>
 
-      <a class="station-card" href="learning/04-technology/04-01-cryptography.html" style="--c:#3B82F6">
-        <div class="sc-head"><span class="sc-num">5</span><span class="sc-name">哈希岭</span><span class="sc-view">技术</span></div>
+      <a class="station-card" data-num="5" href="learning/04-technology/04-01-cryptography.html" style="--c:#3B82F6">
+        <div class="sc-head"><span class="sc-num">5</span><span class="sc-name">哈希岭</span><span class="sc-view">技术</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">HASH RIDGE</div>
         <p>哈希函数把任意信息压成固定指纹，是比特币防篡改、串起区块的密码学地基。</p>
         <div class="sc-go">前往：密码学基石 →</div>
       </a>
 
-      <a class="station-card" href="learning/04-technology/04-05-mining-consensus.html" style="--c:#F7931A">
-        <div class="sc-head"><span class="sc-num">6</span><span class="sc-name">共识峰</span><span class="sc-view">哲学</span></div>
+      <a class="station-card" data-num="6" href="learning/04-technology/04-05-mining-consensus.html" style="--c:#F7931A">
+        <div class="sc-head"><span class="sc-num">6</span><span class="sc-name">共识峰</span><span class="sc-view">哲学</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">CONSENSUS PEAK</div>
         <p>成千上万台机器如何就"谁的交易有效"达成一致？工作量证明给出反直觉的答案。</p>
         <div class="sc-go">前往：挖矿与工作量证明 →</div>
       </a>
 
-      <a class="station-card" href="learning/02-basics/02-04-mining.html" style="--c:#F472B6">
-        <div class="sc-head"><span class="sc-num">7</span><span class="sc-name">矿工谷</span><span class="sc-view">人性</span></div>
+      <a class="station-card" data-num="7" href="learning/02-basics/02-04-mining.html" style="--c:#F472B6">
+        <div class="sc-head"><span class="sc-num">7</span><span class="sc-name">矿工谷</span><span class="sc-view">人性</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">MINER VALLEY</div>
         <p>矿工用电力竞争记账权，自私的人性被机制设计成维护网络安全的力量。</p>
         <div class="sc-go">前往：挖矿原理 →</div>
       </a>
 
-      <a class="station-card" href="learning/02-basics/02-02-keys-ownership.html" style="--c:#22C55E">
-        <div class="sc-head"><span class="sc-num">8</span><span class="sc-name">私钥崖</span><span class="sc-view">历史</span></div>
+      <a class="station-card" data-num="8" href="learning/02-basics/02-02-keys-ownership.html" style="--c:#22C55E">
+        <div class="sc-head"><span class="sc-num">8</span><span class="sc-name">私钥崖</span><span class="sc-view">历史</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">KEY CLIFF</div>
         <p>一串私钥就是所有权本身。失去它，比特币就永远不再属于你——这是最古老的教训。</p>
         <div class="sc-go">前往：私钥与所有权 →</div>
       </a>
 
-      <a class="station-card" href="learning/04-technology/04-00-overview.html" style="--c:#F7931A">
-        <div class="sc-head"><span class="sc-num">9</span><span class="sc-name">代码之巅</span><span class="sc-view">哲学</span></div>
+      <a class="station-card" data-num="9" href="learning/04-technology/04-00-overview.html" style="--c:#F7931A">
+        <div class="sc-head"><span class="sc-num">9</span><span class="sc-name">代码之巅</span><span class="sc-view">哲学</span><span class="sc-read" role="button" tabindex="0" aria-pressed="false" title="标记为已读">○</span></div>
         <div class="sc-en">CODE SUMMIT</div>
         <p>站在代码之巅俯瞰：比特币不是一家公司，而是一套谁都无法单方面改写的规则。</p>
         <div class="sc-go">前往：技术篇总览 →</div>
@@ -362,5 +416,76 @@
 </footer>
 
 <script src="shared/nav.js"></script>
+<script>
+/* 已读进度：localStorage 持久化，刷新不丢。
+   为什么做：地图上有 10 站，但没有任何「我学到哪了」的反馈——
+   学完三站回来只看得见一张漂亮图。进度让地图从「能看」变成「能用」。 */
+(function () {
+  var KEY = 'btcmap:read-v1';
+  var cards = [].slice.call(document.querySelectorAll('.station-card[data-num]'));
+  var spots = [].slice.call(document.querySelectorAll('.hotspot[data-num]'));
+  var elDone = document.getElementById('mpDone');
+  var elFill = document.getElementById('mpFill');
+  var elTotal = document.getElementById('mpTotal');
+  var elTip = document.getElementById('mpTip');
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; }
+  }
+  function save(a) {
+    try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {}
+  }
+  var read = {};
+  load().forEach(function (n) { read[n] = true; });
+
+  function render() {
+    var done = 0;
+    cards.forEach(function (c) {
+      var on = !!read[c.dataset.num];
+      if (on) done++;
+      c.classList.toggle('is-read', on);
+      var b = c.querySelector('.sc-read');
+      if (b) {
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.textContent = on ? '✓' : '○';
+        b.title = on ? '取消已读标记' : '标记为已读';
+      }
+    });
+    spots.forEach(function (a) { a.classList.toggle('is-read', !!read[a.dataset.num]); });
+    if (elDone) elDone.textContent = done;
+    if (elTotal) elTotal.textContent = cards.length;
+    if (elFill) elFill.style.width = (cards.length ? done / cards.length * 100 : 0) + '%';
+    if (elTip) {
+      elTip.textContent = done === 0 ? '点卡片右上角的圈，记录你的进度'
+        : done === cards.length ? '十站走完，你已经拥有一张完整的认知地图'
+        : '还剩 ' + (cards.length - done) + ' 站，继续往上走';
+    }
+  }
+
+  function toggle(num) {
+    if (read[num]) delete read[num]; else read[num] = true;
+    save(Object.keys(read));
+    render();
+  }
+
+  cards.forEach(function (c) {
+    var b = c.querySelector('.sc-read');
+    if (!b) return;
+    // 卡片本身是 <a>，点标记不能顺带跳转
+    ['click', 'keydown'].forEach(function (ev) {
+      b.addEventListener(ev, function (e) {
+        if (ev === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault(); e.stopPropagation();
+        toggle(c.dataset.num);
+      });
+    });
+  });
+
+  var rs = document.getElementById('mpReset');
+  if (rs) rs.addEventListener('click', function () { read = {}; save([]); render(); });
+
+  render();
+})();
+</script>
 </body>
 </html>
