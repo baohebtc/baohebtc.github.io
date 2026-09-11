@@ -32,8 +32,10 @@ const RUN_FULL_E2E = process.env.RUN_FULL_E2E !== '0'; // 默认跑全量（HARD
 // 顺序执行，避免多 Chromium 实例抢端口/内存
 const HARD_GATES = [
   { name: 'site-check (R1–R9)', cmd: ['site-check.mjs'] },
-  { name: 'n7-scan zh (移动端溢出)', cmd: ['n7-scan.mjs', '--lang=zh'] },
-  { name: 'n7-scan en (移动端溢出)', cmd: ['n7-scan.mjs', '--lang=en'] },
+  // n7 全站 56 页真实渲染，这台 2013 MBA 实测 ~240s/遍，默认 240s 会把 en 遍卡死在临界点
+  // （2026-09-11 实锤：zh 239.4s 擦边过、en 240.1s TIMEOUT/KILL），显式放宽到 420s
+  { name: 'n7-scan zh (移动端溢出)', cmd: ['n7-scan.mjs', '--lang=zh'], timeout: 420000 },
+  { name: 'n7-scan en (移动端溢出)', cmd: ['n7-scan.mjs', '--lang=en'], timeout: 420000 },
   { name: 'btcnav zh (BTCMap 导航)', cmd: ['btcnav-check.mjs', '--lang=zh'] },
   { name: 'btcnav en (BTCMap 导航)', cmd: ['btcnav-check.mjs', '--lang=en'] },
   // 学习地图标签层：站名不得在站号下方 + 羊皮纸牌风格 + 与真相源坐标一致 + 已读进度 + 首页入口

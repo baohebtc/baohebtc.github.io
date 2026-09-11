@@ -37,7 +37,9 @@ const server = http.createServer((req, res) => {
 
 function listHtml(dir, acc = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (e.name === '.git' || e.name === 'node_modules') continue;
+    // 与 site-check.mjs 保持一致：out/ 是 md-preview.py 的临时预览（已 gitignore，
+    // 不参与生产发布），archive/samples/content-source 是本地留档，扫进去只会制造噪声。
+    if (['.git', 'node_modules', 'assets', 'archive', 'out', 'samples', 'content-source'].includes(e.name)) continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) listHtml(p, acc);
     else if (e.name.endsWith('.html')) acc.push(p);
@@ -59,8 +61,10 @@ async function run() {
     const rel = path.relative(ROOT, file);
     const page = await ctx.newPage();
     try {
-      await page.goto(urlOf(file), { waitUntil: 'load', timeout: 15000 });
-      await page.waitForTimeout(500); // full layout (fonts/deferred js)
+      // 本闸只查移动端横向溢出（CSS 布局问题），不必等全站图片加载完；
+      // 'load' 在 4GB 老机器上光等 learning-map 页 2MB 地图就白耗十几秒
+      await page.goto(urlOf(file), { waitUntil: 'domcontentloaded', timeout: 15000 });
+      await page.waitForTimeout(500); // layout settle (fonts/deferred js)
       if (LANG === 'en') {
         const en = await page.$('[data-lang="en"]');
         if (en) { await en.click().catch(() => {}); await page.waitForTimeout(250); }
