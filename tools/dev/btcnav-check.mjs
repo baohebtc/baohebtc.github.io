@@ -16,7 +16,10 @@ const MIME = { '.html':'text/html', '.js':'text/javascript', '.css':'text/css', 
 
 function listHtml(dir, acc=[]) {
   for (const e of fs.readdirSync(dir)) {
-    if (e === 'node_modules' || e.startsWith('.')) continue;
+    // 与 site-check.mjs 保持一致：out/ 是 md-preview.py 的临时预览（已 gitignore，
+    // 不参与生产发布），archive/samples/content-source 是本地留档，扫进去只会制造噪声。
+    if (e === 'node_modules' || e.startsWith('.') ||
+        ['assets','archive','out','samples','content-source'].includes(e)) continue;
     const p = path.join(dir, e);
     const s = fs.statSync(p);
     if (s.isDirectory()) listHtml(p, acc);

@@ -63,7 +63,10 @@ const server = http.createServer((req, res) => {
 
 function walk(dir, acc = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (e.name === '.git' || e.name === 'node_modules' || e.name === 'assets') continue;
+    // 与 site-check.mjs 保持一致：archive/out/samples/content-source 是本地留档与临时预览，
+    // 不属于站点页面。out/ 尤其关键——md-preview.py 生成的 out/preview/*.html
+    // 不参与生产发布，扫进去只会让 CI 常红（TIMEOUT/KILL），淹没真红灯。
+    if (['.git', 'node_modules', 'assets', 'archive', 'out', 'samples', 'content-source'].includes(e.name)) continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, acc);
     else if (e.name.endsWith('.html')) acc.push(p);
