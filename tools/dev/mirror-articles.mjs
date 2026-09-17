@@ -29,27 +29,32 @@ const PUBLIC = path.resolve(__dirname, '../..');
 const PRIVATE = process.env.MIRROR_PRIVATE_REPO
   || path.resolve(PUBLIC, '../宝盒运营私有');
 
-const SRC_ARTICLES = path.join(PUBLIC, 'content-source/articles/公众号');
+const SRC_GZH = path.join(PUBLIC, '慢读宝盒公众号'); // ADR-0003：文章+配图+封面按站聚合
 const SRC_TOPICS = path.join(PUBLIC, 'content-source/topics');
-const SRC_X = path.join(PUBLIC, 'content-source/articles/x-version');
-const DST_ARTICLES = path.join(PRIVATE, 'articles/公众号');
+const DST_GZH = path.join(PRIVATE, 'articles/公众号');
 const DST_TOPICS = path.join(PRIVATE, 'articles/topics');
-const DST_X = path.join(PRIVATE, 'articles/x-version');
 
 function log(s) { console.log(`[mirror] ${s}`); }
 
-function sync(srcDir, dstDir, label) {
+/** 递归同步目录（md+图+封面全量，跳过隐藏文件） */
+function syncTree(srcDir, dstDir, label) {
   if (!fs.existsSync(srcDir)) {
     log(`⚠️  源不存在跳过: ${path.relative(PUBLIC, srcDir)}`);
     return 0;
   }
-  fs.mkdirSync(dstDir, { recursive: true });
-  const files = fs.readdirSync(srcDir).filter(f => f.endsWith('.md'));
-  for (const f of files) {
-    fs.copyFileSync(path.join(srcDir, f), path.join(dstDir, f));
-    log(`📄  ${label} · ${f}`);
-  }
-  return files.length;
+  let n = 0;
+  const walk = (s, d) => {
+    fs.mkdirSync(d, { recursive: true });
+    for (const f of fs.readdirSync(s)) {
+      if (f.startsWith('.')) continue;
+      const sp = path.join(s, f), dp = path.join(d, f);
+      if (fs.statSync(sp).isDirectory()) walk(sp, dp);
+      else { fs.copyFileSync(sp, dp); n++; }
+    }
+  };
+  walk(srcDir, dstDir);
+  log(`📁  ${label} · ${n} 个文件`);
+  return n;
 }
 
 function gitIn(repo, ...args) {
@@ -65,11 +70,10 @@ function gitIn(repo, ...args) {
   log(`公开仓: ${PUBLIC}`);
   log(`私有仓: ${PRIVATE}`);
 
-  const n1 = sync(SRC_ARTICLES, DST_ARTICLES, '公众号文章');
-  const n2 = sync(SRC_TOPICS, DST_TOPICS, '母文  ');
-  const n3 = sync(SRC_X, DST_X, 'X版   ');
-  const total = n1 + n2 + n3;
-  log(`共同步 ${total} 篇（公众号 ${n1} · 母文 ${n2} · X版 ${n3}）`);
+  const n1 = syncTree(SRC_GZH, DST_GZH, '公众号文章（含配图封面）');
+  const n2 = syncTree(SRC_TOPICS, DST_TOPICS, '母文  ');
+  const total = n1 + n2;
+  log(`共同步 ${total} 个文件（公众号 ${n1} · 母文 ${n2}）`);
 
   // 生成图文 HTML（不在此处提交，随 MD 一起统一提交上云）
   log('===== 生成图文 HTML =====');

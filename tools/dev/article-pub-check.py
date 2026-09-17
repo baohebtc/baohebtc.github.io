@@ -29,6 +29,9 @@ def main():
     ap.add_argument('--table-figs', default='',
                     help='表格配图显式映射，如 "T1=02-bank-vs-btc.png,T2=06-t2-utxo-table.png"'
                          '（T 编号表在微信端必须以图呈现，MD 表会乱码）')
+    ap.add_argument('--md-tables-ok', action='store_true',
+                    help='豁免：本管线 wechat_push 会把 MD 表渲染为带内联样式 HTML 表'
+                         '（已有草稿箱实证），跳过强制配图要求')
     args = ap.parse_args()
 
     md_path = Path(args.md).resolve()
@@ -65,30 +68,30 @@ def main():
     else:
         ok.append(f'正文 {len(refs)} 张图片全部存在')
 
-    # 4. 回扣地图必须是新版（排除 mindmap-summary 这类含 map 的文件名）
+    # 4. 回扣地图必须是新版（文件名含「地图回扣」或 map-figure；排除 mindmap）
     if args.expect_map:
         map_refs = [n for n in names
-                    if 'map' in n.lower() and 'mindmap' not in n.lower()]
+                    if ('map' in n.lower() or '地图回扣' in n) and 'mindmap' not in n.lower()]
         if not map_refs:
             fail(bad, '未找到回扣地图引用（map-figure）')
         elif args.expect_map not in map_refs:
             fail(bad, f'回扣地图用了 {map_refs}，应为 {args.expect_map}（旧图/缺失）')
         else:
             ok.append(f'回扣地图已指向新版 {args.expect_map}')
-        # 地图必须横版（正文配图统一横版语言）
+        # 地图必须是 v2 品牌规格：4:5 竖版 1080×1350（全图聚光，ADR-0003）
         for n in map_refs:
             for rel in refs:
                 if Path(rel).name == n:
                     from PIL import Image
                     im = Image.open((base / rel).resolve())
-                    if im.size[0] <= im.size[1]:
-                        fail(bad, f'回扣地图 {n} 是竖图 {im.size}（正文应横版）')
+                    if im.size != (1080, 1350):
+                        fail(bad, f'回扣地图 {n} 是 {im.size}，应为 4:5 竖版 1080×1350（make_map_callout_v2 产出）')
                     else:
-                        ok.append(f'回扣地图 {n} 横版 {im.size}')
+                        ok.append(f'回扣地图 {n} 4:5 竖版 {im.size}')
 
-    # 5. 表格配图核对（显式映射：T编号=文件名）
+    # 5. 表格配图核对（显式映射：T编号=文件名；或 --md-tables-ok 豁免）
     tables = sorted(set(re.findall(r'\*\*(T\d+)\s*[·•]', s)))
-    if tables:
+    if tables and not args.md_tables_ok:
         if not args.table_figs:
             fail(bad, f'文中 {len(tables)} 张 MD 表（{"、".join(tables)}）'
                       f'但未声明 --table-figs 映射——微信端将乱码')

@@ -173,11 +173,16 @@ function convertFile(mdPath) {
 // ---------- 全部生成 ----------
 export async function generateAllHtml({ dry = false, commit = true } = {}) {
   const targets = [];
-  const wxDir = path.join(PUBLIC_REPO, 'content-source', 'articles', '公众号');
+  // 公众号文章（ADR-0003 起住 慢读宝盒公众号/站N/02-文章/）
+  const gzhDir = path.join(PUBLIC_REPO, '慢读宝盒公众号');
   const topicDir = path.join(PUBLIC_REPO, 'content-source', 'topics');
-  if (fs.existsSync(wxDir)) {
-    for (const f of fs.readdirSync(wxDir)) {
-      if (/-微信版\.md$/.test(f)) targets.push({ md: path.join(wxDir, f), out: f.replace(/\.md$/, '.html') });
+  if (fs.existsSync(gzhDir)) {
+    for (const st of fs.readdirSync(gzhDir)) {
+      const artDir = path.join(gzhDir, st, '02-文章');
+      if (!fs.existsSync(artDir)) continue;
+      for (const f of fs.readdirSync(artDir)) {
+        if (/-微信版\.md$/.test(f)) targets.push({ md: path.join(artDir, f), out: f.replace(/\.md$/, '.html') });
+      }
     }
   }
   if (fs.existsSync(topicDir)) {
@@ -185,11 +190,14 @@ export async function generateAllHtml({ dry = false, commit = true } = {}) {
       if (/\.md$/.test(f)) targets.push({ md: path.join(topicDir, f), out: f.replace(/\.md$/, '-母文.html') });
     }
   }
-  // X（推特）开放版：扫描 content-source/articles/x-version/，文件名原样 .html
-  const xDir = path.join(PUBLIC_REPO, 'content-source', 'articles', 'x-version');
-  if (fs.existsSync(xDir)) {
-    for (const f of fs.readdirSync(xDir)) {
-      if (/\.md$/.test(f)) targets.push({ md: path.join(xDir, f), out: f.replace(/\.md$/, '.html') });
+  // X（推特）开放版：随文章住 慢读宝盒公众号/站N/02-文章/（-X版.md）
+  if (fs.existsSync(gzhDir)) {
+    for (const st of fs.readdirSync(gzhDir)) {
+      const artDir = path.join(gzhDir, st, '02-文章');
+      if (!fs.existsSync(artDir)) continue;
+      for (const f of fs.readdirSync(artDir)) {
+        if (/-X版\.md$/.test(f)) targets.push({ md: path.join(artDir, f), out: f.replace(/\.md$/, '.html') });
+      }
     }
   }
 
