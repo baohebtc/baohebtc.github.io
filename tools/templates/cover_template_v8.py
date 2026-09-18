@@ -27,14 +27,15 @@ SAFE_L, SAFE_R = 258, 642          # 微信列表 383×383 安全区
 
 # ---- 构图可调参数（头像圈 + ₿ 落位）----
 MED_S = 196      # 头像徽章直径
-MED_CY = 122     # 头像徽章中心 y（下移给 ₿ 让出顶部空间）
-COIN_D = 68      # ₿ 徽记直径
-COIN_CY = 42     # ₿ 徽记中心 y（坐落头像圈正上方，与圈顶重叠融合）
+MED_CY = 108     # 头像徽章中心 y
+MED_INNER_R = 91  # 头像内圈半径（实测：外圈 98 − 金环 6 ≈ 91）
+COIN_D = 48      # ₿ 徽记直径（与上一版一致）
+TANGENT_GAP = 0  # 内切留白：0 = 币顶与内圈严格相切，加大则往内缩
 # 融合强度（避免"硬塞"观感：光晕宽而淡、阴影大而柔）
-GLOW_A = 58
-GLOW_BLUR = 16
-SHADOW_A = 0.5
-SHADOW_BLUR = 7
+GLOW_A = 52
+GLOW_BLUR = 12
+SHADOW_A = 0.45
+SHADOW_BLUR = 5
 
 # ---- 头像实测色板（ADR-0005） ----
 BG_EDGE = (23, 16, 8)      # #171008
@@ -140,8 +141,9 @@ def render(station, theme='dark'):
     overlay.alpha_composite(halo)
     overlay.alpha_composite(med, (med_x, med_y))
 
-    # ---- ₿ 徽记：坐落头像圈正上方（无硬边垫圈，暖光晕+柔阴影融合） ----
-    place_coin_badge(overlay, CX, COIN_CY, COIN_D)
+    # ---- ₿ 徽记：币顶与头像内圈相切（内嵌于圈顶，暖光晕+柔阴影融合）----
+    coin_cy = MED_CY - MED_INNER_R + COIN_D / 2 + TANGENT_GAP
+    place_coin_badge(overlay, CX, coin_cy, COIN_D)
     d = ImageDraw.Draw(overlay)
 
     # ---- 左上品牌行：mini 徽章 + 慢读宝盒 ----
