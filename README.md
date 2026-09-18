@@ -22,6 +22,7 @@
 | 学习地图 v3.3 源图 + 站点坐标 | `archive/learning-map-v33-源图-2026-09/` |
 | 学习地图 v2 母图（已停用，留档） | `assets/learning-map/v2-B-01-教育风{,-with-stations}.png` |
 | 比特币 ₿ 标志 / logo | `assets/brand/` |
+| 文章排版 / 配色 / 色调规范 | `assets/brand/文章排版与视觉模板.md`（+ `design-tokens.md`） |
 | 公众号头像 | `assets/avatar/` |
 | 母图源 / 早期试验（不进 git） | `samples/edu-mothermap/v{N}/` |
 | L1 检验脚本（文章/站点/封面） | `tools/dev/{content-lint.mjs, site-check.mjs, cover-lint.py}` |
