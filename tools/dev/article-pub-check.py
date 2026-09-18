@@ -71,23 +71,23 @@ def main():
     # 4. 回扣地图必须是新版（文件名含「地图回扣」或 map-figure；排除 mindmap）
     if args.expect_map:
         map_refs = [n for n in names
-                    if ('map' in n.lower() or '地图回扣' in n) and 'mindmap' not in n.lower()]
+                    if ('map' in n.lower() or '地图回扣' in n or '寻宝路线' in n) and 'mindmap' not in n.lower()]
         if not map_refs:
             fail(bad, '未找到回扣地图引用（map-figure）')
         elif args.expect_map not in map_refs:
             fail(bad, f'回扣地图用了 {map_refs}，应为 {args.expect_map}（旧图/缺失）')
         else:
             ok.append(f'回扣地图已指向新版 {args.expect_map}')
-        # 地图必须是 v2 品牌规格：4:5 竖版 1080×1350（全图聚光，ADR-0003）
+        # 地图必须是 v3 品牌规格：4:3 横版 1200×900（矢量寻宝路线图，ADR-0004）
         for n in map_refs:
             for rel in refs:
                 if Path(rel).name == n:
                     from PIL import Image
                     im = Image.open((base / rel).resolve())
-                    if im.size != (1080, 1350):
-                        fail(bad, f'回扣地图 {n} 是 {im.size}，应为 4:5 竖版 1080×1350（make_map_callout_v2 产出）')
+                    if im.size != (1200, 900):
+                        fail(bad, f'回扣地图 {n} 是 {im.size}，应为 4:3 横版 1200×900（make_route_fig 产出）')
                     else:
-                        ok.append(f'回扣地图 {n} 4:5 竖版 {im.size}')
+                        ok.append(f'回扣地图 {n} 4:3 横版 {im.size}')
 
     # 5. 表格配图核对（显式映射：T编号=文件名；或 --md-tables-ok 豁免）
     tables = sorted(set(re.findall(r'\*\*(T\d+)\s*[·•]', s)))
