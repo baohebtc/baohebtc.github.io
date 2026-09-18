@@ -25,6 +25,17 @@ W, H = 900, 383
 CX = W // 2
 SAFE_L, SAFE_R = 258, 642          # 微信列表 383×383 安全区
 
+# ---- 构图可调参数（头像圈 + ₿ 落位）----
+MED_S = 196      # 头像徽章直径
+MED_CY = 122     # 头像徽章中心 y（下移给 ₿ 让出顶部空间）
+COIN_D = 68      # ₿ 徽记直径
+COIN_CY = 42     # ₿ 徽记中心 y（坐落头像圈正上方，与圈顶重叠融合）
+# 融合强度（避免"硬塞"观感：光晕宽而淡、阴影大而柔）
+GLOW_A = 58
+GLOW_BLUR = 16
+SHADOW_A = 0.5
+SHADOW_BLUR = 7
+
 # ---- 头像实测色板（ADR-0005） ----
 BG_EDGE = (23, 16, 8)      # #171008
 BG_CENTER = (42, 31, 18)   # #2A1F12
@@ -84,6 +95,29 @@ def draw_series_chip(d, right_x, cy, fs=12):
     return coin, (int(x0 + pad_l), int(coin_y)), (int(x0 + pad_l + fs * 2 + 6), cy), text, f
 
 
+def place_coin_badge(overlay, cx, cy, d):
+    """₿ 徽记融入式落位：暖光晕（与头像金光同源）+ 柔和接触阴影，无硬边垫圈。"""
+    coin = Image.open(BTC_EMBLEM).convert('RGBA').resize((d, d), Image.LANCZOS)
+    x, y = int(cx - d / 2), int(cy - d / 2)
+
+    # 1) 暖光晕：让币与头像的光场连成一体（而非贴上去的贴纸）
+    glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    r = d * 0.85
+    gd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(214, 172, 96, GLOW_A))
+    glow = glow.filter(ImageFilter.GaussianBlur(GLOW_BLUR))
+    overlay.alpha_composite(glow)
+
+    # 2) 柔和接触阴影（下移 3px，模糊，无描边环）
+    sh = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    sh.paste((8, 5, 2, 255), (x, y + 3), coin.split()[3].point(lambda v: int(v * SHADOW_A)))
+    sh = sh.filter(ImageFilter.GaussianBlur(SHADOW_BLUR))
+    overlay.alpha_composite(sh)
+
+    # 3) 币本体
+    overlay.alpha_composite(coin, (x, y))
+
+
 def render(station, theme='dark'):
     idx = next(i for i, s in enumerate(STATIONS) if s[0] == str(station))
     num, zh, en = STATIONS[idx]
@@ -92,10 +126,10 @@ def render(station, theme='dark'):
     overlay = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(overlay)
 
-    # ---- 中央：头像徽章（medallion，品牌母体） + 官方 ₿ 系列徽记压角 ----
-    med_s = 196
+    # ---- 中央：头像徽章（medallion，品牌母体） ----
+    med_s = MED_S
     med = Image.open(MEDALLION).convert('RGBA').resize((med_s, med_s), Image.LANCZOS)
-    med_cy = 108
+    med_cy = MED_CY
     med_x, med_y = CX - med_s // 2, med_cy - med_s // 2
     # 徽章后一圈柔光（金棕，从头像光晕延伸）
     halo = Image.new('RGBA', (W, H), (0, 0, 0, 0))
@@ -105,14 +139,9 @@ def render(station, theme='dark'):
     halo = halo.filter(ImageFilter.GaussianBlur(30))
     overlay.alpha_composite(halo)
     overlay.alpha_composite(med, (med_x, med_y))
-    # ₿ 徽记：徽章右下压角（宝盒比特币 = 头像 + ₿）
-    coin_r = 24
-    coin = Image.open(BTC_EMBLEM).convert('RGBA').resize((coin_r * 2, coin_r * 2), Image.LANCZOS)
-    badge_cx, badge_cy = med_x + med_s - 16, med_y + med_s - 14
-    ring_bg = ImageDraw.Draw(overlay)
-    ring_bg.ellipse([badge_cx - coin_r - 4, badge_cy - coin_r - 4,
-                     badge_cx + coin_r + 4, badge_cy + coin_r + 4], fill=BG_EDGE + (255,))
-    overlay.alpha_composite(coin, (badge_cx - coin_r, badge_cy - coin_r))
+
+    # ---- ₿ 徽记：坐落头像圈正上方（无硬边垫圈，暖光晕+柔阴影融合） ----
+    place_coin_badge(overlay, CX, COIN_CY, COIN_D)
     d = ImageDraw.Draw(overlay)
 
     # ---- 左上品牌行：mini 徽章 + 慢读宝盒 ----
