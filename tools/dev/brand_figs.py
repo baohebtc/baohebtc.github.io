@@ -32,7 +32,9 @@ TOPBAR_H = 66
 FOOTBAR_H = 56
 R_BIG, R_SM = 24, 14          # 圆角统一两档
 
-COMPLIANCE = "风险提示：比特币价格波动剧烈 · 本文仅作区块链科普 · 不构成投资建议"
+# 合规条文案（ADR-0009）：左侧品牌系别 · 右侧一句话合规。不再堆风险长句。
+BRAND_LINE = "慢读宝盒 · 宝盒比特币 · 学习连载"
+COMPLIANCE_SHORT = "科普内容 · 不构成投资建议"
 
 
 # ---------------- 主题色板（唯一定义源） ----------------
@@ -118,10 +120,11 @@ def canvas(th, title, station, size="16:9", sub=""):
     if station:
         d.text((W - 48, TOPBAR_H // 2), station, font=font(22), fill=th.MID, anchor="rm")
 
-    # 底栏：合规条（全系列固定文案，图上可溯源）
+    # 底栏：左品牌系别 · 右合规短句（ADR-0009 定稿文案，两端对齐）
     d.rectangle([0, H - FOOTBAR_H, W, H], fill=th.FOOTBAR)
     d.line([0, H - FOOTBAR_H, W, H - FOOTBAR_H], fill=th.EDGE, width=2)
-    d.text((W // 2, H - FOOTBAR_H // 2), COMPLIANCE, font=font(19), fill=th.MID, anchor="mm")
+    d.text((48, H - FOOTBAR_H // 2), BRAND_LINE, font=font(19), fill=th.MID, anchor="lm")
+    d.text((W - 48, H - FOOTBAR_H // 2), COMPLIANCE_SHORT, font=font(19), fill=th.MID, anchor="rm")
 
     if sub:
         d.text((48, TOPBAR_H + 26), sub, font=font(21), fill=th.MID)
