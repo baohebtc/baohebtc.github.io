@@ -23,16 +23,21 @@
 | 学习地图 v2 母图（已停用，留档） | `assets/learning-map/v2-B-01-教育风{,-with-stations}.png` |
 | 比特币 ₿ 标志 / logo | `assets/brand/` |
 | 文章排版 / 配色 / 色调规范 | `assets/brand/文章排版与视觉模板.md`（+ `design-tokens.md`） |
+| 配图视觉规范（正文图） | `assets/brand/配图视觉规范.md` v1.0（方向 B paper-light）+ 库 `tools/dev/brand_figs.py` |
+| 配图门闸 / 文章排版门闸 | `tools/dev/{fig-brand-check.py, article-template-check.py}` |
 | 公众号头像 | `assets/avatar/` |
 | 母图源 / 早期试验（不进 git） | `samples/edu-mothermap/v{N}/` |
 | L1 检验脚本（文章/站点/封面） | `tools/dev/{content-lint.mjs, site-check.mjs, cover-lint.py}` |
-| 封面产线模板（在用） | `tools/templates/{cover_template_v5.py, crop_9_safe.py, make_stations_overlay.py}` |
+| 封面产线模板（在用） | `tools/templates/cover_template_v8.py`（ADR-0005 定版，`--batch` 出 10 站） |
+| 回扣图产线（在用） | `tools/dev/make_route_fig.py <站号> <输出>` → `寻宝路线-站N-v3.png` |
+| 正文配图产线（在用） | `tools/dev/{make_s45_figs_light.py, make_s13_figs_light.py, make_s2_figs_light.py}` |
+| ₿ 官方标准件生成 | `tools/dev/make_btc_emblem.py`（源：`assets/brand/bitcoin-logo-official.svg`） |
 | 文章→HTML / 镜像私有仓 | `tools/dev/{md-to-html.mjs, mirror-articles.mjs}` |
 | 历史版本工具 | `tools/archive/` |
 | 规划/方案/调研文档 | `plans/` |
 | 历史资产归档 | `archive/` |
 | 站点设计规范 | `brand/`（design tokens）+ `docs/`（开发文档） |
-| 9 站封面产出 | `out/cover-A-batch/` |
+| 9 站封面产出 | `慢读宝盒公众号/站N-站名/04-封面/` |
 
 ### 关键规则（违反会乱）
 
