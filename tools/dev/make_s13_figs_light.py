@@ -517,6 +517,44 @@ def s3_05():
     save(im, OUT3 / "05-pow-miners.png")
 
 
+def s3_06():
+    """T1 表图：中本聪五件套 vs 挡双花机制（4:3，微信端以此图呈现表格）。"""
+    im, d = canvas(TH, "T1 \u00b7 中本聪五件套 vs 挡双花机制", "站3 \u00b7 双花峡", size="4:3")
+    W, H = im.size
+    rows = [
+        ("公开账本（区块链）", "重复花一眼露馅", "人人能查的共享总账"),
+        ("UTXO 模型", "同一 output 用掉即失效", "粮票撕掉作废"),
+        ("时间戳 + 哈希链", "先后次序被数学锁死", "盖了骑缝章的账页"),
+        ("PoW + 矿工竞争", "作弊代价远超回报", "作弊要吞下半座电厂"),
+        ("全网广播 + 节点验证", "先到先得，6 确认后改不动", "全村作证"),
+    ]
+    nums = "\u2460\u2461\u2462\u2463\u2464"
+    x0, x1 = 110, 1180
+    cx_name, cx_stop, cx_ana = 136, 450, 870
+    y = TOPBAR_H + 16
+    # 表头
+    d.rounded_rectangle([x0, y, x1, y + 54], radius=R_SM, fill=TH.CARD_HI,
+                        outline=TH.EDGE, width=2)
+    d.text((cx_name, y + 27), "五件套", font=font(24, True), fill=TH.MID, anchor="lm")
+    d.text((cx_stop, y + 27), "它挡住了什么", font=font(24, True), fill=TH.MID, anchor="lm")
+    d.text((cx_ana, y + 27), "一句类比", font=font(24, True), fill=TH.ACCENT, anchor="lm")
+    y += 74
+    for i, (name, stop, ana) in enumerate(rows):
+        h = 124
+        bg = TH.CARD if i % 2 == 0 else TH.CARD_HI
+        d.rounded_rectangle([x0, y, x1, y + h], radius=12, fill=bg,
+                            outline=TH.EDGE, width=1)
+        d.rectangle([x0 + 6, y + 18, x0 + 11, y + h - 18], fill=TH.ACCENT)
+        wrap(d, f"{nums[i]} {name}", x0 + 26, y + 26, 280, font(23, True), TH.TXT, 30, 2)
+        wrap(d, stop, cx_stop, y + 26, 390, font(22), TH.TXT, 30, 2)
+        wrap(d, ana, cx_ana, y + 26, 300, font(22), TH.GOLD, 30, 2)
+        y += h + 16
+    d.text(((x0 + x1) // 2, y + 22),
+           "五件套各挡一环：看见 \u00b7 作废 \u00b7 定序 \u00b7 贵到不划算 \u00b7 全村作证",
+           font=font(24, True), fill=TH.MID, anchor="mm")
+    save(im, OUT3 / "06-t1-five-tools-table.png")
+
+
 def s3_07():
     """三句话带走（16:9）。"""
     im, d = canvas(TH, "三句话带走本篇", "站3 · 双花峡", size="16:9")
@@ -538,7 +576,7 @@ def s3_07():
 
 FN = {"s1": [s1_01, s1_02, s1_03, s1_04, s1_05, s1_06],
       "s15": [s15_01, s15_02, s15_03, s15_04, s15_05, s15_07],
-      "s3": [s3_01, s3_02, s3_03, s3_04, s3_05, s3_07]}
+      "s3": [s3_01, s3_02, s3_03, s3_04, s3_05, s3_06, s3_07]}
 
 if __name__ == "__main__":
     arg = sys.argv[1] if len(sys.argv) > 1 else "all"
