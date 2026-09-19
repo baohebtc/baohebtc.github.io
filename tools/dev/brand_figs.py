@@ -226,7 +226,7 @@ def preview_in_article(img, out, article_bg=(251, 247, 240), width=677):
     W = width + pad * 2
     H = txt_h + im_s.height + txt_h + pad * 2
     canvas_ = Image.new("RGB", (W, H), article_bg)
-    d = ID.Draw(canvas_)
+    d = ImageDraw.Draw(canvas_)
     f = font(17)
     for i, (cy, txt) in enumerate([(pad, "上一段正文……"), (pad + txt_h + im_s.height + 18, "下一段正文……")]):
         d.text((pad, cy), txt, font=f, fill=(70, 60, 50))
