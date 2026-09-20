@@ -211,7 +211,7 @@ def s4_05():
     fy = y0 + ph + 42
     d.text((W // 2, fy + 20), "改一页 → 后面每一页的 prev 指纹对不上 → 立刻穿帮",
            font=font(27, True), fill=TH.TXT, anchor="mm")
-    save(im, OUT4 / "05-append-only.png")
+    save(im, OUT4 / "06-append-only.png")
 
 def s4_06():
     """T2 对比表：账户模型 vs UTXO 模型（4:3，沿用 make_t2_table 数据）。"""
@@ -242,7 +242,7 @@ def s4_06():
         d.text((x_a + 40, y + 46), a, font=font(23), fill=TH.MID, anchor="lm")
         d.text((x_b + 30, y + 46), b, font=font(23, True), fill=TH.GOLD, anchor="lm")
         y += 102
-    save(im, OUT4 / "06-t2-utxo-table.png")
+    save(im, OUT4 / "05-t2-utxo-table.png")
 
 def s4_07():
     """三句话带走（16:9，三竖卡 + 官方 ₿）。"""
