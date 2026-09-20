@@ -112,8 +112,10 @@ def main():
     # 6. 尾板与下篇预告
     if '不构成任何投资建议' in s: ok.append('风险提示尾板在')
     else: fail(bad, '缺风险提示尾板')
+    # 终章（站9）以「连载收官」替代「下篇预告」（ADR-0013 §4.2，向后兼容）
     if '下篇预告' in s: ok.append('下篇预告在')
-    else: fail(bad, '缺下篇预告')
+    elif '连载收官' in s: ok.append('连载收官块在（终章模式）')
+    else: fail(bad, '缺收尾块（下篇预告 / 连载收官 二选一）')
 
     print('──────── 发布闸结果 ────────')
     for o in ok: print('  🟢', o)

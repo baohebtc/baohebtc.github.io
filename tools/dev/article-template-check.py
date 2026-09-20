@@ -95,8 +95,9 @@ def check(md_path):
     for kw in TAIL_KEYWORDS:
         if kw not in body:
             issues.append(f"M2 尾板缺关键词：{kw}")
-    if '下篇预告' not in body:
-        issues.append("M2 尾板缺下篇预告")
+    # 终章（站9）以「连载收官」替代「下篇预告」（ADR-0013 §4.2，向后兼容）
+    if '下篇预告' not in body and '连载收官' not in body:
+        issues.append("M2 尾板缺收尾块（下篇预告 / 连载收官 二选一）")
     # M3 Unicode ₿
     n = body.count('₿')
     if n:
