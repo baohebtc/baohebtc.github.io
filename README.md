@@ -30,7 +30,7 @@
 | L1 检验脚本（文章/站点/封面） | `tools/dev/{content-lint.mjs, site-check.mjs, cover-lint.py}` |
 | 封面产线模板（在用） | `tools/templates/cover_template_v8.py`（ADR-0005 定版，`--batch` 出 10 站） |
 | 回扣图产线（在用） | `tools/dev/make_route_fig.py <站号> <输出>` → `寻宝路线-站N-v3.png` |
-| 正文配图产线（在用） | `tools/dev/{make_s45_figs_light.py, make_s13_figs_light.py, make_s2_figs_light.py, make_s6_figs_light.py, make_s7_figs_light.py}` |
+| 正文配图产线（在用） | `tools/dev/{make_s45_figs_light.py, make_s13_figs_light.py, make_s2_figs_light.py, make_s6_figs_light.py, make_s7_figs_light.py, make_s8_figs_light.py}` |
 | 站点六件套门闸（在用） | `tools/dev/station-kit-check.py [站名]`（K1-K6，新站开工先跑红灯） |
 | ₿ 官方标准件生成 | `tools/dev/make_btc_emblem.py`（源：`assets/brand/bitcoin-logo-official.svg`） |
 | 文章→HTML / 镜像私有仓 | `tools/dev/{md-to-html.mjs, mirror-articles.mjs}` |
