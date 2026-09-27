@@ -166,7 +166,7 @@ def s8_04():
     card(d, [90, TOPBAR_H + 34, 590, 556], TH, r=18)
     d.text((120, TOPBAR_H + 62), "2009–2012 · 一堆散钥匙", font=font(25, True), fill=RED)
     d.text((120, TOPBAR_H + 100), "每要一个新地址，就随机生成一把新私钥",
-           font=font(19), fill=TH.MID)
+           font=font(22), fill=TH.MID)
     # 散钥匙格子
     gx, gy = 120, TOPBAR_H + 132
     for i in range(12):
@@ -176,25 +176,25 @@ def s8_04():
         d.rounded_rectangle([cx, cy, cx + 58, cy + 44], radius=8,
                             fill=RED_BG if late else TH.CARD_HI,
                             outline=RED if late else TH.EDGE, width=2 if late else 1)
-        d.text((cx + 29, cy + 22), "k%d" % (i + 1), font=font(18, True),
+        d.text((cx + 29, cy + 22), "k%d" % (i + 1), font=font(22, True),
                fill=RED if late else TH.MID, anchor="mm")
     d.text((120, TOPBAR_H + 276), "wallet.dat 密钥池只预留 100 把",
-           font=font(20), fill=TH.TXT)
-    d.rounded_rectangle([120, TOPBAR_H + 308, 560, TOPBAR_H + 388], radius=10,
+           font=font(23), fill=TH.TXT)
+    d.rounded_rectangle([120, TOPBAR_H + 306, 560, TOPBAR_H + 410], radius=10,
                         fill=RED_BG, outline=RED, width=2)
     d.text((140, TOPBAR_H + 322), "转账还会自动生成找零地址 →",
-           font=font(20, True), fill=RED)
-    d.text((140, TOPBAR_H + 354), "超出 100 把之后的新钥匙，不在备份里",
-           font=font(20, True), fill=RED)
-    d.text((120, TOPBAR_H + 436), "硬盘一坏，用旧备份恢复 → 那部分币没了",
-           font=font(19), fill=TH.MID)
+           font=font(23, True), fill=RED)
+    d.text((140, TOPBAR_H + 368), "超出 100 把之后的新钥匙，不在备份里",
+           font=font(23, True), fill=RED)
+    d.text((120, TOPBAR_H + 446), "硬盘一坏，用旧备份恢复 → 那部分币没了",
+           font=font(22), fill=TH.MID)
 
     # 右：2012 起 种子树
     card(d, [690, TOPBAR_H + 34, 1190, 556], TH, r=18)
     d.text((720, TOPBAR_H + 62), "2012 起 · 一棵种子树（BIP32）",
            font=font(25, True), fill=GREEN)
     d.text((720, TOPBAR_H + 100), "一个种子，按固定规则推导全部钥匙",
-           font=font(19), fill=TH.MID)
+           font=font(22), fill=TH.MID)
     # 种子
     seed_cx, seed_y = 940, TOPBAR_H + 150
     d.ellipse([seed_cx - 92, seed_y - 32, seed_cx + 92, seed_y + 32],
@@ -208,16 +208,16 @@ def s8_04():
                fill=TH.EDGE, width=3)
         d.rounded_rectangle([bx, branches_y - 20, bx + 100, branches_y + 24],
                             radius=8, fill=GREEN_BG, outline=GREEN, width=2)
-        d.text((bx + 50, branches_y + 2), label, font=font(19, True),
+        d.text((bx + 50, branches_y + 2), label, font=font(22, True),
                fill=GREEN, anchor="mm")
-    d.text((720, TOPBAR_H + 324), "再下一层还能继续分（分层确定性）",
-           font=font(19), fill=TH.MID)
-    d.rounded_rectangle([720, TOPBAR_H + 356, 1160, TOPBAR_H + 424], radius=10,
+    d.text((720, TOPBAR_H + 316), "再下一层还能继续分（分层确定性）",
+           font=font(22), fill=TH.MID)
+    d.rounded_rectangle([720, TOPBAR_H + 352, 1160, TOPBAR_H + 432], radius=10,
                         fill=GREEN_BG, outline=GREEN, width=2)
-    d.text((740, TOPBAR_H + 382), "备份一次，就能重新长出所有钥匙",
-           font=font(21, True), fill=GREEN)
-    d.text((720, TOPBAR_H + 452), "2013 BIP39：种子 → 12/24 个助记单词",
-           font=font(19), fill=TH.TXT)
+    d.text((740, TOPBAR_H + 392), "备份一次，就能重新长出所有钥匙",
+           font=font(23, True), fill=GREEN)
+    d.text((720, TOPBAR_H + 450), "2013 BIP39：种子 → 12/24 个助记单词",
+           font=font(22), fill=TH.TXT)
 
     # 中间箭头
     arrow(d, (600, TOPBAR_H + 285), (676, TOPBAR_H + 285), TH, width=5)

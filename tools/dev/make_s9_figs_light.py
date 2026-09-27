@@ -131,12 +131,12 @@ def s9_02():
                   fill=col, outline=TH.CARD, width=3)
         d.line([(px, axis_y - 13 if up else axis_y + 13),
                 (px, axis_y - 52 if up else axis_y + 52)], fill=col, width=3)
-        ty = axis_y - 92 if up else axis_y + 66
-        d.text((px, ty), date, font=font(23, True), fill=col, anchor="mm")
-        wrap(d, desc, px - 105, ty + 32, 210, font(19), TH.TXT, 26, 2)
+        ty = axis_y - 116 if up else axis_y + 68
+        d.text((px, ty), date, font=font(25, True), fill=col, anchor="mm")
+        wrap(d, desc, px - 125, ty + 34, 250, font(22), TH.TXT, 32, 2)
 
-    d.text((1112, axis_y + 66), "之后", font=font(22, True), fill=TH.DIM, anchor="mm")
-    d.text((1112, axis_y + 100), "再无可验证消息", font=font(18), fill=TH.DIM, anchor="mm")
+    d.text((1160, axis_y + 66), "之后", font=font(23, True), fill=TH.DIM, anchor="ra")
+    d.text((1160, axis_y + 110), "再无可验证消息", font=font(22), fill=TH.DIM, anchor="ra")
 
     # 底部结论条
     d.rounded_rectangle([90, 590, 1190, 652], radius=R_SM,

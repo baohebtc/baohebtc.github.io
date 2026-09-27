@@ -90,19 +90,19 @@ def s1_02():
     arrow(d, (640, 192), (925, 250), TH)
     # 左右分支
     left = [("有中心账本", "银行查余额：这枚币已经花过", "→ 直接拒付第二笔")]
-    card(d, [80, 254, 630, 470], TH, r=R_BIG)
-    box_text(d, [80, 254, 630, 470], TH, "① 有中心账本（银行）", "账本只有一本，由银行保管", ts=28, ac=True)
-    y = 344
+    card(d, [80, 254, 630, 560], TH, r=R_BIG)
+    box_text(d, [80, 254, 630, 560], TH, "① 有中心账本（银行）", "账本只有一本，由银行保管", ts=28, ss=23, ac=True)
+    y = 360
     for t, s1_, s2_ in left:
-        d.text((112, y), t, font=font(24, True), fill=TH.TXT)
-        d.text((112, y + 40), s1_, font=font(21), fill=TH.MID)
-        d.text((112, y + 74), s2_, font=font(21, True), fill=GREEN)
-    card(d, [650, 254, 1200, 470], TH, hi=True, r=R_BIG)
-    box_text(d, [650, 254, 1200, 470], TH, "② 没有中心账本（比特币）", "没人说了算，靠什么拦住？", ts=28, ac=True)
-    y = 344
-    d.text((682, y), "数学规则", font=font(24, True), fill=TH.TXT)
-    d.text((682, y + 40), "先到先得，重复花一眼露馅", font=font(21), fill=TH.MID)
-    d.text((682, y + 74), "利益奖励：老实记账更划算", font=font(21, True), fill=TH.ACCENT)
+        d.text((112, y), t, font=font(27, True), fill=TH.TXT)
+        d.text((112, y + 52), s1_, font=font(24), fill=TH.MID)
+        d.text((112, y + 104), s2_, font=font(24, True), fill=GREEN)
+    card(d, [650, 254, 1200, 560], TH, hi=True, r=R_BIG)
+    box_text(d, [650, 254, 1200, 560], TH, "② 没有中心账本（比特币）", "没人说了算，靠什么拦住？", ts=28, ss=23, ac=True)
+    y = 360
+    d.text((682, y), "数学规则", font=font(27, True), fill=TH.TXT)
+    d.text((682, y + 52), "先到先得，重复花一眼露馅", font=font(24), fill=TH.MID)
+    d.text((682, y + 104), "利益奖励：老实记账更划算", font=font(24, True), fill=TH.ACCENT)
     footer_bar(d, TH, W, H, "没有裁判，也能防止作弊 —— 这就是比特币要解决的核心问题")
     save(im, OUT1 / "02-double-spending.png")
 

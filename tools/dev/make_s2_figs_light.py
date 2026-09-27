@@ -108,28 +108,28 @@ def s2_02():
     d.text((150, y0), "去年", font=font(24, True), fill=TH.TXT, anchor="lm")
     d.rounded_rectangle([230, y0 - 56, 560, y0 + 56], radius=10, fill=TH.CARD, outline=TH.EDGE, width=3)
     d.rounded_rectangle([280, y0 - 30, 510, y0 + 30], radius=8, fill=TH.CARD_HI, outline=TH.EDGE, width=2)
-    d.text((395, y0), "你的车位", font=font(21), fill=TH.MID, anchor="mm")
+    d.text((395, y0), "你的车位", font=font(23), fill=TH.MID, anchor="mm")
     arrow(d, (585, y0), (675, y0), TH, width=4, head=13)
     d.text((150, y0 + 112), "今年", font=font(24, True), fill=TH.TXT, anchor="lm")
     d.rounded_rectangle([230, y0 + 56, 560, y0 + 168], radius=10, fill=TH.CARD, outline=TH.EDGE, width=3)
     d.rounded_rectangle([305, y0 + 82, 485, y0 + 142], radius=8, fill=RED_BG, outline=RED, width=2)
-    d.text((395, y0 + 112), "缩小 10%", font=font(21, True), fill=RED, anchor="mm")
+    d.text((395, y0 + 112), "缩小 10%", font=font(23, True), fill=RED, anchor="mm")
     # 右侧说明
-    card(d, [700, y0 - 60, 1215, y0 + 168], TH, hi=True, r=R_BIG)
-    d.text((746, y0 - 26), "车位还在，只是变小了", font=font(26, True), fill=TH.ACCENT)
+    card(d, [700, y0 - 60, 1215, y0 + 226], TH, hi=True, r=R_BIG)
+    d.text((746, y0 - 22), "车位还在，只是变小了", font=font(27, True), fill=TH.ACCENT)
     wrap(d, "社会的商品总量没变，但流通的钱变多了 —— 结果就是物价上涨。",
-         746, y0 + 22, 420, font(21), TH.TXT, 32, 2)
+         746, y0 + 26, 450, font(24), TH.TXT, 38, 2)
     wrap(d, "你的 100 块还是 100 块，能买到的东西却少了，而且没人通知你。",
-         746, y0 + 96, 420, font(21), TH.MID, 32, 2)
+         746, y0 + 118, 450, font(24), TH.MID, 38, 2)
     # 底部两组货币
     by = 460
     d.text((200, by + 46), "100 元", font=font(30, True), fill=TH.TXT, anchor="mm")
-    d.text((200, by + 96), "面额没变", font=font(20), fill=TH.MID, anchor="mm")
+    d.text((200, by + 96), "面额没变", font=font(22), fill=TH.MID, anchor="mm")
     arrow(d, (300, by + 50), (420, by + 50), TH, width=4, head=13)
     for i in range(4):
         d.rounded_rectangle([460 + i * 56, by + 16, 500 + i * 56, by + 84], radius=8,
                             fill=TH.CARD, outline=TH.EDGE, width=2)
-    d.text((830, by + 50), "能买到的东西变少了", font=font(23, True), fill=RED, anchor="lm")
+    d.text((830, by + 50), "能买到的东西变少了", font=font(26, True), fill=RED, anchor="lm")
     footer_bar(d, TH, W, H, "加税要立法、要投票；稀释购买力只需要一场会议", color=RED, bg=RED_BG)
     save(im, OUT / "02-inflation-tax.png")
 
