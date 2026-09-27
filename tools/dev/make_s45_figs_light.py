@@ -57,7 +57,7 @@ def coin(d, cx, cy, r, label, col):
 
 # ==================== 站4 ====================
 def s4_01():
-    """公开账本：中心官方 ₿ + 8 本同步账册（1:1）。"""
+    """公开账本：中心官方标识 + 8 本同步账册（1:1）。"""
     im, d = canvas(TH, "公开账本：人人手里都有一本完整的账", "站4 · 账本海", size="1:1")
     W, H = im.size
     cx, cy = W // 2, (TOPBAR_H + H - FOOTBAR_H) // 2
@@ -176,9 +176,9 @@ def s4_05():
     """只追加 + 指纹锁链：改一页，后续全断（16:9）。"""
     im, d = canvas(TH, "改不动：只追加 + 指纹锁链", "站4 · 账本海", size="16:9")
     W, H = im.size
-    pages = [("创世页", "0000…", False), ("第 99 页", "a1b2…", False),
-             ("第 100 页", "篡改!", True), ("第 101 页", "—断—", True),
-             ("第 102 页", "—断—", True)]
+    pages = [("创世页", "0000...", False), ("第 99 页", "a1b2...", False),
+             ("第 100 页", "XXXXXX", True), ("第 101 页", "......", True),
+             ("第 102 页", "......", True)]
     pw, ph, gap = 210, 330, 30
     x0, y0 = 70, TOPBAR_H + 90
     for i, (label, hsh, broken) in enumerate(pages):
@@ -200,7 +200,7 @@ def s4_05():
         if i < 4:
             ax = px + pw + 3
             if broken:
-                d.text((ax + gap // 2, y0 + ph // 2), "✗", font=font(30, True),
+                d.text((ax + gap // 2, y0 + ph // 2), "×", font=font(34, True),
                        fill=RED, anchor="mm")
             else:
                 d.polygon([(ax, y0 + ph // 2), (ax + gap - 4, y0 + ph // 2 - 12),
@@ -219,9 +219,9 @@ def s4_06():
     W, H = im.size
     rows = [
         ("状态表示", "地址 → 余额（账户表）", "一组未花输出（硬币集）"),
-        ("余额查询", "直接读账户余额", "累加属于你的所有 UTXO"),
-        ("隐私", "地址常复用，易画像", "每收一笔可换新地址，更难关联"),
-        ("双花防御", "靠 nonce / 状态校验", "输出花掉即失效，天然防重花"),
+        ("余额查询", "直接读账户余额", "累加属于你的 UTXO"),
+        ("隐私", "地址常复用，易画像", "可换新地址，更难关联"),
+        ("双花防御", "靠 nonce / 状态校验", "花掉即失效，天然防重花"),
         ("并行验证", "改共享状态需排序", "独立 UTXO 可并行校验"),
         ("代表", "以太坊 / Solana", "比特币 / 莱特币"),
     ]
@@ -245,7 +245,7 @@ def s4_06():
     save(im, OUT4 / "05-t2-utxo-table.png")
 
 def s4_07():
-    """三句话带走（16:9，三竖卡 + 官方 ₿）。"""
+    """三句话带走（16:9，三竖卡 + 官方标识）。"""
     im, d = canvas(TH, "三句话带走本篇", "站4 · 账本海 · 公开却不泄密", size="16:9")
     W, H = im.size
     cards = [
@@ -264,7 +264,7 @@ def s4_07():
         d.text((cx + cw // 2, y + 150), t, font=font(36, True), fill=TH.TXT, anchor="mm")
         wrap(d, sub, cx + 40, y + 210, cw - 80, font(23), TH.MID, 34)
         btc(d, im, cx + cw // 2, y + ch - 66, 52)
-    save(im, OUT4 / "07-mindmap-summary.png")
+    save(im, OUT4 / "08-mindmap-summary.png")
 
 # ==================== 站5 ====================
 def s5_01():
@@ -272,7 +272,7 @@ def s5_01():
     im, d = canvas(TH, "哈希函数：数字世界的指纹机", "站5 · 哈希岭", size="16:9")
     W, H = im.size
     cy = TOPBAR_H + 250
-    inputs = [("一个字「比」", 130), ("一篇 4500 字文章", 220), ("整部《红楼梦》", 280)]
+    inputs = [("一个字「比」", 175), ("一篇 4500 字文章", 245), ("整部《红楼梦》", 280)]
     for i, (t, wd) in enumerate(inputs):
         y = TOPBAR_H + 66 + i * 128
         d.rounded_rectangle([80, y, 80 + wd, y + 84], radius=R_SM, fill=TH.CARD,
@@ -384,15 +384,15 @@ def s5_05():
     im, d = canvas(TH, "挖矿到底在算什么：掷骰子", "站5 · 没有巧妙解法 · 纯暴力试错", size="16:9")
     W, H = im.size
     tries = [
-        ("nonce = 0", "8f2a1c…", "❌ 开头不是 0", TH.MID),
-        ("nonce = 1", "c71b9e…", "❌", TH.MID),
-        ("nonce = 2", "03e97f…", "❌ 还不够小", TH.MID),
+        ("nonce = 0", "8f2a1c…", "× 开头不是 0", TH.MID),
+        ("nonce = 1", "c71b9e…", "×", TH.MID),
+        ("nonce = 2", "03e97f…", "× 还不够小", TH.MID),
         ("…", "…", "", TH.MID),
-        ("nonce = 847293", "0000a3f2…", "✅ 中了！拿到记账权", TH.GOLD),
+        ("nonce = 847293", "0000a3f2…", "√ 中了！拿到记账权", TH.GOLD),
     ]
     y = TOPBAR_H + 44
     for nonce, hx, verdict, col in tries:
-        win = "✅" in verdict
+        win = "√" in verdict
         d.rounded_rectangle([120, y, 1160, y + 72], radius=12,
                             fill=TH.CARD_HI if win else TH.CARD,
                             outline=TH.GOLD if win else TH.EDGE,

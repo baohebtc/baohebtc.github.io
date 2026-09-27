@@ -184,12 +184,12 @@ def s2_04():
     d.text((690, 358), "无需法院令", font=font(21), fill=RED, anchor="mm")
     # 右：两个真实案例
     d.text((1030, 150), "真实发生过", font=font(24, True), fill=TH.TXT, anchor="mm")
-    card(d, [850, 190, 1215, 290], TH, r=R_SM)
-    d.text((880, 214), "2022 · 加拿大", font=font(22, True), fill=TH.TXT)
-    wrap(d, "援引《紧急状态法》直接冻结抗议者账户", 880, 248, 310, font(19), TH.MID, 26, 2)
-    card(d, [850, 306, 1215, 406], TH, r=R_SM)
-    d.text((880, 330), "2013 · 塞浦路斯", font=font(22, True), fill=TH.TXT)
-    wrap(d, "对超过 10 万欧元存款征收约 48%", 880, 364, 310, font(19), TH.MID, 26, 2)
+    card(d, [850, 186, 1215, 304], TH, r=R_SM)
+    d.text((880, 208), "2022 · 加拿大", font=font(22, True), fill=TH.TXT)
+    wrap(d, "援引《紧急状态法》直接冻结抗议者账户", 880, 244, 310, font(19), TH.MID, 26, 2)
+    card(d, [850, 320, 1215, 438], TH, r=R_SM)
+    d.text((880, 342), "2013 · 塞浦路斯", font=font(22, True), fill=TH.TXT)
+    wrap(d, "对超过 10 万欧元存款征收约 48%", 880, 378, 310, font(19), TH.MID, 26, 2)
     footer_bar(d, TH, W, H, "账户说冻就冻、说收就收 —— 你拥有的是「使用权」，不是「所有权」",
                color=RED, bg=RED_BG, fs=24)
     save(im, OUT / "04-no-anchor-confiscation.png")
@@ -256,4 +256,4 @@ if __name__ == "__main__":
     todo = list(FN.values()) if arg == "all" else [FN[arg]]
     for f in todo:
         f()
-        print("✅", f.__name__, "->", f.__doc__.split("（")[0])
+        print("[OK]", f.__name__, "->", f.__doc__.split("（")[0])

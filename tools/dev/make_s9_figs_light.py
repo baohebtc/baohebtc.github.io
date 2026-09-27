@@ -54,7 +54,7 @@ def s9_01():
     W, H = im.size
 
     # 左：公司（金字塔）
-    card(d, [90, TOPBAR_H + 36, 610, 566], TH, r=18)
+    card(d, [90, TOPBAR_H + 36, 610, 578], TH, r=18)
     d.text((120, TOPBAR_H + 62), "公司", font=font(28, True), fill=TH.MID)
     d.text((196, TOPBAR_H + 68), "有一个能拍板的人", font=font(19), fill=TH.MID)
     lv = [("董事会", 300, 92), ("CEO / 管理层", 340, 92), ("员工 · 用户", 380, 92)]
@@ -67,18 +67,18 @@ def s9_01():
         if label != "员工 · 用户":
             d.line([(350, y + h_), (350, y + h_ + 16)], fill=TH.EDGE, width=3)
         y += h_ + 16
-    d.text((120, TOPBAR_H + 478), "规则由内部决定，改了就生效", font=font(20), fill=TH.MID)
+    d.text((120, TOPBAR_H + 456), "规则由内部决定，改了就生效", font=font(20), fill=TH.MID)
 
     # 右：比特币（无中心网）
-    card(d, [670, TOPBAR_H + 36, 1190, 566], TH, r=18)
+    card(d, [670, TOPBAR_H + 36, 1190, 578], TH, r=18)
     d.text((700, TOPBAR_H + 62), "比特币", font=font(28, True), fill=TH.ACCENT)
     d.text((778, TOPBAR_H + 68), "没有人能替所有人拍板", font=font(19), fill=TH.ACCENT)
     cx, cy = 930, TOPBAR_H + 250
     # 规则方块（中心不是人，是一份规则）
     d.rounded_rectangle([cx - 74, cy - 40, cx + 74, cy + 40], radius=10,
                         fill=TH.ACCENT)
-    d.text((cx, cy - 12), "一份", font=font(21, True), fill=(255, 255, 255), anchor="mm")
-    d.text((cx, cy + 16), "公开规则", font=font(21, True), fill=(255, 255, 255), anchor="mm")
+    d.text((cx, cy - 16), "一份", font=font(21, True), fill=(255, 255, 255), anchor="mm")
+    d.text((cx, cy + 18), "公开规则", font=font(21, True), fill=(255, 255, 255), anchor="mm")
     # 环绕节点
     import math
     nodes = []
@@ -94,7 +94,7 @@ def s9_01():
     for nx, ny in nodes:
         d.ellipse([nx - 22, ny - 22, nx + 22, ny + 22], fill=TH.CARD_HI,
                   outline=TH.ACCENT, width=2)
-    d.text((700, TOPBAR_H + 500), "每家各自照着跑 · 改了要各自同意", font=font(20), fill=TH.MID)
+    d.text((700, TOPBAR_H + 476), "每家各自照着跑 · 改了要各自同意", font=font(20), fill=TH.MID)
 
     # 底部结论条
     d.rounded_rectangle([90, 590, 1190, 652], radius=R_SM,
@@ -174,7 +174,7 @@ def s9_03():
         arrow(d, (x0 + 181, TOPBAR_H + 292), (x0 + 181, TOPBAR_H + 344), TH, width=4)
         d.rounded_rectangle([x0 + 22, TOPBAR_H + 356, x0 + 340, TOPBAR_H + 470],
                             radius=12, fill=TH.CARD_HI, outline=col, width=2)
-        wrap(d, res, x0 + 42, TOPBAR_H + 382, 300, font(21, True), col, 30, 2)
+        wrap(d, res, x0 + 42, TOPBAR_H + 382, 282, font(21, True), col, 30, 2)
         # 顶部连线
         d.line([(640, TOPBAR_H + 100), (640, TOPBAR_H + 124)], fill=TH.EDGE, width=3)
         d.line([(x0 + 181, TOPBAR_H + 124), (x0 + 181, TOPBAR_H + 140)], fill=TH.EDGE, width=3)
@@ -227,7 +227,7 @@ def s9_04():
         chip(d, (cx_d, y + 22), TH, e, fs=19, color=col, bg=TH.CARD)
         y += h + 10
 
-    d.text(((x0 + x1) // 2, H - FOOTBAR_H - 32),
+    d.text(((x0 + x1) // 2, H - FOOTBAR_H - 42),
            "每一次都不是谁下令做的 · 都是有人提方案、公开讨论、大家各自选择装不装",
            font=font(22, True), fill=TH.MID, anchor="mm")
     save(im, OUT / "04-t1-rule-changes-table.png")
@@ -242,33 +242,33 @@ def s9_05():
     # 左：两条规则
     card(d, [90, TOPBAR_H + 40, 560, 470], TH, r=18)
     d.text((120, TOPBAR_H + 66), "规则只有两条", font=font(26, True), fill=TH.ACCENT)
-    d.rounded_rectangle([120, TOPBAR_H + 108, 530, TOPBAR_H + 168], radius=10,
+    d.rounded_rectangle([120, TOPBAR_H + 108, 530, TOPBAR_H + 178], radius=10,
                         fill=TH.CARD_HI, outline=TH.EDGE, width=2)
-    d.text((140, TOPBAR_H + 138), "① 每个新区块：产生 50 枚", font=font(21), fill=TH.TXT)
-    d.rounded_rectangle([120, TOPBAR_H + 186, 530, TOPBAR_H + 258], radius=10,
+    d.text((140, TOPBAR_H + 140), "① 每个新区块：产生 50 枚", font=font(21), fill=TH.TXT)
+    d.rounded_rectangle([120, TOPBAR_H + 196, 530, TOPBAR_H + 268], radius=10,
                         fill=TH.CARD_HI, outline=TH.EDGE, width=2)
-    wrap(d, "② 每过 210,000 个区块：奖励减半", 140, TOPBAR_H + 202, 370,
+    wrap(d, "② 每过 210,000 个区块：奖励减半", 140, TOPBAR_H + 212, 370,
          font(21), TH.TXT, 28, 2)
-    d.text((120, TOPBAR_H + 300), "代码里没有一句", font=font(21), fill=TH.MID)
-    d.text((120, TOPBAR_H + 336), "「总量 = 2100 万」", font=font(24, True), fill=RED)
+    d.text((120, TOPBAR_H + 306), "代码里没有一句", font=font(21), fill=TH.MID)
+    d.text((120, TOPBAR_H + 344), "「总量 = 2100 万」", font=font(24, True), fill=RED)
 
     # 中：序列
     seq = ["50", "25", "12.5", "6.25", "3.125", "…"]
     sx = 620
     for i, v in enumerate(seq):
-        yy = TOPBAR_H + 90 + i * 62
+        yy = TOPBAR_H + 74 + i * 54
         d.rounded_rectangle([sx, yy, sx + 150, yy + 44], radius=8,
                             fill=TH.CARD_HI, outline=TH.EDGE, width=2)
         d.text((sx + 75, yy + 22), v, font=font(22, True), fill=TH.TXT, anchor="mm")
         if i < len(seq) - 1:
             d.line([(sx + 75, yy + 44), (sx + 75, yy + 62)], fill=TH.ACCENT, width=3)
-    arrow(d, (600, TOPBAR_H + 250), (612, TOPBAR_H + 250), TH, width=4)
+    arrow(d, (600, TOPBAR_H + 236), (612, TOPBAR_H + 236), TH, width=4)
 
     # 右：收敛
     card(d, [800, TOPBAR_H + 40, 1190, 470], TH, r=18)
     d.text((830, TOPBAR_H + 66), "一直加下去，会收敛到", font=font(24, True), fill=GREEN)
-    d.text((830, TOPBAR_H + 150), "≈ 2100 万", font=font(58, True), fill=GREEN)
-    d.text((830, TOPBAR_H + 218), "实际天花板约 20,999,999.9769 枚",
+    d.text((830, TOPBAR_H + 140), "≈ 2100 万", font=font(58, True), fill=GREEN)
+    d.text((830, TOPBAR_H + 234), "实际天花板约 20,999,999.9769 枚",
            font=font(19), fill=TH.MID)
     d.rounded_rectangle([830, TOPBAR_H + 258, 1160, TOPBAR_H + 336], radius=10,
                         fill=GREEN_BG, outline=GREEN, width=2)
@@ -317,7 +317,7 @@ def s9_06():
             chip(d, (x0 + 400, yy + 18), TH, "本站 · 到顶", fs=18,
                  color=TH.ACCENT, bg=TH.CARD_HI)
 
-    d.text((640, H - FOOTBAR_H - 26),
+    d.text((640, H - FOOTBAR_H - 42),
            "它立得住，靠的不是没人能改它 · 而是改它的人说服不了所有人",
            font=font(23, True), fill=TH.MID, anchor="mm")
     save(im, OUT / "06-nine-stations-recap.png")
@@ -339,7 +339,7 @@ def s9_07():
         d.text((220, y + 40), t, font=font(29, True), fill=TH.TXT)
         d.text((220, y + 94), s, font=font(20), fill=TH.MID)
         y += 160
-    save(im, OUT / "07-mindmap-summary.png")
+    save(im, OUT / "08-mindmap-summary.png")
 
 
 FN = [s9_01, s9_02, s9_03, s9_04, s9_05, s9_06, s9_07]

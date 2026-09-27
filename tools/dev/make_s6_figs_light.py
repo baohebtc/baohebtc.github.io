@@ -118,8 +118,8 @@ def s6_02():
     d.text((940, y0 + 88), "比特币的选择", font=font(22), fill=TH.MID, anchor="mm")
     wrap(d, "票不是投出来的，是干出来的：算出合格区块那一刻，票自动生效",
          720, y0 + 140, 440, font(23), TH.TXT, 36, 3)
-    d.text((720, y0 + 262), "✓ 刷票没有意义：每票都要真烧电", font=font(22), fill=GREEN)
-    d.text((720, y0 + 300), "✓ 不用报名、不用认证、不用被同意", font=font(22), fill=GREEN)
+    d.text((720, y0 + 262), "√ 刷票没有意义：每票都要真烧电", font=font(22), fill=GREEN)
+    d.text((720, y0 + 300), "√ 不用报名、不用认证、不用被同意", font=font(22), fill=GREEN)
     arrow(d, (610, y0 + h // 2), (670, y0 + h // 2), TH, color=TH.ACCENT, width=4, head=14)
     bar(d, "中本聪的原话：节点用算力投票 —— 不是一人一票", y0=520, y1=610)
     save(im, OUT / "02-pow-vote.png")
@@ -226,7 +226,7 @@ def s6_06():
     for i, t in enumerate(["块被全网接受 → 拿到回报",
                            "电费没白烧，成本能收回",
                            "可以长期重复这样做"]):
-        d.text((120, y0 + 116 + i * 62), "✓ " + t, font=font(24), fill=TH.TXT)
+        d.text((120, y0 + 116 + i * 62), "√ " + t, font=font(24), fill=TH.TXT)
     d.rounded_rectangle([680, y0, 1200, y0 + h], radius=R_BIG, fill=RED_BG,
                         outline=RED, width=3)
     d.text((940, y0 + 46), "作弊", font=font(32, True), fill=RED, anchor="mm")
@@ -235,7 +235,7 @@ def s6_06():
                            "即便成功 → 砸掉自己的资产"]):
         d.text((720, y0 + 116 + i * 62), "× " + t, font=font(24), fill=TH.TXT)
     wrap(d, "注意：矿工负责提议，节点负责裁决 —— 出块的人没有最终解释权",
-         120, y0 + 312, 1000, font(22), TH.MID, 32, 2)
+         120, y0 + 306, 440, font(22), TH.MID, 32, 2)
     bar(d, "不靠好人，靠自私的人：让诚实成为回报更高的那条路", y0=520, y1=610)
     save(im, OUT / "06-game-incentive.png")
 
@@ -255,7 +255,7 @@ def s6_07():
         d.text((220, y + 40), t, font=font(29, True), fill=TH.TXT)
         d.text((220, y + 90), s, font=font(21), fill=TH.MID)
         y += 156
-    save(im, OUT / "07-mindmap-summary.png")
+    save(im, OUT / "08-mindmap-summary.png")
 
 
 FN = [s6_01, s6_02, s6_03, s6_04, s6_05, s6_06, s6_07]

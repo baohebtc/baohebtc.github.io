@@ -117,7 +117,7 @@ def s1_03():
     people = [("你", 130, 150), ("邻居", 550, 150), ("村长", 130, 400), ("商人", 550, 400)]
     for nm, px, py in people:
         d.line([(px, py), (340, 268)], fill=TH.EDGE, width=2)
-    card(d, [240, 200, 440, 336], TH, r=R_BIG)
+    card(d, [220, 200, 460, 336], TH, r=R_BIG)
     d.text((340, 244), "一本村账", font=font(26, True), fill=TH.TXT, anchor="mm")
     d.text((340, 292), "谁欠谁，都记在这本上", font=font(19), fill=TH.MID, anchor="mm")
     for nm, px, py in people:
@@ -549,7 +549,7 @@ def s3_06():
         wrap(d, stop, cx_stop, y + 26, 390, font(22), TH.TXT, 30, 2)
         wrap(d, ana, cx_ana, y + 26, 300, font(22), TH.GOLD, 30, 2)
         y += h + 16
-    d.text(((x0 + x1) // 2, y + 22),
+    d.text(((x0 + x1) // 2, H - FOOTBAR_H - 42),
            "五件套各挡一环：看见 \u00b7 作废 \u00b7 定序 \u00b7 贵到不划算 \u00b7 全村作证",
            font=font(24, True), fill=TH.MID, anchor="mm")
     save(im, OUT3 / "06-t1-five-tools-table.png")
@@ -571,7 +571,7 @@ def s3_07():
         d.text((220, y + 42), t, font=font(28, True), fill=TH.TXT)
         wrap(d, s, 220, y + 84, 900, font(21), TH.MID, 30, 2)
         y += 156
-    save(im, OUT3 / "07-mindmap-summary.png")
+    save(im, OUT3 / "08-mindmap-summary.png")
 
 
 FN = {"s1": [s1_01, s1_02, s1_03, s1_04, s1_05, s1_06],
@@ -583,4 +583,4 @@ if __name__ == "__main__":
     todo = FN["s1"] + FN["s15"] + FN["s3"] if arg == "all" else FN[arg]
     for f in todo:
         f()
-        print("✅", f.__name__, "->", f.__doc__.split("（")[0])
+        print("[OK]", f.__name__, "->", f.__doc__.split("（")[0])

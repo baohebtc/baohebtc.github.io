@@ -35,8 +35,12 @@ TH = {
     'center_text_min':      0.028,                      # 中央文字深色像素占比下限（水彩底放宽）
     'thumb_dark_min':       0.009,                      # 缩略图深色像素占比下限（水彩底放宽至 0.9%）
     'thumb_size':        (200, 85),                     # 微信列表缩略图尺寸（900×383 → 200×85）
-    'bottom_dark_max':      0.060,                      # 底部 80px 深色像素占比上限（品牌尾标 + 母图密林占用）
+    'bottom_dark_max':      0.060,                      # 底部 80px 墨迹占比上限（微信叠标题区，须留白）
+    'ink_delta':            40,                         # 主题自适应：|V − 背景V| > 40 记为「墨」（适配暖黑封面）
 }
+# v8 适配（2026-09-27）：v4/v5 的「深色像素 = 墨」仅适用于浅底水彩封面。
+# v8 封面改为暖黑（ADR-0005）后，底色本身 V≈37，全图都会被判成墨 —— 底部项 98% 误红、
+# 中央/缩略项则变成「空图也通过」的假绿。现改为以全图 V 中位数为背景基准的对比墨口径。
 
 # ===== 合规词 =====
 COMPLIANCE = {
@@ -65,8 +69,9 @@ def analyze_cover(path):
     # ---- 3. 中央文字密度 ----
     cx, cy = W // 2, H // 2
     h = TH['safe_zone'] // 2
-    center_hsv = hsv_full[cy-h:cy+h, cx-h:cx+h]
-    dark_ratio = float((center_hsv[..., 2] < 80).mean())
+    bg_v = int(np.median(Val))                 # 主题背景基准（暖黑≈37 / 浅底≈230）
+    ink = (np.abs(Val.astype(int) - bg_v) > TH['ink_delta'])   # 对比墨掩膜，明暗主题通用
+    dark_ratio = float(ink[cy-h:cy+h, cx-h:cx+h].mean())
     text_ok = dark_ratio >= TH['center_text_min']
 
     # ---- 4. 右下水印检测（v5 safe-crop 模式：物理上不可能有水印，仅做兜底验证）----
@@ -92,7 +97,9 @@ def analyze_cover(path):
     # ---- 5. 缩略图文字可读性 ----
     thumb = im.resize(TH['thumb_size'], Image.LANCZOS)
     thumb_hsv = np.asarray(thumb.convert('HSV'))
-    thumb_dark = float((thumb_hsv[..., 2] < 80).mean())
+    tv = thumb_hsv[..., 2].astype(int)
+    thumb_bg = int(np.median(tv))
+    thumb_dark = float((np.abs(tv - thumb_bg) > TH['ink_delta']).mean())
     thumb_ok = thumb_dark >= TH['thumb_dark_min']
 
     # ---- 6. 合规词检测（基于文件名推断） ----
@@ -105,13 +112,13 @@ def analyze_cover(path):
 
     # ---- 7. 中央安全区不溢出（画布底部 80px 不应有重文字） ----
     # 微信叠标题会覆盖底部 80px，所以文字必须避开
-    bottom80 = arr[H-80:, :]
-    bottom_dark = float(((np.asarray(Image.fromarray(bottom80).convert('HSV'))[..., 2]) < 80).mean())
-    bottom_ok = bottom_dark < TH['bottom_dark_max']  # 底部文字密度 < 5.5%（品牌尾标占用）
+    bottom_dark = float(ink[H-80:, :].mean())
+    bottom_ok = bottom_dark < TH['bottom_dark_max']  # 底部墨迹 < 6%（微信叠标题区须留白）
 
     # ---- 汇总 ----
     checks = [
         ('画布 900×383',                 size_ok,    f'{W}×{H}'),
+        ('背景主题（暗底/浅底）',        True,       f'背景 V={bg_v} → {"暖黑" if bg_v < 128 else "浅底"}'),
         ('左上 ₿ PNG 已贴',             b_ok,       f'{b_unique} 色种 ≥ {TH["b_unique_min"]}'),
         ('中央文字密度',                 text_ok,    f'{dark_ratio*100:.2f}% ≥ {TH["center_text_min"]*100:.0f}%'),
         ('右下无水印特征（v5 兜底）',  wm_ok,      f'灰色像素 {gray_ratio*100:.1f}% < 15%'),

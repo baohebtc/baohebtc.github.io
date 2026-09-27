@@ -48,9 +48,12 @@ def wrap(d, text, x, y, maxw, f, fill, lh, max_lines=3):
 
 
 def footer_note(d, W, H, text):
-    """底部结论条（合规条之上）。"""
-    d.text((W // 2, H - FOOTBAR_H - 34), text, font=font(22, True),
-           fill=TH.MID, anchor="mm")
+    """底部结论条（合规条之上，带底块，全站样式统一）。"""
+    fy = H - FOOTBAR_H - 76
+    d.rounded_rectangle([90, fy, W - 90, fy + 56], radius=R_SM,
+                        fill=TH.CARD_HI, outline=TH.EDGE, width=2)
+    d.text((W // 2, fy + 28), text, font=font(22, True),
+           fill=TH.TXT, anchor="mm")
 
 
 # ─────────────────────────────────────────────────────────
@@ -61,10 +64,10 @@ def s7_01():
     y = TOPBAR_H + 40
 
     # 误区 vs 正解
-    card(d, [90, y, 620, y + 96], TH, fill=RED_BG, edge=RED, r=16)
+    card(d, [90, y, 620, y + 108], TH, fill=RED_BG, edge=RED, r=16)
     d.text((110, y + 24), "常见说法", font=font(21, True), fill=RED)
     d.text((110, y + 60), "矿工在「解一道复杂的数学题」", font=font(24), fill=TH.TXT)
-    card(d, [660, y, 1190, y + 96], TH, hi=True, r=16)
+    card(d, [660, y, 1190, y + 108], TH, hi=True, r=16)
     d.text((680, y + 24), "实际情况", font=font(21, True), fill=TH.ACCENT)
     d.text((680, y + 60), "矿工在没完没了地掷骰子", font=font(24), fill=TH.TXT)
     y += 128
@@ -86,10 +89,10 @@ def s7_01():
     y += 160
 
     # 判定分叉
-    card(d, [90, y, 590, y + 92], TH, fill=RED_BG, edge=RED, r=16)
+    card(d, [90, y, 590, y + 106], TH, fill=RED_BG, edge=RED, r=16)
     d.text((112, y + 30), "不合格（绝大多数）", font=font(24, True), fill=RED)
     d.text((112, y + 66), "把那个数字换一个，从头再来", font=font(20), fill=TH.TXT)
-    card(d, [690, y, 1190, y + 92], TH, hi=True, r=16)
+    card(d, [690, y, 1190, y + 106], TH, hi=True, r=16)
     d.text((712, y + 30), "合格（极小概率）", font=font(24, True), fill=TH.ACCENT)
     d.text((712, y + 66), "广播出去，这一页账归你写", font=font(20), fill=TH.TXT)
 
@@ -127,7 +130,7 @@ def s7_02():
     y += 68
 
     for i, (tm, hh, vv) in enumerate(rows):
-        h = 106
+        h = 98
         bg = TH.CARD if i % 2 == 0 else TH.CARD_HI
         d.rounded_rectangle([x0, y, x1, y + h], radius=12, fill=bg,
                             outline=TH.EDGE, width=1)
@@ -141,11 +144,9 @@ def s7_02():
                             radius=6, fill=TH.ACCENT)
         d.text((cx_v + max(bar_w, 40) + 16, y + 46), vv, font=font(26, True),
                fill=TH.TXT, anchor="lm")
-        y += h + 14
+        y += h + 10
 
-    d.text(((x0 + x1) // 2, y + 26),
-           "每 210,000 块砍一半 · 写死在代码里 · 2140 年前后归零",
-           font=font(23, True), fill=TH.MID, anchor="mm")
+    footer_note(d, W, H, "每 210,000 块砍一半 · 写死在代码里 · 2140 年前后归零")
     save(im, OUT / "02-t1-subsidy-halving-table.png")
 
 
@@ -154,14 +155,14 @@ def s7_03():
     """03 难度自动校准闭环。"""
     im, d = canvas(TH, "难度怎么自动校准", "站7 · 矿工谷", size="16:9")
     W, H = im.size
-    y = TOPBAR_H + 34
+    y = TOPBAR_H + 44
 
     # 目标条
-    card(d, [90, y, 1190, y + 74], TH, hi=True, r=16)
+    card(d, [90, y, 1190, y + 100], TH, hi=True, r=16)
     d.text((112, y + 24), "目标", font=font(20, True), fill=TH.ACCENT)
-    d.text((112, y + 54), "2016 个区块 × 10 分钟 = 两星期（20,160 分钟）",
+    d.text((112, y + 56), "2016 个区块 × 10 分钟 = 两星期（20,160 分钟）",
            font=font(24), fill=TH.TXT)
-    y += 100
+    y += 132
 
     # 四步闭环
     steps = [
@@ -173,17 +174,17 @@ def s7_03():
     x = 90
     for i, (t, s, fill) in enumerate(steps):
         edge = TH.ACCENT if i == 3 else (RED if i == 1 else (GREEN if i == 2 else TH.EDGE))
-        card(d, [x, y, x + 268, y + 142], TH, fill=fill, edge=edge, r=16)
+        card(d, [x, y, x + 260, y + 150], TH, fill=fill, edge=edge, r=16)
         d.text((x + 20, y + 26), t, font=font(24, True),
                fill=(RED if i == 1 else (GREEN if i == 2 else TH.ACCENT)))
-        wrap(d, s, x + 20, y + 70, 232, font(19), TH.TXT, 27, 2)
+        wrap(d, s, x + 20, y + 72, 224, font(19), TH.TXT, 28, 2)
         if i < 3:
-            arrow(d, (x + 276, y + 71), (x + 316, y + 71), TH, width=3)
-        x += 328
-    y += 168
+            arrow(d, (x + 268, y + 75), (x + 308, y + 75), TH, width=3)
+        x += 280
+    y += 190
 
     # 公式
-    card(d, [90, y, 1190, y + 84], TH, r=16)
+    card(d, [90, y, 1190, y + 106], TH, r=16)
     d.text((112, y + 26), "公式", font=font(20, True), fill=TH.ACCENT)
     d.text((112, y + 58), "新门槛 = 旧门槛 ×（实际耗时 ÷ 理论耗时）",
            font=font(25, True), fill=TH.TXT)
@@ -207,21 +208,21 @@ def s7_04():
     x = 90
     for i, (nm, yr, what, why, lvl) in enumerate(gens):
         hi = (i == 3)
-        card(d, [x, y, x + 268, y + 214], TH, hi=hi, r=16)
+        card(d, [x, y, x + 260, y + 222], TH, hi=hi, r=16)
         d.text((x + 20, y + 24), nm, font=font(30, True), fill=TH.ACCENT)
         d.text((x + 20, y + 64), yr, font=font(19), fill=TH.MID)
-        wrap(d, what, x + 20, y + 100, 232, font(20), TH.TXT, 28, 2)
-        wrap(d, why, x + 20, y + 158, 232, font(18), TH.GOLD, 26, 2)
+        wrap(d, what, x + 20, y + 100, 224, font(20), TH.TXT, 28, 2)
+        wrap(d, why, x + 20, y + 158, 224, font(18), TH.GOLD, 26, 2)
         # 能效阶梯条
-        by = y + 214 - 22
-        bw = [40, 88, 140, 232][i]
+        by = y + 222 - 22
+        bw = [40, 88, 140, 224][i]
         d.rounded_rectangle([x + 20, by, x + 20 + bw, by + 10], radius=5, fill=TH.ACCENT)
         if i < 3:
-            arrow(d, (x + 276, y + 107), (x + 308, y + 107), TH, width=3)
-        x += 328
+            arrow(d, (x + 268, y + 111), (x + 308, y + 111), TH, width=3)
+        x += 280
     y += 246
 
-    card(d, [90, y, 1190, y + 96], TH, hi=True, r=16)
+    card(d, [90, y, 1190, y + 108], TH, hi=True, r=16)
     d.text((112, y + 26), "结果", font=font(20, True), fill=TH.ACCENT)
     d.text((112, y + 62), "一台今天的主流矿机，顶得上早年成千上万台电脑；"
                           "矿工对电价极度敏感，哪里电便宜就往哪里搬",
@@ -239,7 +240,7 @@ def s7_05():
     y = TOPBAR_H + 34
 
     # 两条门槛对比
-    card(d, [90, y, 1190, y + 150], TH, r=16)
+    card(d, [90, y, 1190, y + 158], TH, r=16)
     d.text((112, y + 22), "两道门槛", font=font(20, True), fill=TH.ACCENT)
     # 全网门槛（高）
     d.text((112, y + 62), "全网门槛", font=font(21, True), fill=TH.TXT)
@@ -251,25 +252,25 @@ def s7_05():
     d.rounded_rectangle([230, y + 106, 1130, y + 132], radius=6, fill=GREEN_BG)
     d.rounded_rectangle([230, y + 106, 980, y + 132], radius=6, fill=GREEN)
     d.text((1160, y + 119), "几秒一次，用来计数", font=font(19), fill=GREEN, anchor="rm")
-    y += 178
+    y += 186
 
     # 三台机器 → 矿池 → 分账
     machines = [("矿工 A", "37%"), ("矿工 B", "28%"), ("矿工 C", "35%")]
     x = 90
     for nm, pct in machines:
-        card(d, [x, y, x + 210, y + 122], TH, r=16)
-        d.text((x + 20, y + 26), nm, font=font(23, True), fill=TH.TXT)
-        d.text((x + 20, y + 66), "提交份额", font=font(19), fill=TH.MID)
-        d.text((x + 20, y + 98), pct, font=font(27, True), fill=TH.ACCENT)
-        arrow(d, (x + 218, y + 61), (x + 264, y + 61), TH, width=3)
+        card(d, [x, y, x + 210, y + 140], TH, r=16)
+        d.text((x + 20, y + 24), nm, font=font(23, True), fill=TH.TXT)
+        d.text((x + 20, y + 62), "提交份额", font=font(19), fill=TH.MID)
+        d.text((x + 20, y + 92), pct, font=font(27, True), fill=TH.ACCENT)
+        arrow(d, (x + 218, y + 70), (x + 264, y + 70), TH, width=3)
         x += 274
 
-    card(d, [912, y, 1190, y + 122], TH, hi=True, r=16)
+    card(d, [912, y, 1190, y + 140], TH, hi=True, r=16)
     d.text((932, y + 26), "矿池", font=font(23, True), fill=TH.ACCENT)
-    wrap(d, "按份额比例分奖励", 932, y + 66, 236, font(20), TH.TXT, 27, 2)
-    y += 150
+    wrap(d, "按份额比例分奖励", 932, y + 70, 236, font(20), TH.TXT, 28, 2)
+    y += 168
 
-    card(d, [90, y, 1190, y + 92], TH, r=16)
+    card(d, [90, y, 1190, y + 106], TH, r=16)
     d.text((112, y + 26), "为什么要抱团", font=font(20, True), fill=TH.ACCENT)
     d.text((112, y + 62), "单干中下一个块约几百万分之一，等一年量级；"
                           "进池后变成每天固定到账的小钱，总额差不多但波动被摊平",
@@ -298,9 +299,9 @@ def s7_06():
            fill=(255, 255, 255), anchor="mm")
     for i in range(3):
         bx = 150 + i * 150
-        d.rounded_rectangle([bx, y + 226, bx + 120, y + 252], radius=6, fill=RED_BG,
+        d.rounded_rectangle([bx, y + 222, bx + 120, y + 254], radius=6, fill=RED_BG,
                             outline=RED, width=2)
-        d.text((bx + 60, y + 239), "矿工机器", font=font(15), fill=RED, anchor="mm")
+        d.text((bx + 60, y + 238), "矿工机器", font=font(18), fill=RED, anchor="mm")
 
     # 右：实际
     card(d, [660, y, 1190, y + 268], TH, hi=True, r=18)
@@ -315,15 +316,15 @@ def s7_06():
            fill=TH.ACCENT, anchor="mm")
     for i in range(3):
         bx = 706 + i * 150
-        d.rounded_rectangle([bx, y + 226, bx + 126, y + 252], radius=6, fill=TH.CARD,
+        d.rounded_rectangle([bx, y + 222, bx + 126, y + 254], radius=6, fill=TH.CARD,
                             outline=TH.ACCENT, width=2)
-        d.text((bx + 63, y + 239), "可随时走", font=font(15), fill=TH.ACCENT, anchor="mm")
+        d.text((bx + 63, y + 238), "可随时走", font=font(18), fill=TH.ACCENT, anchor="mm")
 
     # 中间对比箭头
     arrow(d, (628, y + 134), (652, y + 134), TH, width=4)
     y += 296
 
-    card(d, [90, y, 1190, y + 96], TH, r=16)
+    card(d, [90, y, 1190, y + 108], TH, r=16)
     d.text((112, y + 26), "还在推进的一件事", font=font(20, True), fill=TH.ACCENT)
     d.text((112, y + 62), "Stratum V2：把「打包哪些交易」的选择权从矿池拿回来，交还给矿工本人",
            font=font(21), fill=TH.TXT)
@@ -348,7 +349,7 @@ def s7_07():
         d.text((220, y + 40), t, font=font(29, True), fill=TH.TXT)
         d.text((220, y + 92), s, font=font(20), fill=TH.MID)
         y += 156
-    save(im, OUT / "07-mindmap-summary.png")
+    save(im, OUT / "08-mindmap-summary.png")
 
 
 FN = [s7_01, s7_02, s7_03, s7_04, s7_05, s7_06, s7_07]

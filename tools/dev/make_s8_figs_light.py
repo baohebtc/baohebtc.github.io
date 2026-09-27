@@ -135,15 +135,15 @@ def s8_03():
     card(d, [100, TOPBAR_H + 44, 610, 430], TH, r=R_BIG)
     d.text((150, TOPBAR_H + 82), "私钥的可能取值", font=font(24, True), fill=TH.MID)
     d.text((150, TOPBAR_H + 156), "2^256", font=font(64, True), fill=TH.ACCENT)
-    d.text((150, TOPBAR_H + 226), "≈ 1.16 × 10^77", font=font(30), fill=TH.TXT)
-    d.text((150, TOPBAR_H + 286), "1 后面跟着 77 个零", font=font(21), fill=TH.MID)
+    d.text((150, TOPBAR_H + 242), "≈ 1.16 × 10^77", font=font(30), fill=TH.TXT)
+    d.text((150, TOPBAR_H + 300), "1 后面跟着 77 个零", font=font(21), fill=TH.MID)
 
     # 右卡：宇宙原子数
     card(d, [670, TOPBAR_H + 44, 1180, 430], TH, r=R_BIG)
     d.text((720, TOPBAR_H + 82), "可观测宇宙的原子总数", font=font(24, True), fill=TH.MID)
     d.text((720, TOPBAR_H + 156), "≈ 10^80", font=font(64, True), fill=BLUE)
-    d.text((720, TOPBAR_H + 226), "同一把尺子", font=font(30), fill=TH.TXT)
-    d.text((720, TOPBAR_H + 286), "私钥总数还比它少约三个数量级",
+    d.text((720, TOPBAR_H + 242), "同一把尺子", font=font(30), fill=TH.TXT)
+    d.text((720, TOPBAR_H + 300), "私钥总数还比它少约三个数量级",
            font=font(21), fill=TH.MID)
 
     # 底部结论
@@ -163,7 +163,7 @@ def s8_04():
     W, H = im.size
 
     # 左：2009–2012 散钥匙
-    card(d, [90, TOPBAR_H + 34, 590, 540], TH, r=18)
+    card(d, [90, TOPBAR_H + 34, 590, 556], TH, r=18)
     d.text((120, TOPBAR_H + 62), "2009–2012 · 一堆散钥匙", font=font(25, True), fill=RED)
     d.text((120, TOPBAR_H + 100), "每要一个新地址，就随机生成一把新私钥",
            font=font(19), fill=TH.MID)
@@ -180,17 +180,17 @@ def s8_04():
                fill=RED if late else TH.MID, anchor="mm")
     d.text((120, TOPBAR_H + 276), "wallet.dat 密钥池只预留 100 把",
            font=font(20), fill=TH.TXT)
-    d.rounded_rectangle([120, TOPBAR_H + 308, 560, TOPBAR_H + 366], radius=10,
+    d.rounded_rectangle([120, TOPBAR_H + 308, 560, TOPBAR_H + 388], radius=10,
                         fill=RED_BG, outline=RED, width=2)
-    d.text((140, TOPBAR_H + 337), "转账还会自动生成找零地址 →",
+    d.text((140, TOPBAR_H + 322), "转账还会自动生成找零地址 →",
            font=font(20, True), fill=RED)
-    d.text((140, TOPBAR_H + 371), "超出 100 把之后的新钥匙，不在备份里",
+    d.text((140, TOPBAR_H + 354), "超出 100 把之后的新钥匙，不在备份里",
            font=font(20, True), fill=RED)
-    d.text((120, TOPBAR_H + 424), "硬盘一坏，用旧备份恢复 → 那部分币没了",
+    d.text((120, TOPBAR_H + 436), "硬盘一坏，用旧备份恢复 → 那部分币没了",
            font=font(19), fill=TH.MID)
 
     # 右：2012 起 种子树
-    card(d, [690, TOPBAR_H + 34, 1190, 540], TH, r=18)
+    card(d, [690, TOPBAR_H + 34, 1190, 556], TH, r=18)
     d.text((720, TOPBAR_H + 62), "2012 起 · 一棵种子树（BIP32）",
            font=font(25, True), fill=GREEN)
     d.text((720, TOPBAR_H + 100), "一个种子，按固定规则推导全部钥匙",
@@ -212,11 +212,11 @@ def s8_04():
                fill=GREEN, anchor="mm")
     d.text((720, TOPBAR_H + 324), "再下一层还能继续分（分层确定性）",
            font=font(19), fill=TH.MID)
-    d.rounded_rectangle([720, TOPBAR_H + 356, 1160, TOPBAR_H + 414], radius=10,
+    d.rounded_rectangle([720, TOPBAR_H + 356, 1160, TOPBAR_H + 424], radius=10,
                         fill=GREEN_BG, outline=GREEN, width=2)
-    d.text((740, TOPBAR_H + 385), "备份一次，就能重新长出所有钥匙",
+    d.text((740, TOPBAR_H + 382), "备份一次，就能重新长出所有钥匙",
            font=font(21, True), fill=GREEN)
-    d.text((720, TOPBAR_H + 448), "2013 BIP39：种子 → 12/24 个英文单词（2048 词表）",
+    d.text((720, TOPBAR_H + 452), "2013 BIP39：种子 → 12/24 个助记单词",
            font=font(19), fill=TH.TXT)
 
     # 中间箭头
@@ -293,7 +293,7 @@ def s8_06():
         chip(d, (975, y + 30), TH, tag, fs=18, color=TH.MID, bg=TH.CARD_HI)
         d.text((130, y + 84), l1, font=font(21), fill=TH.TXT)
         d.text((130, y + 114), "　　" + l2, font=font(21, True), fill=col)
-        d.text((640, y + 84), note, font=font(19), fill=TH.MID)
+        wrap(d, note, 640, y + 84, 512, font(19), TH.MID, 27, 2)
         y += h + 16
 
     d.text((640, y + 6), "链上永久丢失估计：287 万 – 379 万枚（占已开采量 17%–23%）· 这是一个关于人的数字",
@@ -317,7 +317,7 @@ def s8_07():
         d.text((220, y + 40), t, font=font(29, True), fill=TH.TXT)
         d.text((220, y + 94), s, font=font(20), fill=TH.MID)
         y += 160
-    save(im, OUT / "07-mindmap-summary.png")
+    save(im, OUT / "08-mindmap-summary.png")
 
 
 FN = [s8_01, s8_02, s8_03, s8_04, s8_05, s8_06, s8_07]

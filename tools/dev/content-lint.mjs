@@ -61,21 +61,62 @@ function check(name, cond, detail) {
   else console.log(`🟢 ${name}`);
 }
 
+// 扫描正文 = 原文剔除 HTML 注释（发布配置块），否则注释里的词会被误判
+const mdScan = md.replace(/<!--[\s\S]*?-->/g, '');
+const lines = mdScan.split('\n');
+
 // 1. 敏感词（否定 / 澄清 / 引用语境豁免，避免科普文"不是稳赚""讲成暴富神话"被误红）
 const NEG_CTX = ['不', '不是', '≠', '并非', '别', '勿', '请勿', '没有', '无', '避免',
   '误解', '有人', '传说', '被说成', '讲成', '而非'];
 function inNegContext(line) { return NEG_CTX.some(n => line.includes(n)); }
-const lines = md.split('\n');
 const hitSens = [];
 for (const w of SENSITIVE) {
   if (lines.some(l => l.includes(w) && !inNegContext(l))) hitSens.push(w);
 }
 check('敏感词/诱导交易表述 = 0（否定/澄清语境已豁免）', hitSens.length === 0, hitSens.join('、'));
 
-// 2. 极限词（允许出现在「不是…」的否定句里会被误伤，故仅报告 + 强提醒）
-const hitExt = EXTREME.filter(w => md.includes(w));
-if (hitExt.length) warnings.push(`⚠️ 极限词出现: ${hitExt.join('、')}（请确认是否在否定/引用语境）`);
-else console.log('🟢 极限词 = 0（或仅安全语境）');
+// 2. 极限词：按语境分流，只把「真·夸赞式绝对化用语」留给人审
+//    R1 否定/澄清：词前后 24 字内有 不/没有/并非/而非/不等于…
+//    R2 序数/时间：第一笔/第一次/第一步/第一层/第一站…
+//    R3 排他性技术陈述：唯一办法/唯一方式/唯一途径/唯一能…
+//    R4 唯一性说明：同行有 只有/只能/仅有 支撑（例：私钥是唯一的钥匙，只有它能开门）
+const NEG_NEAR = ['不', '没有', '并非', '而非', '不等于', '≠', '非绝对'];
+const ORDINAL = ['第一笔', '第一次', '第一步', '第一层', '第一站', '第一年', '第一批',
+  '第一版', '第一节', '第一题', '第一时间', '第一批'];
+const EXCL = ['唯一办法', '唯一方式', '唯一途径', '唯一能'];
+const ONLY = ['只有', '只能', '仅有'];
+
+const safeHits = [];   // {w, rule, ctx}
+const reviewHits = []; // {w, ctx}
+for (const line of lines) {
+  for (const w of EXTREME) {
+    let i = line.indexOf(w);
+    while (i !== -1) {
+      const near = line.slice(Math.max(0, i - 24), i + w.length + 24);
+      const ctx = line.slice(Math.max(0, i - 22), i + w.length + 22).trim();
+      let rule = null;
+      if (NEG_NEAR.some(n => near.includes(n))) rule = 'R1 否定/澄清';
+      else if (ORDINAL.some(o => line.includes(o))) rule = 'R2 序数/时间';
+      else if (EXCL.some(e => line.includes(e))) rule = 'R3 排他性技术陈述';
+      else if (w === '唯一' && ONLY.some(o => line.includes(o))) rule = 'R4 唯一性说明';
+      (rule ? safeHits : reviewHits).push({ w, rule, ctx });
+      i = line.indexOf(w, i + w.length);
+    }
+  }
+}
+if (safeHits.length) {
+  const byRule = {};
+  safeHits.forEach(h => { (byRule[h.rule] ||= new Set()).add(h.w); });
+  Object.entries(byRule).forEach(([r, ws]) =>
+    console.log(`🟢 极限词豁免 [${r}]：${[...ws].join('、')}`));
+}
+if (reviewHits.length) {
+  const ws = [...new Set(reviewHits.map(h => h.w))];
+  warnings.push(`⚠️ 极限词需人工确认: ${ws.join('、')}`);
+  reviewHits.slice(0, 8).forEach(h => console.log(`   ↳ [${h.w}] …${h.ctx}…`));
+} else {
+  console.log('🟢 极限词 = 0（无夸赞式绝对化用语）');
+}
 
 // 3. 摘要 ≤ 120 字（发布版才检查；母库无摘要字段）
 const m = md.match(/摘要[^:：]*[:：]\s*(.+)/);
