@@ -13,6 +13,10 @@ fig-layout-check.py — 配图排版体检门闸（ADR-0014）
   L3 溢出：文本 bbox 超出所在容器（含超出内容区：画布去掉顶/底栏）
   L4 贴底：文本内容区底部留白 < 28px（会蹭到合规条）
   L5 字号：正文文字 < 18px 直接 FAIL（豆腐级下限）；--strict 时 < 22px FAIL
+  L6 手机可读（ADR-0017，取代 ADR-0015 的 22px 标准）：
+       --strict 时：叙述性正文（≥8字）< 34px FAIL（手机 10.0 CSS px = 正文字高 67%）
+                    短标签（<8字）< 28px FAIL（手机 8.2 CSS px）
+       判据依据：1280px 图 → 微信显示 375 CSS px，因子 0.293；微信正文 15 / 图注 13 CSS px
            —— 1280px 图在手机端显示宽约 375pt，缩放 ≈0.29，19px 正文在手机上
               只有 ~5.5pt，肉眼不可读（2026-09-27 用户手机实拍反馈）。
               故新图标准：正文 ≥22px（--strict 验收），注脚/图形标签 ≥18px。
@@ -177,6 +181,8 @@ def main():
     pad_th = 0.45
     bottom_th = 28
     l5_th = 22 if args.strict else 18   # L5 最小字号（px）
+    l6_body = 34   # L6 叙述性正文下限（ADR-0017）
+    l6_tag  = 28   # L6 短标签下限
 
     jobs = _collect()
     if args.station:
@@ -192,12 +198,12 @@ def main():
 
     if not args.quiet:
         print("=" * 110)
-        print(f"fig-layout-check · L1行距比≥{l1_th} · L2内边距≥{pad_th}×fs · L3溢出 · L4底部留白≥{bottom_th}px · L5字号≥{l5_th}px")
+        print(f"fig-layout-check · L1行距比≥{l1_th} · L2内边距≥{pad_th}×fs · L3溢出 · L4底部留白≥{bottom_th}px · L5字号≥{l5_th}px · L6正文≥{l6_body}/标签≥{l6_tag}(strict)")
         print("=" * 110)
         print(f"{'fig':<22}{'文字':<6}{'L1中位':<9}{'L1最小':<9}{'L2最小':<9}{'L5最小fs':<9}{'L3':<5}{'L4':<5}判定")
         print("-" * 110)
 
-    rows, n_l3, n_l4, n_l1, n_l2, n_l5 = [], 0, 0, 0, 0, 0
+    rows, n_l3, n_l4, n_l1, n_l2, n_l5, n_l6 = [], 0, 0, 0, 0, 0, 0
     for fg, _fn in figs:
         ts = [t for t in REC["texts"] if t["fig"] == fg]
         bs = [b for b in REC["boxes"] if b["fig"] == fg]
@@ -253,6 +259,9 @@ def main():
 
         # L5：最小字号（正文，非框架）
         smalls = [t for t in ts if t["fs"] < l5_th]
+        # L6：手机可读性（ADR-0017）——按文字长度分流正文/标签
+        smalls6 = [t for t in ts
+                   if t["fs"] < (l6_body if len(t["text"]) >= 8 else l6_tag)]
         mnfs = min([t["fs"] for t in ts]) if ts else 0
 
         med = statistics.median([x[0] for x in l1s]) if l1s else float("nan")
@@ -274,7 +283,10 @@ def main():
         if smalls:
             bad.append("L5小字")
             n_l5 += len(smalls)
-        rows.append((fg, len(ts), med, mn, pmn, l3, l4, l1s, smalls, ",".join(bad) or "ok"))
+        if smalls6:
+            bad.append("L6小字")
+            n_l6 += len(smalls6)
+        rows.append((fg, len(ts), med, mn, pmn, l3, l4, l1s, smalls, smalls6, ",".join(bad) or "ok"))
         if not args.quiet:
             print(f"{fg:<22}{len(ts):<6}{med:<9.2f}{mn:<9.2f}{pmn:<9.2f}{mnfs:<9}{len(l3):<5}{len(l4):<5}{rows[-1][-1]}")
             for t2 in sorted(smalls, key=lambda t: t["fs"])[:3]:
@@ -315,7 +327,8 @@ def main():
         cnt2 = 0
         for r in rows:
             for kind, tx in (r[5] or []) + [("贴底", y) for y in (r[6] or [])] + \
-                    [("小字", f"{t['fs']}px {t['text'][:20]}") for t in r[8]]:
+                    [("小字", f"{t['fs']}px {t['text'][:20]}") for t in (r[8] or [])][:3] + \
+                    [("L6", f"{t['fs']}px {t['text'][:20]}") for t in (r[9] or [])][:3]:
                 cnt2 += 1
                 print(f"  {r[0]:<20}{kind:<6}{tx}")
         if cnt2 == 0:
@@ -325,7 +338,7 @@ def main():
     tot_bad = sum(1 for r in rows if r[-1] != "ok")
     print()
     print(f"结论：{len(rows)} 张图，{tot_bad} 张不合格 "
-          f"（L1 {n_l1} / L2 {n_l2} / L3 {n_l3} / L4 {n_l4} / L5 {n_l5}）")
+          f"（L1 {n_l1} / L2 {n_l2} / L3 {n_l3} / L4 {n_l4} / L5 {n_l5} / L6 {n_l6}）")
     return 1 if tot_bad else 0
 
 

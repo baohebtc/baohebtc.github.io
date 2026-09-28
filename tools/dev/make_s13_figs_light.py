@@ -51,7 +51,7 @@ def v_chain(d, x0, x1, y, nodes, th, hi=False, bh=84, gap=34):
     return y
 
 
-def footer_bar(d, th, W, H, text, color=None, bg=None, h=64, fs=26):
+def footer_bar(d, th, W, H, text, color=None, bg=None, h=64, fs=34):  # ADR-0017: 26→34
     """底部结论条（在合规条上方）。"""
     fy = H - FOOTBAR_H - h - 26
     d.rounded_rectangle([60, fy, W - 60, fy + h], radius=R_SM,
@@ -173,34 +173,32 @@ def s1_04():
 
 
 def s1_05():
-    """工作量证明的生命周期（16:9 流程）。"""
-    im, d = canvas(TH, "工作量证明的生命周期", "站1 · 现金湾", size="16:9")
+    """工作量证明的生命周期（4:3 纵向大字版，ADR-0017 样张）。
+
+    副文精简到 ≤6 字（28px 标签级），完整解释移文章图注（ADR-0017 §3）。
+    """
+    im, d = canvas(TH, "工作量证明的生命周期", "站1 · 现金湾", size="4:3")
     W, H = im.size
     steps = [
-        ("新交易", "有人发起一笔转账"),
-        ("广播全网", "瞬间传给所有节点"),
-        ("解数学题", "矿工比拼算力找答案"),
-        ("第一个解出", "拿到「写这一页」的权利"),
-        ("新区块上链", "接上前一页，永久留痕"),
+        ("新交易", "有人发起转账"),
+        ("广播全网", "瞬间传遍全网"),
+        ("解数学题", "矿工比拼算力"),
+        ("第一个解出", "夺得记账权利"),
+        ("新区块上链", "链上永久留痕"),
     ]
-    n = len(steps)
-    gap = 20
-    cw = (1220 - 60 - gap * (n - 1)) / n
-    y0, bh = 200, 250
-    for i, (t, s) in enumerate(steps):
-        x0 = 60 + i * (cw + gap)
-        card(d, [x0, y0, x0 + cw, y0 + bh], TH, hi=(i == 3), r=R_BIG)
-        d.ellipse([x0 + 22, y0 + 22, x0 + 56, y0 + 56], fill=TH.CARD_HI, outline=TH.ACCENT, width=2)
-        d.text((x0 + 39, y0 + 39), str(i + 1), font=font(22, True), fill=TH.ACCENT, anchor="mm")
-        d.text((x0 + 22, y0 + 84), t, font=font(26, True),
+    y = TOPBAR_H + 40
+    ch, gap = 126, 16
+    for i, (t, s_) in enumerate(steps):
+        card(d, [90, y, 1190, y + ch], TH, hi=(i == 3), r=R_BIG)
+        d.ellipse([124, y + 33, 184, y + 93], fill=TH.CARD_HI, outline=TH.ACCENT, width=3)
+        d.text((154, y + 63), str(i + 1), font=font(32, True), fill=TH.ACCENT, anchor="mm")
+        d.text((216, y + 18), t, font=font(36, True),
                fill=TH.ACCENT if i == 3 else TH.TXT)
-        wrap(d, s, x0 + 22, y0 + 132, cw - 44, font(20), TH.MID, 30, 3)
-        if i < n - 1:
-            arrow(d, (x0 + cw + 3, y0 + bh // 2), (x0 + cw + gap - 3, y0 + bh // 2), TH, width=3, head=8)
-    card(d, [60, 486, 1220, 566], TH, hi=True, r=R_SM)
-    d.text((640, 526), "胜者所得：写这一页的权利 + 一点新比特币奖励",
-           font=font(24, True), fill=TH.TXT, anchor="mm")
-    footer_bar(d, TH, W, H, "算力「浪费」= 没有老板也能安全的代价")
+        d.text((216, y + 78), s_, font=font(28), fill=TH.MID)
+        if i < len(steps) - 1:
+            arrow(d, (1120, y + ch + 2), (1120, y + ch + gap - 2), TH, width=3, head=8)
+        y += ch + gap
+    footer_bar(d, TH, W, H, "胜者所得：写这一页的权利 + 一点新比特币奖励", h=70)
     save(im, OUT1 / "05-pow.png")
 
 
