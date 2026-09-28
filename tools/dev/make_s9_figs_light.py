@@ -206,28 +206,28 @@ def s9_04():
          "三个月信号窗口达 90% 才生效，并留出升级时间", "软分叉（升级）", GREEN),
     ]
     x0, x1 = 70, 1210
-    cx_a, cx_b, cx_c, cx_d = 92, 268, 640, 962
+    cx_a, cx_b, cx_c, cx_d = 92, 278, 656, 962
     y = TOPBAR_H + 10
 
-    d.rounded_rectangle([x0, y, x1, y + 50], radius=R_SM, fill=TH.CARD_HI,
+    d.rounded_rectangle([x0, y, x1, y + 54], radius=R_SM, fill=TH.CARD_HI,
                         outline=TH.EDGE, width=2)
     for cx, label in ((cx_a, "时间"), (cx_b, "发生了什么"), (cx_c, "怎么收场的"), (cx_d, "属于哪一类")):
-        d.text((cx, y + 25), label, font=font(22, True), fill=TH.MID, anchor="lm")
-    y += 66
+        d.text((cx, y + 27), label, font=font(24, True), fill=TH.MID, anchor="lm")
+    y += 70
 
     for i, (a, b, c, e, col) in enumerate(rows):
-        h = 128
+        h = 136
         d.rounded_rectangle([x0, y, x1, y + h], radius=12,
                             fill=TH.CARD if i % 2 == 0 else TH.CARD_HI,
                             outline=TH.EDGE, width=1)
         d.rectangle([x0 + 6, y + 16, x0 + 11, y + h - 16], fill=col)
-        d.text((cx_a, y + 22), a, font=font(21, True), fill=TH.TXT)
-        wrap(d, b, cx_b, y + 20, 350, font(20), TH.TXT, 28, 3)
-        wrap(d, c, cx_c, y + 20, 300, font(19), TH.TXT, 27, 3)
-        chip(d, (cx_d, y + 22), TH, e, fs=19, color=col, bg=TH.CARD)
-        y += h + 10
+        d.text((cx_a, y + 26), a, font=font(23, True), fill=TH.TXT)
+        wrap(d, b, cx_b, y + 22, 356, font(22), TH.TXT, 34, 3)
+        wrap(d, c, cx_c, y + 22, 286, font(22), TH.TXT, 34, 3)
+        chip(d, (cx_d, y + 26), TH, e, fs=22, color=col, bg=TH.CARD)
+        y += h + 4
 
-    d.text(((x0 + x1) // 2, H - FOOTBAR_H - 42),
+    d.text(((x0 + x1) // 2, H - FOOTBAR_H - 52),
            "每一次都不是谁下令做的 · 都是有人提方案、公开讨论、大家各自选择装不装",
            font=font(22, True), fill=TH.MID, anchor="mm")
     save(im, OUT / "04-t1-rule-changes-table.png")

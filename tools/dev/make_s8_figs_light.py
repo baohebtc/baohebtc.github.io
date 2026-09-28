@@ -284,20 +284,21 @@ def s8_06():
         ("故事三 · 一张欠条", "托管平台暴雷", "私钥没丢 —— 他们从来就没有过私钥",
          "手里只有账户里的一行数字", "看得见的余额，不等于能动的币", BLUE),
     ]
+    # ADR-0018 温和提字：18-21 → 22-28，卡高 152→156、间隔 16→10，构图不动
     y = TOPBAR_H + 30
     for title, tag, l1, l2, note, col in items:
-        h = 152
+        h = 156
         card(d, [100, y, 1180, y + h], TH, r=16)
         d.rectangle([100, y + 16, 106, y + h - 16], fill=col)
-        d.text((130, y + 34), title, font=font(26, True), fill=TH.TXT)
-        chip(d, (975, y + 30), TH, tag, fs=18, color=TH.MID, bg=TH.CARD_HI)
-        d.text((130, y + 84), l1, font=font(21), fill=TH.TXT)
-        d.text((130, y + 114), "　　" + l2, font=font(21, True), fill=col)
-        wrap(d, note, 640, y + 84, 512, font(19), TH.MID, 27, 2)
-        y += h + 16
+        d.text((130, y + 32), title, font=font(28, True), fill=TH.TXT)
+        chip(d, (975, y + 30), TH, tag, fs=20, color=TH.MID, bg=TH.CARD_HI)
+        d.text((130, y + 84), l1, font=font(24), fill=TH.TXT)
+        d.text((130, y + 116), "　　" + l2, font=font(24, True), fill=col)
+        wrap(d, note, 640, y + 84, 500, font(22), TH.MID, 34, 2)
+        y += h + 10
 
-    d.text((640, y + 6), "链上永久丢失估计：287 万 – 379 万枚（占已开采量 17%–23%）· 这是一个关于人的数字",
-           font=font(20, True), fill=TH.MID, anchor="mm")
+    d.text((640, H - FOOTBAR_H - 46), "链上永久丢失估计：287 万 – 379 万枚（占已开采量 17%–23%）· 这是一个关于人的数字",
+           font=font(22, True), fill=TH.MID, anchor="mm")
     save(im, OUT / "06-lost-stories.png")
 
 

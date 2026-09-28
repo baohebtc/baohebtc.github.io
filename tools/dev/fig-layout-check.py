@@ -13,10 +13,16 @@ fig-layout-check.py — 配图排版体检门闸（ADR-0014）
   L3 溢出：文本 bbox 超出所在容器（含超出内容区：画布去掉顶/底栏）
   L4 贴底：文本内容区底部留白 < 28px（会蹭到合规条）
   L5 字号：正文文字 < 18px 直接 FAIL（豆腐级下限）；--strict 时 < 22px FAIL
-  L6 手机可读（ADR-0017，取代 ADR-0015 的 22px 标准）：
-       --strict 时：叙述性正文（≥8字）< 34px FAIL（手机 10.0 CSS px = 正文字高 67%）
-                    短标签（<8字）< 28px FAIL（手机 8.2 CSS px）
-       判据依据：1280px 图 → 微信显示 375 CSS px，因子 0.293；微信正文 15 / 图注 13 CSS px
+           —— **22px 是现行正式标准**（ADR-0018 定稿）。1280px 图 → 微信显示 375 CSS px，
+              22px ≈ 6.4 CSS pt；低于此值在手机上明显吃力。
+
+  ⚠️ 教训（ADR-0017 → ADR-0018）：本门闸曾把 L6 定为「正文 <34px 即 FAIL」，结果
+  65/65 张全部判红，逼出一次全系列拆图重做，被用户明确否决——为达标而牺牲构图美感，
+  收益不成比例。**单一绝对门槛无法刻画「难读」（它是 字小×行距挤×信息量×挤边 的组合成因）。**
+  现降为两级：
+    · `--phone`：把「绝对字号」当**参考指标**输出（不入判定），供人工判断
+    · 定位烈士复合扫描交给独立工具 `fig-density-scan.py`（多维加权 RDI + 小字占比）
+  原则写死：**不得为通过门闸而重构版面；有缺口优先「精简文案 + 温和提字」。**
            —— 1280px 图在手机端显示宽约 375pt，缩放 ≈0.29，19px 正文在手机上
               只有 ~5.5pt，肉眼不可读（2026-09-27 用户手机实拍反馈）。
               故新图标准：正文 ≥22px（--strict 验收），注脚/图形标签 ≥18px。
@@ -29,6 +35,9 @@ fig-layout-check.py — 配图排版体检门闸（ADR-0014）
     python3 tools/dev/fig-layout-check.py --station 9     # 单站
     python3 tools/dev/fig-layout-check.py --strict        # L1 阈值提高到 0.45
     python3 tools/dev/fig-layout-check.py --quiet         # 只打印结论
+    python3 tools/dev/fig-layout-check.py --phone         # 追加手机等效字号参考
+
+关联工具：需要「挑出该修哪几张」时用 `fig-density-scan.py`（多维加权 RDI + 小字占比分级）。
 """
 from __future__ import annotations
 import argparse, importlib, pathlib, sys, collections, statistics
@@ -175,14 +184,16 @@ def main():
     ap.add_argument("--station", default=None)
     ap.add_argument("--strict", action="store_true")
     ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--phone", action="store_true",
+                    help="追加打印「手机等效字号」参考值（<22px 的清单），不参与判定")
     args = ap.parse_args()
 
     l1_th = 0.45 if args.strict else 0.35
     pad_th = 0.45
     bottom_th = 28
-    l5_th = 22 if args.strict else 18   # L5 最小字号（px）
-    l6_body = 34   # L6 叙述性正文下限（ADR-0017）
-    l6_tag  = 28   # L6 短标签下限
+    l5_th = 22 if args.strict else 18   # L5 最小字号（px）—— ADR-0018 正式标准
+    phone = getattr(args, "phone", False)   # 手机等效字号参考（不入判定）
+    l6_body, l6_tag = 34, 28             # 仅 --phone 参考用；不再作为 FAIL 判据
 
     jobs = _collect()
     if args.station:
@@ -259,9 +270,10 @@ def main():
 
         # L5：最小字号（正文，非框架）
         smalls = [t for t in ts if t["fs"] < l5_th]
-        # L6：手机可读性（ADR-0017）——按文字长度分流正文/标签
+        # L6：手机等效字号参考（ADR-0018 起不参与判定，仅 --phone 打印）
         smalls6 = [t for t in ts
-                   if t["fs"] < (l6_body if len(t["text"]) >= 8 else l6_tag)]
+                   if t["fs"] < (l6_body if len(t["text"]) >= 8 else l6_tag)]\
+            if phone else []
         mnfs = min([t["fs"] for t in ts]) if ts else 0
 
         med = statistics.median([x[0] for x in l1s]) if l1s else float("nan")
