@@ -56,7 +56,7 @@ def s9_01():
     # 左：公司（金字塔）
     card(d, [90, TOPBAR_H + 36, 610, 578], TH, r=18)
     d.text((120, TOPBAR_H + 62), "公司", font=font(28, True), fill=TH.MID)
-    d.text((196, TOPBAR_H + 68), "有一个能拍板的人", font=font(19), fill=TH.MID)
+    d.text((196, TOPBAR_H + 68), "有一个能拍板的人", font=font(22), fill=TH.MID)
     lv = [("董事会", 300, 92), ("CEO / 管理层", 340, 92), ("员工 · 用户", 380, 92)]
     y = TOPBAR_H + 118
     for label, w_, h_ in lv:
@@ -67,18 +67,18 @@ def s9_01():
         if label != "员工 · 用户":
             d.line([(350, y + h_), (350, y + h_ + 16)], fill=TH.EDGE, width=3)
         y += h_ + 16
-    d.text((120, TOPBAR_H + 456), "规则由内部决定，改了就生效", font=font(20), fill=TH.MID)
+    d.text((120, TOPBAR_H + 456), "规则由内部决定，改了就生效", font=font(22), fill=TH.MID)
 
     # 右：比特币（无中心网）
     card(d, [670, TOPBAR_H + 36, 1190, 578], TH, r=18)
     d.text((700, TOPBAR_H + 62), "比特币", font=font(28, True), fill=TH.ACCENT)
-    d.text((778, TOPBAR_H + 68), "没有人能替所有人拍板", font=font(19), fill=TH.ACCENT)
+    d.text((778, TOPBAR_H + 68), "没有人能替所有人拍板", font=font(22), fill=TH.ACCENT)
     cx, cy = 930, TOPBAR_H + 250
     # 规则方块（中心不是人，是一份规则）
     d.rounded_rectangle([cx - 74, cy - 40, cx + 74, cy + 40], radius=10,
                         fill=TH.ACCENT)
-    d.text((cx, cy - 16), "一份", font=font(21, True), fill=(255, 255, 255), anchor="mm")
-    d.text((cx, cy + 18), "公开规则", font=font(21, True), fill=(255, 255, 255), anchor="mm")
+    d.text((cx, cy - 16), "一份", font=font(22, True), fill=(255, 255, 255), anchor="mm")
+    d.text((cx, cy + 18), "公开规则", font=font(22, True), fill=(255, 255, 255), anchor="mm")
     # 环绕节点
     import math
     nodes = []
@@ -94,7 +94,7 @@ def s9_01():
     for nx, ny in nodes:
         d.ellipse([nx - 22, ny - 22, nx + 22, ny + 22], fill=TH.CARD_HI,
                   outline=TH.ACCENT, width=2)
-    d.text((700, TOPBAR_H + 476), "每家各自照着跑 · 改了要各自同意", font=font(20), fill=TH.MID)
+    d.text((700, TOPBAR_H + 472), "每家各自照着跑 · 改了要各自同意", font=font(22), fill=TH.MID)
 
     # 底部结论条
     d.rounded_rectangle([90, 590, 1190, 652], radius=R_SM,
@@ -159,9 +159,9 @@ def s9_03():
            fill=(255, 255, 255), anchor="mm")
 
     lanes = [
-        (90, "路径一 · 收紧（软分叉）", "以前允许的事，现在有一部分不允许",
+        (90, "路径一 · 收紧（软分叉）", "以前允许的，现在部分不允许",
          "没升级的节点仍能接受", "同一条链，继续走", GREEN),
-        (452, "路径二 · 放宽（硬分叉）", "以前不允许的事，现在允许了",
+        (452, "路径二 · 放宽（硬分叉）", "以前不允许的，现在允许了",
          "没升级的节点判定为非法", "链一分为二，各走各的", BLUE),
         (814, "路径三 · 只改自己的", "你改你的，跑你自己的那份",
          "没有别人跟过来", "不是改了它，是新开一条没人走的链", RED),
@@ -169,12 +169,12 @@ def s9_03():
     for x0, title, l1, l2, res, col in lanes:
         card(d, [x0, TOPBAR_H + 140, x0 + 362, 566], TH, r=18)
         d.text((x0 + 22, TOPBAR_H + 164), title, font=font(23, True), fill=col)
-        d.text((x0 + 22, TOPBAR_H + 214), l1, font=font(19), fill=TH.TXT)
-        d.text((x0 + 22, TOPBAR_H + 250), l2, font=font(19), fill=TH.TXT)
+        d.text((x0 + 22, TOPBAR_H + 212), l1, font=font(22), fill=TH.TXT)
+        d.text((x0 + 22, TOPBAR_H + 252), l2, font=font(22), fill=TH.TXT)
         arrow(d, (x0 + 181, TOPBAR_H + 292), (x0 + 181, TOPBAR_H + 344), TH, width=4)
         d.rounded_rectangle([x0 + 22, TOPBAR_H + 356, x0 + 340, TOPBAR_H + 470],
                             radius=12, fill=TH.CARD_HI, outline=col, width=2)
-        wrap(d, res, x0 + 42, TOPBAR_H + 382, 282, font(21, True), col, 30, 2)
+        wrap(d, res, x0 + 42, TOPBAR_H + 382, 282, font(22, True), col, 34, 2)
         # 顶部连线
         d.line([(640, TOPBAR_H + 100), (640, TOPBAR_H + 124)], fill=TH.EDGE, width=3)
         d.line([(x0 + 181, TOPBAR_H + 124), (x0 + 181, TOPBAR_H + 140)], fill=TH.EDGE, width=3)

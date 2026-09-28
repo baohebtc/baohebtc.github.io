@@ -240,10 +240,10 @@ def s8_05():
     d.text((350, TOPBAR_H + 220), "原文 → 密文", font=font(26, True),
            fill=BLUE, anchor="mm")
     d.text((350, TOPBAR_H + 258), "看到的人读不懂，需要解密",
-           font=font(19), fill=TH.MID, anchor="mm")
+           font=font(22), fill=TH.MID, anchor="mm")
     d.text((140, TOPBAR_H + 330), "目的：保密", font=font(23, True), fill=BLUE)
     d.text((140, TOPBAR_H + 380), "链上不适用 —— 比特币账本是全公开的",
-           font=font(19), fill=TH.MID)
+           font=font(22), fill=TH.MID)
 
     # 右：签名
     card(d, [680, TOPBAR_H + 40, 1180, 500], TH, r=R_BIG)
@@ -253,21 +253,21 @@ def s8_05():
     d.rounded_rectangle([730, TOPBAR_H + 160, 1130, TOPBAR_H + 280], radius=10,
                         fill=TH.CARD_HI, outline=TH.ACCENT, width=2)
     d.text((930, TOPBAR_H + 200), "「我把这笔钱转给谁」· 内容公开可见",
-           font=font(21, True), fill=TH.TXT, anchor="mm")
+           font=font(22, True), fill=TH.TXT, anchor="mm")
     d.text((930, TOPBAR_H + 244), "＋ 一个用私钥生成的数学标记",
-           font=font(21), fill=TH.ACCENT, anchor="mm")
+           font=font(22), fill=TH.ACCENT, anchor="mm")
     d.text((720, TOPBAR_H + 330), "目的：证明授权，不隐藏内容",
            font=font(23, True), fill=TH.ACCENT)
     d.text((720, TOPBAR_H + 380), "任何人都能用公钥验证真伪 · 但谁也伪造不了",
-           font=font(19), fill=TH.MID)
+           font=font(22), fill=TH.MID)
 
     # 底部提示
     d.rounded_rectangle([100, 520, 1180, 610], radius=R_SM,
                         fill=TH.CARD_HI, outline=TH.EDGE, width=2)
     d.text((640, 548), "钱包 App 的密码，保护的是你手机上的文件 —— 不是链上的币",
            font=font(25, True), fill=TH.TXT, anchor="mm")
-    d.text((640, 590), "别人拿到种子词，不需要知道你的 App 密码，也能在别处转走",
-           font=font(19), fill=RED, anchor="mm")
+    d.text((640, 586), "别人拿到种子词，不需要知道你的 App 密码，也能在别处转走",
+           font=font(22), fill=RED, anchor="mm")
     save(im, OUT / "05-sign-not-encrypt.png")
 
 

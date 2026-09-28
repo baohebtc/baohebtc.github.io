@@ -225,7 +225,7 @@ def s2_05():
     for name, lx, sub in labels:
         card(d, [lx - 150, 476, lx + 150, 556], TH, r=R_SM, fill=RED_BG, edge=RED)
         d.text((lx, 498), name, font=font(23, True), fill=RED, anchor="mm")
-        d.text((lx, 534), sub, font=font(19), fill=TH.MID, anchor="mm")
+        d.text((lx, 534), sub, font=font(22), fill=TH.MID, anchor="mm")
     footer_bar(d, TH, W, H, "根因都是「规则可改」—— 只要有人能改规则，规则迟早会被改到对他有利")
     save(im, OUT / "05-common-root.png")
 

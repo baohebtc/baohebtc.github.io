@@ -250,12 +250,13 @@ def s15_01():
     for i, (t, mid, s) in enumerate(steps):
         x0 = 60 + i * (cw + gap)
         card(d, [x0, y0, x0 + cw, y0 + bh], TH, hi=(i == n - 1), r=R_BIG)
-        d.text((x0 + cw / 2, y0 + 38), f"第 {i + 1} 次", font=font(20), fill=TH.MID, anchor="mm")
+        d.text((x0 + cw / 2, y0 + 38), f"第 {i + 1} 次", font=font(22), fill=TH.MID, anchor="mm")
         d.text((x0 + cw / 2, y0 + 86), t, font=font(30, True),
                fill=TH.ACCENT if i == n - 1 else TH.TXT, anchor="mm")
         d.line([(x0 + 40, y0 + 116), (x0 + cw - 40, y0 + 116)], fill=TH.EDGE, width=2)
-        wrap(d, mid, x0 + 22, y0 + 138, cw - 44, font(21, True), TH.TXT, 32, 2)
-        wrap(d, s, x0 + 22, y0 + 206, cw - 44, font(19), TH.MID, 28, 2)
+        # ADR-0018 温和提字：21→24 / 19→22，构图不动
+        wrap(d, mid, x0 + 22, y0 + 138, cw - 44, font(24, True), TH.TXT, 36, 2)
+        wrap(d, s, x0 + 22, y0 + 206, cw - 44, font(22), TH.MID, 34, 2)
         if i < n - 1:
             arrow(d, (x0 + cw + 5, y0 + bh // 2), (x0 + cw + gap - 5, y0 + bh // 2), TH, width=3, head=9)
     footer_bar(d, TH, W, H, "锚点方向：越来越不依赖「某个特定的人」")
@@ -469,13 +470,13 @@ def s3_04():
         card(d, [bx, y0, bx + bw, y0 + bh], TH, hi=(i == 2), r=R_BIG)
         d.text((bx + 26, y0 + 34), name, font=font(26, True),
                fill=TH.ACCENT if i == 2 else TH.TXT)
-        d.text((bx + 26, y0 + 76), f"时间戳 {t}", font=font(20), fill=TH.MID)
+        d.text((bx + 26, y0 + 76), f"时间戳 {t}", font=font(22), fill=TH.MID)
         card(d, [bx + 26, y0 + 112, bx + bw - 26, y0 + 172], TH, r=10, fill=TH.CARD_HI)
-        d.text((bx + bw / 2, y0 + 142), hsh, font=font(21, True), fill=TH.GOLD, anchor="mm")
-        d.text((bx + 26, y0 + 196), notes[i], font=font(19), fill=TH.MID)
+        d.text((bx + bw / 2, y0 + 142), hsh, font=font(22, True), fill=TH.GOLD, anchor="mm")
+        d.text((bx + 26, y0 + 196), notes[i], font=font(22), fill=TH.MID)
         if i > 0:
             arrow(d, (bx - gap + 6, y0 + 100), (bx - 6, y0 + 100), TH, width=4, head=12)
-            d.text((bx - gap / 2, y0 + 74), "链接", font=font(18), fill=TH.MID, anchor="mm")
+            d.text((bx - gap / 2, y0 + 74), "链接", font=font(22), fill=TH.MID, anchor="mm")
         if i < 2:
             arrow(d, (bx + bw + 6, y0 + 176), (bx + bw + gap - 6, y0 + 176), TH, width=4, head=12)
     card(d, [68, 490, 560, 570], TH, r=R_SM, fill=RED_BG, edge=RED)

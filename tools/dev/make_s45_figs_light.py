@@ -189,13 +189,13 @@ def s4_05():
                             outline=outl, width=3)
         d.text((px + pw / 2, y0 + 36), label, font=font(24, True),
                fill=RED if broken else TH.TXT, anchor="mm")
-        d.text((px + pw / 2, y0 + 110), f"hash:{hsh}", font=fmono(19),
+        d.text((px + pw / 2, y0 + 110), f"hash:{hsh}", font=fmono(22),
                fill=RED if broken else TH.GOLD, anchor="mm")
         if i:
-            d.text((px + pw / 2, y0 + 158), f"prev:{pages[i-1][1]}", font=fmono(19),
+            d.text((px + pw / 2, y0 + 158), f"prev:{pages[i-1][1]}", font=fmono(22),
                    fill=RED if broken else TH.MID, anchor="mm")
         else:
-            d.text((px + pw / 2, y0 + 158), "prev: —", font=fmono(19),
+            d.text((px + pw / 2, y0 + 158), "prev: —", font=fmono(22),
                    fill=TH.MID, anchor="mm")
         if i < 4:
             ax = px + pw + 3
@@ -278,20 +278,20 @@ def s5_01():
         d.rounded_rectangle([80, y, 80 + wd, y + 84], radius=R_SM, fill=TH.CARD,
                             outline=TH.EDGE, width=2)
         d.text((80 + wd / 2, y + 42), t, font=font(25), fill=TH.TXT, anchor="mm")
-        d.text((80 + wd / 2, y - 18), f"输入 {i+1}", font=font(18), fill=TH.MID, anchor="mm")
+        d.text((80 + wd / 2, y - 18), f"输入 {i+1}", font=font(22), fill=TH.MID, anchor="mm")
         d.line([90 + wd, y + 42, 500, cy], fill=TH.ACCENT, width=3)
     d.rounded_rectangle([500, cy - 110, 780, cy + 110], radius=R_BIG, fill=TH.CARD_HI,
                         outline=TH.ACCENT, width=4)
     d.text((640, cy - 40), "SHA-256", font=font(38, True), fill=TH.ACCENT, anchor="mm")
     d.text((640, cy + 14), "哈希函数", font=font(27), fill=TH.TXT, anchor="mm")
-    d.text((640, cy + 60), "只进不出 · 单向", font=font(20), fill=TH.MID, anchor="mm")
+    d.text((640, cy + 60), "只进不出 · 单向", font=font(22), fill=TH.MID, anchor="mm")
     hx = hashlib.sha256("比特币".encode()).hexdigest()
     d.rounded_rectangle([860, cy - 100, 1220, cy + 100], radius=16, fill=TH.CARD,
                         outline=TH.GOLD, width=3)
-    d.text((1040, cy - 68), "输出 · 永远 64 字符", font=font(21), fill=TH.GOLD, anchor="mm")
+    d.text((1040, cy - 68), "输出 · 永远 64 字符", font=font(22), fill=TH.GOLD, anchor="mm")
     for r in range(4):
-        d.text((1040, cy - 28 + r * 33), hx[r * 16:(r + 1) * 16],
-               font=fmono(19), fill=TH.TXT, anchor="mm")
+        d.text((1040, cy - 30 + r * 34), hx[r * 16:(r + 1) * 16],
+               font=fmono(22), fill=TH.TXT, anchor="mm")
     d.line([780, cy, 860, cy], fill=TH.GOLD, width=3)
     d.rounded_rectangle([80, 574, 1200, 636], radius=R_SM, fill=TH.CARD_HI,
                         outline=TH.ACCENT, width=2)
