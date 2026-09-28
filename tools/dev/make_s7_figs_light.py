@@ -65,10 +65,10 @@ def s7_01():
 
     # 误区 vs 正解
     card(d, [90, y, 620, y + 108], TH, fill=RED_BG, edge=RED, r=16)
-    d.text((110, y + 24), "常见说法", font=font(21, True), fill=RED)
+    d.text((110, y + 24), "常见说法", font=font(22, True), fill=RED)
     d.text((110, y + 60), "矿工在「解一道复杂的数学题」", font=font(24), fill=TH.TXT)
     card(d, [660, y, 1190, y + 108], TH, hi=True, r=16)
-    d.text((680, y + 24), "实际情况", font=font(21, True), fill=TH.ACCENT)
+    d.text((680, y + 24), "实际情况", font=font(22, True), fill=TH.ACCENT)
     d.text((680, y + 60), "矿工在没完没了地掷骰子", font=font(24), fill=TH.TXT)
     y += 128
 
@@ -80,21 +80,21 @@ def s7_01():
     ]
     x = 90
     for i, (t, s) in enumerate(steps):
-        card(d, [x, y, x + 340, y + 132], TH, r=16)
+        card(d, [x, y, x + 340, y + 150], TH, r=16)
         d.text((x + 22, y + 26), t, font=font(26, True), fill=TH.ACCENT)
-        wrap(d, s, x + 22, y + 68, 300, font(20), TH.TXT, 28, 2)
+        wrap(d, s, x + 22, y + 68, 300, font(22), TH.TXT, 34, 2)
         if i < 2:
-            arrow(d, (x + 348, y + 66), (x + 392, y + 66), TH, width=3)
+            arrow(d, (x + 348, y + 75), (x + 392, y + 75), TH, width=3)
         x += 400
-    y += 160
+    y += 178
 
     # 判定分叉
     card(d, [90, y, 590, y + 106], TH, fill=RED_BG, edge=RED, r=16)
     d.text((112, y + 30), "不合格（绝大多数）", font=font(24, True), fill=RED)
-    d.text((112, y + 66), "把那个数字换一个，从头再来", font=font(20), fill=TH.TXT)
+    d.text((112, y + 66), "把那个数字换一个，从头再来", font=font(22), fill=TH.TXT)
     card(d, [690, y, 1190, y + 106], TH, hi=True, r=16)
     d.text((712, y + 30), "合格（极小概率）", font=font(24, True), fill=TH.ACCENT)
-    d.text((712, y + 66), "广播出去，这一页账归你写", font=font(20), fill=TH.TXT)
+    d.text((712, y + 66), "广播出去，这一页账归你写", font=font(22), fill=TH.TXT)
 
     # 回到第②步的回环箭头
     arrow(d, (340, y), (340, y - 26), TH, width=3)

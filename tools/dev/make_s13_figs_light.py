@@ -119,20 +119,20 @@ def s1_03():
         d.line([(px, py), (340, 268)], fill=TH.EDGE, width=2)
     card(d, [220, 200, 460, 336], TH, r=R_BIG)
     d.text((340, 244), "一本村账", font=font(26, True), fill=TH.TXT, anchor="mm")
-    d.text((340, 292), "谁欠谁，都记在这本上", font=font(19), fill=TH.MID, anchor="mm")
+    d.text((340, 292), "谁欠谁，都记在这本上", font=font(22), fill=TH.MID, anchor="mm")
     for nm, px, py in people:
         card(d, [px - 66, py - 32, px + 66, py + 32], TH, hi=True, r=R_SM)
         d.text((px, py), nm, font=font(23, True), fill=TH.TXT, anchor="mm")
     d.text((340, 500), "大家彼此认识，靠人情管住", font=font(22), fill=TH.MID, anchor="mm")
-    d.text((340, 560), "换一批陌生人来，这本账就转不动了", font=font(21), fill=TH.MID, anchor="mm")
+    d.text((340, 560), "换一批陌生人来，这本账就转不动了", font=font(22), fill=TH.MID, anchor="mm")
     # 右：公开账本
     d.text((940, 112), "比特币公开账本 · 陌生人互信", font=font(29, True), fill=TH.ACCENT, anchor="mm")
     btc(d, im, 940, 300, 150)
     card(d, [680, 400, 1200, 500], TH, hi=True, r=R_BIG)
     d.text((940, 424), "人人手里都有一本完整副本", font=font(25, True), fill=TH.TXT, anchor="mm")
-    d.text((940, 466), "数学规则 + 利益奖励管住陌生人", font=font(21), fill=TH.MID, anchor="mm")
+    d.text((940, 466), "数学规则 + 利益奖励管住陌生人", font=font(22), fill=TH.MID, anchor="mm")
     d.text((940, 560), "人人能查 · 没人能偷偷改", font=font(24, True), fill=TH.ACCENT, anchor="mm")
-    d.text((940, 610), "任何一本对不上，全村立刻发现", font=font(21), fill=TH.MID, anchor="mm")
+    d.text((940, 610), "任何一本对不上，全村立刻发现", font=font(22), fill=TH.MID, anchor="mm")
     footer_bar(d, TH, W, H, "人情信任 → 陌生人也能互信：这就是区块链的起点")
     save(im, OUT1 / "03-public-ledger.png")
 
@@ -279,13 +279,13 @@ def s15_02():
     for i, (t, mid, s) in enumerate(steps):
         x0 = 60 + i * (cw + gap)
         card(d, [x0, y0, x0 + cw, y0 + bh], TH, hi=(i == n - 1), r=R_BIG)
-        d.text((x0 + 28, y0 + 34), f"第 {i + 1} 阶段", font=font(20), fill=TH.MID)
+        d.text((x0 + 28, y0 + 34), f"第 {i + 1} 阶段", font=font(22), fill=TH.MID)
         d.text((x0 + 28, y0 + 74), t, font=font(31, True),
                fill=TH.ACCENT if i == n - 1 else TH.TXT)
         card(d, [x0 + 28, y0 + 128, x0 + cw - 28, y0 + 178], TH, r=R_SM, fill=TH.CARD_HI)
         d.text(((x0 + 28 + x0 + cw - 28) / 2, y0 + 153), mid, font=font(22, True),
                fill=TH.GOLD, anchor="mm")
-        wrap(d, s, x0 + 28, y0 + 200, cw - 56, font(20), TH.MID, 30, 3)
+        wrap(d, s, x0 + 28, y0 + 200, cw - 56, font(22), TH.MID, 34, 3)
         if i < n - 1:
             arrow(d, (x0 + cw + 6, y0 + bh // 2), (x0 + cw + gap - 6, y0 + bh // 2), TH, width=3, head=10)
     footer_bar(d, TH, W, H, "不是人变好了，而是信任对象从「人」换成了「规则」")
@@ -298,15 +298,15 @@ def s15_03():
     W, H = im.size
     card(d, [90, 210, 300, 360], TH, r=R_BIG)
     d.text((195, 262), "A", font=font(46, True), fill=TH.TXT, anchor="mm")
-    d.text((195, 322), "借钱的人", font=font(21), fill=TH.MID, anchor="mm")
+    d.text((195, 322), "借钱的人", font=font(22), fill=TH.MID, anchor="mm")
     card(d, [980, 210, 1190, 360], TH, r=R_BIG)
     d.text((1085, 262), "B", font=font(46, True), fill=TH.TXT, anchor="mm")
-    d.text((1085, 322), "借出的人", font=font(21), fill=TH.MID, anchor="mm")
+    d.text((1085, 322), "借出的人", font=font(22), fill=TH.MID, anchor="mm")
     # 中间借条
     card(d, [440, 190, 840, 380], TH, hi=True, r=R_BIG)
     d.text((640, 228), "借 条", font=font(26, True), fill=TH.ACCENT, anchor="mm")
     d.text((640, 288), "A 欠 B 10 元", font=font(34, True), fill=TH.TXT, anchor="mm")
-    d.text((640, 344), "2026 年 · 凭此条结清", font=font(19), fill=TH.MID, anchor="mm")
+    d.text((640, 344), "2026 年 · 凭此条结清", font=font(22), fill=TH.MID, anchor="mm")
     arrow(d, (305, 285), (432, 285), TH, width=4, head=12)
     arrow(d, (848, 285), (975, 285), TH, width=4, head=12)
     card(d, [200, 440, 1080, 530], TH, r=R_SM)
@@ -339,7 +339,7 @@ def s15_04():
         d.rounded_rectangle([xl, y, 1210, y + 112], radius=10, fill=fill, outline=TH.EDGE, width=1)
         d.text((xl + 24, y + 56), r[0], font=font(23, True), fill=TH.TXT, anchor="lm")
         for (name, a, b), tv in zip(cols, r[1:]):
-            d.text(((a + b) / 2, y + 56), tv, font=font(21, name == "比特币"),
+            d.text(((a + b) / 2, y + 56), tv, font=font(22, name == "比特币"),
                    fill=TH.GOLD if name == "比特币" else TH.MID, anchor="mm")
         y += 122
     footer_bar(d, TH, W, H, "锚点越往后，越不依赖「某个权威」")

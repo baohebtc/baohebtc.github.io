@@ -244,12 +244,12 @@ def s9_05():
     d.text((120, TOPBAR_H + 66), "规则只有两条", font=font(26, True), fill=TH.ACCENT)
     d.rounded_rectangle([120, TOPBAR_H + 108, 530, TOPBAR_H + 178], radius=10,
                         fill=TH.CARD_HI, outline=TH.EDGE, width=2)
-    d.text((140, TOPBAR_H + 140), "① 每个新区块：产生 50 枚", font=font(21), fill=TH.TXT)
+    d.text((140, TOPBAR_H + 138), "① 每个新区块：产生 50 枚", font=font(22), fill=TH.TXT)
     d.rounded_rectangle([120, TOPBAR_H + 196, 530, TOPBAR_H + 268], radius=10,
                         fill=TH.CARD_HI, outline=TH.EDGE, width=2)
-    wrap(d, "② 每过 210,000 个区块：奖励减半", 140, TOPBAR_H + 212, 370,
-         font(21), TH.TXT, 28, 2)
-    d.text((120, TOPBAR_H + 306), "代码里没有一句", font=font(21), fill=TH.MID)
+    wrap(d, "② 每过 210,000 个区块：奖励减半", 140, TOPBAR_H + 210, 370,
+         font(22), TH.TXT, 34, 2)
+    d.text((120, TOPBAR_H + 306), "代码里没有一句", font=font(22), fill=TH.MID)
     d.text((120, TOPBAR_H + 344), "「总量 = 2100 万」", font=font(24, True), fill=RED)
 
     # 中：序列
@@ -269,11 +269,11 @@ def s9_05():
     d.text((830, TOPBAR_H + 66), "一直加下去，会收敛到", font=font(24, True), fill=GREEN)
     d.text((830, TOPBAR_H + 140), "≈ 2100 万", font=font(58, True), fill=GREEN)
     d.text((830, TOPBAR_H + 234), "实际天花板约 20,999,999.9769 枚",
-           font=font(19), fill=TH.MID)
-    d.rounded_rectangle([830, TOPBAR_H + 258, 1160, TOPBAR_H + 336], radius=10,
+           font=font(22), fill=TH.MID)
+    d.rounded_rectangle([830, TOPBAR_H + 258, 1160, TOPBAR_H + 350], radius=10,
                         fill=GREEN_BG, outline=GREEN, width=2)
     wrap(d, "要改它，得说服所有节点接受另一套算术", 850, TOPBAR_H + 274, 290,
-         font(20, True), GREEN, 27, 2)
+         font(22, True), GREEN, 34, 2)
 
     # 底部结论条
     d.rounded_rectangle([90, 500, 1190, 570], radius=R_SM,
@@ -312,9 +312,9 @@ def s9_06():
         d.text((x0 + 22, yy + 30), num, font=font(22, True), fill=ncol, anchor="lm")
         d.text((x0 + 92, yy + 30), name, font=font(26, True),
                fill=TH.ACCENT if cur else TH.TXT, anchor="lm")
-        wrap(d, desc, x0 + 22, yy + 72, 516, font(20), TH.TXT, 28, 2)
+        wrap(d, desc, x0 + 22, yy + 72, 516, font(22), TH.TXT, 32, 2)
         if cur:
-            chip(d, (x0 + 400, yy + 18), TH, "本站 · 到顶", fs=18,
+            chip(d, (x0 + 400, yy + 18), TH, "本站 · 到顶", fs=22,
                  color=TH.ACCENT, bg=TH.CARD_HI)
 
     d.text((640, H - FOOTBAR_H - 42),

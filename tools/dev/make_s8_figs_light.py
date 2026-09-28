@@ -113,10 +113,10 @@ def s8_02():
                             outline=TH.EDGE, width=1)
         accent = GREEN if i == 0 else (TH.ACCENT if i == 3 else TH.MID)
         d.rectangle([x0 + 6, y + 18, x0 + 11, y + h - 18], fill=accent)
-        wrap(d, a, x0 + 26, y + 24, 250, font(22, True), TH.TXT, 30, 2)
-        wrap(d, b, cx_b, y + 40, 215, font(21), TH.TXT, 30, 2)
-        wrap(d, c, cx_c, y + 24, 235, font(21), TH.TXT, 30, 2)
-        wrap(d, e, cx_d, y + 24, 270, font(21), TH.MID, 30, 2)
+        wrap(d, a, x0 + 26, y + 24, 250, font(22, True), TH.TXT, 34, 2)
+        wrap(d, b, cx_b, y + 40, 215, font(22), TH.TXT, 34, 2)
+        wrap(d, c, cx_c, y + 24, 235, font(22), TH.TXT, 34, 2)
+        wrap(d, e, cx_d, y + 24, 270, font(22), TH.MID, 34, 2)
         y += h + 14
 
     d.text(((x0 + x1) // 2, y + 26),

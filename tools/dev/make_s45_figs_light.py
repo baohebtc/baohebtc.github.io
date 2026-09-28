@@ -398,7 +398,7 @@ def s5_05():
                             outline=TH.GOLD if win else TH.EDGE,
                             width=3 if win else 1)
         d.text((150, y + 36), nonce, font=font(25, True), fill=TH.TXT, anchor="lm")
-        d.text((520, y + 36), "SHA-256 →  " + hx, font=fmono(21), fill=TH.ACCENT, anchor="lm")
+        d.text((520, y + 36), "SHA-256 →  " + hx, font=fmono(22), fill=TH.ACCENT, anchor="lm")
         if verdict:
             d.text((1130, y + 36), verdict, font=font(22), fill=col, anchor="rm")
         y += 88
@@ -406,8 +406,8 @@ def s5_05():
                         outline=TH.GOLD, width=2)
     d.text((640, y + 34), "难做：要试几百万次 ｜ 易验证：其他人代一遍 1 秒就知道真假",
            font=font(26, True), fill=TH.TXT, anchor="mm")
-    d.text((640, y + 72), "算力即门票，但不保证收益 —— 这正是下一站「共识峰」的引子",
-           font=font(19), fill=TH.MID, anchor="mm")
+    d.text((640, y + 70), "算力即门票，但不保证收益 —— 这正是下一站「共识峰」的引子",
+           font=font(22), fill=TH.MID, anchor="mm")
     save(im, OUT5 / "05-mining-nonce.png")
 
 def s5_07():
