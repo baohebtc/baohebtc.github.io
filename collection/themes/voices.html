@@ -6,20 +6,31 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#f7931a">
 <title>大家说比特币 · 文集 · 比特币学习地图</title>
-<meta name="description" content="多方观点摘录 Anthology——中性策展，不站队，只呈现不同视角与论据。">
+<meta name="description" content="多立场视角的集合：密码朋克先驱、货币学者、工程派、机构视角，以及对比特币持批评与审视态度的作者，同栏并置。">
 <link rel="stylesheet" href="../../shared/style.css">
 <style>
-.ph-hero { padding:56px 0 28px; }
-.ph-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:var(--orange); background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.25); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
-.ph-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
-.ph-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
+.author-hero { padding: 56px 0 28px; }
+.author-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:var(--orange); background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.25); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
+.author-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
+.author-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
 .disclaimer { margin:0 0 28px; padding:14px 16px; border:1px dashed var(--border-light); border-radius:var(--radius-sm); background:rgba(247,147,26,0.05); font-size:0.8rem; color:var(--text-secondary); line-height:1.6; }
 .disclaimer strong { color:var(--orange); }
-.coming { margin:0 0 60px; padding:48px 24px; border:1px dashed var(--border); border-radius:var(--radius); background:var(--bg-card); text-align:center; }
-.coming .big { font-size:3rem; margin-bottom:12px; }
-.coming h2 { font-size:1.2rem; font-weight:700; margin-bottom:8px; }
-.coming p { color:var(--text-muted); font-size:0.86rem; max-width:480px; margin:0 auto; line-height:1.6; }
-@media (max-width:600px){ .ph-hero h1{ font-size:1.5rem; } .coming{ padding:32px 16px; } }
+.collection-list { display:flex; flex-direction:column; gap:14px; margin-bottom:40px; }
+.collection-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px 20px; transition:all var(--transition); }
+.collection-item:hover { border-color:var(--border-light); box-shadow:var(--shadow); }
+.ci-head { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.ci-title { font-size:1.02rem; font-weight:700; margin-bottom:6px; }
+.ci-summary { font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+.ci-meta { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); }
+.ci-meta a { color:var(--orange); text-decoration:none; }
+.tag { font-size:0.66rem; padding:2px 9px; border-radius:10px; background:rgba(247,147,26,0.12); color:var(--orange); font-weight:600; }
+.tag-orange { background:rgba(247,147,26,0.18); }
+.tag-blue { background:rgba(59,130,246,0.14); color:#6aa6ff; }
+.tag-green { background:rgba(16,185,129,0.14); color:#4ade80; }
+.tag-purple { background:rgba(139,92,246,0.14); color:#a78bfa; }
+.section-h { font-size:0.8rem; font-weight:700; color:var(--text-muted); letter-spacing:0.08em; margin:26px 0 12px; }
+.stance { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); margin:0 0 20px; }
+@media (max-width:600px){ .ci-meta{ gap:8px; } }
 </style>
 </head>
 <body>
@@ -47,12 +58,12 @@
   </div>
 </nav>
 
-<header class="ph-hero">
+<header class="author-hero">
   <div class="container">
     <div class="breadcrumb"><a href="../../index.html">首页</a><span>›</span><a href="../index.html">文集</a><span>›</span><span>大家说比特币</span></div>
-    <span class="badge">主题轴 · 观点</span>
+    <span class="badge">主题轴 · 大家说比特币</span>
     <h1>💬 大家说比特币</h1>
-    <p>多方观点摘录 Anthology——中性策展，不站队，只呈现不同视角与论据。</p>
+    <p>一个值得读的清单，不能只有一种声音。本栏把立场各不相同的人放在同一页：有人参与创造它，有人靠教它谋生，有人论证它是货币演化的下一站，也有人认真写书批评它。<strong>收录不等于赞同</strong>——本号不为任何一方的结论背书。我们只保证两件事：每个人给出的是他自己公开发表的东西，链接都指向可以核对的原处。</p>
   </div>
 </header>
 
@@ -61,11 +72,197 @@
     <div class="disclaimer">
       <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。本站仅做公开资料的整理与索引，转载内容均保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。
     </div>
-    <div class="coming">
-      <div class="big">🚧</div>
-      <h2>本栏目整理中</h2>
-      <p>该集合的条目正在编排中。我们会按「公开、可核实、保留署名」的原则逐步收录。欢迎回到「学习区」先打基础，或看看已上线的《九神集》《李笑来集》。</p>
+    <div class="stance"><strong>立场标签：</strong>🟢 建设与支持　🟡 技术或学术　🟠 内部审视　🔴 批评与质疑</div>
+    <div class="section-h">一、缔造者与早期参与者 🟢</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="Hal Finney 著述（含《Bitcoin and Me》）" data-author="Hal Finney" data-type="第一人称" data-source="https://nakamotoinstitute.org/authors/hal-finney/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-green">早期核心</span><span class="tag">第一人称</span></div>
+        <h3 class="ci-title">Hal Finney 著述（含《Bitcoin and Me》）</h3>
+        <p class="ci-summary">他接收了中本聪发出的第一笔链上交易，也是 RPOW 的作者。这份著述合集既能看到工程上的判断，也能看到一个亲历者如何回望那段日子。</p>
+        <div class="ci-meta">
+          <span>作者：Hal Finney</span>
+          <a href="https://nakamotoinstitute.org/authors/hal-finney/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Nick Szabo 著述（Bit Gold、智能合约等）" data-author="Nick Szabo" data-type="学术与技术" data-source="https://nakamotoinstitute.org/authors/nick-szabo/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-green">思想先驱</span><span class="tag tag-yellow">学术</span></div>
+        <h3 class="ci-title">Nick Szabo 著述（Bit Gold、智能合约等）</h3>
+        <p class="ci-summary">Bit Gold 与智能合约的提出者。他并不等同于比特币阵营，长年以法学与计算机交叉的视角讨论信任、财产与合约，是把比特币放进长时段审视的代表人物。</p>
+        <div class="ci-meta">
+          <span>作者：Nick Szabo</span>
+          <a href="https://nakamotoinstitute.org/authors/nick-szabo/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Adam Back 著述（Hashcash 等）" data-author="Adam Back" data-type="技术与产业" data-source="https://nakamotoinstitute.org/authors/adam-back/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-green">技术源头</span><span class="tag tag-yellow">工程</span></div>
+        <h3 class="ci-title">Adam Back 著述（Hashcash 等）</h3>
+        <p class="ci-summary">Hashcash 的作者，白皮书引用名录里的名字之一。他的公开文字偏工程与协议层面，是观察产业侧视角的一个样本。</p>
+        <div class="ci-meta">
+          <span>作者：Adam Back</span>
+          <a href="https://nakamotoinstitute.org/authors/adam-back/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Wei Dai 著述（b-money 等）" data-author="Wei Dai" data-type="提案作者" data-source="https://nakamotoinstitute.org/authors/wei-dai/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-green">提案源头</span><span class="tag tag-yellow">学术</span></div>
+        <h3 class="ci-title">Wei Dai 著述（b-money 等）</h3>
+        <p class="ci-summary">b-money 的提出者。他本人极少公开发言，留下的文字也很短，反倒更显分量：白皮书开篇的血脉里就有一段来自他。</p>
+        <div class="ci-meta">
+          <span>作者：Wei Dai</span>
+          <a href="https://nakamotoinstitute.org/authors/wei-dai/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Amir Taaki 著述" data-author="Amir Taaki" data-type="开发者视角" data-source="https://nakamotoinstitute.org/authors/amir-taaki/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-green">开发者</span><span class="tag tag-orange">立场鲜明</span></div>
+        <h3 class="ci-title">Amir Taaki 著述</h3>
+        <p class="ci-summary">早期比特币开发者之一，公开立场带有鲜明的反建制色彩。放在这里，是为了呈现社区内部曾经激烈辩论过的那条路线。</p>
+        <div class="ci-meta">
+          <span>作者：Amir Taaki</span>
+          <a href="https://nakamotoinstitute.org/authors/amir-taaki/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+
     </div>
+
+    <div class="section-h">二、密码朋克的思想底色 🟢</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="Eric Hughes 著述（含《密码朋克宣言》）" data-author="Eric Hughes" data-type="宣言" data-source="https://nakamotoinstitute.org/authors/eric-hughes/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-green">隐私优先</span><span class="tag">宣言</span></div>
+        <h3 class="ci-title">Eric Hughes 著述（含《密码朋克宣言》）</h3>
+        <p class="ci-summary">宣言把隐私界定为一种选择性呈现自己的权利，而不是藏匿的手段。这条界定，几乎决定了后来比特币社区谈隐私时的起手式。</p>
+        <div class="ci-meta">
+          <span>作者：Eric Hughes</span>
+          <a href="https://nakamotoinstitute.org/authors/eric-hughes/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Timothy C. May 著述（含《加密无政府主义者宣言》）" data-author="Timothy C. May" data-type="宣言" data-source="https://nakamotoinstitute.org/authors/timothy-c-may/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-green">激进自由</span><span class="tag">宣言</span></div>
+        <h3 class="ci-title">Timothy C. May 著述（含《加密无政府主义者宣言》）</h3>
+        <p class="ci-summary">比《密码朋克宣言》更早，也更不妥协。他的文字解释了比特币社区对监管天然不信任的思想来源，读完再看许多争论为何反复出现，会对上号。</p>
+        <div class="ci-meta">
+          <span>作者：Timothy C. May</span>
+          <a href="https://nakamotoinstitute.org/authors/timothy-c-may/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="David Chaum 著述（盲签名、电子现金）" data-author="David Chaum" data-type="学术文献" data-source="https://nakamotoinstitute.org/authors/david-chaum/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-yellow">学术</span><span class="tag tag-purple">隐私技术</span></div>
+        <h3 class="ci-title">David Chaum 著述（盲签名、电子现金）</h3>
+        <p class="ci-summary">早在 1980 年代就在做不可追踪的电子现金。他与比特币并无组织上的关系，但技术谱系上绕不开他——也提醒人注意：比特币没有沿用他那套中心化方案，究竟是为了什么。</p>
+        <div class="ci-meta">
+          <span>作者：David Chaum</span>
+          <a href="https://nakamotoinstitute.org/authors/david-chaum/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">三、当代的推动者与方法论 🟢</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="Andreas M. Antonopoulos（教育与演讲）" data-author="Andreas M. Antonopoulos" data-type="作者入口" data-source="https://aantonop.com/" data-license="个人站点">
+        <div class="ci-head"><span class="tag tag-green">教育者</span><span class="tag tag-blue">开源图书</span></div>
+        <h3 class="ci-title">Andreas M. Antonopoulos（教育与演讲）</h3>
+        <p class="ci-summary">比特币世界里最有名的普及者之一，三本「精通」系列全部开源可读。他的路径是先把机制讲透，把结论留给读者自己得出。</p>
+        <div class="ci-meta">
+          <span>作者：Andreas M. Antonopoulos</span>
+          <a href="https://aantonop.com/" target="_blank" rel="noopener">来源：aantonop.com ↗</a>
+          <span>许可：个人站点</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Jameson Lopp（自保管与节点实践）" data-author="Jameson Lopp" data-type="作者入口" data-source="https://www.lopp.net/" data-license="各工具按其仓库许可">
+        <div class="ci-head"><span class="tag tag-green">工程实践</span><span class="tag tag-blue">工具</span></div>
+        <h3 class="ci-title">Jameson Lopp（自保管与节点实践）</h3>
+        <p class="ci-summary">长期做自保管与节点工程，把方法论直接开源成工具。他的立场很明确：不信任托管，自己验证。这批人把「别信，去验证」落到了具体步骤上。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://www.lopp.net/" target="_blank" rel="noopener">来源：lopp.net ↗</a>
+          <span>许可：各工具按其仓库许可</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Saifedean Ammous（货币理论脉络）" data-author="Saifedean Ammous" data-type="作者入口" data-source="https://saifedean.com/" data-license="保留作者著作权">
+        <div class="ci-head"><span class="tag tag-yellow">货币理论</span><span class="tag tag-purple">奥地利学派</span></div>
+        <h3 class="ci-title">Saifedean Ammous（货币理论脉络）</h3>
+        <p class="ci-summary">把比特币接进奥地利学派货币理论的叙事里。这条路解释力很强，争议也不小——放在这里，正是为了让读者同时接触支持与批评两套论证。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/" target="_blank" rel="noopener">来源：saifedean.com ↗</a>
+          <span>许可：保留作者著作权</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Michael Saylor（机构采用视角）" data-author="Saylor University" data-type="免费课程" data-source="https://learn.saylor.org/course/PRDV151" data-license="课程内容 CC BY 3.0">
+        <div class="ci-head"><span class="tag tag-green">机构视角</span><span class="tag tag-orange">课程</span></div>
+        <h3 class="ci-title">Michael Saylor（机构采用视角）</h3>
+        <p class="ci-summary">公司层面的比特币持有实践，与其倡导的开放教育项目。本站只收录其中的免费课程部分，并在其作者页标明了三条收录界线。</p>
+        <div class="ci-meta">
+          <span>作者：Saylor University</span>
+          <a href="https://learn.saylor.org/course/PRDV151" target="_blank" rel="noopener">来源：Saylor University ↗</a>
+          <span>许可：课程内容 CC BY 3.0</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">四、审视与批评 🟠 🔴</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="《Bitcoin Is Worse Is Better》" data-author="Gwern Branwen" data-type="评论长文" data-source="https://nakamotoinstitute.org/library/bitcoin-is-worse-is-better/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-orange">内部审视</span><span class="tag">评论</span></div>
+        <h3 class="ci-title">《Bitcoin Is Worse Is Better》</h3>
+        <p class="ci-summary">标题借用软件工程里那句 worse is better：比特币在设计上并不优雅，却因此得以存活。作者既承认它成立，也指出它处处是不讲究的妥协——这类内部批评往往比外部否定更难反驳。</p>
+        <div class="ci-meta">
+          <span>作者：Gwern Branwen</span>
+          <a href="https://nakamotoinstitute.org/library/bitcoin-is-worse-is-better/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="《On the Origins of Bitcoin》" data-author="Konrad S. Graf" data-type="研究报告" data-source="https://nakamotoinstitute.org/library/on-the-origins-of-bitcoin/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-yellow">溯源研究</span><span class="tag">研究</span></div>
+        <h3 class="ci-title">《On the Origins of Bitcoin》</h3>
+        <p class="ci-summary">对比特币究竟从哪里来的系统梳理，包含对坊间流传说法的考据。常被用来纠正那些被过度演绎的起源叙事。</p>
+        <div class="ci-meta">
+          <span>作者：Konrad S. Graf</span>
+          <a href="https://nakamotoinstitute.org/library/on-the-origins-of-bitcoin/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Ian Grigg《三重记账》" data-author="Ian Grigg" data-type="论文" data-source="https://nakamotoinstitute.org/library/triple-entry-accounting/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag tag-yellow">会计视角</span><span class="tag">论文</span></div>
+        <h3 class="ci-title">Ian Grigg《三重记账》</h3>
+        <p class="ci-summary">从会计学切入：在双方各自记一本账之外，再引入第三方不可篡改的凭据。这是一种不必全盘否定旧体系、也能解释区块链用途的中间立场。</p>
+        <div class="ci-meta">
+          <span>作者：Ian Grigg</span>
+          <a href="https://nakamotoinstitute.org/library/triple-entry-accounting/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="David Gerard《Attack of the 50 Foot Blockchain》" data-author="David Gerard" data-type="批评著作" data-source="https://davidgerard.co.uk/blockchain/" data-license="保留作者著作权">
+        <div class="ci-head"><span class="tag tag-red">批评</span><span class="tag">著作</span></div>
+        <h3 class="ci-title">David Gerard《Attack of the 50 Foot Blockchain》</h3>
+        <p class="ci-summary">业内被引用最多的比特币与区块链批判著作之一，作者长年从数据与实践层面挑错。读过它与只读支持者著作之间的差别，是了解与评估之间的差别。本站收录不代表赞同其结论。</p>
+        <div class="ci-meta">
+          <span>作者：David Gerard</span>
+          <a href="https://davidgerard.co.uk/blockchain/" target="_blank" rel="noopener">来源：davidgerard.co.uk ↗</a>
+          <span>许可：保留作者著作权</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Molly White《Web3 Is Going Just Great》" data-author="Molly White" data-type="调查追踪" data-source="https://www.web3isgoinggreat.com/" data-license="保留作者著作权">
+        <div class="ci-head"><span class="tag tag-red">批评</span><span class="tag">调查</span></div>
+        <h3 class="ci-title">Molly White《Web3 Is Going Just Great》</h3>
+        <p class="ci-summary">对加密行业事故、诈骗与损失的持续性公开记录，逐条附来源链接。它提醒一件常被忽略的事：这个领域的失败率并不低，损失往往先落到最晚入场的人身上。</p>
+        <div class="ci-meta">
+          <span>作者：Molly White</span>
+          <a href="https://www.web3isgoinggreat.com/" target="_blank" rel="noopener">来源：web3isgoinggreat.com ↗</a>
+          <span>许可：保留作者著作权</span>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </main>
 

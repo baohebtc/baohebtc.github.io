@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>Saifedean Ammous 集 · 文集 · 比特币学习地图</title>
+<meta name="description" content="Saifedean Ammous 公开作品：《比特币标准》《法币本位》《经济学原理》及播客、课程与多语种译本。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+.author-hero { padding: 56px 0 28px; }
+.author-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:var(--orange); background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.25); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
+.author-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
+.author-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
+.disclaimer { margin:0 0 28px; padding:14px 16px; border:1px dashed var(--border-light); border-radius:var(--radius-sm); background:rgba(247,147,26,0.05); font-size:0.8rem; color:var(--text-secondary); line-height:1.6; }
+.disclaimer strong { color:var(--orange); }
+.collection-list { display:flex; flex-direction:column; gap:14px; margin-bottom:40px; }
+.collection-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px 20px; transition:all var(--transition); }
+.collection-item:hover { border-color:var(--border-light); box-shadow:var(--shadow); }
+.ci-head { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.ci-title { font-size:1.02rem; font-weight:700; margin-bottom:6px; }
+.ci-summary { font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+.ci-meta { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); }
+.ci-meta a { color:var(--orange); text-decoration:none; }
+.tag { font-size:0.66rem; padding:2px 9px; border-radius:10px; background:rgba(247,147,26,0.12); color:var(--orange); font-weight:600; }
+.tag-orange { background:rgba(247,147,26,0.18); }
+.tag-blue { background:rgba(59,130,246,0.14); color:#6aa6ff; }
+.tag-green { background:rgba(16,185,129,0.14); color:#4ade80; }
+.tag-purple { background:rgba(139,92,246,0.14); color:#a78bfa; }
+.section-h { font-size:0.8rem; font-weight:700; color:var(--text-muted); letter-spacing:0.08em; margin:26px 0 12px; }
+.stance { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); margin:0 0 20px; }
+@media (max-width:600px){ .ci-meta{ gap:8px; } }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="author-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../../index.html">首页</a><span>›</span><a href="../index.html">文集</a><span>›</span><span>Saifedean Ammous 集</span></div>
+    <span class="badge">作者轴 · Saifedean Ammous</span>
+    <h1>💰 Saifedean Ammous 集</h1>
+    <p>他把比特币放进一条更长的历史线索里讨论：货币为什么会有形态更替，一种东西凭什么被当作货币，这背后与时间偏好有什么关系。这类讨论属于货币理论范畴，不等于操作建议。本站收录他的著作与课程，是为了呈现一个在中文圈流传很广的分析框架，读者自会把它与本站其他栏目的技术视角对照来看。</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="disclaimer">
+      <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。本站仅做公开资料的整理与索引，转载内容均保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。
+    </div>
+
+    <div class="section-h">一、两本主要著作</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="《比特币标准》（The Bitcoin Standard）" data-author="Saifedean Ammous" data-type="图书" data-source="https://saifedean.com/thebitcoinstandard/" data-license="保留作者著作权">
+        <div class="ci-head"><span class="tag">图书</span><span class="tag tag-orange">有中译本</span></div>
+        <h3 class="ci-title">《比特币标准》（The Bitcoin Standard）</h3>
+        <p class="ci-summary">从贝壳、金银到金本位与法币，用货币的商品属性这条线串起整部货币史，再论证比特币为何符合其中的健全货币标准。这是中文社区被引用最多的一本比特币读物。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/thebitcoinstandard/" target="_blank" rel="noopener">来源：作者官网书目页 ↗</a>
+          <span>许可：保留作者著作权</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="《法币本位》（The Fiat Standard）" data-author="Saifedean Ammous" data-type="图书" data-source="https://saifedean.com/thefiatstandard/" data-license="保留作者著作权">
+        <div class="ci-head"><span class="tag">图书</span><span class="tag tag-blue">第二本</span></div>
+        <h3 class="ci-title">《法币本位》（The Fiat Standard）</h3>
+        <p class="ci-summary">上一本讲比特币，这本讲它的对面：法币体系如何塑造了当代的财政、信贷与战争融资方式。两本对照读，作者的框架才算完整。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/thefiatstandard/" target="_blank" rel="noopener">来源：作者官网书目页 ↗</a>
+          <span>许可：保留作者著作权</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="《法币本位》免费开放章节" data-author="Saifedean Ammous" data-type="免费章节" data-source="https://saifedean.com/the-fiat-standard-free-chapters" data-license="作者开放免费阅读">
+        <div class="ci-head"><span class="tag">免费</span><span class="tag tag-green">先看再买</span></div>
+        <h3 class="ci-title">《法币本位》免费开放章节</h3>
+        <p class="ci-summary">作者自己放出来的免费章节。不确定这套框架适不适合自己，先读这些就够了，不必一开始就代入整本书。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/the-fiat-standard-free-chapters" target="_blank" rel="noopener">来源：作者官网免费章节 ↗</a>
+          <span>许可：作者开放免费阅读</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">二、理论源头与全部作品索引</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="《经济学原理》（Principles of Economics）" data-author="Saifedean Ammous" data-type="教材" data-source="https://saifedean.com/poe" data-license="保留作者著作权">
+        <div class="ci-head"><span class="tag">教材</span><span class="tag tag-purple">奥地利学派</span></div>
+        <h3 class="ci-title">《经济学原理》（Principles of Economics）</h3>
+        <p class="ci-summary">他自己写的经济学教材，奥地利学派脉络。想理解他在两本比特币著作里使用的那套概念从何而来，这是源头。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/poe" target="_blank" rel="noopener">来源：作者官网 ↗</a>
+          <span>许可：保留作者著作权</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="著作总目" data-author="Saifedean Ammous" data-type="索引" data-source="https://saifedean.com/books" data-license="保留作者著作权">
+        <div class="ci-head"><span class="tag">索引</span><span class="tag tag-blue">全目</span></div>
+        <h3 class="ci-title">著作总目</h3>
+        <p class="ci-summary">他所有已出版著作的集中目录，含各语种版本说明。想确认某一本有没有新版、有没有译本，查这里最准。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/books" target="_blank" rel="noopener">来源：作者官网书目 ↗</a>
+          <span>许可：保留作者著作权</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="多语种译本索引" data-author="Saifedean Ammous" data-type="索引" data-source="https://saifedean.com/translations" data-license="各语种译者授权">
+        <div class="ci-head"><span class="tag">索引</span><span class="tag tag-orange">含中文</span></div>
+        <h3 class="ci-title">多语种译本索引</h3>
+        <p class="ci-summary">各语种译本的清单与授权情况。找中译本，或想给某个语种做译介，从这里入手。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/translations" target="_blank" rel="noopener">来源：作者官网译本页 ↗</a>
+          <span>许可：各语种译者授权</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="全部课程" data-author="Saifedean Ammous" data-type="课程" data-source="https://saifedean.com/courses" data-license="付费课程">
+        <div class="ci-head"><span class="tag">课程</span><span class="tag tag-blue">系统学习</span></div>
+        <h3 class="ci-title">全部课程</h3>
+        <p class="ci-summary">他开设的系统课程列表，多为付费。本站不代理报名，仅作索引；是否付费由读者自行判断。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/courses" target="_blank" rel="noopener">来源：作者官网课程页 ↗</a>
+          <span>许可：付费课程</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="播客 The Saifedean Podcast" data-author="Saifedean Ammous" data-type="播客" data-source="https://saifedean.com/podcast" data-license="免费收听">
+        <div class="ci-head"><span class="tag">播客</span><span class="tag tag-green">免费</span></div>
+        <h3 class="ci-title">播客 The Saifedean Podcast</h3>
+        <p class="ci-summary">长期更新的访谈节目，话题多集中在货币、能源、经济史与方法论上。相比成书，这里更容易看到他如何回应质疑。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/podcast" target="_blank" rel="noopener">来源：作者官网播客 ↗</a>
+          <span>许可：免费收听</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="个人主页" data-author="Saifedean Ammous" data-type="作者入口" data-source="https://saifedean.com/" data-license="个人站点">
+        <div class="ci-head"><span class="tag">入口</span><span class="tag tag-orange">总入口</span></div>
+        <h3 class="ci-title">个人主页</h3>
+        <p class="ci-summary">他的全部公开内容入口：书、播客、课程、文章与社交账号都在此汇总。</p>
+        <div class="ci-meta">
+          <span>作者：Saifedean Ammous</span>
+          <a href="https://saifedean.com/" target="_blank" rel="noopener">来源：saifedean.com ↗</a>
+          <span>许可：个人站点</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../../index.html">首页</a> · <a href="../../learning/00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a> · <a href="../index.html">文集</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+</body>
+</html>

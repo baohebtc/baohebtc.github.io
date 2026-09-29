@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>Jameson Lopp 集 · 文集 · 比特币学习地图</title>
+<meta name="description" content="Jameson Lopp 的公开作品与开源工具：自保管实践、节点配置生成器、实体攻击案例库、私钥备份压力测试。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+.author-hero { padding: 56px 0 28px; }
+.author-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:var(--orange); background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.25); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
+.author-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
+.author-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
+.disclaimer { margin:0 0 28px; padding:14px 16px; border:1px dashed var(--border-light); border-radius:var(--radius-sm); background:rgba(247,147,26,0.05); font-size:0.8rem; color:var(--text-secondary); line-height:1.6; }
+.disclaimer strong { color:var(--orange); }
+.collection-list { display:flex; flex-direction:column; gap:14px; margin-bottom:40px; }
+.collection-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px 20px; transition:all var(--transition); }
+.collection-item:hover { border-color:var(--border-light); box-shadow:var(--shadow); }
+.ci-head { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.ci-title { font-size:1.02rem; font-weight:700; margin-bottom:6px; }
+.ci-summary { font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+.ci-meta { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); }
+.ci-meta a { color:var(--orange); text-decoration:none; }
+.tag { font-size:0.66rem; padding:2px 9px; border-radius:10px; background:rgba(247,147,26,0.12); color:var(--orange); font-weight:600; }
+.tag-orange { background:rgba(247,147,26,0.18); }
+.tag-blue { background:rgba(59,130,246,0.14); color:#6aa6ff; }
+.tag-green { background:rgba(16,185,129,0.14); color:#4ade80; }
+.tag-purple { background:rgba(139,92,246,0.14); color:#a78bfa; }
+.section-h { font-size:0.8rem; font-weight:700; color:var(--text-muted); letter-spacing:0.08em; margin:26px 0 12px; }
+.stance { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); margin:0 0 20px; }
+@media (max-width:600px){ .ci-meta{ gap:8px; } }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="author-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../../index.html">首页</a><span>›</span><a href="../index.html">文集</a><span>›</span><span>Jameson Lopp 集</span></div>
+    <span class="badge">作者轴 · Jameson Lopp</span>
+    <h1>🔧 Jameson Lopp 集</h1>
+    <p>如果说 Antonopoulos 负责把比特币讲明白，Lopp 负责把它装起来。他是长期的比特币工程师与自保管倡导者，把大部分工作公开开源：从怎么配 Bitcoin Core，到持币者遭遇过的实体攻击案例，都有资料。这一栏偏实操，建议配合本站学习区的私钥与节点章节一起看。</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="disclaimer">
+      <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。本站仅做公开资料的整理与索引，转载内容均保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。
+    </div>
+
+    <div class="section-h">一、入口与持续更新的写作</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="个人站点 lopp.net" data-author="Jameson Lopp" data-type="作者入口" data-source="https://www.lopp.net/" data-license="个人站点">
+        <div class="ci-head"><span class="tag">入口</span><span class="tag tag-orange">常更新</span></div>
+        <h3 class="ci-title">个人站点 lopp.net</h3>
+        <p class="ci-summary">他的资料总入口：技术随笔、演讲、采访与常用工具的索引都挂在这里。想一次性找到这个人到底做过什么，从这一页开始。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://www.lopp.net/" target="_blank" rel="noopener">来源：lopp.net ↗</a>
+          <span>许可：个人站点</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Cypherpunk Cogitations 博客" data-author="Jameson Lopp" data-type="博客" data-source="https://blog.lopp.net/" data-license="保留作者署名">
+        <div class="ci-head"><span class="tag">博客</span><span class="tag tag-blue">长文</span></div>
+        <h3 class="ci-title">Cypherpunk Cogitations 博客</h3>
+        <p class="ci-summary">他的长文主场，题材覆盖自保管方案对比、多签名设计、节点运维经验。文章偏工程细节，读完通常能直接动手改自己的方案。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://blog.lopp.net/" target="_blank" rel="noopener">来源：blog.lopp.net ↗</a>
+          <span>许可：保留作者署名</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="GitHub 全部开源作品" data-author="Jameson Lopp" data-type="作者入口" data-source="https://github.com/jlopp" data-license="各仓库开源许可">
+        <div class="ci-head"><span class="tag">入口</span><span class="tag tag-blue">GitHub</span></div>
+        <h3 class="ci-title">GitHub 全部开源作品</h3>
+        <p class="ci-summary">他名下的全部公开仓库。数量不少，本栏只挑了其中与理解比特币如何运作关系最直接的一批，其余可在此按兴趣自行检索。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp" target="_blank" rel="noopener">来源：GitHub 主页 ↗</a>
+          <span>许可：各仓库开源许可</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">二、安全威胁认知（先知道自己要防什么）</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="针对持币者的实体攻击案例库" data-author="Jameson Lopp" data-type="安全研究" data-source="https://github.com/jlopp/physical-bitcoin-attacks" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">安全</span><span class="tag tag-orange">高关注度</span></div>
+        <h3 class="ci-title">针对持币者的实体攻击案例库</h3>
+        <p class="ci-summary">汇总公开报道过的、针对持币者的现实世界攻击事件：入室抢劫、绑架勒索、胁迫转账等。目的不是制造恐慌，而是让人明白私钥安全不只是一个密码学问题。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/physical-bitcoin-attacks" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="私钥金属备份设备压力测试" data-author="Jameson Lopp" data-type="测试报告" data-source="https://github.com/jlopp/metal-bitcoin-storage-reviews" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">测试</span><span class="tag tag-purple">实测</span></div>
+        <h3 class="ci-title">私钥金属备份设备压力测试</h3>
+        <p class="ci-summary">把市面上的金属助记词板拿火烧、拿锤砸、拿酸泡，记录各自的耐受表现。想在真实灾难场景里保住助记词，这份实测比广告词有用得多。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/metal-bitcoin-storage-reviews" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="政治人物涉币信息公开追踪" data-author="Jameson Lopp" data-type="众包数据" data-source="https://github.com/jlopp/bitcoin-politicians" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">数据</span><span class="tag tag-blue">众包</span></div>
+        <h3 class="ci-title">政治人物涉币信息公开追踪</h3>
+        <p class="ci-summary">把公开披露过持币信息的政治人物做成可核查的数据集。这是个观察政策立场与切身利益是否相关的窗口，数据集本身不带结论。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/bitcoin-politicians" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">三、节点运维与日常工具</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="Statoshi 比特币节点监控" data-author="Jameson Lopp" data-type="监控工具" data-source="https://github.com/jlopp/statoshi" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">工具</span><span class="tag tag-blue">节点</span></div>
+        <h3 class="ci-title">Statoshi 比特币节点监控</h3>
+        <p class="ci-summary">给 Bitcoin Core 加一层统计导出，让节点自身的健康度、内存池情况、区块传播延迟都可观测。想理解跑全节点到底发生了什么，它会给出现象层面的答案。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/statoshi" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Bitcoin Core 配置文件生成器" data-author="Jameson Lopp" data-type="在线工具" data-source="https://github.com/jlopp/bitcoin-core-config-generator" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">工具</span><span class="tag tag-orange">新手友好</span></div>
+        <h3 class="ci-title">Bitcoin Core 配置文件生成器</h3>
+        <p class="ci-summary">用勾选的方式生成 bitcoin.conf，避免手抄配置项出错。第一次搭全节点时尤其省事。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/bitcoin-core-config-generator" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Bitcoin Core RPC 认证生成器" data-author="Jameson Lopp" data-type="在线工具" data-source="https://github.com/jlopp/bitcoin-core-rpc-auth-generator" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">工具</span><span class="tag tag-blue">安全</span></div>
+        <h3 class="ci-title">Bitcoin Core RPC 认证生成器</h3>
+        <p class="ci-summary">在浏览器里本地生成 RPC 认证串，不把凭据发往任何服务器。给自己的节点接管理工具时用它配认证。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/bitcoin-core-rpc-auth-generator" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="比特币交易体积与重量计算器" data-author="Jameson Lopp" data-type="在线工具" data-source="https://github.com/jlopp/bitcoin-transaction-size-calculator" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">工具</span><span class="tag tag-purple">手续费</span></div>
+        <h3 class="ci-title">比特币交易体积与重量计算器</h3>
+        <p class="ci-summary">按输入输出占用的脚本类型估算交易的重量与体积。理解手续费到底在为哪些字节付费，比看费率表有效得多。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/bitcoin-transaction-size-calculator" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="扩展公钥 xpub 格式转换器" data-author="Jameson Lopp" data-type="在线工具" data-source="https://github.com/jlopp/xpub-converter" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">工具</span><span class="tag tag-blue">钱包</span></div>
+        <h3 class="ci-title">扩展公钥 xpub 格式转换器</h3>
+        <p class="ci-summary">在不同版本的扩展公钥前缀之间互转。迁移钱包或换软件遇到格式不兼容时，可以用它确认地址空间是否真的一致。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/xpub-converter" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="个人网站开源仓库" data-author="Jameson Lopp" data-type="代码仓库" data-source="https://github.com/jlopp/lopp.net" data-license="开源（详见仓库 LICENSE）">
+        <div class="ci-head"><span class="tag">仓库</span><span class="tag tag-blue">可自建</span></div>
+        <h3 class="ci-title">个人网站开源仓库</h3>
+        <p class="ci-summary">他个人站在 GitHub 上的源码。想离线保存或自建一份资料镜像，从这里拿比逐个保存网页稳。</p>
+        <div class="ci-meta">
+          <span>作者：Jameson Lopp</span>
+          <a href="https://github.com/jlopp/lopp.net" target="_blank" rel="noopener">来源：GitHub 仓库 ↗</a>
+          <span>许可：开源（详见仓库 LICENSE）</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../../index.html">首页</a> · <a href="../../learning/00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a> · <a href="../index.html">文集</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+</body>
+</html>
