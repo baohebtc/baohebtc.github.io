@@ -174,6 +174,8 @@ function switchLang(lang) {
     const val = t(key);
     if (val !== key) el.textContent = val;
   });
+  buildNav();            // ADR-0020：导航标签随语言重绘
+  updateActiveNavLink(); // 重绘后回补当前页高亮
   initSidebarHighlight();
   initPerspectiveCards(); // 重新初始化多视角卡片
 }
@@ -259,9 +261,11 @@ const I18N_MAP = {
   "misc.next": { zh: "下一篇 →", en: "Next →" },
   "misc.prev": { zh: "← 上一篇", en: "← Prev" },
   "mises": { zh: "「没有价格信号的指引，计划者无法进行任何理性的经济计算。」比特币通过市场价格发现机制，为全球每个人提供统一的价格参照系。", en: "\"Without price signals, planners cannot perform any rational economic calculation.\" Bitcoin provides a unified price reference for everyone on earth through market price discovery." },
+  "nav.collection": { zh: "文集", en: "Collections" },
   "nav.home": { zh: "首页", en: "Home" },
-  "nav.learn": { zh: "学习区", en: "Learning" },
-  "nav.ref": { zh: "参考", en: "Reference" },
+  "nav.learning": { zh: "学习区", en: "Learning" },
+  "nav.map": { zh: "学习地图", en: "Learning Map" },
+  "nav.reference": { zh: "参考", en: "Reference" },
   "nav.tools": { zh: "工具", en: "Tools" },
   "next_chapter": { zh: "入门篇", en: "Basics" },
   "next_title": { zh: "一句话入门", en: "The One-Sentence Intro" },
@@ -495,17 +499,24 @@ const NAV_HREF = {
   home: 'index.html', learning: 'learning/00-overview.html', map: 'learning-map.html',
   tools: 'tools/index.html', reference: 'reference/index.html', collection: 'collection/index.html',
 };
+// 第二项为 i18n key（ADR-0020）：标签随语言切换，不再硬编码中文
 const NAV_ITEMS = [
-  ['home', '🏠 首页'], ['learning', '📚 学习区'], ['map', '🗺️ 学习地图'],
-  ['tools', '🛠️ 工具'], ['reference', '📖 参考'], ['collection', '🗂️ 文集'],
+  ['home', 'nav.home'], ['learning', 'nav.learning'], ['map', 'nav.map'],
+  ['tools', 'nav.tools'], ['reference', 'nav.reference'], ['collection', 'nav.collection'],
 ];
+// 图标保留在渲染层（不进 i18n，避免译文里要维护 emoji）
+const NAV_ICONS = { home: '🏠', learning: '📚', map: '🗺️', tools: '🛠️', reference: '📖', collection: '🗂️' };
 function buildNav() {
   const links = document.querySelector('.top-nav .nav-links');
   if (!links) return;
   const segs = location.pathname.split('/').filter(Boolean);
   const prefix = '../'.repeat(Math.max(0, segs.length - 1)); // 按深度回到根
   links.innerHTML = NAV_ITEMS
-    .map(([s, t]) => `<a href="${prefix}${NAV_HREF[s]}" class="nav-link" data-section="${s}">${t}</a>`)
+    .map(([sec, key]) => {
+      const label = t(key);
+      const icon = NAV_ICONS[sec] || '';
+      return `<a href="${prefix}${NAV_HREF[sec]}" class="nav-link" data-section="${sec}">${icon} ${label}</a>`;
+    })
     .join('');
 }
 

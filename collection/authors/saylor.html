@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>Michael Saylor 集 · 文集 · 比特币学习地图</title>
+<meta name="description" content="Michael Saylor 相关的免费公开教育资源：Saylor University《Bitcoin for Everybody》12 小时课程（课程内容 CC BY 3.0）与学习平台入口。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+.author-hero { padding: 56px 0 28px; }
+.author-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:var(--orange); background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.25); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
+.author-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
+.author-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
+.disclaimer { margin:0 0 28px; padding:14px 16px; border:1px dashed var(--border-light); border-radius:var(--radius-sm); background:rgba(247,147,26,0.05); font-size:0.8rem; color:var(--text-secondary); line-height:1.6; }
+.disclaimer strong { color:var(--orange); }
+.collection-list { display:flex; flex-direction:column; gap:14px; margin-bottom:40px; }
+.collection-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px 20px; transition:all var(--transition); }
+.collection-item:hover { border-color:var(--border-light); box-shadow:var(--shadow); }
+.ci-head { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.ci-title { font-size:1.02rem; font-weight:700; margin-bottom:6px; }
+.ci-summary { font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+.ci-meta { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); }
+.ci-meta a { color:var(--orange); text-decoration:none; }
+.tag { font-size:0.66rem; padding:2px 9px; border-radius:10px; background:rgba(247,147,26,0.12); color:var(--orange); font-weight:600; }
+.tag-orange { background:rgba(247,147,26,0.18); }
+.tag-blue { background:rgba(59,130,246,0.14); color:#6aa6ff; }
+.tag-green { background:rgba(16,185,129,0.14); color:#4ade80; }
+.tag-purple { background:rgba(139,92,246,0.14); color:#a78bfa; }
+.section-h { font-size:0.8rem; font-weight:700; color:var(--text-muted); letter-spacing:0.08em; margin:26px 0 12px; }
+.stance { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); margin:0 0 20px; }
+@media (max-width:600px){ .ci-meta{ gap:8px; } }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="author-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../../index.html">首页</a><span>›</span><a href="../index.html">文集</a><span>›</span><span>Michael Saylor 集</span></div>
+    <span class="badge">作者轴 · Michael Saylor（机构视角）</span>
+    <h1>🏢 Michael Saylor 集</h1>
+    <p>这一栏补的是本站原先缺的最后一个频段：机构视角。Michael Saylor 现为 Strategy（原 MicroStrategy）<strong>联合创始人兼执行董事长</strong>——他自 2022 年 8 月起已不再担任 CEO，这一点不少二手资料会写错。他名下另有一条常被忽略的线：1999 年设立的 Saylor 基金会及其开放教育计划 Saylor University，面向全球提供免费课程。比特币相关课程是这条线的一部分，也是本栏唯一收录的内容类型。<br><br>本站对他的收录遵循三条界线，事先说明：<br>✅ <strong>收</strong>：免费课程与教育材料，以及可核实的公开文章与演说；<br>⚠️ <strong>谨慎收</strong>：凡涉及公司持币数据的陈述，必须同时给出另一侧事实——2026 年 6 至 8 月，Strategy 首次出现减持与回补，这与他此前长期表达的不出售口径并不一致，只呈现其中一面即属片面叙述；<br>❌ <strong>不收</strong>：价格预测、价格目标，以及任何形式的买卖操作建议。</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="disclaimer">
+      <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。本站仅做公开资料的整理与索引，转载内容均保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。
+    </div>
+
+    <div class="section-h">免费课程（课程内容 CC BY 3.0）</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="《Bitcoin for Everybody》（PRDV151）" data-author="Saylor University" data-type="免费课程" data-source="https://learn.saylor.org/course/view.php?id=468" data-license="课程内容 CC BY 3.0（期末考试除外）">
+        <div class="ci-head"><span class="tag">课程</span><span class="tag tag-orange">12 小时</span></div>
+        <h3 class="ci-title">《Bitcoin for Everybody》（PRDV151）</h3>
+        <p class="ci-summary">一门十二小时的自定进度入门课，五个单元：货币是什么、BTC 的性质、渊源与技术构成、基础操作与自保管。通过期末测评可获免费结业证书（1.2 CEU）。除期末考试外，校方自有内容以 CC BY 3.0 开放。</p>
+        <div class="ci-meta">
+          <span>作者：Saylor University</span>
+          <a href="https://learn.saylor.org/course/view.php?id=468" target="_blank" rel="noopener">来源：Saylor University 课程页 ↗</a>
+          <span>许可：课程内容 CC BY 3.0（期末考试除外）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="课程短链入口 PRDV151" data-author="Saylor University" data-type="课程入口" data-source="https://learn.saylor.org/course/PRDV151" data-license="课程内容 CC BY 3.0">
+        <div class="ci-head"><span class="tag">入口</span><span class="tag tag-blue">短链</span></div>
+        <h3 class="ci-title">课程短链入口 PRDV151</h3>
+        <p class="ci-summary">同一门课的短地址，便于直接发给别人或保存。课程编号 PRDV151。</p>
+        <div class="ci-meta">
+          <span>作者：Saylor University</span>
+          <a href="https://learn.saylor.org/course/PRDV151" target="_blank" rel="noopener">来源：Saylor University ↗</a>
+          <span>许可：课程内容 CC BY 3.0</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="课程导论教材（在线可读）" data-author="Saylor University" data-type="教材" data-source="https://learn.saylor.org/mod/book/view.php?id=30723" data-license="CC BY 3.0">
+        <div class="ci-head"><span class="tag">教材</span><span class="tag tag-green">可直接读</span></div>
+        <h3 class="ci-title">课程导论教材（在线可读）</h3>
+        <p class="ci-summary">这门课的导论部分。想先判断课程难度是否适合自己，读这一份就够，不必先注册。</p>
+        <div class="ci-meta">
+          <span>作者：Saylor University</span>
+          <a href="https://learn.saylor.org/mod/book/view.php?id=30723" target="_blank" rel="noopener">来源：Saylor University 教材 ↗</a>
+          <span>许可：CC BY 3.0</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">平台与目录</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="Saylor University 学习平台" data-author="Saylor University" data-type="平台入口" data-source="https://learn.saylor.org/" data-license="各课程按其标注许可">
+        <div class="ci-head"><span class="tag">平台</span><span class="tag tag-orange">免费课程站</span></div>
+        <h3 class="ci-title">Saylor University 学习平台</h3>
+        <p class="ci-summary">面向公众免费的开放课程平台，收录数百门覆盖多个学科的课程。比特币课只是其中之一——这一点值得留意：这类内容是按通识教育来编排的，而非投资宣介。</p>
+        <div class="ci-meta">
+          <span>作者：Saylor University</span>
+          <a href="https://learn.saylor.org/" target="_blank" rel="noopener">来源：learn.saylor.org ↗</a>
+          <span>许可：各课程按其标注许可</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="专业发展类课程目录" data-author="Saylor University" data-type="目录" data-source="https://learn.saylor.org/course/category/19/professional+development" data-license="各自课程许可">
+        <div class="ci-head"><span class="tag">目录</span><span class="tag tag-blue">分类浏览</span></div>
+        <h3 class="ci-title">专业发展类课程目录</h3>
+        <p class="ci-summary">PRDV151 所属的专业发展类目。想看这个机构还把哪些内容视为职业技能教育，这里能看到它的编排逻辑。</p>
+        <div class="ci-meta">
+          <span>作者：Saylor University</span>
+          <a href="https://learn.saylor.org/course/category/19/professional+development" target="_blank" rel="noopener">来源：Saylor University 课程分类 ↗</a>
+          <span>许可：各自课程许可</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="全部课程总目录" data-author="Saylor University" data-type="目录" data-source="https://learn.saylor.org/course/index.php?categoryid=0" data-license="各自课程许可">
+        <div class="ci-head"><span class="tag">目录</span><span class="tag tag-blue">总目</span></div>
+        <h3 class="ci-title">全部课程总目录</h3>
+        <p class="ci-summary">按学科分类的全部课程清单。用来确认比特币课程在整个知识体系里的位置，也便于横向比较其他学科的教学方式。</p>
+        <div class="ci-meta">
+          <span>作者：Saylor University</span>
+          <a href="https://learn.saylor.org/course/index.php?categoryid=0" target="_blank" rel="noopener">来源：Saylor University 总目录 ↗</a>
+          <span>许可：各自课程许可</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../../index.html">首页</a> · <a href="../../learning/00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a> · <a href="../index.html">文集</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+</body>
+</html>

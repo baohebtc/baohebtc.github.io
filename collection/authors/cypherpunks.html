@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>密码朋克群像 · 文集 · 比特币学习地图</title>
+<meta name="description" content="比特币的思想祖先合集：密码朋克宣言、b-money、Bit Gold、Hashcash、RPOW、时间戳与签名等先驱文献。">
+<link rel="stylesheet" href="../../shared/style.css">
+<style>
+.author-hero { padding: 56px 0 28px; }
+.author-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:var(--orange); background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.25); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
+.author-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
+.author-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
+.disclaimer { margin:0 0 28px; padding:14px 16px; border:1px dashed var(--border-light); border-radius:var(--radius-sm); background:rgba(247,147,26,0.05); font-size:0.8rem; color:var(--text-secondary); line-height:1.6; }
+.disclaimer strong { color:var(--orange); }
+.collection-list { display:flex; flex-direction:column; gap:14px; margin-bottom:40px; }
+.collection-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px 20px; transition:all var(--transition); }
+.collection-item:hover { border-color:var(--border-light); box-shadow:var(--shadow); }
+.ci-head { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.ci-title { font-size:1.02rem; font-weight:700; margin-bottom:6px; }
+.ci-summary { font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+.ci-meta { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); }
+.ci-meta a { color:var(--orange); text-decoration:none; }
+.tag { font-size:0.66rem; padding:2px 9px; border-radius:10px; background:rgba(247,147,26,0.12); color:var(--orange); font-weight:600; }
+.tag-orange { background:rgba(247,147,26,0.18); }
+.tag-blue { background:rgba(59,130,246,0.14); color:#6aa6ff; }
+.tag-green { background:rgba(16,185,129,0.14); color:#4ade80; }
+.tag-purple { background:rgba(139,92,246,0.14); color:#a78bfa; }
+.section-h { font-size:0.8rem; font-weight:700; color:var(--text-muted); letter-spacing:0.08em; margin:26px 0 12px; }
+.stance { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); margin:0 0 20px; }
+@media (max-width:600px){ .ci-meta{ gap:8px; } }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../../index.html" class="nav-logo"><span class="logo-icon">₿</span><span class="logo-text">学习地图</span><span class="logo-sub">Learning Map</span></a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
+        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
+      </div>
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<header class="author-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../../index.html">首页</a><span>›</span><a href="../index.html">文集</a><span>›</span><span>密码朋克群像</span></div>
+    <span class="badge">作者轴 · 密码朋克群像</span>
+    <h1>🧪 密码朋克群像</h1>
+    <p>比特币白皮书的末尾，列着八篇参考文献。那八篇就是这个栏目——它说明比特币不是凭空出现的，而是把一群人在二十多年里想过的、做过的东西拼在了一起。这栏不收录某个人的完整著作集，而是把先驱们各自的「那一篇」聚到一起。建议先读宣言，再读技术文献，最后看他们彼此如何引用对方。</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="disclaimer">
+      <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。本站仅做公开资料的整理与索引，转载内容均保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。
+    </div>
+
+    <div class="section-h">一、两份宣言（先读这两份）</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="《密码朋克宣言》与休斯著述" data-author="Eric Hughes" data-type="宣言" data-source="https://nakamotoinstitute.org/authors/eric-hughes/" data-license="第三方汇编（保留出处）">
+        <div class="ci-head"><span class="tag">宣言</span><span class="tag tag-blue">1993</span></div>
+        <h3 class="ci-title">《密码朋克宣言》与休斯著述</h3>
+        <p class="ci-summary">1993 年 3 月，Eric Hughes 写下这份宣言，开篇就划清了一件事：隐私不是「有什么要藏」，而是选择性向世界呈现自己的权利。这是整个密码朋克运动的思想起点，也是后来比特币隐私叙事的根。</p>
+        <div class="ci-meta">
+          <span>作者：Eric Hughes</span>
+          <a href="https://nakamotoinstitute.org/authors/eric-hughes/" target="_blank" rel="noopener">来源：中本聪研究所·Eric Hughes 著述 ↗</a>
+          <span>许可：第三方汇编（保留出处）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="《加密无政府主义者宣言》" data-author="Timothy C. May" data-type="宣言" data-source="https://nakamotoinstitute.org/library/crypto-anarchist-manifesto/" data-license="第三方汇编（保留出处）">
+        <div class="ci-head"><span class="tag">宣言</span><span class="tag tag-purple">1988</span></div>
+        <h3 class="ci-title">《加密无政府主义者宣言》</h3>
+        <p class="ci-summary">比《密码朋克宣言》还早五年。May 在英特尔退休后写下这份宣言，预言 freely 流通的加密技术会改变国家与市场的关系。它的语气更激进，也更能解释为什么早期比特币社区对监管天然不信任。</p>
+        <div class="ci-meta">
+          <span>作者：Timothy C. May</span>
+          <a href="https://nakamotoinstitute.org/library/crypto-anarchist-manifesto/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留出处）</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">二、比特币的直接技术前身（白皮书里被点名的那些）</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="《b-money》" data-author="Wei Dai" data-type="提案" data-source="https://nakamotoinstitute.org/library/b-money/" data-license="公开提案文本">
+        <div class="ci-head"><span class="tag">提案</span><span class="tag tag-orange">1998</span></div>
+        <h3 class="ci-title">《b-money》</h3>
+        <p class="ci-summary">1998 年，Wei Dai 在密码朋克邮件列表提出 b-money：用计算难题（工作量证明）创造货币，用集体账本记账，参与者以押金互相担保。它与比特币的骨架高度相似，中本聪在白皮书里明确援引了它。</p>
+        <div class="ci-meta">
+          <span>作者：Wei Dai</span>
+          <a href="https://nakamotoinstitute.org/library/b-money/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：公开提案文本</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="b-money 原文站点（作者自托管）" data-author="Wei Dai" data-type="原文站点" data-source="http://www.weidai.com/bmoney.txt" data-license="作者公开原稿">
+        <div class="ci-head"><span class="tag">原文</span><span class="tag tag-blue">一手</span></div>
+        <h3 class="ci-title">b-money 原文站点（作者自托管）</h3>
+        <p class="ci-summary">同一份提案的作者原始文本页面，朴素的纯文本排版。想确认中本聪研究所的版本有没有整理上的删改，来这里对照最方便。</p>
+        <div class="ci-meta">
+          <span>作者：Wei Dai</span>
+          <a href="http://www.weidai.com/bmoney.txt" target="_blank" rel="noopener">来源：weidai.com 作者原稿 ↗</a>
+          <span>许可：作者公开原稿</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="《Bit Gold》" data-author="Nick Szabo" data-type="提案" data-source="https://nakamotoinstitute.org/library/bit-gold/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag">提案</span><span class="tag tag-orange">2005</span></div>
+        <h3 class="ci-title">《Bit Gold》</h3>
+        <p class="ci-summary">2005 年 Szabo 提出 Bit Gold：链式的解题记录、 occurring 时间戳服务、无法伪造的稀缺性。它离比特币只差最后一步——没能解决双重支付。读懂它，就懂了中本聪真正补上的那块拼图在哪里。</p>
+        <div class="ci-meta">
+          <span>作者：Nick Szabo</span>
+          <a href="https://nakamotoinstitute.org/library/bit-gold/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="《Hashcash：一种抵御拒绝服务攻击的措施》" data-author="Adam Back" data-type="技术论文" data-source="https://nakamotoinstitute.org/library/hashcash/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag">论文</span><span class="tag tag-orange">2002</span></div>
+        <h3 class="ci-title">《Hashcash：一种抵御拒绝服务攻击的措施》</h3>
+        <p class="ci-summary">2002 年 Adam Back 提出 Hashcash，本意是给邮件加一份「计算成本」来遏制垃圾邮件。中本聪把它借来，改造成比特币的工作量证明——这是白皮书引用的第三篇。</p>
+        <div class="ci-meta">
+          <span>作者：Adam Back</span>
+          <a href="https://nakamotoinstitute.org/library/hashcash/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Hashcash 论文原文 PDF" data-author="Adam Back" data-type="技术论文" data-source="http://www.hashcash.org/papers/hashcash.pdf" data-license="作者公开原稿">
+        <div class="ci-head"><span class="tag">论文</span><span class="tag tag-blue">一手</span></div>
+        <h3 class="ci-title">Hashcash 论文原文 PDF</h3>
+        <p class="ci-summary">Hashcash 论文的作者原始 PDF 存档。想看公式推导与参数选择的原始表述，这是第一手来源。</p>
+        <div class="ci-meta">
+          <span>作者：Adam Back</span>
+          <a href="http://www.hashcash.org/papers/hashcash.pdf" target="_blank" rel="noopener">来源：hashcash.org 作者原稿 ↗</a>
+          <span>许可：作者公开原稿</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="《RPOW：可复用工作量证明》" data-author="Hal Finney" data-type="系统设计" data-source="https://nakamotoinstitute.org/library/rpow/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag">系统设计</span><span class="tag tag-orange">2004</span></div>
+        <h3 class="ci-title">《RPOW：可复用工作量证明》</h3>
+        <p class="ci-summary">2004 年 Hal Finney 造出了 RPOW：把 Hashcash 的证明做成可转让的代币，并用可信硬件防止重复兑现。它已经非常接近比特币，但防伪仍然依赖一台可信服务器——这一步之差，正是比特币要消掉的信任假设。</p>
+        <div class="ci-meta">
+          <span>作者：Hal Finney</span>
+          <a href="https://nakamotoinstitute.org/library/rpow/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">三、更早期的技术地基与延展思考</div>
+    <div class="collection-list">
+      <div class="collection-item" data-title="《双花检测：比特币之前的尝试》" data-author="Hal Finney" data-type="技术论文" data-source="https://nakamotoinstitute.org/library/detecting-double-spending/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag">论文</span><span class="tag tag-blue">1993</span></div>
+        <h3 class="ci-title">《双花检测：比特币之前的尝试》</h3>
+        <p class="ci-summary">早在 1993 年，Finney 就在邮件列表里讨论如何发现同一笔电子现金被重复使用。读懂这篇，再看比特币用全局账本解决这个问题，会有种「原来争论了十七年」的感觉。</p>
+        <div class="ci-meta">
+          <span>作者：Hal Finney</span>
+          <a href="https://nakamotoinstitute.org/library/detecting-double-spending/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="《智能合约》" data-author="Nick Szabo" data-type="论文" data-source="https://nakamotoinstitute.org/library/smart-contracts/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag">论文</span><span class="tag tag-purple">1994</span></div>
+        <h3 class="ci-title">《智能合约》</h3>
+        <p class="ci-summary">「智能合约」这个词是 Szabo 在 1994 年造的，比以太坊早了二十年。原文讲的其实是自动售货机式的合约执行，而非今天链上的可编程脚本——回到源头读一遍，能纠掉不少后来形成的误解。</p>
+        <div class="ci-meta">
+          <span>作者：Nick Szabo</span>
+          <a href="https://nakamotoinstitute.org/library/smart-contracts/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Haber 与 Stornetta 时间戳文献" data-author="Stuart Haber、W. Scott Stornetta" data-type="学术文献" data-source="https://nakamotoinstitute.org/authors/stuart-haber/" data-license="第三方汇编（保留出处）">
+        <div class="ci-head"><span class="tag">文献</span><span class="tag tag-blue">1991 起</span></div>
+        <h3 class="ci-title">Haber 与 Stornetta 时间戳文献</h3>
+        <p class="ci-summary">1991 年起，Haber 与 Stornetta 用哈希链做不可篡改的时间戳服务。中本聪白皮书只引了他们一篇，但这条线索在拿时间戳脉络解釋比特币为什么会这样设计时常被用到。</p>
+        <div class="ci-meta">
+          <span>作者：Stuart Haber、W. Scott Stornetta</span>
+          <a href="https://nakamotoinstitute.org/authors/stuart-haber/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留出处）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="David Chaum 隐私技术著作" data-author="David Chaum" data-type="学术文献" data-source="https://nakamotoinstitute.org/authors/david-chaum/" data-license="第三方汇编（保留出处）">
+        <div class="ci-head"><span class="tag">文献</span><span class="tag tag-purple">1981 起</span></div>
+        <h3 class="ci-title">David Chaum 隐私技术著作</h3>
+        <p class="ci-summary">1981 年他提出不可追踪的电子邮件与化名体系，1982 年提出盲签名——那是「数字货币可以有隐私」这件事最早的工程答案，也为后来所有电子现金尝试打下了地基。</p>
+        <div class="ci-meta">
+          <span>作者：David Chaum</span>
+          <a href="https://nakamotoinstitute.org/authors/david-chaum/" target="_blank" rel="noopener">来源：中本聪研究所·作者页 ↗</a>
+          <span>许可：第三方汇编（保留出处）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Ian Grigg《三重记账》" data-author="Ian Grigg" data-type="论文" data-source="https://nakamotoinstitute.org/library/triple-entry-accounting/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag">论文</span><span class="tag tag-blue">2005</span></div>
+        <h3 class="ci-title">Ian Grigg《三重记账》</h3>
+        <p class="ci-summary">复式记账之外再加第三份不可篡改的凭据，让交易双方无需互信也能对账。这篇常被用来解释「为什么区块链对会计学也有意义」。</p>
+        <div class="ci-meta">
+          <span>作者：Ian Grigg</span>
+          <a href="https://nakamotoinstitute.org/library/triple-entry-accounting/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Konrad S. Graf《论比特币的由来》" data-author="Konrad S. Graf" data-type="研究报告" data-source="https://nakamotoinstitute.org/library/on-the-origins-of-bitcoin/" data-license="第三方汇编（保留署名）">
+        <div class="ci-head"><span class="tag">研究</span><span class="tag tag-orange">2013</span></div>
+        <h3 class="ci-title">Konrad S. Graf《论比特币的由来》</h3>
+        <p class="ci-summary">一份试图把比特币放到奥地利学派货币理论脉络里的长文。它不代表本号立场，但展示了同时代的人如何理解「比特币这个东西究竟继承了两谁」。</p>
+        <div class="ci-meta">
+          <span>作者：Konrad S. Graf</span>
+          <a href="https://nakamotoinstitute.org/library/on-the-origins-of-bitcoin/" target="_blank" rel="noopener">来源：中本聪研究所全文版 ↗</a>
+          <span>许可：第三方汇编（保留署名）</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="../../index.html">首页</a> · <a href="../../learning/00-overview.html">学习区</a> · <a href="../../tools/index.html">工具</a> · <a href="../../reference/index.html">参考</a> · <a href="../index.html">文集</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../shared/nav.js"></script>
+</body>
+</html>
