@@ -208,10 +208,6 @@
       </div>
     </div>
     <div class="nav-right">
-      <div class="lang-toggle">
-        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
-        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
-      </div>
       <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
     </div>
   </div>
@@ -725,11 +721,11 @@ tx_Dave_to_Erin_1.0BTC</textarea>
       <!-- 延伸阅读 -->
       <h2>📚 延伸阅读</h2>
       <ul class="reading-list">
-        <li><a href="https://developer.bitcoin.org/reference/block_chain.html" target="_blank">Bitcoin Developer Reference — Block Chain</a></li>
-        <li><a href="https://en.bitcoin.it/wiki/Block" target="_blank">Block — Bitcoin Wiki</a></li>
-        <li><a href="https://en.bitcoin.it/wiki/Merkle_tree" target="_blank">Merkle tree — Bitcoin Wiki</a></li>
-        <li><a href="https://mempool.space/" target="_blank">mempool.space — 实时区块浏览器</a></li>
-        <li><a href="https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch09.md" target="_blank">Mastering Bitcoin — Ch.9 Blockchain</a></li>
+        <li><a href="https://developer.bitcoin.org/reference/block_chain.html" target="_blank" rel="noopener noreferrer">Bitcoin Developer Reference — Block Chain</a></li>
+        <li><a href="https://en.bitcoin.it/wiki/Block" target="_blank" rel="noopener noreferrer">Block — Bitcoin Wiki</a></li>
+        <li><a href="https://en.bitcoin.it/wiki/Merkle_tree" target="_blank" rel="noopener noreferrer">Merkle tree — Bitcoin Wiki</a></li>
+        <li><a href="https://mempool.space/" target="_blank" rel="noopener noreferrer">mempool.space — 实时区块浏览器</a></li>
+        <li><a href="https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch09.md" target="_blank" rel="noopener noreferrer">Mastering Bitcoin — Ch.9 Blockchain</a></li>
       </ul>
 
       <h2>🔄 多视角：同一条区块链，六种身份</h2>
@@ -816,7 +812,7 @@ tx_Dave_to_Erin_1.0BTC</textarea>
           <input type="text" id="blkExpInput" placeholder="输入区块高度或哈希，例如 840000">
           <button class="btn btn-primary" onclick="var v=document.getElementById('blkExpInput').value.trim(); if(v) window.open('https://mempool.space/block/'+encodeURIComponent(v),'_blank');">🔍 在区块浏览器查看</button>
         </div>
-        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">实时数据：<a href="https://mempool.space" target="_blank">mempool.space</a> 可查询任意区块的哈希、难度、交易数与算力分布。</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">实时数据：<a href="https://mempool.space" target="_blank" rel="noopener noreferrer">mempool.space</a> 可查询任意区块的哈希、难度、交易数与算力分布。</div>
       </div>
 
     </div>

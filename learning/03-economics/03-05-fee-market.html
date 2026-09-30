@@ -279,10 +279,6 @@
       </div>
       </div>
       <div class="nav-right">
-        <div class="lang-toggle">
-          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
-          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
-        </div>
         <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
       </div>
     </div>
@@ -480,7 +476,7 @@
               </div>
               <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
                 <button class="btn btn-sm" onclick="loadMempool()">🔄 刷新数据</button>
-                <a href="https://mempool.space" target="_blank" class="btn btn-sm">🌐 mempool.space →</a>
+                <a href="https://mempool.space" target="_blank" class="btn btn-sm" rel="noopener noreferrer">🌐 mempool.space →</a>
               </div>
             </div>
           </section>
@@ -769,7 +765,7 @@
                   <span class="lab-icon">📊</span>
                   <div>
                     <strong>实验 1：实时 mempool 费率观察</strong><br>
-                    访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a>，观察当前各费率区间的待确认交易数量。重点看：① 费率 < 10 sat/vB 的交易堆积量；② 最高费率出现在哪些区块；③ 估算自己的钱包应该设多少费率。
+                    访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">mempool.space</a>，观察当前各费率区间的待确认交易数量。重点看：① 费率 < 10 sat/vB 的交易堆积量；② 最高费率出现在哪些区块；③ 估算自己的钱包应该设多少费率。
                   </div>
                 </li>
                 <li>
@@ -790,7 +786,7 @@
                   <span class="lab-icon">📈</span>
                   <div>
                     <strong>实验 4：历史费率回顾</strong><br>
-                    用 <a href="https://stacker.news" target="_blank" style="color:var(--orange);">blockchain.com 统计</a>查看 2017 年、2020 年、2024 年减半前后的平均手续费变化。观察：① 每次减半前后费率是否有规律性变化？② Ordinals 前后费率的变化幅度。
+                    用 <a href="https://stacker.news" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">blockchain.com 统计</a>查看 2017 年、2020 年、2024 年减半前后的平均手续费变化。观察：① 每次减半前后费率是否有规律性变化？② Ordinals 前后费率的变化幅度。
                   </div>
                 </li>
               </ul>
@@ -882,7 +878,7 @@
       <div class="footer-links">
         <a href="../../index.html">首页</a>
         <a href="../00-overview.html">学习路径</a>
-        <a href="https://github.com" target="_blank">GitHub</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </footer>
@@ -972,7 +968,7 @@
 
         el.innerHTML = barHtml;
       } catch (e) {
-        el.innerHTML = '<div class="exp-empty">⚠️ 无法加载实时数据（可能受网络限制）。请访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看。</div>';
+        el.innerHTML = '<div class="exp-empty">⚠️ 无法加载实时数据（可能受网络限制）。请访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">mempool.space</a> 查看。</div>';
       }
     }
   </script>

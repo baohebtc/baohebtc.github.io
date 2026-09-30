@@ -8,8 +8,12 @@ window.BTCMap = window.BTCMap || {};
 /* ================================================
    语言与主题管理
    ================================================ */
-BTCMap.lang = localStorage.getItem('btc-lang') || 
-  (navigator.language.startsWith('zh') ? 'zh' : 'en');
+// ADR-0022：取消外露的「中 / EN」切换按钮，界面语言固定简体中文。
+// 底层 i18n 能力保留（导航渲染依赖 t()），仍可用 ?lang=en 在单页内临时预览英文外壳。
+// 历史遗留的 btc-lang 一律作废，避免英文访客看到「英文导航 + 中文正文」的错配。
+try { localStorage.removeItem('btc-lang'); } catch (e) {}
+const __urlLang = new URLSearchParams(location.search).get('lang');
+BTCMap.lang = (__urlLang === 'en' || __urlLang === 'zh') ? __urlLang : 'zh';
 BTCMap.theme = localStorage.getItem('btc-theme') || 'dark';
 
 /* ================================================
@@ -165,8 +169,7 @@ function applyTheme(theme) {
    语言
    ================================================ */
 function switchLang(lang) {
-  BTCMap.lang = lang;
-  localStorage.setItem('btc-lang', lang);
+  BTCMap.lang = lang;   // ADR-0022：不再持久化，界面语言固定 zh
   applyLanguage();
   buildBreadcrumb();
   document.querySelectorAll('[data-i18n],[data-i18n-static]').forEach(el => {

@@ -612,3 +612,30 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; margin-top: 60px;
   color: var(--orange);
   font-weight: 600;
 }
+
+/* ================================================
+   ADR-0022 · 外链可辨识
+   所有在新标签页打开的链接自动带 ↗ 角标，
+   让访客点之前就知道会离开本站（减少无意识的跳失）。
+   按钮 / 导航 / 卡片等整块可点区域不加角标，避免视觉噪音。
+   ================================================ */
+a[target="_blank"]::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 0.76em;
+  line-height: 1;
+  opacity: 0.55;
+  vertical-align: super;
+  font-weight: 400;
+}
+a[target="_blank"]:hover::after { opacity: 1; }
+
+a[target="_blank"].btn::after,
+a[target="_blank"].nav-link::after,
+a[target="_blank"].nav-logo::after,
+a[target="_blank"].coll-card::after,
+a[target="_blank"].no-ext::after,
+a[target="_blank"][data-no-ext]::after {
+  content: none;
+}

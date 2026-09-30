@@ -34,6 +34,7 @@ import gzip
 import io
 
 MIN_TEXT = 200          # V2：去标签后纯文本最小长度
+MIN_PDF_BYTES = 20000  # PDF 分支：有效文献的最小体积（20KB 以下多为占位或错误页）
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 
@@ -105,6 +106,18 @@ def verify(url, expect=None, timeout=25):
     reasons = []
     if code != 200:
         return False, final, [f"V1 状态码 {code}（000=本机连不上，不可验证）"]
+
+    # PDF 分支（2026-09-30 加）：白皮书 / 论文常以 PDF 发布，
+    # strip_html 抽不出文本，会误判为「SPA 空壳」。
+    # 判据：响应体以 %PDF 开头 + 体积 >= MIN_PDF_BYTES，视为有效文献。
+    # 注意：fetch() 已把响应解码为 str，故此处比较字符串而非 bytes；
+    # "%PDF-" 是纯 ASCII，解码后仍原样保留。
+    if body[:5] == "%PDF-":
+        if len(body) < MIN_PDF_BYTES:
+            return False, final, [f"V2 PDF 过小（{len(body)} 字节 < {MIN_PDF_BYTES}），疑为占位文件"]
+        reasons.append(f"V2 PDF {len(body)} 字节（%PDF- 头校验通过）")
+        reasons.append("V1 200")
+        return True, final, reasons
 
     text = strip_html(body)
     if len(text) < MIN_TEXT:

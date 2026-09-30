@@ -299,10 +299,6 @@
       </div>
       </div>
       <div class="nav-right">
-        <div class="lang-toggle">
-          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
-          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
-        </div>
         <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
       </div>
     </div>
@@ -798,9 +794,9 @@
             </div>
             <div class="exp-result">
               <ul class="exp-links">
-                <li><a href="https://www.coinbase.com" target="_blank" rel="noopener">Coinbase 官网（全球最大合规交易所）<span class="exp-go">→</span></a></li>
-                <li><a href="https://www.binance.com" target="_blank" rel="noopener">Binance 币安（全球交易量最大的加密交易所）<span class="exp-go">→</span></a></li>
-                <li><a href="https://mempool.space" target="_blank" rel="noopener">Mempool.space（比特币区块浏览器，查看链上真实数据）<span class="exp-go">→</span></a></li>
+                <li><a href="https://www.coinbase.com" target="_blank" rel="noopener noreferrer">Coinbase 官网（全球最大合规交易所）<span class="exp-go">→</span></a></li>
+                <li><a href="https://www.binance.com" target="_blank" rel="noopener noreferrer">Binance 币安（全球交易量最大的加密交易所）<span class="exp-go">→</span></a></li>
+                <li><a href="https://mempool.space" target="_blank" rel="noopener noreferrer">Mempool.space（比特币区块浏览器，查看链上真实数据）<span class="exp-go">→</span></a></li>
               </ul>
             </div>
           </div>
@@ -952,7 +948,7 @@
               </div>
               <div style="margin-top:10px;">
                 <p style="font-size:0.78rem;color:var(--text-muted);">
-                  💡 <strong>提示：</strong>使用 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查询链上真实数据。
+                  💡 <strong>提示：</strong>使用 <a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">mempool.space</a> 查询链上真实数据。
                   大型交易所的冷钱包地址通常公开披露——在对应交易所官网的"储备证明"页面可找到。
                 </p>
               </div>
@@ -1087,7 +1083,7 @@
       <div class="footer-links">
         <a href="../../index.html">首页</a>
         <a href="../00-overview.html">学习路径</a>
-        <a href="https://github.com" target="_blank">GitHub</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </footer>
@@ -1144,7 +1140,7 @@
           <div class="exp-field"><span><strong>历史总支出</strong></span><span>${spent.toFixed(4)} BTC</span></div>
           <div class="exp-field"><span><strong>未花费输出</strong></span><span>${data.chain_stats.funded_txo_count - data.chain_stats.spent_txo_count} 笔</span></div>
           <div style="margin-top:10px;">
-            <a href="https://mempool.space/address/${addr}" target="_blank" style="color:var(--orange);font-size:0.82rem;">在 mempool.space 上查看完整交易历史 ↗</a>
+            <a href="https://mempool.space/address/${addr}" target="_blank" style="color:var(--orange);font-size:0.82rem;" rel="noopener noreferrer">在 mempool.space 上查看完整交易历史 ↗</a>
           </div>
         `;
       } catch(e) {

@@ -215,10 +215,6 @@
       </div>
       </div>
       <div class="nav-right">
-        <div class="lang-toggle">
-          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
-          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
-        </div>
         <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
       </div>
     </div>
@@ -487,9 +483,9 @@
               </div>
               <div class="exp-result">
                 <ul class="exp-links">
-                  <li><a href="https://ordinals.com" target="_blank" rel="noopener">ordinals.com — 查看 Ordinals 铭文浏览器，搜索任意铭文编号 <span class="exp-go">→</span></a></li>
-                  <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space — 查看链上实时数据，观察 BRC-20/Runes 时期的费率飙升 <span class="exp-go">→</span></a></li>
-                  <li><a href="https://tether.to" target="_blank" rel="noopener">tether.to — 了解 USDT 发行方 Tether 的透明度报告与储备构成 <span class="exp-go">→</span></a></li>
+                  <li><a href="https://ordinals.com" target="_blank" rel="noopener noreferrer">ordinals.com — 查看 Ordinals 铭文浏览器，搜索任意铭文编号 <span class="exp-go">→</span></a></li>
+                  <li><a href="https://mempool.space" target="_blank" rel="noopener noreferrer">mempool.space — 查看链上实时数据，观察 BRC-20/Runes 时期的费率飙升 <span class="exp-go">→</span></a></li>
+                  <li><a href="https://tether.to" target="_blank" rel="noopener noreferrer">tether.to — 了解 USDT 发行方 Tether 的透明度报告与储备构成 <span class="exp-go">→</span></a></li>
                 </ul>
               </div>
             </div>
@@ -771,7 +767,7 @@
               <div class="lab-steps">
                 <div class="lab-step">
                   <div class="lab-step-num">1</div>
-                  <div class="lab-step-text">打开 <a href="https://ordinals.com" target="_blank" rel="noopener">ordinals.com</a>（Ordinals 官方浏览器）</div>
+                  <div class="lab-step-text">打开 <a href="https://ordinals.com" target="_blank" rel="noopener noreferrer">ordinals.com</a>（Ordinals 官方浏览器）</div>
                 </div>
                 <div class="lab-step">
                   <div class="lab-step-num">2</div>
@@ -787,8 +783,8 @@
                 </div>
               </div>
               <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
-                <a href="https://ordinals.com" target="_blank" rel="noopener" class="btn btn-primary">🌐 打开 ordinals.com</a>
-                <a href="https://ordinalswallet.com" target="_blank" rel="noopener" class="btn">💼 ordinalswallet.com（BRC-20 代币管理）</a>
+                <a href="https://ordinals.com" target="_blank" rel="noopener noreferrer" class="btn btn-primary">🌐 打开 ordinals.com</a>
+                <a href="https://ordinalswallet.com" target="_blank" rel="noopener noreferrer" class="btn">💼 ordinalswallet.com（BRC-20 代币管理）</a>
               </div>
             </div>
 
@@ -803,7 +799,7 @@
               </div>
               <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
                 <button class="btn btn-primary" onclick="loadFeeStats()">📊 获取实时费率</button>
-                <a href="https://mempool.space" target="_blank" rel="noopener" class="btn">🌐 mempool.space 主页</a>
+                <a href="https://mempool.space" target="_blank" rel="noopener noreferrer" class="btn">🌐 mempool.space 主页</a>
               </div>
               <div style="margin-top:10px;">
                 <p style="font-size:0.78rem;color:var(--text-muted);">
@@ -827,7 +823,7 @@
               <div style="margin-top:10px;">
                 <p style="font-size:0.78rem;color:var(--text-muted);">
                   💡 <strong>提示</strong>：USDT 目前主要在以太坊（ERC-20）和波场（TRC-20）链上流通，比特币 Omni 层仅占一小部分。
-                  完整 USDT 发行数据可在 <a href="https://tether.to" target="_blank" rel="noopener" style="color:var(--orange);">tether.to</a> 查看透明度报告。
+                  完整 USDT 发行数据可在 <a href="https://tether.to" target="_blank" rel="noopener noreferrer" style="color:var(--orange);">tether.to</a> 查看透明度报告。
                 </p>
               </div>
             </div>
@@ -949,7 +945,7 @@
       <div class="footer-links">
         <a href="../../index.html">首页</a>
         <a href="../00-overview.html">学习路径</a>
-        <a href="https://github.com" target="_blank">GitHub</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </footer>
@@ -977,12 +973,12 @@
           <div class="exp-field"><span>🔴 优先费率（Priority）</span><span style="font-family:var(--font-mono);">${feeData.minimumFee || '?'} sat/vB</span></div>
           <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);">
             💡 <strong>对比历史</strong>：正常时期约 5-30 sat/vB；Ordinals 高峰期 200-600 sat/vB。<br>
-            <a href="https://mempool.space" target="_blank" rel="noopener" style="color:var(--orange);">在 mempool.space 查看完整费率建议 ↗</a>
+            <a href="https://mempool.space" target="_blank" rel="noopener noreferrer" style="color:var(--orange);">在 mempool.space 查看完整费率建议 ↗</a>
           </div>
         `;
         el.innerHTML = html;
       } catch(e) {
-        el.innerHTML = '<div class="exp-empty">查询失败：' + (e.message || '未知错误') + '<br><br>💡 建议：直接访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看实时数据</div>';
+        el.innerHTML = '<div class="exp-empty">查询失败：' + (e.message || '未知错误') + '<br><br>💡 建议：直接访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">mempool.space</a> 查看实时数据</div>';
       }
     }
 
