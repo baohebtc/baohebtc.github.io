@@ -86,3 +86,17 @@ https://davidgerard.co.uk/blockchain/
 https://www.web3isgoinggreat.com/
 https://github.com/aantonop/python-hdwallet
 https://github.com/aantonop/wifiportal21
+
+# --- 2026-09-30 存量补齐批次（均经 collection-verify-sources.py 实测 PASS）---
+https://github.com/Bwy999/Bitcoin
+https://github.com/CoxxA/bitcoin-ahr999-HODL/blob/master/%E5%9B%A4%E6%AF%94%E7%89%B9%E5%B8%81_QKL123%E6%95%B4%E7%90%86.pdf
+https://github.com/CoxxA/bitcoin-ahr999-HODL/blob/master/docs/xu-zhang.md
+https://github.com/CoxxA/bitcoin-ahr999-HODL/blob/master/docs/di-yi-zhang.md
+https://github.com/CoxxA/bitcoin-ahr999-HODL/blob/master/docs/zhong-zhang.md
+https://github.com/CoxxA/bitcoin-ahr999-HODL/blob/master/ahr999.py
+https://github.com/xiaolai/blockchainlittlebook.com
+https://github.com/xiaolai/xiaolai.github.io
+https://github.com/xiaolai/books
+https://github.com/xiaolai/regular-investing-in-box
+https://github.com/xiaolai/bitcoin-whitepaper-chinese-translation
+https://learn.saylor.org/mod/page/view.php?id=30687

@@ -42,10 +42,13 @@ ALLOW = os.path.join(ROOT, "tools", "dev", "collection-sources-allowlist.txt")
 # ---- 规则参数 ---------------------------------------------------------
 MIN_ITEMS = 8                      # R2 条目数下限
 # ADR-0021 §5 记录的例外（新栏）：Saylor 可核实公开链接上限即为此
-MIN_ITEMS_WHITELIST = {"saylor.html": 6}
-# 存量已上线的老栏目：在本批之前完成，作品存世量本身就不足 8 件，
-# 强行补到 8 条只会注水。故保留真实数量，但在门闸输出中如实列出。
-MIN_ITEMS_LEGACY = {"ahr999.html": 3, "lixiaolai.html": 6}
+# ADR-0021 §5 记录的例外（新栏）：Saylor 可核实的免费教育资源上限即为此。
+# 2026-09-30 补齐批次后由 6 提至 7（新增课程大纲）。X 与 strategy.com 对本机不可达，
+# 无法验证即不收录；待可验证新来源经收件箱补录后，本项应回升到 8 并删除此例外。
+MIN_ITEMS_WHITELIST = {"saylor.html": 7}
+# 存量老栏目豁免：2026-09-30 补齐前 ahr999=3 / lixiaolai=6，不足下限。
+# 补齐批次后两栏均达 9 条，已满足下限，豁免按约定撤销（不再开后门）。
+MIN_ITEMS_LEGACY = {}
 # P2 已排期、本批明确不动的文件：占位必须保留以便读者知情，
 # 因此 R1/R2 降级为 WARN（打印但不计入 FAIL），避免污染本批改判。
 P2_SCHEDULED = {"community.html", "others.html",
