@@ -31,6 +31,7 @@
 .section-h { font-size:0.8rem; font-weight:700; color:var(--text-muted); letter-spacing:0.08em; margin:26px 0 12px; }
 .stance { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); margin:0 0 20px; }
 @media (max-width:600px){ .ci-meta{ gap:8px; } }
+.notice-card { background:rgba(247,147,26,0.05); border:1px dashed var(--border-light); border-radius:var(--radius-sm); padding:18px 20px; margin-bottom:20px; }
 </style>
 </head>
 <body>
@@ -140,6 +141,25 @@
           <span>许可：各自课程许可</span>
         </div>
       </div>
+      <div class="collection-item" data-title="PRDV151 课程大纲" data-author="Saylor University" data-type="课程大纲" data-source="https://learn.saylor.org/mod/page/view.php?id=30687" data-license="课程内容 CC BY 3.0">
+        <div class="ci-head"><span class="tag">大纲</span><span class="tag tag-blue">课程内容</span></div>
+        <h3 class="ci-title">PRDV151 课程大纲（READ: Course Syllabus）</h3>
+        <p class="ci-summary">这门课的完整教学大纲：学习目标、课程要求与考核方式都写在里面。判断一门课值不值得花 12 小时，看大纲比看宣传页可靠。</p>
+        <div class="ci-meta">
+          <span>作者：Saylor University</span>
+          <a href="https://learn.saylor.org/mod/page/view.php?id=30687" target="_blank" rel="noopener">来源：Saylor University 课程大纲 ↗</a>
+          <span>许可：课程内容 CC BY 3.0</span>
+        </div>
+      </div>
+
+      <div class="section-h">更新日志 · 这一栏还没收满</div>
+      <div class="notice-card">
+        <div class="ci-head"><span class="tag tag-orange">待补录</span><span class="tag">2026-09-30</span></div>
+        <h3 class="ci-title">为什么这一栏停在 7 条</h3>
+        <p class="ci-summary">Michael Saylor 近年的长文与演说主要发布在两个地方：X（@saylor）与 Strategy 官网。这两个站对本机都不可达——X 连接直接失败，Strategy 官网对非浏览器请求一律返回 403。本站的收录纪律是<strong>「未经验证的链接不进白名单」</strong>（HTTP 200 不等于有效条目，SPA 空壳与登录墙都要拦），所以在能实际打开原文之前，不新增条目。<br><br>已建好补录通道：<code>tools/dev/collection-inbox.md</code> 是收件箱，<code>tools/dev/collection-verify-sources.py</code> 负责逐条实测。只要新链接能验通，下一条就能进来，本栏的下限会自动回到 8 条。</p>
+        <div class="ci-meta"><span>状态：等待可验证的新来源</span></div>
+      </div>
+
 
     </div>
 
