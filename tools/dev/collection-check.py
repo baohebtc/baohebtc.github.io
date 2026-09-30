@@ -51,8 +51,9 @@ MIN_ITEMS_WHITELIST = {"saylor.html": 7}
 MIN_ITEMS_LEGACY = {}
 # P2 已排期、本批明确不动的文件：占位必须保留以便读者知情，
 # 因此 R1/R2 降级为 WARN（打印但不计入 FAIL），避免污染本批改判。
-P2_SCHEDULED = {"community.html", "others.html",
-                "essays.html", "papers.html", "videos.html", "whitepapers.html"}
+# 2026-09-30：五个凑不满八条的空壳栏（community / others / papers / essays / videos）
+# 已整栏撤下并从首页摘除，不再保留排期豁免——宁可少一栏，不放空架。
+P2_SCHEDULED = set()
 MAX_DUP = 3                        # R5 同一文件内同一来源最多出现次数（ahr999 三件作品同源）
 
 # R1 占位语（出现即 FAIL）
@@ -123,8 +124,13 @@ def load_allowlist():
     with open(ALLOW, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
-            if line and not line.startswith("#"):
-                out.add(line)
+            if not line or line.startswith("#"):
+                continue
+            # 支持行尾注释："https://x.com    # 说明" —— 否则备注会被当成 URL 的一部分，
+            # 导致明明已登记的来源被判为未验证（2026-09-30 修）。
+            url = line.split("#")[0].strip()
+            if url:
+                out.add(url)
     return out
 
 

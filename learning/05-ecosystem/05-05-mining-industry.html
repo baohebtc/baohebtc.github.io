@@ -344,10 +344,6 @@
       </div>
       </div>
       <div class="nav-right">
-        <div class="lang-toggle">
-          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
-          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
-        </div>
         <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
       </div>
     </div>
@@ -794,9 +790,9 @@
             </div>
             <div class="exp-result">
               <ul class="exp-links">
-                <li><a href="https://mempool.space" target="_blank" rel="noopener">mempool.space — 查看当前全网算力与难度 <span class="exp-go">→</span></a></li>
-                <li><a href="https://ccaf.io/cbns" target="_blank" rel="noopener">CCAF 比特币能源消耗指数 — 剑桥大学官方数据 <span class="exp-go">→</span></a></li>
-                <li><a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener">Blockchain.com Explorer — 查看各矿池历史出块统计 <span class="exp-go">→</span></a></li>
+                <li><a href="https://mempool.space" target="_blank" rel="noopener noreferrer">mempool.space — 查看当前全网算力与难度 <span class="exp-go">→</span></a></li>
+                <li><a href="https://ccaf.io/cbns" target="_blank" rel="noopener noreferrer">CCAF 比特币能源消耗指数 — 剑桥大学官方数据 <span class="exp-go">→</span></a></li>
+                <li><a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener noreferrer">Blockchain.com Explorer — 查看各矿池历史出块统计 <span class="exp-go">→</span></a></li>
               </ul>
             </div>
           </div>
@@ -1063,7 +1059,7 @@
       <div class="footer-links">
         <a href="../../index.html">首页</a>
         <a href="../00-overview.html">学习路径</a>
-        <a href="https://github.com" target="_blank">GitHub</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </footer>
@@ -1122,11 +1118,11 @@
 
         let html = '<div class="exp-field"><span><strong>提示</strong></span><span style="font-size:0.78rem;">实时数据由 mempool.space API 提供</span></div>';
         html += '<div class="exp-field"><span><strong>查询时间</strong></span><span>' + new Date().toLocaleString('zh-CN') + '</span></div>';
-        html += '<div class="exp-field"><span><strong>说明</strong></span><span style="font-size:0.78rem;">算力和难度数据需要页面加载后实时拉取，可访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看完整仪表盘</span></div>';
-        html += '<div class="exp-field" style="margin-top:6px;"><span><strong>→ 前往 mempool.space</strong></span><span><a href="https://mempool.space" target="_blank" style="color:var(--orange);">查看完整实时算力/难度仪表盘 ↗</a></span></div>';
+        html += '<div class="exp-field"><span><strong>说明</strong></span><span style="font-size:0.78rem;">算力和难度数据需要页面加载后实时拉取，可访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">mempool.space</a> 查看完整仪表盘</span></div>';
+        html += '<div class="exp-field" style="margin-top:6px;"><span><strong>→ 前往 mempool.space</strong></span><span><a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">查看完整实时算力/难度仪表盘 ↗</a></span></div>';
         el.innerHTML = html;
       } catch(e) {
-        el.innerHTML = '<div class="exp-empty" style="color:#EF4444;">查询失败：' + (e.message || '未知错误') + '<br><br>💡 建议：直接访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看实时数据</div>';
+        el.innerHTML = '<div class="exp-empty" style="color:#EF4444;">查询失败：' + (e.message || '未知错误') + '<br><br>💡 建议：直接访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">mempool.space</a> 查看实时数据</div>';
       }
     }
 
@@ -1148,11 +1144,11 @@
         });
         html += '<div style="margin-top:8px;font-size:0.75rem;color:var(--text-muted);">';
         html += '数据来源：mempool.space | ';
-        html += '<a href="https://mempool.space" target="_blank" style="color:var(--orange);">查看完整矿池排名 ↗</a>';
+        html += '<a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">查看完整矿池排名 ↗</a>';
         html += '</div>';
         el.innerHTML = html;
       } catch(e) {
-        el.innerHTML = '<div class="exp-empty">加载失败：' + (e.message || '未知错误') + '<br><br>💡 建议：访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 查看矿池数据</div>';
+        el.innerHTML = '<div class="exp-empty">加载失败：' + (e.message || '未知错误') + '<br><br>💡 建议：访问 <a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">mempool.space</a> 查看矿池数据</div>';
       }
     }
   </script>

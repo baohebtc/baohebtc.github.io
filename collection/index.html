@@ -23,8 +23,6 @@
 .coll-card .c-title { font-size: 0.98rem; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
 .coll-card .c-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
 .coll-card .c-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
-.coll-card.planned { opacity: 0.72; border-style: dashed; }
-.coll-card.planned .c-title { color: var(--text-secondary); }
 .tag { font-size: 0.66rem; padding: 2px 8px; border-radius: 10px; background: rgba(247,147,26,0.12); color: var(--orange); font-weight: 600; }
 .tag-blue { background: rgba(59,130,246,0.14); color: #6aa6ff; }
 .tag-green { background: rgba(16,185,129,0.14); color: #4ade80; }
@@ -49,10 +47,6 @@
       </div>
     </div>
     <div class="nav-right">
-      <div class="lang-toggle">
-        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
-        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
-      </div>
       <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
     </div>
   </div>
@@ -63,7 +57,7 @@
     <div class="breadcrumb"><a href="../index.html">首页</a><span>›</span><span>文集</span></div>
     <h1>🗂️ 文集</h1>
     <p>学完「学习区」的系统课之后，这里把圈子里的好书、好文、好视频、好论文，按<strong>主题</strong>和<strong>作者</strong>两条轴线聚起来。像一座开放式书架——你按兴趣随便取阅，读完再回到课程里印证。</p>
-    <p style="font-size:0.84rem;color:var(--text-muted);margin-top:8px">本批新增六个作者栏与「大家说比特币」，每条都标了出处与许可，外链逐条实测可访问。卡面上的条数是真实收录量，不注水。</p>
+    <p style="font-size:0.84rem;color:var(--text-muted);margin-top:8px">每一条都标了出处与许可，外链逐条实测可访问；卡面上的条数是真实收录量。凑不满八条的栏目我们宁可不上架——这里没有空架，也没有占位页。</p>
   </div>
 </header>
 
@@ -118,16 +112,6 @@
           <div class="c-desc">《把时间当作朋友》《自学是门手艺》《定投改变命运》等多本开源著作。</div>
           <div class="c-tags"><span class="tag">已上线</span><span class="tag tag-blue">9 条</span></div>
         </a>
-        <a class="coll-card planned" href="authors/community.html">
-          <div class="c-title">🌐 官方与社区</div>
-          <div class="c-desc">Bitcoin.org、BTCStudy、中本聪研究所等权威公开资料。</div>
-          <div class="c-tags"><span class="tag">下一批 · P2</span></div>
-        </a>
-        <a class="coll-card planned" href="authors/others.html">
-          <div class="c-title">📚 其他名家</div>
-          <div class="c-desc">更多作者的公开作品，排在下批。BTCStudy 等已先在 voices 与中本聪集里落地。</div>
-          <div class="c-tags"><span class="tag">下一批 · P2</span></div>
-        </a>
       </div>
     </section>
 
@@ -136,7 +120,7 @@
       <div class="axis-header">
         <span class="axis-icon">🧭</span>
         <h2>主题轴</h2>
-        <span class="axis-sub">按内容形态归类：观点、文集、论文、视频、白皮书</span>
+        <span class="axis-sub">按内容形态归类：观点与文档两条线</span>
       </div>
       <div class="coll-grid">
         <a class="coll-card" href="themes/voices.html">
@@ -144,28 +128,19 @@
           <div class="c-desc">缔造者、密码朋克、货币学者、工程派、机构视角同栏并置，并收录批评与审视的声音。收录不等于赞同。</div>
           <div class="c-tags"><span class="tag">已上线</span><span class="tag tag-orange">本批落地</span><span class="tag tag-blue">17 条</span></div>
         </a>
-        <a class="coll-card planned" href="themes/whitepapers.html">
+        <a class="coll-card" href="themes/whitepapers.html">
           <div class="c-title">📜 白皮书与官方文档</div>
-          <div class="c-desc">比特币白皮书（中英）、官方文档、BIP 索引。</div>
-          <div class="c-tags"><span class="tag">下一批 · P2</span></div>
-        </a>
-        <a class="coll-card planned" href="themes/papers.html">
-          <div class="c-title">📄 比特币论文集</div>
-          <div class="c-desc">技术论文与学术论文的索引与导读。</div>
-          <div class="c-tags"><span class="tag">下一批 · P2</span></div>
-        </a>
-        <a class="coll-card planned" href="themes/essays.html">
-          <div class="c-title">📝 比特币文集</div>
-          <div class="c-desc">慢读宝盒公众号文章 + 社区优质长文，按主题归并的阅读合集。</div>
-          <div class="c-tags"><span class="tag">下一批 · P2</span></div>
-        </a>
-        <a class="coll-card planned" href="themes/videos.html">
-          <div class="c-title">🎬 比特币视频集</div>
-          <div class="c-desc">高质量科普视频、演讲、纪录片清单。</div>
-          <div class="c-tags"><span class="tag">下一批 · P2</span></div>
+          <div class="c-desc">比特币白皮书原文、闪电网络白皮书、BIP 提案索引、Bitcoin Core 官方站点与中文技术译介入口。</div>
+          <div class="c-tags"><span class="tag">已上线</span><span class="tag tag-orange">本批新增</span><span class="tag tag-blue">9 条</span></div>
         </a>
       </div>
     </section>
+
+    <div class="notice-card" style="margin:0 0 28px">
+      <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.7;margin:0">
+        <strong style="color:var(--orange)">关于栏目的多少：</strong>我们只上架凑得满八条、且每条都能当场打开核实的栏目。原计划里的「论文集」「视频集」「其他名家」，因为找不到足够多经得起验证的来源，已经整栏撤下而不是留空壳。宁可少一栏，不放空架。
+      </p>
+    </div>
 
     <div class="disclaimer">
       <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。本站仅做公开资料的整理与索引，转载内容均保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。投资有风险，决策需独立。

@@ -457,10 +457,6 @@
       </div>
       </div>
       <div class="nav-right">
-        <div class="lang-toggle">
-          <button class="btn" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
-          <button class="btn" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
-        </div>
         <button class="btn btn-icon" data-action="toggle-theme" onclick="BTCMap.toggleTheme()" title="切换主题">🌙</button>
       </div>
     </div>
@@ -1149,7 +1145,7 @@
                 <div class="exp-empty">👆 输入地址查看该地址下的所有 UTXO</div>
               </div>
               <div style="margin-top:10px;">
-                <p style="font-size:0.78rem;color:var(--text-muted);">💡 <strong>提示</strong>：使用 <a href="https://mempool.space" target="_blank" style="color:var(--orange);">mempool.space</a> 或 <a href="https://blockchain.info" target="_blank" style="color:var(--orange);">blockchain.info</a> 查询真实链上数据。<br>此实验为浏览器内建联模拟，真实查询通过以下接口进行。</p>
+                <p style="font-size:0.78rem;color:var(--text-muted);">💡 <strong>提示</strong>：使用 <a href="https://mempool.space" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">mempool.space</a> 或 <a href="https://blockchain.info" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">blockchain.info</a> 查询真实链上数据。<br>此实验为浏览器内建联模拟，真实查询通过以下接口进行。</p>
               </div>
             </div>
 
@@ -1360,7 +1356,7 @@
       <div class="footer-links">
         <a href="../../index.html">首页</a>
         <a href="../00-overview.html">学习路径</a>
-        <a href="https://github.com" target="_blank">GitHub</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </footer>
@@ -1525,7 +1521,7 @@
           <div class="exp-field" style="margin-top:4px;">
             <span></span>
             <span style="font-size:0.72rem;color:var(--text-muted);">
-              <a href="https://mempool.space/tx/${txid}" target="_blank" style="color:var(--orange);">在 mempool.space 上查看完整详情 ↗</a>
+              <a href="https://mempool.space/tx/${txid}" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">在 mempool.space 上查看完整详情 ↗</a>
             </span>
           </div>
         `;
@@ -1568,7 +1564,7 @@
           <span style="font-family:var(--font-mono);color:var(--orange);font-weight:700;">${(totalSat / 1e8).toFixed(8)} BTC (${totalSat.toLocaleString()} sats)</span>
         </div>`;
         html += `<div style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);">
-          <a href="https://mempool.space/address/${addr}" target="_blank" style="color:var(--orange);">在 mempool.space 上查看完整地址历史 ↗</a>
+          <a href="https://mempool.space/address/${addr}" target="_blank" style="color:var(--orange);" rel="noopener noreferrer">在 mempool.space 上查看完整地址历史 ↗</a>
         </div>`;
         resultDiv.innerHTML = html;
       } catch(e) {

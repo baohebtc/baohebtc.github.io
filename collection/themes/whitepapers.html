@@ -6,20 +6,28 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#f7931a">
 <title>白皮书与官方文档 · 文集 · 比特币学习地图</title>
-<meta name="description" content="比特币白皮书（中英）、官方文档、BIP 索引。">
+<meta name="description" content="比特币白皮书原文、闪电网络白皮书、BIP 提案索引、Bitcoin Core 官方站点与中文技术译介入口——一条从原始文献读到规范文档的线索。">
 <link rel="stylesheet" href="../../shared/style.css">
 <style>
-.ph-hero { padding:56px 0 28px; }
-.ph-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:var(--orange); background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.25); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
-.ph-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
-.ph-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
+.author-hero { padding: 56px 0 28px; }
+.author-hero .badge { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; color:var(--orange); background:rgba(247,147,26,0.1); border:1px solid rgba(247,147,26,0.25); padding:5px 14px; border-radius:100px; margin-bottom:14px; }
+.author-hero h1 { font-size:2.1rem; font-weight:800; margin-bottom:8px; }
+.author-hero p { color:var(--text-secondary); font-size:0.92rem; max-width:620px; line-height:1.65; }
 .disclaimer { margin:0 0 28px; padding:14px 16px; border:1px dashed var(--border-light); border-radius:var(--radius-sm); background:rgba(247,147,26,0.05); font-size:0.8rem; color:var(--text-secondary); line-height:1.6; }
 .disclaimer strong { color:var(--orange); }
-.coming { margin:0 0 60px; padding:48px 24px; border:1px dashed var(--border); border-radius:var(--radius); background:var(--bg-card); text-align:center; }
-.coming .big { font-size:3rem; margin-bottom:12px; }
-.coming h2 { font-size:1.2rem; font-weight:700; margin-bottom:8px; }
-.coming p { color:var(--text-muted); font-size:0.86rem; max-width:480px; margin:0 auto; line-height:1.6; }
-@media (max-width:600px){ .ph-hero h1{ font-size:1.5rem; } .coming{ padding:32px 16px; } }
+.collection-list { display:flex; flex-direction:column; gap:14px; margin-bottom:48px; }
+.collection-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px 20px; transition:all var(--transition); }
+.collection-item:hover { border-color:var(--border-light); box-shadow:var(--shadow); }
+.ci-head { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.ci-title { font-size:1.02rem; font-weight:700; margin-bottom:6px; }
+.ci-summary { font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+.ci-meta { display:flex; gap:16px; flex-wrap:wrap; font-size:0.76rem; color:var(--text-muted); }
+.ci-meta a { color:var(--orange); text-decoration:none; }
+.tag { font-size:0.66rem; padding:2px 9px; border-radius:10px; background:rgba(247,147,26,0.12); color:var(--orange); font-weight:600; }
+.tag-orange { background:rgba(247,147,26,0.18); }
+.tag-blue { background:rgba(59,130,246,0.14); color:#6aa6ff; }
+.section-h { font-size:0.8rem; font-weight:700; color:var(--text-muted); letter-spacing:0.08em; margin:26px 0 12px; }
+@media (max-width:600px){ .ci-meta{ gap:8px; } }
 </style>
 </head>
 <body>
@@ -38,34 +46,134 @@
       </div>
     </div>
     <div class="nav-right">
-      <div class="lang-toggle">
-        <button class="btn btn-sm" data-lang="zh" onclick="BTCMap.switchLang('zh')">中</button>
-        <button class="btn btn-sm" data-lang="en" onclick="BTCMap.switchLang('en')">EN</button>
-      </div>
       <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
     </div>
   </div>
 </nav>
 
-<header class="ph-hero">
+<header class="author-hero">
   <div class="container">
     <div class="breadcrumb"><a href="../../index.html">首页</a><span>›</span><a href="../index.html">文集</a><span>›</span><span>白皮书与官方文档</span></div>
     <span class="badge">主题轴 · 文档</span>
     <h1>📜 白皮书与官方文档</h1>
-    <p>比特币白皮书（中英）、官方文档、BIP 索引。</p>
+    <p>比特币这十多年的规则变化，都不是某个人拍板定的，而是一份份公开写下来的文档：白皮书提出构想，BIP 记录改动，规范定义实现。本栏按「原始文献 → 规范文档 → 官方与社区入口」编排，想核实一个说法到底是不是协议的一部分，从这里查最可靠。</p>
   </div>
 </header>
 
 <main>
   <div class="container">
     <div class="disclaimer">
-      <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。本站仅做公开资料的整理与索引，转载内容均保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。
+      <strong>免责声明：</strong>学习资料索引 · 非投资建议 · 观点不代表本号立场。以下均为公开资料整理，转载保留原作者署名与许可；所载观点为原作者个人意见，不构成任何投资建议。涉及版本升级与安全事件，一律以官方公告为准。
     </div>
-    <div class="coming">
-      <div class="big">🚧</div>
-      <h2>本栏目整理中</h2>
-      <p>该集合的条目正在编排中。我们会按「公开、可核实、保留署名」的原则逐步收录。欢迎回到「学习区」先打基础，或看看已上线的《九神集》《李笑来集》。</p>
+
+    <div class="section-h">一、原始文献</div>
+    <div class="collection-list">
+
+      <div class="collection-item" data-title="比特币白皮书《Bitcoin: A Peer-to-Peer Electronic Cash System》" data-author="中本聪（Satoshi Nakamoto）" data-type="原始文献" data-source="https://nakamotoinstitute.org/library/bitcoin/" data-license="公开文本（作者未主张著作权）">
+        <div class="ci-head"><span class="tag ">原始文献</span><span class="tag tag-orange">起点必读</span></div>
+        <h3 class="ci-title">比特币白皮书（2008-10-31，全文在线版）</h3>
+        <p class="ci-summary">九页纸讲清一件事：如何在没有可信第三方的前提下，防止同一笔数字钱被花两次。全文没有一句关于价格的讨论，通篇是时间戳、工作量证明与节点投票——这份克制，是理解比特币底色的第一手材料。</p>
+        <div class="ci-meta">
+          <span>作者：中本聪</span>
+          <a href="https://nakamotoinstitute.org/library/bitcoin/" target="_blank" rel="noopener noreferrer">来源：中本聪研究所·全文版 ↗</a>
+          <span>许可：作者未主张著作权，可自由传播</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="闪电网络白皮书《The Bitcoin Lightning Network》" data-author="Joseph Poon · Thaddeus Dryja" data-type="原始文献" data-source="https://lightning.network/lightning-network-paper.pdf" data-license="公开论文（作者公开发布）">
+        <div class="ci-head"><span class="tag ">原始文献</span><span class="tag tag-blue">扩容路线</span></div>
+        <h3 class="ci-title">闪电网络白皮书（2016，PDF 原文）</h3>
+        <p class="ci-summary">主链每秒只能处理有限笔数，这篇论文给出的思路是：把大量小额往来挪到链下双向通道里进行，只在开通道和关通道时各上一次链。它是理解「为什么比特币主链刻意保持慢」的关键文献。</p>
+        <div class="ci-meta">
+          <span>作者：Poon 与 Dryja</span>
+          <a href="https://lightning.network/lightning-network-paper.pdf" target="_blank" rel="noopener noreferrer">来源：lightning.network 官方 PDF ↗</a>
+          <span>许可：作者公开发布，可自由传播</span>
+        </div>
+      </div>
+
     </div>
+
+    <div class="section-h">二、规范文档（协议是怎么改的）</div>
+    <div class="collection-list">
+
+      <div class="collection-item" data-title="BIP 索引（比特币改进提案总目录）" data-author="比特币开发者社区" data-type="规范文档" data-source="https://github.com/bitcoin/bips" data-license="公开规范（代码库公开）">
+        <div class="ci-head"><span class="tag ">规范文档</span><span class="tag tag-blue">机制透明</span></div>
+        <h3 class="ci-title">比特币的「修法」流程长什么样</h3>
+        <p class="ci-summary">比特币没有 CEO，任何改动都要先写成一份 BIP（Bitcoin Improvement Proposal），公开讨论、形成共识后才可能被实现。这个仓库是全部提案的索引——想确认某个说法到底是不是协议的一部分，来这里查最可靠。</p>
+        <div class="ci-meta">
+          <span>维护：比特币开发者社区</span>
+          <a href="https://github.com/bitcoin/bips" target="_blank" rel="noopener noreferrer">来源：github.com/bitcoin/bips ↗</a>
+          <span>许可：公开仓库，保留出处</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="BIP-341 Taproot 规范（2021 年激活的重要升级）" data-author="Pieter Wuille 等" data-type="规范文档" data-source="https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki" data-license="公开规范（代码库公开）">
+        <div class="ci-head"><span class="tag ">规范文档</span><span class="tag tag-blue">升级实例</span></div>
+        <h3 class="ci-title">Taproot：让复杂交易看上去和普通转账一样</h3>
+        <p class="ci-summary">2021 年激活的这次升级，把多签、时间锁这类复杂条件「藏」进一棵默克尔树，使其在被花费前不暴露细节。它同时提升了隐私与效率，也是后续一批新能力的地基。读它可以看到一次协议升级从提案到落地的完整形态。</p>
+        <div class="ci-meta">
+          <span>作者：Pieter Wuille 等</span>
+          <a href="https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki" target="_blank" rel="noopener noreferrer">来源：BIP-341 全文 ↗</a>
+          <span>许可：公开仓库，保留出处</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Bitcoin Core 官方网站" data-author="Bitcoin Core 项目" data-type="官方站点" data-source="https://bitcoincore.org/" data-license="官方公开资料">
+        <div class="ci-head"><span class="tag ">官方站点</span><span class="tag tag-orange">一手来源</span></div>
+        <h3 class="ci-title">比特币的参考实现在哪里</h3>
+        <p class="ci-summary">Bitcoin Core 是比特币网络的参考实现，也是节点运营者最常用的客户端。发布公告、版本说明与安全提示都以这里为准——涉及版本升级或安全事件，一律以官方公告为准，不要采信二手转述。</p>
+        <div class="ci-meta">
+          <span>维护：Bitcoin Core 项目</span>
+          <a href="https://bitcoincore.org/" target="_blank" rel="noopener noreferrer">来源：bitcoincore.org ↗</a>
+          <span>许可：官方公开资料</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="BOLT 规范（闪电网络技术基础）" data-author="闪电网络开发者社区" data-type="规范文档" data-source="https://github.com/lightning/bolts" data-license="公开规范（代码库公开）">
+        <div class="ci-head"><span class="tag ">规范文档</span><span class="tag tag-blue">配套白皮书</span></div>
+        <h3 class="ci-title">链下通道的通用语言</h3>
+        <p class="ci-summary">白皮书讲的是构想，BOLT（Basis of Lightning Technology）讲的是实现细节：通道怎么开、怎么路由、怎么关闭。不同客户端能互相通信，靠的就是这套共同遵守的规范。与白皮书对照阅读效果最好。</p>
+        <div class="ci-meta">
+          <span>维护：闪电网络开发者社区</span>
+          <a href="https://github.com/lightning/bolts" target="_blank" rel="noopener noreferrer">来源：github.com/lightning/bolts ↗</a>
+          <span>许可：公开仓库，保留出处</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-h">三、官方站点与社区入口</div>
+    <div class="collection-list">
+
+      <div class="collection-item" data-title="Bitcoin Optech 技术周报与工作组" data-author="Bitcoin Optech" data-type="社区技术综述" data-source="https://bitcoinops.org/" data-license="公开资料（保留署名）">
+        <div class="ci-head"><span class="tag ">社区综述</span><span class="tag tag-blue">持续更新</span></div>
+        <h3 class="ci-title">开发者每周在讨论什么</h3>
+        <p class="ci-summary">把邮件列表、提案讨论和代码评审整理成每周一期的中文与英文综述，是跟上协议演进最省力的入口。想看「技术圈眼下在争什么」，比零散刷论坛有效得多。</p>
+        <div class="ci-meta">
+          <span>维护：Bitcoin Optech</span>
+          <a href="https://bitcoinops.org/" target="_blank" rel="noopener noreferrer">来源：bitcoinops.org ↗</a>
+          <span>许可：公开资料，保留署名</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="Learn Me a Bitcoin（技术原理图解）" data-author="Greg Walker" data-type="技术科普" data-source="https://learnmeabitcoin.com/" data-license="公开资料（保留署名）">
+        <div class="ci-head"><span class="tag ">技术科普</span><span class="tag tag-blue">图解入门</span></div>
+        <h3 class="ci-title">把抽象机制拆成看得见的图</h3>
+        <p class="ci-summary">用图示把交易结构、脚本、区块与挖矿过程逐层拆开，适合「白皮书读得懂概念、但想象不出数据结构」这一步。当作工具书查阅比通读更合适。</p>
+        <div class="ci-meta">
+          <span>作者：Greg Walker</span>
+          <a href="https://learnmeabitcoin.com/" target="_blank" rel="noopener noreferrer">来源：learnmeabitcoin.com ↗</a>
+          <span>许可：公开资料，保留署名</span>
+        </div>
+      </div>
+      <div class="collection-item" data-title="BTCStudy（中文技术译介）" data-author="BTCStudy 社区" data-type="中文译介" data-source="https://www.btcstudy.org/" data-license="公开资料（保留原作者署名）">
+        <div class="ci-head"><span class="tag ">中文译介</span><span class="tag tag-orange">中文首选</span></div>
+        <h3 class="ci-title">把一手材料搬进中文世界的一群人</h3>
+        <p class="ci-summary">系统性译介比特币技术文献、提案解读与开发者讨论，而非转述二手观点。英文有门槛的话，这是中文圈最扎实的入口——白皮书之外的原始材料，从这里开始最省路。</p>
+        <div class="ci-meta">
+          <span>维护：BTCStudy 社区</span>
+          <a href="https://www.btcstudy.org/" target="_blank" rel="noopener noreferrer">来源：btcstudy.org ↗</a>
+          <span>许可：保留原作者署名</span>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </main>
 

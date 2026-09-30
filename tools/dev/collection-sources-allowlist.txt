@@ -100,3 +100,11 @@ https://github.com/xiaolai/books
 https://github.com/xiaolai/regular-investing-in-box
 https://github.com/xiaolai/bitcoin-whitepaper-chinese-translation
 https://learn.saylor.org/mod/page/view.php?id=30687
+
+# ---- 2026-09-30 新增：白皮书与官方文档栏（每条经 collection-verify-sources.py 实测 PASS）----
+https://lightning.network/lightning-network-paper.pdf    # 闪电网络白皮书 PDF（V2 PDF 分支校验）
+https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki    # BIP-341 Taproot
+https://bitcoincore.org/    # Bitcoin Core 官方
+https://github.com/lightning/bolts    # BOLT 规范（原 lightningnetwork/lightning-rfc 已重定向至此）
+https://learnmeabitcoin.com/    # Learn Me a Bitcoin
+https://www.btcstudy.org/    # BTCStudy（注意：btcstudy.org 会跳转至 www）

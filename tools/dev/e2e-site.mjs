@@ -12,7 +12,7 @@
  *   N2  恰有 1 个 .nav-link.active
  *   N3  导航链接 0 死链（fetch 本地 server 须 200）
  *   N4  主题切换生效（点 toggle-theme 后 data-theme 翻转）
- *   N5  语言切换生效（点 EN 后 documentElement.lang 变 en，可切回）
+ *   N5  界面语言固定简体中文：无外露「中 / EN」按钮，html[lang] 恒为 zh-CN（ADR-0022）
  *   N6s 站点自身 console 无错（排除第三方/工具噪声，见下）
  *  【观察项 ADVISORY】（记录但不阻断，单独 backlog 跟进）
  *   N6t 第三方/工具噪声：mempool.space iframe CSP、supply-calculator SVG NaN 等
@@ -132,13 +132,17 @@ async function run() {
         if (t1 && t1 !== t0) r.pass.push('N4 主题切换'); else r.gate.push('N4 主题切换未生效');
       } else r.adv.push('N4 无主题按钮');
 
-      const en = await page.$('[data-lang="en"]');
-      if (en) {
-        await en.click(); await page.waitForTimeout(120);
-        const lng = await page.getAttribute('html', 'lang');
-        if (lng && lng.toLowerCase().startsWith('en')) r.pass.push('N5 语言切EN');
-        else r.gate.push(`N5 语言未生效(lang=${lng})`);
-      } else r.adv.push('N5 无语言按钮');
+      // N5（ADR-0022 后）：不再有外露的「中 / EN」按钮，界面语言固定简体中文。
+      // 底层 i18n 保留，仍可用 ?lang=en 单页预览英文外壳。
+      const langBtn = await page.$('[data-lang="en"]');
+      const lng = (await page.getAttribute('html', 'lang')) || '';
+      if (langBtn) {
+        r.gate.push("N5 残留外露语言按钮（ADR-0022 已取消，应移除）");
+      } else if (lng.toLowerCase().startsWith("zh")) {
+        r.pass.push("N5 界面语言固定 zh（无外露切换按钮）");
+      } else {
+        r.gate.push(`N5 语言异常(lang=${lng})：无按钮时应为 zh-CN`);
+      }
 
       if (siteErrs.length) r.gate.push(`N6s 站点错误: ${siteErrs.slice(0,2).join(' | ')}`); else r.pass.push('N6s 站点无错');
       if (advErrs.length) r.adv.push(`N6t 噪声: ${advErrs.slice(0,1).join('')}`);
