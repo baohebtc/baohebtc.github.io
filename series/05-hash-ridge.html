@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>哈希岭：改一个字就「翻脸」的指纹机，凭什么撑起比特币？ · 慢读连载 · 比特币学习地图</title>
+<meta name="description" content="账本&quot;改不动&quot;靠什么？7图讲清哈希函数：只进不出的指纹机、四条硬性质、哈希不等于加密、挖矿为什么是在掷骰子。">
+<link rel="stylesheet" href="../shared/style.css">
+<link rel="stylesheet" href="../shared/series.css">
+</head>
+<body data-no-auto-toc>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+        <a href="../series/index.html" class="nav-link" data-section="series">📕 慢读连载</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap series-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">首页</a><span>›</span>
+      <a href="index.html">慢读连载</a><span>›</span>
+      <span>哈希岭</span>
+    </div>
+
+    <div class="article-header">
+      <span class="chapter-label">📕 慢读连载 · 第 5 站</span>
+      <h1><span class="emoji">⛰️</span>哈希岭</h1>
+      <p class="series-subtitle">改一个字就「翻脸」的指纹机，凭什么撑起比特币</p>
+      <div class="article-meta">
+        <span>✍️ 慢读宝盒</span><span>·</span>
+        <span>1763 字</span><span>·</span>
+        <span>7 图</span><span>·</span>
+        <span>约 4 分钟读完</span>
+      </div>
+    </div>
+
+    <div class="article-body series-body">
+<p>站 4「账本海」我们看清：比特币的账本改不动，靠的是「只追加 + 指纹锁链」——每一页账本都写着「上一页的指纹」，改一个字，指纹就变，链条就断。可那个「指纹」到底是什么造出来的？凭什么全网几万台机器都信它？这一站「哈希岭」，我们拆开这台机器。</p>
+<figure class="series-fig">
+  <img src="../assets/series/05-hash-ridge/01-hash-machine.png" alt="图 1：任意输入 → SHA-256 搅拌机 → 固定 64 字符指纹｜哈希函数全景" loading="lazy">
+  <figcaption><span class="cap-no">图 1</span><span class="cap-main">任意输入 → SHA-256 搅拌机 → 固定 64 字符指纹</span><span class="cap-sub">哈希函数全景</span></figcaption>
+</figure>
+<hr class="series-hr">
+<h2>一、哈希岭是什么：一台只进不出的搅拌机</h2>
+<p>哈希函数做的事，一句话讲完：<strong>把任意长度的输入，搅成一串固定长度的输出。</strong></p>
+<p>你喂给它一个字「比」，它吐出 64 个字符；你喂给它整部《红楼梦》，它还是吐出 64 个字符。输入可以是一个字节，也可以是 100 GB 的硬盘镜像，输出永远是同一个长度——SHA-256 的话，就是 64 个十六进制字符。</p>
+<p>✅ <strong>像的地方</strong>：就像厨房搅拌机——不管丢一个苹果还是一整车苹果，出来都是一杯固定容量的果泥；同样的食材每次搅出来一模一样；你想从果泥把苹果拼回去，做不到。 ⚠️ <strong>不一样的地方</strong>：两台搅拌机搅出的果泥有细微差别；哈希是纯数学——同一个输入，在地球任何一台电脑上算一万次，结果逐位相同，一个字符都不会差。</p>
+<p>一句话：<strong>哈希不是加密，它不打算把内容藏起来——它是给内容盖一个改不掉的章。</strong></p>
+<h2>二、凭什么被全网信任：四条硬性质</h2>
+<p>哈希能当地基，靠四条性质，缺一条整座楼就塌。</p>
+<figure class="series-fig">
+  <img src="../assets/series/05-hash-ridge/02-four-properties.png" alt="图 2：哈希的四条性质卡｜确定性 / 单向性 / 雪崩效应 / 抗碰撞" loading="lazy">
+  <figcaption><span class="cap-no">图 2</span><span class="cap-main">哈希的四条性质卡</span><span class="cap-sub">确定性 / 单向性 / 雪崩效应 / 抗碰撞</span></figcaption>
+</figure>
+<p><strong>① 确定性</strong>：同一个输入，永远同一个输出。今天算、一百年后算、在任何设备上算，逐位相同。看着平凡，却是全网共识的前提——几万台机器各自算，算出来必须一模一样。</p>
+<p><strong>② 单向性</strong>：从输入算输出容易，从输出倒推输入，做不到。不是「很难」——是除了把可能的原文挨个喂进去碰运气，<strong>没有任何更快的办法</strong>。这就是为什么「先公开指纹、明天再公布原文」是一种安全的承诺：谁都能验证，谁也猜不出。</p>
+<p><strong>③ 雪崩效应</strong>：输入改动一丁点，输出面目全非。不是「变一点点」，而是平均一半的比特位翻转——新旧指纹之间看不出任何关联。这正是上站「改不动」的物理基础。</p>
+<figure class="series-fig">
+  <img src="../assets/series/05-hash-ridge/03-avalanche.png" alt="图 3：雪崩效应实测｜SHA-256(“比特币”) vs SHA-256(“比特币！”)，只多一个感叹号，64 字符里 60 个不同" loading="lazy">
+  <figcaption><span class="cap-no">图 3</span><span class="cap-main">雪崩效应实测</span><span class="cap-sub">SHA-256(“比特币”) vs SHA-256(“比特币！”)，只多一个感叹号，64 字符里 60 个不同</span></figcaption>
+</figure>
+<p><strong>④ 抗碰撞</strong>：几乎不可能找到两份不同的数据共用一枚指纹。SHA-256 的输出空间是 2²⁵⁶ ≈ 10⁷⁷，比地球全部原子数（约 10⁵⁰）还多 27 个数量级——撞到宇宙热寂也撞不上。</p>
+<p><strong>双视角</strong>：数学家视角——「抗碰撞」在数学上并未被证明，只是几十年没人攻破的工程共识；用户视角——你不需要懂证明，只需要知道：改一个字全变、倒推不出原文，这两条撑起了「账本改不动」。</p>
+<p>⚠️ <strong>必须说清的红线</strong>：「不可能」从来都是「代价高到不划算」的同义词，不是绝对。MD5 和 SHA-1 都已被攻破退出了安全场景，SHA-256 目前仍然安全——密码学的「安全」是动态的，不是永久的。</p>
+<h2>三、常见误解：哈希 ≠ 加密</h2>
+<p>新手最容易混的一对，一张表分清。</p>
+<p><strong>T1 · 哈希 vs 加密</strong></p>
+<div class="series-table-wrap"><table>
+<thead><tr><th></th><th>哈希</th><th>加密</th></tr></thead>
+<tbody>
+<tr><td>能不能还原</td><td>不能，单向</td><td>能，有密钥就能解</td></tr><tr><td>要不要密钥</td><td>不要</td><td>要</td></tr><tr><td>输出长度</td><td>固定 64 字符</td><td>跟输入差不多长</td></tr><tr><td>典型用途</td><td>校验完整性、指纹</td><td>保密传输</td></tr>
+</tbody>
+</table></div>
+<figure class="series-fig">
+  <img src="../assets/series/05-hash-ridge/04-hash-vs-encryption.png" alt="图 4：T1 表图｜判断口诀：算完还能变回原文的，就不是哈希" loading="lazy">
+  <figcaption><span class="cap-no">图 4</span><span class="cap-main">T1 表图</span><span class="cap-sub">判断口诀：算完还能变回原文的，就不是哈希</span></figcaption>
+</figure>
+<p>判断口诀：<strong>算完还能变回原文的，就不是哈希。</strong> 网站存密码用的是哈希——所以客服说「我们看不到你的密码」，他真的看不到，只能验证你输的对不对；HTTPS 传数据用的是加密——对方拿到密钥必须能还原内容。</p>
+<p><strong>双视角</strong>：用户视角——「我的密码存网站里安全吗？」技术真相——「存的是密码的哈希，网站自己也不知道原文；但密码本身太简单的话，会被『彩虹表』按指纹反查出原文，所以要用长而独特的密码」。</p>
+<h2>四、挖矿到底在算什么：全网掷骰子</h2>
+<p>理解了四条性质，就能看懂最反直觉的环节——<strong>挖矿</strong>。</p>
+<p>矿工把一批待确认的交易，加上一个叫 nonce 的随机数，一起喂进 SHA-256。系统的要求：算出的哈希必须小于某个目标数（直观理解成「开头必须够多个 0」）。但哈希不可预测——你没法「调整输入让输出小一点」，只能改 nonce 重算，撞运气。</p>
+<figure class="series-fig">
+  <img src="../assets/series/05-hash-ridge/05-mining-nonce.png" alt="图 5：nonce 逐次试错，直到撞出 0000 开头的哈希｜难做易验证" loading="lazy">
+  <figcaption><span class="cap-no">图 5</span><span class="cap-main">nonce 逐次试错，直到撞出 0000 开头的哈希</span><span class="cap-sub">难做易验证</span></figcaption>
+</figure>
+<p>所以挖矿的本质是<strong>全世界一起掷骰子，谁先掷出足够小的点数，谁拿到这一页的记账权</strong>。不是「解一道数学题」——没有任何巧妙解法，就是纯粹的暴力试错。</p>
+<p>这个设计精妙在哪：</p>
+<ul><li><strong>难做，但易验证。</strong> 矿工要试几百万次才能撞出一个；其他人验证只要代入算一次，一秒知道真假。正因为「验证极便宜」，无裁判的全网才能高效对账。</li><li><strong>算力即门票，但不保证收益。</strong> 算得快只是概率高，不等于必中——这套「没有裁判的投票」怎么运转，是下一站「共识峰」的主角。</li></ul>
+<p>✅ <strong>像的地方</strong>：像全小区一起刮一种「百万分之一中奖率」的彩票，谁刮中谁负责在公告栏记一页账，大家核对无误就抄走。 ⚠️ <strong>不一样的地方</strong>：彩票中心可以印假票；这里的「骰子」是数学，出千的唯一办法是买下超过一半的骰子（过半算力），成本大到不如老实记账。</p>
+<h2>五、回到地图（启下共识峰）</h2>
+<p>回到这张 10 站学习地图——<strong>站 1 现金湾</strong>见了比特币是什么；<strong>站 2 银行堡</strong>看清它要取代什么；<strong>站 3 双花峡</strong>看它怎么按住双花；<strong>站 4 账本海</strong>看它用什么承载这笔账；<strong>本站哈希岭</strong>，我们拆开了那台造指纹的机器——一台只进不出、改一丁点就翻脸的搅拌机。</p>
+<figure class="series-fig">
+  <img src="../assets/series/05-hash-ridge/06-寻宝路线-站5-v3.png" alt="图 6：一张比特币学习地图｜本站（哈希岭），我们走到这里了" loading="lazy">
+  <figcaption><span class="cap-no">图 6</span><span class="cap-main">一张比特币学习地图</span><span class="cap-sub">本站（哈希岭），我们走到这里了</span></figcaption>
+</figure>
+<p>但还剩最后一道坎：全网几万台机器，凭什么都认同一份账本？两个人同时掷出了合格的点数怎么办？下一站「共识峰」，我们看这套没有裁判的投票机制。</p>
+<p>三句话带走本篇：</p>
+<figure class="series-fig">
+  <img src="../assets/series/05-hash-ridge/07-mindmap-summary.png" alt="图 7：三句话小结｜指纹机不是保险箱 / 四条性质撑信任 / 挖矿=掷骰子" loading="lazy">
+  <figcaption><span class="cap-no">图 7</span><span class="cap-main">三句话小结</span><span class="cap-sub">指纹机不是保险箱 / 四条性质撑信任 / 挖矿=掷骰子</span></figcaption>
+</figure>
+    </div>
+
+    <div class="series-xlink">
+      🔗 <b>延伸阅读</b>：这一站的知识点在学习区的对应页——
+      <a href="../learning/04-technology/04-01-cryptography.html">密码学基础</a>（结构化的知识条目版）
+    </div>
+
+    <div class="series-endcard">
+      <p class="series-endcard-lead">这一站读完了。</p>
+      <p>慢读宝盒从 0 开始，十站一篇一篇把比特币讲清楚。每站的比喻都会先搭桥、再拆桥——
+      重点不在「像什么」，而在「不像什么」。</p>
+      <a href="index.html" class="btn btn-primary" style="display:inline-flex;margin-top:8px">📕 回到连载目录</a>
+    </div>
+
+  </div>
+</main>
+
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="04-ledger-sea.html" class="chapter-nav-link prev"><span class="nav-icon">←</span><div class="nav-text"><div class="nav-label">上一篇 · 账本海</div><div class="nav-title">账本海</div></div></a>
+    <a href="06-consensus-peak.html" class="chapter-nav-link next"><div class="nav-text" style="text-align:right"><div class="nav-label">下一篇 · 共识峰</div><div class="nav-title">共识峰</div></div><span class="nav-icon">→</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="series-risk">
+      <strong>⚠️ 风险提示</strong>：比特币价格波动剧烈，本文仅作区块链科普，不构成任何投资建议。
+      比特币在中国大陆并非法定货币，参与相关活动请注意合规风险。投资需谨慎，盈亏自负。
+    </div>
+    <div class="footer-inner">
+      <div class="footer-left"><a href="../index.html">首页</a> · <a href="../learning/00-overview.html">学习区</a> · <a href="../tools/index.html">工具</a> · <a href="../reference/index.html">参考</a> · <a href="../collection/index.html">文集</a> · <a href="../series/index.html">慢读连载</a></div>
+      <div class="footer-links"><span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span></div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

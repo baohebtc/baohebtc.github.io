@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>账本海：公开账本为什么公开却不泄密？ · 慢读连载 · 比特币学习地图</title>
+<meta name="description" content="账本公开给全世界看，隐私去哪了？8 图讲清比特币公开账本：全球同步、化名不匿名、没有余额只有UTXO、改不动靠指纹锁链。">
+<link rel="stylesheet" href="../shared/style.css">
+<link rel="stylesheet" href="../shared/series.css">
+</head>
+<body data-no-auto-toc>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+        <a href="../series/index.html" class="nav-link" data-section="series">📕 慢读连载</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap series-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">首页</a><span>›</span>
+      <a href="index.html">慢读连载</a><span>›</span>
+      <span>账本海</span>
+    </div>
+
+    <div class="article-header">
+      <span class="chapter-label">📕 慢读连载 · 第 4 站</span>
+      <h1><span class="emoji">🌊</span>账本海</h1>
+      <p class="series-subtitle">公开账本为什么公开却不泄密？</p>
+      <div class="article-meta">
+        <span>✍️ 慢读宝盒</span><span>·</span>
+        <span>1888 字</span><span>·</span>
+        <span>8 图</span><span>·</span>
+        <span>约 4 分钟读完</span>
+      </div>
+    </div>
+
+    <div class="article-body series-body">
+<p>站3 双花峡我们看清：中本聪用「公开账本」挡住了双花。可「公开」这两个字，恰恰反直觉得让人犯嘀咕——你账上的每一笔钱，全世界都能查。那你的隐私呢？银行为什么能保密，比特币凭什么公开还不泄露？这一站「账本海」，过的就是这关。</p>
+<figure class="series-fig">
+  <img src="../assets/series/04-ledger-sea/01-public-ledger.png" alt="图 1：地球 + 无数节点各持一本相同账册，海面倒影成「账」字｜账本海全景" loading="lazy">
+  <figcaption><span class="cap-no">图 1</span><span class="cap-main">地球 + 无数节点各持一本相同账册，海面倒影成「账」字</span><span class="cap-sub">账本海全景</span></figcaption>
+</figure>
+<hr class="series-hr">
+<h2>一、账本海是什么：一本全球同步的账</h2>
+<p>把比特币的账本想象成一块立在广场上的大碑。它没有「存在某台服务器里的一张表」，而是「几万台电脑各自存了一份，实时对齐」。你转一笔币，这笔记录广播到全网，被记账节点收进「区块」，串成一条长链。任何一个人，不需要许可，打开就能查到从创世块到刚才那一笔的全部历史。</p>
+<p>✅ <strong>像的地方</strong>：就像小区公告栏，谁都能去读贴出来的通知。 ⚠️ <strong>不一样的地方</strong>：公告栏由物业贴、物业也能撕；比特币账本是几万台电脑各存一份，没有谁能单方面把它拔电源、改内容。</p>
+<figure class="series-fig">
+  <img src="../assets/series/04-ledger-sea/02-bank-vs-btc.png" alt="图 2：左银行保险柜私密账本 / 右比特币公开账本万人同持｜一个靠中介保密，一个靠全网透明" loading="lazy">
+  <figcaption><span class="cap-no">图 2</span><span class="cap-main">左银行保险柜私密账本 / 右比特币公开账本万人同持</span><span class="cap-sub">一个靠中介保密，一个靠全网透明</span></figcaption>
+</figure>
+<p><strong>双视角</strong>：用户视角——「我的钱在谁的账上？」系统视角——「不在任何人的账上，而在几万台电脑共同维护的那份副本里」。</p>
+<p><strong>T1 · 银行账本 vs 比特币公开账本</strong></p>
+<div class="series-table-wrap"><table>
+<thead><tr><th>维度</th><th>银行账本</th><th>比特币公开账本</th></tr></thead>
+<tbody>
+<tr><td>管理者</td><td>单一机构（内部账）</td><td>全球分布式网络（无单点）</td></tr><tr><td>可见性</td><td>仅本人 / 授权方</td><td>全网公开可查</td></tr><tr><td>可否篡改</td><td>管理员可直接改</td><td>数学上不可行（需重算整链）</td></tr><tr><td>验证方式</td><td>信任机构</td><td>任何人独立验证</td></tr><tr><td>停机风险</td><td>服务器宕机即中断</td><td>永远在线（只要互联网在）</td></tr><tr><td>一句类比</td><td>保险柜里的私密本</td><td>广场上同步的公开碑</td></tr>
+</tbody>
+</table></div>
+<h2>二、公开却不泄密：地址 ≠ 你本人（伪匿名）</h2>
+<p>最反直觉的来了：账本公开给全世界看，你的隐私去哪了？</p>
+<p>答案是「化名（pseudonym）」，不是「匿名（anonymous）」。账本上出现的不是「张三」，而是一串地址，比如 <code>bc1q…</code>。别人能看到「编号 A 给编号 B 转了 0.5 个币」，但看不到编号背后是谁。你本人和这串地址之间，没有天然绑定。</p>
+<figure class="series-fig">
+  <img src="../assets/series/04-ledger-sea/03-pseudonym.png" alt="图 3：左面具化名(bc1q…地址) / 右真名身份证｜中间一道「KYC/复用」才把面具揭开" loading="lazy">
+  <figcaption><span class="cap-no">图 3</span><span class="cap-main">左面具化名(bc1q…地址) / 右真名身份证</span><span class="cap-sub">中间一道「KYC/复用」才把面具揭开</span></figcaption>
+</figure>
+<p>✅ <strong>像的地方</strong>：就像图书馆借书证编号——别人看得到「编号 007 借了《三体》」，但不知道 007 是你。 ⚠️ <strong>不一样的地方</strong>：借书证编号顶多查借阅记录；比特币地址一旦和你的真实身份被关联，后面所有的链上收支都能顺藤摸瓜。</p>
+<p><strong>双视角</strong>：用户视角——「别人能看到我多少钱、和谁交易？」技术真相——「能看到地址、金额、时间，看不到你是谁；可一旦交易所 KYC 实名、或你反复用同一地址收款，化名就破了」。</p>
+<p>⚠️ <strong>必须说清的红线</strong>：比特币是<strong>化名，不是匿名</strong>。它比银行透明（谁都能查账），但做不到「完全追查不到」。KYC 会把真名和地址缝到一起，链上分析也能溯源。<strong>比特币不可能用来避开监管</strong>——这点千万别误会。</p>
+<h2>三、没有「余额」这回事：UTXO 模型</h2>
+<p>这是理解比特币最绕、也最关键的一个弯。</p>
+<p>你打开钱包看到「余额：0.8 BTC」，会以为背后有个账户表写着「地址 X → 0.8」。其实账本里<strong>根本没有「余额」字段</strong>，它只记「哪些『未花费的输出（UTXO）』现在属于你」。</p>
+<p>把 UTXO 想成一枚枚<strong>带锁的硬币</strong>。你拥有的「钱」，不是屏幕上一个数字，而是你手里能用私钥打开的一堆硬币。你的「余额」= 这些硬币面值的总和。</p>
+<figure class="series-fig">
+  <img src="../assets/series/04-ledger-sea/04-utxo.png" alt="图 4：钱包里不是数字而是带锁硬币｜花掉一枚整币、找零回新币" loading="lazy">
+  <figcaption><span class="cap-no">图 4</span><span class="cap-main">钱包里不是数字而是带锁硬币</span><span class="cap-sub">花掉一枚整币、找零回新币</span></figcaption>
+</figure>
+<p>你给别人转 0.3，系统不是从「账户」扣 0.3，而是：挑出你手里的硬币（比如一枚 0.5 的），把这枚消耗掉，生成两枚新硬币——一枚 0.3 给对方，一枚 0.2「找零」回到你的新地址。旧的 0.5 一旦花掉就永久失效，没法再花第二次。</p>
+<p>✅ <strong>像的地方</strong>：就像你掏 50 元现金、结一笔 30 元的账，递出整张、找回 20——花掉即离手。 ⚠️ <strong>不一样的地方</strong>：现金谁拿都行；UTXO 靠你的签名才能解锁，不是谁捡到都能花。这一设计天然防双花：一笔钱是一枚硬币，花掉即销毁，不存在「同一笔同时付两人」。</p>
+<p><strong>T2 · 账户模型 vs UTXO 模型</strong></p>
+<div class="series-table-wrap"><table>
+<thead><tr><th>维度</th><th>账户模型（如以太坊）</th><th>UTXO 模型（比特币）</th></tr></thead>
+<tbody>
+<tr><td>状态表示</td><td>地址 → 余额（账户表）</td><td>一组未花输出（硬币集）</td></tr><tr><td>余额查询</td><td>直接读账户余额</td><td>累加属于你的所有 UTXO</td></tr><tr><td>隐私</td><td>地址常复用，易画像</td><td>每收一笔可换新地址，更难关联</td></tr><tr><td>双花防御</td><td>靠 nonce / 状态校验</td><td>输出花掉即失效，天然防重花</td></tr><tr><td>并行验证</td><td>改共享状态需排序</td><td>独立 UTXO 可并行校验</td></tr><tr><td>代表</td><td>以太坊 / Solana</td><td>比特币 / 莱特币</td></tr>
+</tbody>
+</table></div>
+<figure class="series-fig">
+  <img src="../assets/series/04-ledger-sea/05-t2-utxo-table.png" alt="图 5：T2 对比｜账户模型 vs UTXO 模型（微信端以此图呈现）" loading="lazy">
+  <figcaption><span class="cap-no">图 5</span><span class="cap-main">T2 对比</span><span class="cap-sub">账户模型 vs UTXO 模型（微信端以此图呈现）</span></figcaption>
+</figure>
+<p>一句话收住：<strong>账本海记的不是数字，是一堆带锁的硬币。</strong></p>
+<h2>四、为什么改不动：只追加 + 指纹锁链</h2>
+<p>账本公开、人人可查，那有人偷偷把余额从 0.8 改成 80 呢？</p>
+<p><strong>招式一：只追加（append-only）。</strong> 账本只能往后写，不能改旧的。每一页都写着「上一页的指纹（哈希值）」。指纹有个脾气：内容变一点点，指纹就完全变样。你改了第 100 页的某一笔，第 100 页指纹就变；而第 101 页记着「上一页指纹 = 旧值」，对不上，第 101 页及之后整条链全部断裂。</p>
+<p><strong>招式二：要修复断裂，得重算整条链。</strong> 想让篡改看起来合法，你得把第 100 页之后的每一页都重新算一遍哈希、重新打包，并且在全网抢先广播，让其他节点接受你的「假账本」。这需要掌握全网约一半以上的算力（所谓 51% 攻击），成本大到不划算——老老实实记账（挖矿拿奖励）反而更赚。</p>
+<figure class="series-fig">
+  <img src="../assets/series/04-ledger-sea/06-append-only.png" alt="图 6：账页串成链，每页抱着上页指纹｜篡改一页→后续红色断裂" loading="lazy">
+  <figcaption><span class="cap-no">图 6</span><span class="cap-main">账页串成链，每页抱着上页指纹</span><span class="cap-sub">篡改一页→后续红色断裂</span></figcaption>
+</figure>
+<p>✅ <strong>像的地方</strong>：像装订成册的账本盖了骑缝章，撕一页重贴就露馅。 ⚠️ <strong>不一样的地方</strong>：骑缝章靠人眼；比特币靠数学——改的代价远超回报，老实记账反而更划算。想修复断裂、让假账本被全网接受，得掌握过半算力（51% 攻击），成本天文数字。</p>
+<h2>五、回到地图（启下）</h2>
+<p>回到这张 10 站学习地图——<strong>站 1 现金湾</strong>见了比特币是什么；<strong>站 1.5</strong> 先把「钱到底是什么」想清楚；<strong>站 2 银行堡</strong>看清它要取代什么；<strong>站 3 双花峡</strong>看它怎么在没有银行时按住双花；<strong>本站 账本海</strong>，我们看它用什么承载这笔账：一本全球同步、公开却不泄密、改不动的账。</p>
+<figure class="series-fig">
+  <img src="../assets/series/04-ledger-sea/07-寻宝路线-站4-v3.png" alt="图 7：一张比特币学习地图｜本站（账本海），我们走到这里了" loading="lazy">
+  <figcaption><span class="cap-no">图 7</span><span class="cap-main">一张比特币学习地图</span><span class="cap-sub">本站（账本海），我们走到这里了</span></figcaption>
+</figure>
+<p>三句话带走本篇：</p>
+<figure class="series-fig">
+  <img src="../assets/series/04-ledger-sea/08-mindmap-summary.png" alt="图 8：本篇三句话带走｜账本是什么 / 化名不匿名 / 改不动靠指纹" loading="lazy">
+  <figcaption><span class="cap-no">图 8</span><span class="cap-main">本篇三句话带走</span><span class="cap-sub">账本是什么 / 化名不匿名 / 改不动靠指纹</span></figcaption>
+</figure>
+    </div>
+
+    <div class="series-xlink">
+      🔗 <b>延伸阅读</b>：这一站的知识点在学习区的对应页——
+      <a href="../learning/04-technology/04-04-blockchain-structure.html">区块链的数据结构</a>（结构化的知识条目版）
+    </div>
+
+    <div class="series-endcard">
+      <p class="series-endcard-lead">这一站读完了。</p>
+      <p>慢读宝盒从 0 开始，十站一篇一篇把比特币讲清楚。每站的比喻都会先搭桥、再拆桥——
+      重点不在「像什么」，而在「不像什么」。</p>
+      <a href="index.html" class="btn btn-primary" style="display:inline-flex;margin-top:8px">📕 回到连载目录</a>
+    </div>
+
+  </div>
+</main>
+
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="03-double-spend-gorge.html" class="chapter-nav-link prev"><span class="nav-icon">←</span><div class="nav-text"><div class="nav-label">上一篇 · 双花峡</div><div class="nav-title">双花峡</div></div></a>
+    <a href="05-hash-ridge.html" class="chapter-nav-link next"><div class="nav-text" style="text-align:right"><div class="nav-label">下一篇 · 哈希岭</div><div class="nav-title">哈希岭</div></div><span class="nav-icon">→</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="series-risk">
+      <strong>⚠️ 风险提示</strong>：比特币价格波动剧烈，本文仅作区块链科普，不构成任何投资建议。
+      比特币在中国大陆并非法定货币，参与相关活动请注意合规风险。投资需谨慎，盈亏自负。
+    </div>
+    <div class="footer-inner">
+      <div class="footer-left"><a href="../index.html">首页</a> · <a href="../learning/00-overview.html">学习区</a> · <a href="../tools/index.html">工具</a> · <a href="../reference/index.html">参考</a> · <a href="../collection/index.html">文集</a> · <a href="../series/index.html">慢读连载</a></div>
+      <div class="footer-links"><span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span></div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

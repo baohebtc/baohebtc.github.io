@@ -8,7 +8,7 @@
  *
  * 检查项分两层：
  *  【阻断闸 GATE】（决定 nav 重构能否 go/no-go，必须全绿）
- *   N1  每页 .nav-links 含完整 6 项集合 {home,learning,map,tools,reference,collection}
+ *   N1  每页 .nav-links 含完整 7 项集合 {home,learning,map,tools,reference,collection,series}
  *   N2  恰有 1 个 .nav-link.active
  *   N3  导航链接 0 死链（fetch 本地 server 须 200）
  *   N4  主题切换生效（点 toggle-theme 后 data-theme 翻转）
@@ -33,7 +33,7 @@ const ROOT = path.resolve(__dirname, '../..');
 const PORT = Number(process.argv.find(a => a.startsWith('--port'))?.split('=')[1]) || 8123;
 const ONLY = process.argv.filter(a => a.startsWith('--only=')).map(a => a.split('=')[1]);
 
-const CANONICAL = ['home', 'learning', 'map', 'tools', 'reference', 'collection'];
+const CANONICAL = ['home', 'learning', 'map', 'tools', 'reference', 'collection', 'series'];
 
 // 第三方/工具噪声（非站点自身 bug，不阻断闸门）
 const ADVISORY_ERR = /frame-ancestors|Content Security Policy|mempool\.space|player\.bilibili|attribute points|Expected number|polyline|polygon|reading 'connect'|cross-origin|ERR_/i;
@@ -110,7 +110,7 @@ async function run() {
         [...new Set(els.map(e => e.getAttribute('data-section')))])
         .catch(() => []);
       const missing = CANONICAL.filter(s => !sections.includes(s));
-      if (missing.length) r.gate.push(`N1 缺导航项: ${missing.join('/')}`); else r.pass.push('N1 导航6项完整');
+      if (missing.length) r.gate.push(`N1 缺导航项: ${missing.join('/')}`); else r.pass.push('N1 导航7项完整');
 
       const active = await page.$$eval('.nav-links .nav-link.active', els => els.length).catch(() => 0);
       if (active === 1) r.pass.push('N2 active唯一'); else r.gate.push(`N2 active数=${active}(应1)`);

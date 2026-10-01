@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>比特币到底是什么？｜一张学习地图的第 1 站，先看懂全局 · 慢读连载 · 比特币学习地图</title>
+<meta name="description" content="比特币不是又一种能炒的钱。它用代码和共识，做到没有银行也能互信转账。本文用 7 个比喻 + 配图，带你看懂它到底是什么，以及它不等于什么。">
+<link rel="stylesheet" href="../shared/style.css">
+<link rel="stylesheet" href="../shared/series.css">
+</head>
+<body data-no-auto-toc>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+        <a href="../series/index.html" class="nav-link" data-section="series">📕 慢读连载</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap series-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">首页</a><span>›</span>
+      <a href="index.html">慢读连载</a><span>›</span>
+      <span>现金湾</span>
+    </div>
+
+    <div class="article-header">
+      <span class="chapter-label">📕 慢读连载 · 第 1 站</span>
+      <h1><span class="emoji">🏖️</span>现金湾</h1>
+      <p class="series-subtitle">一张学习地图的第 1 站，先看懂全局</p>
+      <div class="article-meta">
+        <span>✍️ 慢读宝盒</span><span>·</span>
+        <span>3343 字</span><span>·</span>
+        <span>7 图</span><span>·</span>
+        <span>约 8 分钟读完</span>
+      </div>
+    </div>
+
+    <div class="article-body series-body">
+<p>你有没有想过一件事：</p>
+<p>微信里你转给朋友的那 200 块，其实根本不是"钱"在动。背后是某家公司，把一笔数字从你账户减掉、加到朋友账户上。</p>
+<p>我们早就习惯了——<strong>转账，必须有一个"中间人"替我们记账。</strong></p>
+<p>那如果，这笔账不交给任何公司、任何银行、任何国家来管，行不行？</p>
+<p>2008 年，一个叫「中本聪」的人（或团队），给这个问题写了一份答案。这份答案，叫<strong>比特币</strong>。</p>
+<hr class="series-hr">
+<h2>一、先打个比方：比特币像"能发邮件的现金"</h2>
+<p>比特币常被说成"数字货币"。但这四个字容易误导——你银行卡里的余额，不也是"数字"吗？</p>
+<p>更准的比喻是：<strong>比特币像"能发邮件的现金"。</strong></p>
+<p>✅ <strong>像的地方</strong>：你递给朋友一张 100 元，钱直接从你手里到他手里，中间没有银行。比特币想做到的，就是让"在网络上转一笔钱"也像递钞票一样——点对点，不经过任何人。</p>
+<p>⚠️ <strong>不一样的地方</strong>：你银行卡里的"数字钱"，背后其实还是某家公司在记账；而比特币的"数字钱"背后，<strong>没有任何公司</strong>。它真正的创新不是"数字"，而是"没有公司也能信得过"。</p>
+<p>记住这一句，后面全靠它。</p>
+<figure class="series-fig">
+  <img src="../assets/series/01-cash-bay/01-cash-vs-bank.png" alt="图 1：银行转账 vs 比特币转账｜关键差别：有没有一个&quot;说了算&quot;的中间人" loading="lazy">
+  <figcaption><span class="cap-no">图 1</span><span class="cap-main">银行转账 vs 比特币转账</span><span class="cap-sub">关键差别：有没有一个&quot;说了算&quot;的中间人</span></figcaption>
+</figure>
+<hr class="series-hr">
+<h2>二、它到底在解决什么：同一笔钱，花两次</h2>
+<p>要理解比特币，得先理解它想解决的那个真问题。</p>
+<p>想象你有一张 100 元纸币：你把它付给张三，纸币就到了张三手里，你再也花不了——因为物理上你只有一张。</p>
+<p>但数字世界不一样。一个文件可以无限复制。如果你的"钱"只是一个数字文件，你完全可以：把同一笔钱，同时发给张三和李四。</p>
+<p>✅ <strong>像的地方</strong>：问题本质就是——怎样让一个能复制的数字东西，表现得像"不可复制的实物"？</p>
+<p>⚠️ <strong>不一样的地方</strong>：现实中，银行用"一个中心账本"来解决这个问题——它说了算，你花没花过它清楚。比特币不要这个中心，它要的是：<strong>没有裁判，也能防止有人作弊。</strong></p>
+<p>这听起来违反直觉。没有裁判，怎么防作弊？往下看。</p>
+<figure class="series-fig">
+  <img src="../assets/series/01-cash-bay/02-double-spending.png" alt="图 2：双花难题的决策树｜有中心账本靠公司判；无中心账本靠数学+激励" loading="lazy">
+  <figcaption><span class="cap-no">图 2</span><span class="cap-main">双花难题的决策树</span><span class="cap-sub">有中心账本靠公司判；无中心账本靠数学+激励</span></figcaption>
+</figure>
+<p>📌 <strong>边界提示</strong>：即便比特币网络上，一笔新交易也要被打包进若干区块、经过若干"确认"才被视为最终。商家或钱包通常要等几个确认，并非"秒到就不可改"。为什么等、等多久，留到「技术原理篇」细讲。</p>
+<hr class="series-hr">
+<h2>三、公开账本：全村人，每人抄一本</h2>
+<p>比特币的办法，是把账本"公开"。</p>
+<p>想象一个村子：每发生一笔交易，就有人大声念出来，村里每个人都拿出自己的小本子，记上一笔。久而久之，人人手里都有一本一模一样的账。</p>
+<p>✅ <strong>像的地方</strong>：因为每个人都有副本，任何一个人想偷偷改"你欠我 100"都做不到——其他人的本子对不上。谁也赖不了账。</p>
+<p>⚠️ <strong>不一样的地方</strong>：村子里大家彼此认识，靠的是"人情信任"；可比特币的记账者，是<strong>互不认识、互不信任的陌生人</strong>。它不能靠人情，它靠两样东西管住人：<strong>数学规则 + 利益奖励</strong>。规则让作弊在技术上行不通，奖励让老实记账比作弊更划算。</p>
+<p>把"人人有副本"和"陌生人也能互信"叠在一起，就是那条著名的<strong>区块链</strong>——一笔笔交易打包成"区块"，首尾相连成一条链，谁都能查，谁也改不了已经写进去的记录。</p>
+<figure class="series-fig">
+  <img src="../assets/series/01-cash-bay/03-public-ledger.png" alt="图 3：从村账到比特币公开账本｜人情信任 → 陌生人也能互信" loading="lazy">
+  <figcaption><span class="cap-no">图 3</span><span class="cap-main">从村账到比特币公开账本</span><span class="cap-sub">人情信任 → 陌生人也能互信</span></figcaption>
+</figure>
+<hr class="series-hr">
+<h2>四、你的"钥匙"和"锁"：公钥地址与私钥</h2>
+<p>那钱怎么证明是"你的"？靠一对密码学钥匙。</p>
+<ul><li><strong>公钥（地址）</strong>，像你家的<strong>门牌号</strong>：你把它告诉别人，别人才能把东西寄到你家。在比特币里，这就是你的"收款地址"。</li><li><strong>私钥</strong>，像你手里<strong>唯一的钥匙</strong>：只有它能打开门、证明这件东西是你的。</li></ul>
+<p>✅ <strong>像的地方</strong>：你公开地址收钱，藏好私钥花钱——和"给别人地址收快递、自己拿钥匙开门"一模一样。</p>
+<p>⚠️ <strong>不一样的地方</strong>：现实中，锁匠能根据你的锁配一把新钥匙；但在比特币里，<strong>从地址反推出私钥，在数学上几乎不可能</strong>（这是单向的）。更关键的是——你家门钥匙丢了，可以找锁匠换锁；<strong>私钥一旦丢了，这笔比特币就永远找不回来，没有任何"客服"能帮你</strong>。</p>
+<p>所以比特币有句老话：<em>Not your keys, not your coins</em>（不是你的钥匙，就不是你的币）。自由，和责任，是同一枚硬币的两面。</p>
+<figure class="series-fig">
+  <img src="../assets/series/01-cash-bay/04-keys.png" alt="图 4：私钥与公钥的关系｜私钥能推出地址，地址推不回私钥；丢了私钥没有客服" loading="lazy">
+  <figcaption><span class="cap-no">图 4</span><span class="cap-main">私钥与公钥的关系</span><span class="cap-sub">私钥能推出地址，地址推不回私钥；丢了私钥没有客服</span></figcaption>
+</figure>
+<p>📌 <strong>边界提示</strong>：私钥责任的另一面还有"继承"问题——如果持有人没把私钥/助记词留给家人就离世，这笔币也会永远封存，没有任何机构能"重置密码"帮你取回。</p>
+<hr class="series-hr">
+<h2>五、记账权归谁：一场谁都赢不了的"数学竞赛"</h2>
+<p>既然人人都能记账，那以谁的账本为准？比特币用"算力竞赛"来决定。</p>
+<p>往账本添新一页之前，大家要先解一道<strong>极难、但答案很好验证</strong>的数学题。谁先解出来，谁就获得"写这一页"的权利，还能拿到一点点新比特币作为奖励。</p>
+<p>✅ <strong>像的地方</strong>：它像一场永不停歇的全球数学比拼，赢家拿到记账权和奖金。</p>
+<p>⚠️ <strong>不一样的地方</strong>：这场竞赛算出来的结果，<strong>本身没有任何实际用途</strong>——它就是故意"浪费"算力。可恰恰是这种浪费，构成了安全：想篡改账本，你得赢过全网一半以上的算力，成本高到不划算。所以"浪费"，其实是"没有老板也能安全"的代价。</p>
+<p>（这也正是比特币最受争议的地方：耗电。理解它，才能客观看待这场争论——它换来的，是"不需要任何人批准就能运转"。）</p>
+<figure class="series-fig">
+  <img src="../assets/series/01-cash-bay/05-pow.png" alt="图 5：工作量证明的生命周期｜算力&quot;浪费&quot; = 没有老板也能安全的代价" loading="lazy">
+  <figcaption><span class="cap-no">图 5</span><span class="cap-main">工作量证明的生命周期</span><span class="cap-sub">算力&quot;浪费&quot; = 没有老板也能安全的代价</span></figcaption>
+</figure>
+<p>📌 <strong>边界提示</strong>：</p>
+<blockquote>1. 比特币坚持用这种"耗电"的工作量证明（PoW）；以太坊等其它链后来选择了更省电的 PoS 等机制——不同链有不同取舍，我们后续会聊。<br>2. 理想是"人人记账"，但现实中算力常集中在少数矿池，这是"去中心化"理想与真实世界之间的距离，也是后续要讨论的议题。</blockquote>
+<hr class="series-hr">
+<h2>六、两个特别之处：总量固定，且没有总部</h2>
+<ul><li><strong>总量固定，像黄金，但更狠</strong>：黄金稀缺，是因为地球上就那么多；比特币稀缺，是因为<strong>代码里写死了——最多 2100 万枚，约每 4 年"减半"一次新增速度</strong>。黄金万一挖出新矿，供应还能涨；比特币的上限，是数学保证的，谁也改不了。</li><li><strong>没有总部，像维基百科，但走得更远</strong>：维基百科靠全球志愿者，但背后还有个基金会；比特币<strong>连基金会都没有</strong>。没有 CEO、没有客服、没有总部。关掉一台电脑，网络照常转；关掉一百台，也一样。</li></ul>
+<figure class="series-fig">
+  <img src="../assets/series/01-cash-bay/06-limited-supply.png" alt="图 6：比特币 vs 黄金｜都像稀缺资产，但比特币的上限由代码和共识保证" loading="lazy">
+  <figcaption><span class="cap-no">图 6</span><span class="cap-main">比特币 vs 黄金</span><span class="cap-sub">都像稀缺资产，但比特币的上限由代码和共识保证</span></figcaption>
+</figure>
+<p>📌 <strong>边界提示</strong>：2100 万枚听起来少，但 1 枚可拆到 1 亿分之 1（1 聪）。所以"稀缺"说的是代码规则，不是"不够分"。</p>
+<p>把这一站的三个主角放进同一张表里，差别一目了然：</p>
+<div class="series-table-wrap"><table>
+<thead><tr><th></th><th>现金</th><th>银行转账</th><th>比特币</th></tr></thead>
+<tbody>
+<tr><td>谁来记账</td><td>不用记账，钞票本身就是凭证</td><td>银行的中央账本</td><td>全网每人一本公开账本</td></tr><tr><td>转账路径</td><td>手递手，点对点</td><td>必须经银行中转</td><td>点对点，不经过任何机构</td></tr><tr><td>怎么防"花两次"</td><td>钞票给出就到了别人手里</td><td>银行负责判定和拦截</td><td>全网验证历史，重复花费直接被拒</td></tr><tr><td>隐私程度</td><td>无痕，但难远程</td><td>实名绑定</td><td>化名：地址公开、不记名</td></tr><tr><td>数量上限</td><td>央行可以增发</td><td>存款可以派生</td><td>代码写死 2100 万枚</td></tr>
+</tbody>
+</table></div>
+<p>✅ <strong>像的地方</strong>：比特币的转账体验，目标就是"现金的手递手 + 网络的即时达"——这就是"能发邮件的现金"的完整含义。 ⚠️ <strong>不一样的地方</strong>：现金丢了没人能找回，比特币私钥丢了也一样；但现金被抢只能认栽，比特币却用数学规则让"抢别人的钱"在技术上几乎不可能。</p>
+<hr class="series-hr">
+<h2>七、它不等于什么（先帮你避开误会）</h2>
+<ul><li>它<strong>不是"稳赚"的东西</strong>：价格可以剧烈波动，今天涨明天跌都不稀奇。</li><li>它<strong>不是用来绕开规则的工具</strong>：它只是一个中立的技术与货币实验。</li><li>它<strong>不是匿名的</strong>：账本是公开的，地址不直接写姓名，但只要地址和你的真实身份产生一次关联（如交易所实名、公开收款），你的全部交易就能被追踪。它更像"化名"，不是"匿名"。</li><li>它<strong>在我国不是法定货币</strong>：境内禁止虚拟货币代币发行融资与交易炒作。本文仅作区块链科普，不构成任何投资建议，也请勿视为投资引导。</li><li>它<strong>不要求你"现在就去持有"</strong>：对绝大多数人来说，<strong>先理解它，比先买它重要得多。</strong></li></ul>
+<blockquote>📌 <strong>还有一个常被忽略的边界</strong>：很多人通过交易所持有比特币，但私钥其实掌握在平台手里。平台出事，你的币也可能拿不回来。"不是你的钥匙，就不是你的币"——在托管场景下，这句话同样成立。</blockquote>
+<hr class="series-hr">
+<h2>八、为什么有「慢读宝盒」这个号</h2>
+<p>上面这些，只是起点。</p>
+<p>比特币背后，是一整套值得普通人了解的现代货币、密码学与互联网协作知识。可它太容易被带偏：有人把它讲成暴富神话，有人把它讲成骗局——两种说法，往往都没讲清它到底是什么。</p>
+<p>「慢读宝盒」想做的，是一份"慢一点、但讲得清"的学习材料：</p>
+<ul><li>中立客观，不喊单、不预测、不替你做决定；</li><li>多用比喻把门槛降下来，但每个比喻都讲清"它哪里不一样"——因为真正的理解，往往住在"不一样"里；</li><li>对重要概念，不只给一个视角，尽量从"你看到的"和"系统实际发生的"两个视角拆；</li><li>每篇带风险提示，把"认知风险"放在优先位置。</li></ul>
+<p>简单说：<strong>这里不催你做任何事，只帮你真正"懂"。</strong></p>
+<hr class="series-hr">
+<h2>九、一张比特币学习地图：后面我们会聊什么</h2>
+<p>为了不让你"看一篇是一篇"，宝盒把整个比特币知识体系画成了一张<strong>比特币地图</strong>。公众号会沿着这张地图，一篇一篇往下讲。先给你看全貌：</p>
+<p>🗺️ <strong>慢读宝盒 · 比特币学习地图</strong></p>
+<figure class="series-fig">
+  <img src="../assets/series/01-cash-bay/07-寻宝路线-站1-v3.png" alt="图 7：一张比特币学习地图｜本站（现金湾），我们走到这里了" loading="lazy">
+  <figcaption><span class="cap-no">图 7</span><span class="cap-main">一张比特币学习地图</span><span class="cap-sub">本站（现金湾），我们走到这里了</span></figcaption>
+</figure>
+<ul><li><strong>【为什么篇 · 货币哲学】</strong> 钱到底是什么？我们为什么"信任"一张纸？没有银行，怎么防止一笔钱花两次？</li><li><strong>【怎么运转篇 · 技术原理】</strong> 区块链是什么账本？公钥私钥怎么保护你？挖矿到底在挖什么？</li><li><strong>【它值什么篇 · 货币经济学】</strong> 2100 万枚和"减半"是什么意思？价格为什么上蹿下跳？它算不算"数字黄金"？</li><li><strong>【怎么守住篇 · 安全避坑】</strong> 私钥丢了为什么找不回？常见骗局长什么样？钱包怎么选？</li><li><strong>【它在哪用篇 · 生态前沿】</strong> 闪电网络能让比特币小额快付吗？稳定币是什么？区块链世界还有哪些东西？</li></ul>
+<p>除了主线连载，宝盒还会穿插三个轻栏目，保持更新、也和你互动：</p>
+<ul><li><strong>【宝盒问答】</strong> 回答大家问得最多的问题；</li><li><strong>【事件笔记】</strong> 对行业重大事件做客观记录（只陈述事实，不判断、不喊单）；</li><li><strong>【误区澄清】</strong> 把"比特币 = 骗局 / = 暴富"这类误解，一条条拆开讲清。</li></ul>
+<hr class="series-hr">
+<h2>十、下一篇，我们从"钱"聊起</h2>
+<p>下一篇，宝盒想先跟你聊一个更根本的问题：</p>
+<blockquote><strong>《钱到底是什么？从贝壳、金子，到屏幕上的数字》</strong></blockquote>
+<p>搞懂"钱"的本质，你才会明白比特币为什么是一种"不一样的钱"，而不是"另一种用来炒的东西"。</p>
+<p>如果你也觉得"应该搞懂比特币，但一直没找到靠谱的入口"——<strong>关注慢读宝盒，我们从 0 开始，一篇一篇，把它讲清楚。</strong></p>
+<p>觉得有用，点个「在看」；有问题，评论区见 👇</p>
+    </div>
+
+    <div class="series-xlink">
+      🔗 <b>延伸阅读</b>：这一站的知识点在学习区的对应页——
+      <a href="../learning/01-philosophy/01-03-bitcoin-answer.html">比特币的答案</a>（结构化的知识条目版）
+    </div>
+
+    <div class="series-endcard">
+      <p class="series-endcard-lead">这一站读完了。</p>
+      <p>慢读宝盒从 0 开始，十站一篇一篇把比特币讲清楚。每站的比喻都会先搭桥、再拆桥——
+      重点不在「像什么」，而在「不像什么」。</p>
+      <a href="index.html" class="btn btn-primary" style="display:inline-flex;margin-top:8px">📕 回到连载目录</a>
+    </div>
+
+  </div>
+</main>
+
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="index.html" class="chapter-nav-link prev"><span class="nav-icon">←</span><div class="nav-text"><div class="nav-label">已是第一篇</div><div class="nav-title">回到连载目录</div></div></a>
+    <a href="01x-what-is-money.html" class="chapter-nav-link next"><div class="nav-text" style="text-align:right"><div class="nav-label">下一篇 · 钱到底是什么</div><div class="nav-title">钱到底是什么</div></div><span class="nav-icon">→</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="series-risk">
+      <strong>⚠️ 风险提示</strong>：比特币价格波动剧烈，本文仅作区块链科普，不构成任何投资建议。
+      比特币在中国大陆并非法定货币，参与相关活动请注意合规风险。投资需谨慎，盈亏自负。
+    </div>
+    <div class="footer-inner">
+      <div class="footer-left"><a href="../index.html">首页</a> · <a href="../learning/00-overview.html">学习区</a> · <a href="../tools/index.html">工具</a> · <a href="../reference/index.html">参考</a> · <a href="../collection/index.html">文集</a> · <a href="../series/index.html">慢读连载</a></div>
+      <div class="footer-links"><span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span></div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

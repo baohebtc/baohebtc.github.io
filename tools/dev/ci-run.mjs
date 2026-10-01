@@ -40,6 +40,9 @@ const HARD_GATES = [
   { name: 'btcnav en (BTCMap 导航)', cmd: ['btcnav-check.mjs', '--lang=en'] },
   // 学习地图标签层：站名不得在站号下方 + 羊皮纸牌风格 + 与真相源坐标一致 + 已读进度 + 首页入口
   { name: 'map-label (L1–L11)', cmd: ['map-label-check.mjs'], timeout: 420000 },
+  // 慢读连载（F42 · ADR-0025）：静态门闸 + 真实浏览器 e2e
+  { name: 'series-check (S1–S7)', cmd: ['series-gate.mjs'] },
+  { name: 'e2e-series (连载 e2e)', cmd: ['e2e-series.mjs'], timeout: 300000 },
   // 全量 e2e：重，但本地实测 ~3.5min / 56MB，远未 OOM，已升格为 HARD 阻断闸
   { name: 'e2e-site (全量 N1–N7)', cmd: ['e2e-site.mjs'], timeout: 540000, fullOnly: true },
 ];

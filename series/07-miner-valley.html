@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>矿工谷：烧着电掷骰子的人，为什么愿意干？ · 慢读连载 · 比特币学习地图</title>
+<meta name="description" content="全网算力比 2009 年涨了约一百万亿倍，出块还是 10 分钟一个。8 图讲清矿工这笔账：钱从哪来、减半表长什么样、难度怎么自动校准、矿机换了四代、为什么大家都抱团进矿池。">
+<link rel="stylesheet" href="../shared/style.css">
+<link rel="stylesheet" href="../shared/series.css">
+</head>
+<body data-no-auto-toc>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+        <a href="../series/index.html" class="nav-link" data-section="series">📕 慢读连载</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap series-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">首页</a><span>›</span>
+      <a href="index.html">慢读连载</a><span>›</span>
+      <span>矿工谷</span>
+    </div>
+
+    <div class="article-header">
+      <span class="chapter-label">📕 慢读连载 · 第 7 站</span>
+      <h1><span class="emoji">⛏️</span>矿工谷</h1>
+      <p class="series-subtitle">烧着电掷骰子的人，为什么愿意干？</p>
+      <div class="article-meta">
+        <span>✍️ 慢读宝盒</span><span>·</span>
+        <span>3747 字</span><span>·</span>
+        <span>8 图</span><span>·</span>
+        <span>约 9 分钟读完</span>
+      </div>
+    </div>
+
+    <div class="article-body series-body">
+<p>上一站我们站在共识峰顶，把"没有裁判怎么达成一致"拆完了。规则那层已经清楚：工作量投票、最重链说了算、等 6 个确认。</p>
+<p>但整座山上有一群人始终没有露脸——那些真金白银买机器、按月交电费、日夜不停掷骰子的人。</p>
+<p>他们不互相认识，他们互相是竞争对手。他们没有宣誓要维护网络安全，也没有签过任何"服务协议"。他们只是一群想把电费赚回来的人。</p>
+<p>这一站我们下到山谷里，看看这群人到底在干什么、账是怎么算的、为什么算力翻了无数倍而区块还是 10 分钟一个。</p>
+<figure class="series-fig">
+  <img src="../assets/series/07-miner-valley/01-miner-job.png" alt="图 1：矿工到底在干什么｜不是解数学题，是没完没了地掷骰子" loading="lazy">
+  <figcaption><span class="cap-no">图 1</span><span class="cap-main">矿工到底在干什么</span><span class="cap-sub">不是解数学题，是没完没了地掷骰子</span></figcaption>
+</figure>
+<h2>一、先纠正一个印象：他们不是在"解数学题"</h2>
+<p>很多科普文章会说"矿工在解一道复杂的数学题"。这句话很有画面感，但它错得挺关键。</p>
+<p>数学题有解法。你聪明、你方法好，你就能算得快。可比特币要的不是"算得快"，是"算得多"。</p>
+<p>矿工真正做的事，是这样的：把这一批待确认的交易打包好，再加上一个随便填的数字，整体做一次哈希（站 5 讲过的那台指纹机），看结果是不是落在某个极小的范围里——比如前 20 位都得是 0。</p>
+<p>不是，就把那个数字换一个再来。<strong>没有公式可以倒推，没有捷径可以抄，只能一遍一遍试。</strong> 谁试的次数多，谁就更容易撞上。</p>
+<p>所以更准确的说法是：<strong>矿工在掷骰子，而且是一秒掷几十亿次的那种掷法。</strong></p>
+<p>✅ <strong>像的地方</strong>：像一群人在同一个巨大的沙坑里找一颗指定的沙子——你没法推断它在哪，只能一把一把地筛。 ⚠️ <strong>不一样的地方</strong>：找沙子可以靠眼力、靠经验。掷骰子完全靠运气，老手和新手在每一次尝试上没有任何差别，区别只有手速。</p>
+<p>"手速"这个词很关键。它意味着：<strong>矿工提供的不是智慧，是已经付出的代价。</strong> 你没法假装自己掷过——每一次尝试都真真切切烧了一点电。站 6 说"把说话权换成干活权"，换的就是这个：票不是身份发的，是电换的。</p>
+<h2>二、那他们图什么：两笔进账</h2>
+<p>既然是掷骰子，就得问一句：中了的奖励是什么？</p>
+<p>答案有两笔：</p>
+<p><strong>第一笔：新铸造的币。</strong> 谁掷出了合格结果，谁就有权在这一页账上记一笔"凭空产生 X 个比特币，归我"。比特币的新币只有这一个来源，2100 万的总量就是从这里一笔一笔长出来的。</p>
+<p><strong>第二笔：手续费。</strong> 这一页里打包的所有交易，各自带着发款人附上的手续费，也一并归出块的人。</p>
+<p>关键是第一笔有一个<strong>写死的衰减表</strong>——每 210,000 个区块（大约四年），新铸造的数量砍一半：</p>
+<div class="series-table-wrap"><table>
+<thead><tr><th>时间</th><th>区块高度</th><th>每个区块新铸造</th></tr></thead>
+<tbody>
+<tr><td>2009 年 1 月</td><td>0</td><td>50</td></tr><tr><td>2012 年 11 月</td><td>210,000</td><td>25</td></tr><tr><td>2016 年 7 月</td><td>420,000</td><td>12.5</td></tr><tr><td>2020 年 5 月</td><td>630,000</td><td>6.25</td></tr><tr><td>2024 年 4 月</td><td>840,000</td><td>3.125</td></tr><tr><td>预计 2028 年</td><td>1,050,000</td><td>1.5625</td></tr>
+</tbody>
+</table></div>
+<figure class="series-fig">
+  <img src="../assets/series/07-miner-valley/02-t1-subsidy-halving-table.png" alt="图 2：区块补贴减半时间表｜每 21 万个区块砍一半，谁也改不了" loading="lazy">
+  <figcaption><span class="cap-no">图 2</span><span class="cap-main">区块补贴减半时间表</span><span class="cap-sub">每 21 万个区块砍一半，谁也改不了</span></figcaption>
+</figure>
+<p>这条曲线没有任何人能调。它不投票、不开会、不看行情，只认区块高度。到 2140 年前后，新铸造这一项会归零，矿工只剩手续费。</p>
+<p>顺带说一个容易被忽略的事实：<strong>到今天为止，手续费在矿工收入里的占比通常很低，只有百分之一二。</strong> 绝大部分进账仍来自新铸造的那笔。这也正是"安全预算"这个话题被反复讨论的原因——等补贴归零，光靠手续费够不够撑住这么多算力，是个开放问题，目前没有定论。</p>
+<p>✅ <strong>像的地方</strong>：像一条既有通行费、又有定期补贴的高速公路——补贴逐年递减，通行费得慢慢顶上来。 ⚠️ <strong>不一样的地方</strong>：公路的补贴可以随时调整，比特币这条曲线写死在代码里，改它等于改协议，得全网节点一起同意。</p>
+<h2>三、算力涨了一百万亿倍，凭什么还是 10 分钟一个块</h2>
+<p>上一站我留了个问题："算力涨了一万倍，凭什么还是 10 分钟一个块？"其实那个说法保守了。</p>
+<p>2009 年，全网算力大概是一台笔记本电脑的水平，每秒几百万次尝试。到今天，全网每秒的尝试次数在<strong>百亿亿次</strong>这个量级（EH/s），2025 年还一度越过更高的台阶。中间差了大约 <strong>10^14 倍</strong>——一百万亿倍。</p>
+<p>那么问题来了：机器多了这么多，为什么不是一秒钟出一个块？</p>
+<p>因为协议里装了一个<strong>自动校准器</strong>：</p>
+<ul><li>每 <strong>2016 个区块</strong>（按区块高度算，不是按日历），所有节点各自独立地算一次账：这 2016 个块实际花了多久？</li><li>目标是 2016 × 10 分钟 = 两星期。</li><li>实际只花了一星期 → 说明机器太多了 → 把门槛调紧一倍。</li><li>花了四星期 → 说明机器走了 → 把门槛放松一半。</li></ul>
+<p>公式就是一句话：<strong>新门槛 = 旧门槛 ×（实际耗时 ÷ 理论耗时）</strong>。</p>
+<figure class="series-fig">
+  <img src="../assets/series/07-miner-valley/03-difficulty-loop.png" alt="图 3：难度自动校准闭环｜机器多了就调紧，走了就放松" loading="lazy">
+  <figcaption><span class="cap-no">图 3</span><span class="cap-main">难度自动校准闭环</span><span class="cap-sub">机器多了就调紧，走了就放松</span></figcaption>
+</figure>
+<p>还有两个细节值得知道：</p>
+<p><strong>一是这个调整有护栏。</strong> 单次最多调 4 倍，最少也要留 1/4——防止某一天大批矿场突然停电，难度一落千丈。有意思的是，这道护栏<strong>在比特币历史上从来没被触发过</strong>；最大的一次下调是 2021 年 7 月的约 -28%。</p>
+<p><strong>二是它有个极小的小毛病。</strong> 代码里算时间差时用的是首尾两个块的时间戳，实际只覆盖 2015 个间隔，却除以 2016 个间隔的理论时长，于是平均出块时间会比 10 分钟略长一点点（约 0.05% 的偏差）。要修它得动协议，所以一直留着。</p>
+<p>✅ <strong>像的地方</strong>：像一台会根据跑的人多少自动调坡度的跑步机——上来的人多，坡度就变陡，谁也别想跑快。 ⚠️ <strong>不一样的地方</strong>：跑步机的感应器可能失灵；这个校准器是<strong>每个全节点各自算一遍、必须算出同一个数</strong>，谁算错了就会被网络丢下，没有"中心控制器"可以舞弊。</p>
+<h2>四、机器换了四代：从人人可挖到专用机</h2>
+<p>既然比的是手速，那"手"本身就会进化。</p>
+<ul><li><strong>2009 年：CPU。</strong> 普通电脑的中央处理器，一台笔记本就能挖。那时候参与者是爱好者。</li><li><strong>2010 年起：GPU。</strong> 显卡原本为画图设计，擅长并行做大量简单运算，正好对上了"疯狂掷骰子"这件事，效率一下高出一截。</li><li><strong>2011 年前后：FPGA。</strong> 可以现场编程的芯片，比显卡更贴近这道特定工序。</li><li><strong>2013 年至今：ASIC。</strong> 专用芯片，除了做这一件事什么都干不了，但做这件事的能效比通用芯片高出若干个数量级。</li></ul>
+<figure class="series-fig">
+  <img src="../assets/series/07-miner-valley/04-machine-evolution.png" alt="图 4：矿机四代进化｜通用 → 专用，能效差出好几个数量级" loading="lazy">
+  <figcaption><span class="cap-no">图 4</span><span class="cap-main">矿机四代进化</span><span class="cap-sub">通用 → 专用，能效差出好几个数量级</span></figcaption>
+</figure>
+<p>这条路线带来一个必然结果：<strong>今天一台主流矿机，顶得上早年成千上万台电脑。</strong> 于是"用家里闲置电脑挖"这件事在比特币上早就不再现实——不是被禁止，是概率上没意义。</p>
+<p>这也顺带解释了另一个现象：矿工对<strong>电价</strong>极度敏感。因为他们的核心成本就是电，谁能找到更便宜的电，谁就能多撑一会儿。于是你会看到矿场追着水电、风电、被浪费掉的伴生气跑，哪里电便宜就往哪里搬。</p>
+<p>✅ <strong>像的地方</strong>：像从徒手挖土到开挖掘机——工具越专用，效率越高。 ⚠️ <strong>不一样的地方</strong>：挖掘机还能去干别的活；ASIC 除了掷这种特定骰子，基本就是一块发热的砖头，这也意味着矿工<strong>很难转产</strong>，一旦决定干就得干到底。</p>
+<h2>五、为什么大家都抱团：矿池与"份额"</h2>
+<p>现在一个很现实的问题来了：全网每秒百亿亿次尝试，你一台机器每秒几十万亿次——<strong>你中下一个块的概率，大约只有几百万分之一。</strong></p>
+<p>按这个概率，一台机器单独挖，等上一年量级才可能撞上一个。中间一分钱进账都没有。</p>
+<p>这对任何人来说都是没法接受的节奏。于是有了矿池。</p>
+<p>矿池做的事其实很好理解：<strong>大家把机器接进来，一起试；任何一个人撞上了，奖励按每个人贡献的量分。</strong> 收入从"很久一次的大奖"变成"每天稳定到账的小钱"，总额差不多，但波动被摊平了。</p>
+<p>那"贡献的量"怎么算？靠<strong>份额（share）</strong>。</p>
+<p>矿池给每台机器发一个比全网门槛<strong>低得多</strong>的临时目标。你的机器撞上这个低目标，就提交一份记录——这就是一份份额。份额本身在链上没有任何价值，它的用途只有一个：<strong>向矿池证明我确实在干活，干了多少。</strong></p>
+<figure class="series-fig">
+  <img src="../assets/series/07-miner-valley/05-pool-share.png" alt="图 5：矿池怎么分账｜全网门槛 vs 矿池份额门槛，按份额比例分" loading="lazy">
+  <figcaption><span class="cap-no">图 5</span><span class="cap-main">矿池怎么分账</span><span class="cap-sub">全网门槛 vs 矿池份额门槛，按份额比例分</span></figcaption>
+</figure>
+<p>✅ <strong>像的地方</strong>：像一群人合买彩票——一个人的中奖概率小得可怜，一百人凑钱买一百张、说好平分，每个人拿到手的频率就高多了。 ⚠️ <strong>不一样的地方</strong>：彩票合买靠的是彼此信任和一张纸上的约定；矿池的份额是<strong>数学凭证</strong>，矿池赖不掉你的量，也看不到你的私钥，你的币从头到尾没交给它保管。</p>
+<h2>六、常见误解：矿池集中，不等于算力集中</h2>
+<p>你可能看到过一个说法："前几大矿池占了全网七成以上算力，比特币已经中心化了。"</p>
+<p>这个担忧值得认真对待，但<strong>算力集中和矿池集中是两件事</strong>。</p>
+<figure class="series-fig">
+  <img src="../assets/series/07-miner-valley/06-pool-not-owner.png" alt="图 6：矿池不拥有算力｜机器在矿工手里，换个池只是改一行配置" loading="lazy">
+  <figcaption><span class="cap-no">图 6</span><span class="cap-main">矿池不拥有算力</span><span class="cap-sub">机器在矿工手里，换个池只是改一行配置</span></figcaption>
+</figure>
+<div class="series-table-wrap"><table>
+<thead><tr><th>常见说法</th><th>实际情况</th></tr></thead>
+<tbody>
+<tr><td>矿工在"解数学题"</td><td>在猜数，没有公式可倒推，只能一遍遍试</td></tr><tr><td>矿池掌握了这些算力</td><td>矿池是记账员，机器在矿工手里，换个池只是改一行配置</td></tr><tr><td>矿工能决定规则</td><td>矿工只负责提议，裁决权在每个全节点手上（站 6 讲过）</td></tr><tr><td>挖矿耗电是设计失误</td><td>耗电正是"篡改很贵"的来源，不是副作用而是机制本身</td></tr>
+</tbody>
+</table></div>
+<p>关键在于第二行：<strong>矿池不拥有任何一台机器。</strong></p>
+<p>矿工把机器指向哪个池，随时可以改。如果某个矿池开始做手脚——比如偷偷审查交易、或者试图重组区块——矿工要做的只是把地址换掉，几分钟的事。所以矿池的份额更像一个<strong>每天可以被重新投票的席位</strong>，而不是一份固定资产。</p>
+<p>这不是说风险不存在：如果几个大池同时出问题，短期内的确会难看。所以社区一直在推一件具体的事——把<strong>区块模板的选择权</strong>从矿池手里拿回来，交还给矿工本人（业内叫 Stratum V2）。这一步走完，矿池连"决定打包哪些交易"的权力都会变小。</p>
+<p>✅ <strong>像的地方</strong>：像工会——工人抱团才有议价能力。 ⚠️ <strong>不一样的地方</strong>：工会可以锁人、可以处罚不服从的成员；矿池<strong>锁不住任何人</strong>，矿工走的成本几乎为零。这是它和传统组织的根本区别。</p>
+<h2>七、烧电这件事到底怎么看</h2>
+<p>最后聊一句绕不开的话题：耗电。</p>
+<p>先说机制层面。<strong>耗电不是设计失误，它就是设计本身。</strong> 站 6 讲过，比特币的安全性来自"改历史要重做一遍全网的工作量"。工作量是用电换的。如果有一天"投票"变得不需要成本，那伪造一份历史也就不需要成本了——账本立刻就不值钱了。所以从协议的角度看，电不是被浪费掉的，<strong>电是被换成了一份不可篡改的记录</strong>。</p>
+<p>再说现实层面。公开估算把全网年耗电放在<strong>150–200 TWh</strong> 这个区间，量级和一个中等国家相当；其中可再生能源的占比估计在一半上下。这个数字不小，谈它不需要回避。</p>
+<p>但有一个属性常被漏掉：<strong>矿工是极少数可以"说停就停"的用电大户。</strong></p>
+<p>用电高峰时电网吃紧，矿场可以在几秒钟内把负荷降下来，把电让给居民和医院；等电网宽裕了再开起来。对电网来说，这种随时可调的负荷是有价值的——风、光这类发电不稳定，正需要有谁能把多余的电吃掉、又能在缺电时立刻让出来。</p>
+<p>✅ <strong>像的地方</strong>：像保险柜的重量——沉，是为了防搬走，不是为了好看。 ⚠️ <strong>不一样的地方</strong>：保险柜的重量是死的；矿场的负荷是活的，它还能反过来帮电网削峰填谷。</p>
+<p>这里不做价值判断，也不替任何人下结论。你只需要知道两件事：<strong>耗电是这套机制的代价，而代价本身正是它的防护层</strong>；至于这个代价值不值，是每个人自己的判断。</p>
+<h2>八、回到地图（启下私钥崖）</h2>
+<p>回到这张 10 站学习地图——<strong>站 1 现金湾</strong>见了比特币是什么；<strong>站 2 银行堡</strong>看清它要取代什么；<strong>站 3 双花峡</strong>看它怎么按住双花；<strong>站 4 账本海</strong>看它用什么承载这笔账；<strong>站 5 哈希岭</strong>拆开造指纹的机器；<strong>站 6 共识峰</strong>讲清没有裁判时怎么收敛；<strong>本站矿工谷</strong>，我们把镜头从规则移到了人身上——<strong>他们掷骰子、算电费的账、靠自动校准的门槛维持 10 分钟、抱团进矿池，而抱团并不等于被谁控制</strong>。</p>
+<figure class="series-fig">
+  <img src="../assets/series/07-miner-valley/07-寻宝路线-站7-v3.png" alt="图 7：一张比特币学习地图｜本站（矿工谷），我们走到这里了" loading="lazy">
+  <figcaption><span class="cap-no">图 7</span><span class="cap-main">一张比特币学习地图</span><span class="cap-sub">本站（矿工谷），我们走到这里了</span></figcaption>
+</figure>
+<p>还有一件事他们做不到，而且永远做不到：<strong>花别人的币。</strong> 因为那需要一样东西——对方的私钥。那串字符不在矿工手里，不在矿池手里，也不在任何服务器上，它只在一个人手里。</p>
+<p>下一站「私钥崖」，我们去看看那串字符到底意味着什么。</p>
+<p>三句话带走本篇：</p>
+<figure class="series-fig">
+  <img src="../assets/series/07-miner-valley/08-mindmap-summary.png" alt="图 8：三句话小结｜掷骰子换票 / 门槛自动校准 / 抱团不等于被控制" loading="lazy">
+  <figcaption><span class="cap-no">图 8</span><span class="cap-main">三句话小结</span><span class="cap-sub">掷骰子换票 / 门槛自动校准 / 抱团不等于被控制</span></figcaption>
+</figure>
+    </div>
+
+    <div class="series-xlink">
+      🔗 <b>延伸阅读</b>：这一站的知识点在学习区的对应页——
+      <a href="../learning/02-basics/02-04-mining.html">挖矿入门</a>（结构化的知识条目版）
+    </div>
+
+    <div class="series-endcard">
+      <p class="series-endcard-lead">这一站读完了。</p>
+      <p>慢读宝盒从 0 开始，十站一篇一篇把比特币讲清楚。每站的比喻都会先搭桥、再拆桥——
+      重点不在「像什么」，而在「不像什么」。</p>
+      <a href="index.html" class="btn btn-primary" style="display:inline-flex;margin-top:8px">📕 回到连载目录</a>
+    </div>
+
+  </div>
+</main>
+
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="06-consensus-peak.html" class="chapter-nav-link prev"><span class="nav-icon">←</span><div class="nav-text"><div class="nav-label">上一篇 · 共识峰</div><div class="nav-title">共识峰</div></div></a>
+    <a href="08-private-key-cliff.html" class="chapter-nav-link next"><div class="nav-text" style="text-align:right"><div class="nav-label">下一篇 · 私钥崖</div><div class="nav-title">私钥崖</div></div><span class="nav-icon">→</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="series-risk">
+      <strong>⚠️ 风险提示</strong>：比特币价格波动剧烈，本文仅作区块链科普，不构成任何投资建议。
+      比特币在中国大陆并非法定货币，参与相关活动请注意合规风险。投资需谨慎，盈亏自负。
+    </div>
+    <div class="footer-inner">
+      <div class="footer-left"><a href="../index.html">首页</a> · <a href="../learning/00-overview.html">学习区</a> · <a href="../tools/index.html">工具</a> · <a href="../reference/index.html">参考</a> · <a href="../collection/index.html">文集</a> · <a href="../series/index.html">慢读连载</a></div>
+      <div class="footer-links"><span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span></div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

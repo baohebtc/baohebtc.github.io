@@ -639,3 +639,14 @@ a[target="_blank"].no-ext::after,
 a[target="_blank"][data-no-ext]::after {
   content: none;
 }
+
+/* ---------- 慢读连载互链横条（F42 · ADR-0025） ---------- */
+.series-xlink {
+  display: flex; align-items: center; gap: 8px; margin: 14px 0 22px;
+  padding: 10px 14px; background: rgba(247,147,26,0.07);
+  border: 1px solid rgba(247,147,26,0.2); border-radius: var(--radius-sm);
+  font-size: 0.84rem; color: var(--text-secondary); text-decoration: none;
+  transition: border-color var(--transition);
+}
+.series-xlink:hover { border-color: var(--orange); }
+.series-xlink b { color: var(--orange); font-weight: 650; }

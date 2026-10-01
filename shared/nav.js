@@ -48,6 +48,9 @@ function slugify(text) {
 }
 
 function buildAutoTOC() {
+  // 连载页（F42）自带版式，不参与自动 TOC 重排——否则正文会被搬进 two-col，
+  // 首图与 h2 之后的内容列宽不一致（2026-10-01 样张实测）
+  if (document.body.hasAttribute('data-no-auto-toc')) return;
   // 落地 / 导航页（首页、总览、各 index 枢纽）不自动生成文章式 TOC
   const _loc = (typeof window !== 'undefined' && window.location) ? window.location.pathname : '';
   const _base = _loc.split('/').pop();
@@ -269,6 +272,7 @@ const I18N_MAP = {
   "nav.learning": { zh: "学习区", en: "Learning" },
   "nav.map": { zh: "学习地图", en: "Learning Map" },
   "nav.reference": { zh: "参考", en: "Reference" },
+  "nav.series": { zh: "慢读连载", en: "Slow Read Series" },
   "nav.tools": { zh: "工具", en: "Tools" },
   "next_chapter": { zh: "入门篇", en: "Basics" },
   "next_title": { zh: "一句话入门", en: "The One-Sentence Intro" },
@@ -501,14 +505,16 @@ function initSectionScrollSpy() {
 const NAV_HREF = {
   home: 'index.html', learning: 'learning/00-overview.html', map: 'learning-map.html',
   tools: 'tools/index.html', reference: 'reference/index.html', collection: 'collection/index.html',
+  series: 'series/index.html',
 };
 // 第二项为 i18n key（ADR-0020）：标签随语言切换，不再硬编码中文
 const NAV_ITEMS = [
   ['home', 'nav.home'], ['learning', 'nav.learning'], ['map', 'nav.map'],
   ['tools', 'nav.tools'], ['reference', 'nav.reference'], ['collection', 'nav.collection'],
+  ['series', 'nav.series'],
 ];
 // 图标保留在渲染层（不进 i18n，避免译文里要维护 emoji）
-const NAV_ICONS = { home: '🏠', learning: '📚', map: '🗺️', tools: '🛠️', reference: '📖', collection: '🗂️' };
+const NAV_ICONS = { home: '🏠', learning: '📚', map: '🗺️', tools: '🛠️', reference: '📖', collection: '🗂️', series: '📕' };
 function buildNav() {
   const links = document.querySelector('.top-nav .nav-links');
   if (!links) return;
@@ -534,6 +540,7 @@ function updateActiveNavLink() {
     if (section === 'tools' && path.includes('/tools/')) active = true;
   if (section === 'reference' && path.includes('/reference/')) active = true;
   if (section === 'collection' && path.includes('/collection/')) active = true;
+  if (section === 'series' && path.includes('/series/')) active = true;
   link.classList.toggle('active', active);
   });
 }

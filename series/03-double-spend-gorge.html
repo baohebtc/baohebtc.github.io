@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#f7931a">
+<title>双花峡：没有银行，同一笔钱凭什么不能被花两次？ · 慢读连载 · 比特币学习地图</title>
+<meta name="description" content="没有银行，同一笔钱怎么防止被花两次？4个比喻+7张图+2张表，讲清中本聪用「五件套」+经济博弈怎么把它按住。">
+<link rel="stylesheet" href="../shared/style.css">
+<link rel="stylesheet" href="../shared/series.css">
+</head>
+<body data-no-auto-toc>
+
+<div class="reading-progress"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="top-nav">
+  <div class="nav-inner container">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-icon">₿</span>
+      <span class="logo-text">学习地图</span>
+      <span class="logo-sub">Learning Map</span>
+    </a>
+    <div class="nav-center">
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link" data-section="home">🏠 首页</a>
+        <a href="../learning/00-overview.html" class="nav-link" data-section="learning">📚 学习区</a>
+        <a href="../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
+        <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
+        <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
+        <a href="../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+        <a href="../series/index.html" class="nav-link" data-section="series">📕 慢读连载</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-icon btn-sm btn-ghost" data-action="toggle-theme" onclick="BTCMap.toggleTheme()">🌓</button>
+    </div>
+  </div>
+</nav>
+
+<main class="article-wrap series-wrap">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">首页</a><span>›</span>
+      <a href="index.html">慢读连载</a><span>›</span>
+      <span>双花峡</span>
+    </div>
+
+    <div class="article-header">
+      <span class="chapter-label">📕 慢读连载 · 第 3 站</span>
+      <h1><span class="emoji">🌉</span>双花峡</h1>
+      <p class="series-subtitle">没有银行，同一笔钱凭什么不能被花两次？</p>
+      <div class="article-meta">
+        <span>✍️ 慢读宝盒</span><span>·</span>
+        <span>1987 字</span><span>·</span>
+        <span>8 图</span><span>·</span>
+        <span>约 4 分钟读完</span>
+      </div>
+    </div>
+
+    <div class="article-body series-body">
+<p>站2 我们看清：银行堡的裂缝，根源是「规则由人定、可被改」。而银行之所以能拦住双花，恰恰靠的是这个中心——它替你记总账。那如果连这个中心都不要，谁都不信，同一笔钱被你同时发给两个人，谁来喊停？这一站「双花峡」，过的就是这关。</p>
+<hr class="series-hr">
+<h2>一、双花到底是什么</h2>
+<p>在数字世界里，「钱」说到底是一串数据。而数据最难管的地方在于：<strong>它能零成本复制。</strong></p>
+<p>假设你有 1 个比特币，你把它「发」给朋友 A。可在电脑里，这个「发」更像「复制粘贴」——你手里的那份没消失，又发给 B 一份。如果系统认了这两笔，你就用同一个币付了两次账。这叫<strong>双重支付（双花）</strong>。</p>
+<figure class="series-fig">
+  <img src="../assets/series/03-double-spend-gorge/01-double-spend.png" alt="图 1：同一笔币，分叉飞向 A 和 B｜双花就是「一份凭证被用了两次」" loading="lazy">
+  <figcaption><span class="cap-no">图 1</span><span class="cap-main">同一笔币，分叉飞向 A 和 B</span><span class="cap-sub">双花就是「一份凭证被用了两次」</span></figcaption>
+</figure>
+<p>为了把这件事说清楚，我准备了四个比喻，你挑一个最合心意的：</p>
+<blockquote><strong>A · 群里文件转发</strong>（本篇默认）<br>你在群里发了个文件给 A，顺手又转发给 B。群里的规矩是「每人只该收一份」。可文件能无限转发，群里怎么认定「只算一次收到」？——双花就是这个「数字重复转发」难题。</blockquote>
+<blockquote><strong>B · 电影票刷两次闸机</strong><br>你把电影票拍了张照，先让自己刷进去了；出门绕一圈，又把同一张照片给朋友刷。闸机不认识「照片」，只认「这张票」。一张票刷了两次闸机——双花就是「一张凭证被用了两次」。</blockquote>
+<blockquote><strong>C · 百元钞复印</strong><br>你只有一张百元钞，却把它复印了两份，分别付给两个人。现实里复印钞违法且易被识破；但在纯数字世界，「复印」几乎零成本、还看不出痕迹。双花就是「数字钞票被复印着花」。</blockquote>
+<blockquote><strong>D · 演唱会门票截图</strong><br>你截了张电子门票图，同时在闲鱼上挂给两个人。两个人都拿着「同一张票」的截图要求放行。验票员该放谁？——双花就是「同一份数字凭证，被主张了两次所有权」。</blockquote>
+<p>这四个比喻说的都是同一件事：<strong>「一份凭证，被用了两次」</strong>，只是场景不同。</p>
+<p><strong>T2 · 四大比喻对照表</strong></p>
+<div class="series-table-wrap"><table>
+<thead><tr><th>比喻</th><th>场景</th><th>共通点</th><th>差异点</th></tr></thead>
+<tbody>
+<tr><td>A 群文件转发</td><td>数字转发</td><td>数字可零成本复制</td><td>最贴数字本质（本篇主用）</td></tr><tr><td>B 电影票刷两次闸机</td><td>物理凭证</td><td>一份凭证用两次</td><td>靠闸机识假兜底</td></tr><tr><td>C 百元钞复印</td><td>物理伪钞</td><td>复制着花</td><td>现实易识破/违法</td></tr><tr><td>D 演唱会门票截图</td><td>电子截图</td><td>同凭证主张两次所有权</td><td>验票员难辨</td></tr>
+</tbody>
+</table></div>
+<p><strong>双视角</strong>：用户视角——「我被重复付了/被骗了，钱没了」；系统视角——「账本怎么认定谁的交易先到」。这俩问题没解，就叫双花没解决。</p>
+<p>✅ <strong>像的地方</strong>：双花和「借出去的钱忘了收回」「优惠券被刷两次」一样，都是「同一份权益被重复主张」。 ⚠️ <strong>不一样的地方</strong>：现实里的重复靠物理限制（物理上的钞没法复制、票要验真）兜住；数字世界里没有物理限制，必须靠规则本身拦住——而这恰恰是没有银行时最难的事。</p>
+<h2>二、银行是怎么解决的</h2>
+<p>传统做法简单直接：所有交易都过银行这个<strong>中央账本</strong>。你付给 A，银行在自己的总账上把你的余额减 1、A 加 1；同一笔钱再想付给 B，银行一看「余额已没」，直接拒。</p>
+<figure class="series-fig">
+  <img src="../assets/series/03-double-spend-gorge/02-ledger-compare.png" alt="图 2：银行中央账本 vs 比特币公开账本｜一个靠中介，一个靠全网" loading="lazy">
+  <figcaption><span class="cap-no">图 2</span><span class="cap-main">银行中央账本 vs 比特币公开账本</span><span class="cap-sub">一个靠中介，一个靠全网</span></figcaption>
+</figure>
+<p>✅ <strong>像的地方</strong>：就像班级收班费，钱都交到生活委员一个本子上，谁交没交、花没花，本子说了算。 ⚠️ <strong>不一样的地方</strong>：这要求你<strong>信任</strong>生活委员（银行）不乱改、不丢本子。双花在银行体系里不是问题，是因为有这个中心在兜底——可比特币恰恰要<strong>去掉这个中心</strong>。</p>
+<h2>三、中本聪的五件套</h2>
+<p>去掉银行，怎么拦双花？中本聪的答案不是某一招，而是一套组合拳：</p>
+<figure class="series-fig">
+  <img src="../assets/series/03-double-spend-gorge/03-utxo.png" alt="图 3：UTXO 消耗｜一笔花掉即失效，没法二次花" loading="lazy">
+  <figcaption><span class="cap-no">图 3</span><span class="cap-main">UTXO 消耗</span><span class="cap-sub">一笔花掉即失效，没法二次花</span></figcaption>
+</figure>
+<ol><li><strong>公开账本（区块链）</strong>：所有交易公开、按时间顺序记在一本人人可查的共享账本上。想耍赖？全网都看着。→ <em>挡住双花：账是公开的，重复花一眼就露馅。</em></li><li><strong>UTXO 模型</strong>：比特币不用「账户余额」，而用「未花费的输出」。你花的每一笔，都是消耗一个已有的 UTXO、生成新的；一旦花掉，旧的就「已用」失效。同一笔 UTXO 想发给两人，系统只认先到的那笔。→ <em>挡住双花：同一份「output」用掉即失效，没法二次花。</em></li><li><strong>时间戳 + 哈希链</strong>：每个区块带时间戳，并包含上一个区块的哈希，串成一条改了就断的链。先后顺序被锁死，没法偷偷把后发生的说成先发生。</li></ol>
+<figure class="series-fig">
+  <img src="../assets/series/03-double-spend-gorge/04-timestamp-chain.png" alt="图 4：时间戳哈希链｜区块串成链，先后次序被数学锁死" loading="lazy">
+  <figcaption><span class="cap-no">图 4</span><span class="cap-main">时间戳哈希链</span><span class="cap-sub">区块串成链，先后次序被数学锁死</span></figcaption>
+</figure>
+<ol><li><strong>工作量证明（PoW）+ 矿工竞争</strong>：谁先算出符合难度的哈希，谁获得记账权。想作弊？你得比全网诚实节点加起来还强的算力（51% 攻击），成本高到不划算。→ <em>挡住双花：作弊的经济代价远超回报。</em></li></ol>
+<figure class="series-fig">
+  <img src="../assets/series/03-double-spend-gorge/05-pow-miners.png" alt="图 5：PoW 矿工算力赛跑｜诚实是更划算的选择" loading="lazy">
+  <figcaption><span class="cap-no">图 5</span><span class="cap-main">PoW 矿工算力赛跑</span><span class="cap-sub">诚实是更划算的选择</span></figcaption>
+</figure>
+<ol><li><strong>全网广播 + 节点验证</strong>：交易瞬间广播全网；节点验重，发现同一 UTXO 两笔，只认先确认的；约 6 次确认后几乎改不动。→ <em>挡住双花：全网共同见证，先到先得。</em></li></ol>
+<p><strong>T1 · 中本聪五件套 vs 挡双花机制表</strong></p>
+<div class="series-table-wrap"><table>
+<thead><tr><th>五件套</th><th>它挡住了什么</th><th>一句类比</th></tr></thead>
+<tbody>
+<tr><td>公开账本（区块链）</td><td>重复花一眼露馅</td><td>人人能查的共享总账</td></tr><tr><td>UTXO 模型</td><td>同一 output 用掉即失效</td><td>粮票撕掉作废</td></tr><tr><td>时间戳 + 哈希链</td><td>先后次序被数学锁死</td><td>盖了骑缝章的账页</td></tr><tr><td>PoW + 矿工竞争</td><td>作弊代价远超回报</td><td>作弊要吞下半座电厂</td></tr><tr><td>全网广播 + 节点验证</td><td>先到先得，6 确认后改不动</td><td>全村作证</td></tr>
+</tbody>
+</table></div>
+<figure class="series-fig">
+  <img src="../assets/series/03-double-spend-gorge/06-t1-five-tools-table.png" alt="图 6：T1 · 中本聪五件套 vs 挡双花机制｜微信端以本图呈现表格" loading="lazy">
+  <figcaption><span class="cap-no">图 6</span><span class="cap-main">T1 · 中本聪五件套 vs 挡双花机制</span><span class="cap-sub">微信端以本图呈现表格</span></figcaption>
+</figure>
+<p>✅ <strong>像的地方</strong>：这像一群人同时记同一本账，谁想偷偷改自己那页，别人一翻就知道对不上。 ⚠️ <strong>不一样的地方</strong>：群记账靠「人多势众」的默契；比特币靠数学和经济学——诚实是算力的多数，也是更划算的选择。</p>
+<h2>四、精妙处：用经济博弈代替中央指令</h2>
+<p>妙处在这儿：它没靠某个权威说「不许双花」，而是让「诚实」成为<strong>经济上更划算</strong>的选择。攻击网络要掌控过半算力，成本天文数字；老老实实记账（挖矿）反而能拿奖励。于是作恶不如建设——双花在利益算盘下自动失效。</p>
+<p>✅ <strong>像的地方</strong>：像小区装了监控加举报奖，想乱来的人发现「犯规比守规矩更贵」，自然就消停了。 ⚠️ <strong>不一样的地方</strong>：监控靠物业，比特币靠代码把这套激励写死，谁也改不了规则本身。</p>
+<h2>五、回到地图</h2>
+<p>回到这条比特币学习路线——<strong>站 1 现金湾</strong>我们见过了比特币是什么；<strong>站 2 银行堡</strong>我们看清了它要取代什么；<strong>本站 双花峡</strong>，我们看它怎么做到：在没有银行的前提下，用数学和经济学把双花按住。这一关过了，去中心化转账才站得住。</p>
+<figure class="series-fig">
+  <img src="../assets/series/03-double-spend-gorge/07-寻宝路线-站3-v3.png" alt="图 7：一张比特币学习地图｜本站（双花峡），我们走到这里了" loading="lazy">
+  <figcaption><span class="cap-no">图 7</span><span class="cap-main">一张比特币学习地图</span><span class="cap-sub">本站（双花峡），我们走到这里了</span></figcaption>
+</figure>
+<p>三句话带走本篇：</p>
+<figure class="series-fig">
+  <img src="../assets/series/03-double-spend-gorge/08-mindmap-summary.png" alt="图 8：本篇三句话带走｜双花是啥 / 银行靠中介 / 中本聪靠五件套+博弈" loading="lazy">
+  <figcaption><span class="cap-no">图 8</span><span class="cap-main">本篇三句话带走</span><span class="cap-sub">双花是啥 / 银行靠中介 / 中本聪靠五件套+博弈</span></figcaption>
+</figure>
+    </div>
+
+    <div class="series-xlink">
+      🔗 <b>延伸阅读</b>：这一站的知识点在学习区的对应页——
+      <a href="../learning/04-technology/04-03-transactions.html">交易与 UTXO</a>（结构化的知识条目版）
+    </div>
+
+    <div class="series-endcard">
+      <p class="series-endcard-lead">这一站读完了。</p>
+      <p>慢读宝盒从 0 开始，十站一篇一篇把比特币讲清楚。每站的比喻都会先搭桥、再拆桥——
+      重点不在「像什么」，而在「不像什么」。</p>
+      <a href="index.html" class="btn btn-primary" style="display:inline-flex;margin-top:8px">📕 回到连载目录</a>
+    </div>
+
+  </div>
+</main>
+
+<nav class="chapter-nav">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <a href="02-bank-fortress.html" class="chapter-nav-link prev"><span class="nav-icon">←</span><div class="nav-text"><div class="nav-label">上一篇 · 银行堡</div><div class="nav-title">银行堡</div></div></a>
+    <a href="04-ledger-sea.html" class="chapter-nav-link next"><div class="nav-text" style="text-align:right"><div class="nav-label">下一篇 · 账本海</div><div class="nav-title">账本海</div></div><span class="nav-icon">→</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="series-risk">
+      <strong>⚠️ 风险提示</strong>：比特币价格波动剧烈，本文仅作区块链科普，不构成任何投资建议。
+      比特币在中国大陆并非法定货币，参与相关活动请注意合规风险。投资需谨慎，盈亏自负。
+    </div>
+    <div class="footer-inner">
+      <div class="footer-left"><a href="../index.html">首页</a> · <a href="../learning/00-overview.html">学习区</a> · <a href="../tools/index.html">工具</a> · <a href="../reference/index.html">参考</a> · <a href="../collection/index.html">文集</a> · <a href="../series/index.html">慢读连载</a></div>
+      <div class="footer-links"><span style="font-size:0.75rem;color:var(--text-muted)">₿ 比特币学习地图</span></div>
+    </div>
+    <p style="margin-top:12px;font-size:0.75rem;color:var(--text-muted)">⚠️ 教育目的，不构成投资建议</p>
+  </div>
+</footer>
+
+<script src="../shared/nav.js"></script>
+<script>
+(function() {
+  const fill = document.getElementById('progress-fill');
+  if (!fill) return;
+  window.addEventListener('scroll', function() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = (sh > 0 ? (st / sh) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
