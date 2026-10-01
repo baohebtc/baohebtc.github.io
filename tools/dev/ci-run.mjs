@@ -43,6 +43,9 @@ const HARD_GATES = [
   // 慢读连载（F42 · ADR-0025）：静态门闸 + 真实浏览器 e2e
   { name: 'series-check (S1–S7)', cmd: ['series-gate.mjs'] },
   { name: 'e2e-series (连载 e2e)', cmd: ['e2e-series.mjs'], timeout: 300000 },
+  // 术语六层（F45 · ADR-0026）：数据门闸 + 真实浏览器 e2e
+  { name: 'term-check (T1–T8)', cmd: ['series-gate.mjs', 'term-check.py'] },
+  { name: 'e2e-glossary (术语卡 e2e)', cmd: ['e2e-glossary.mjs'], timeout: 180000 },
   // 全量 e2e：重，但本地实测 ~3.5min / 56MB，远未 OOM，已升格为 HARD 阻断闸
   { name: 'e2e-site (全量 N1–N7)', cmd: ['e2e-site.mjs'], timeout: 540000, fullOnly: true },
 ];

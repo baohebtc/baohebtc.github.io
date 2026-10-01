@@ -40,8 +40,8 @@
         <a href="../learning-map.html" class="nav-link" data-section="map">🗺️ 学习地图</a>
         <a href="../tools/index.html" class="nav-link" data-section="tools">🛠️ 工具</a>
         <a href="../reference/index.html" class="nav-link" data-section="reference">📖 参考</a>
-        <a href="../collection/index.html" class="nav-link" data-section="collection">
-        <a href="../series/index.html" class="nav-link" data-section="series">📕 慢读连载</a>🗂️ 文集</a>
+        <a href="../collection/index.html" class="nav-link" data-section="collection">🗂️ 文集</a>
+        <a href="../series/index.html" class="nav-link" data-section="series">📕 慢读连载</a>
       </div>
     </div>
     <div class="nav-right">
@@ -188,21 +188,17 @@
 <p style="color:var(--text-muted);font-size:0.82rem;margin-top:6px;">从零基础到自主判断 · 没有标准答案，只有越来越准确的认知</p>
 </div>
 
+<!-- 术语六层卡片（F45 · ADR-0026） -->
+    <h2>🔬 <span id="glossary-count">10</span> 个核心概念的拆解</h2>
+    <p class="glossary-lead">每个概念分六层：先给硬定义，再借一个已知物打比方，然后说清「像在哪」——更要紧的是「不像在哪」。比喻是桥不是等号，拆桥比搭桥重要，「不一样的地方」才是真正理解的关键。</p>
+    <noscript><p class="glossary-noscript">下面的深度卡由脚本渲染，请开启 JavaScript；页面下方的简明速查表不受影响。</p></noscript>
+    <div id="glossary-cards" class="term-cards"></div>
+
 <!-- 术语表 -->
-    <h2>📋 比特币核心术语表（中英对照）</h2>
+    <h2>📋 其余术语简明速查（中英对照）</h2>
     <div class="table-wrap">
       <table class="glossary-table">
         <tr><th>中文</th><th>English</th><th>简明解释</th></tr>
-        <tr><td>私钥</td><td>Private Key</td><td>256位随机数，拥有它就拥有对应地址上所有比特币的支配权</td></tr>
-        <tr><td>公钥</td><td>Public Key</td><td>由私钥通过椭圆曲线生成，可公开，用于接收比特币</td></tr>
-        <tr><td>地址</td><td>Address</td><td>类似银行账号，由公钥哈希生成，用于接收比特币</td></tr>
-        <tr><td>哈希</td><td>Hash</td><td>数据的「数字指纹」。输入任意内容，输出固定长度字符串，且无法反推</td></tr>
-        <tr><td>区块</td><td>Block</td><td>包含一组交易记录的数据包，每个区块包含前一区块的哈希，形成链式结构</td></tr>
-        <tr><td>区块链</td><td>Blockchain</td><td>由多个区块通过哈希串联形成的账本，历史记录不可篡改</td></tr>
-        <tr><td>矿工</td><td>Miner</td><td>运行专用设备竞争记账权的人/组织，获得新区块奖励作为激励</td></tr>
-        <tr><td>挖矿</td><td>Mining</td><td>通过计算数学题竞争记账权的过程，本质是工作量证明</td></tr>
-        <tr><td>工作量证明</td><td>Proof of Work (PoW)</td><td>用真实能量消耗来证明你做了工作，防止双重支付</td></tr>
-        <tr><td>双重支付</td><td>Double Spend</td><td>同一笔比特币花两次。比特币通过共识机制彻底解决了这个问题</td></tr>
         <tr><td>UTXO</td><td>Unspent Transaction Output</td><td>未花费交易输出。比特币账本的基本单位，类似支票——只花未兑现的</td></tr>
         <tr><td>全节点</td><td>Full Node</td><td>下载并验证全部比特币交易历史的独立程序，真正实现自我验证</td></tr>
         <tr><td>SPV</td><td>Simplified Payment Verification</td><td>轻节点。只下载区块头，不下载完整账本，但仍然可以验证支付</td></tr>
@@ -234,6 +230,8 @@
   </div>
 </footer>
 
+<script src="glossary-data.js"></script>
+<script src="glossary-render.js"></script>
 <script src="../shared/nav.js"></script>
 </body>
 </html>
