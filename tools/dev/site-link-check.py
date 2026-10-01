@@ -15,6 +15,8 @@ site-link-check.py —— 全站外链与占位语门闸（F35）
   L4 站内链接不得误加 target="_blank"（站内应原地跳转，否则每点一次开一个标签）
   L5 不得残留外露的「中 / EN」语言切换按钮（已按用户拍板取消）
   L6 外链需在视觉上可辨识（带 data-external 或 ↗ 标识）
+  L7 导航链接结构完整：禁止嵌套 <a>，且 .nav-link 必须有可见文字
+     （2026-10-01 事故：批量插导航时把 <a> 插进了前一个 <a> 内部，56 页「文集」链接失效）
 
 用法：
   python3 tools/dev/site-link-check.py            # 全站
@@ -44,6 +46,7 @@ TARGET_RE = re.compile(r'target\s*=\s*["\']([^"\']+)["\']', re.I)
 REL_RE = re.compile(r'rel\s*=\s*["\']([^"\']+)["\']', re.I)
 SCRIPT_RE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.S | re.I)
 TAG_RE = re.compile(r"<[^>]+>")
+NAV_A_RE = re.compile(r"<a\\b[^>]*>", re.I)
 
 
 def iter_pages():
@@ -99,6 +102,26 @@ def check():
         if 'class="lang-toggle"' in html or "class='lang-toggle'" in html:
             fails.append(f"L5 残留语言切换按钮 {rel}: 存在 .lang-toggle")
 
+        # ---- L7 导航链接结构（禁嵌套 + 文字非空）----
+        for nm in NAV_A_RE.finditer(html):
+            tag = nm.group(0)
+            if 'class="nav-link"' not in tag and "class='nav-link'" not in tag:
+                continue
+            # 找到本标签之后的正文，直到 </a>；中间若再出现 <a 即为嵌套
+            start = nm.end()
+            end = html.find("</a>", start)
+            if end < 0:
+                fails.append(f"L7 导航链接未闭合 {rel}: {tag[:70]}")
+                continue
+            inner = html[start:end]
+            if "<a" in inner.lower():
+                fails.append(
+                    f"L7 导航链接嵌套 <a> {rel}: …{re.sub(r'\\s+',' ',inner)[:50]}… "
+                    f"（会把相邻导航项的文字吞成纯文本）")
+            visible = re.sub(r"<[^>]+>|\\s|[^\\w\\u4e00-\\u9fff]", "", inner)
+            if not visible:
+                fails.append(f"L7 导航链接文字为空 {rel}: {tag[:70]}")
+
         # ---- L1/L2/L4/L6 链接 ----
         for m in A_TAG_RE.finditer(html):
             tag = m.group(0)
@@ -112,16 +135,16 @@ def check():
             tm = TARGET_RE.search(tag)
             rm = REL_RE.search(tag)
             target = tm.group(1) if tm else None
-            rel = rm.group(1) if rm else None
+            rel_attr = rm.group(1) if rm else None
 
             if is_external(href):
                 stats["ext"] += 1
                 if target != "_blank":
                     fails.append(
                         f"L1 外链未开新标签 {rel}: {href[:80]} (target={target})")
-                if not rel or "noopener" not in rel.lower():
+                if not rel_attr or "noopener" not in rel_attr.lower():
                     fails.append(
-                        f"L2 外链缺 noopener {rel}: {href[:80]} (rel={rel})")
+                        f"L2 外链缺 noopener {rel}: {href[:80]} (rel={rel_attr})")
             else:
                 stats["int"] += 1
                 if target == "_blank":

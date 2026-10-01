@@ -650,3 +650,42 @@ a[target="_blank"][data-no-ext]::after {
 }
 .series-xlink:hover { border-color: var(--orange); }
 .series-xlink b { color: var(--orange); font-weight: 650; }
+
+
+/* ---------- 术语六层卡片（F45 · ADR-0026） ---------- */
+/* 视觉原则：『不一样的地方』权重必须高于『像的地方』——拆桥比搭桥重 */
+.glossary-lead { color: var(--text-secondary); font-size: 0.86rem; line-height: 1.75; margin: 8px 0 20px; }
+.glossary-noscript { color: var(--text-muted); font-size: 0.8rem; padding: 10px 14px; border: 1px dashed var(--border); border-radius: var(--radius-sm); margin-bottom: 16px; }
+.term-cards { display: grid; gap: 18px; margin-bottom: 44px; }
+.term-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px 20px; }
+.term-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.term-head h3 { font-size: 1.02rem; font-weight: 700; color: var(--orange); }
+.term-head .term-en { font-family: var(--font-mono); font-size: 0.74rem; font-weight: 400; color: var(--text-muted); margin-left: 6px; }
+.term-head .term-src { font-size: 0.7rem; color: var(--text-muted); }
+.term-layer { margin-bottom: 10px; }
+.term-layer p, .term-pair p { font-size: 0.86rem; line-height: 1.75; color: var(--text-secondary); margin: 0; }
+.tl { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.4px; color: var(--text-muted); background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; margin-bottom: 6px; }
+.t-correct p { color: var(--text); }
+.t-metaphor p { font-style: italic; }
+.term-pair { display: grid; grid-template-columns: 1fr 1.15fr; gap: 14px; margin-top: 14px; }
+.term-like, .term-unlike { padding: 10px 14px; border-radius: var(--radius-sm); border-left: 3px solid var(--border-light); background: rgba(255,255,255,0.015); }
+.term-like p { font-size: 0.84rem; }
+/* 拆桥更重：橙边 + 橙底 + 更大字号 + 更高字重 */
+.term-unlike { border-left-color: var(--orange); background: rgba(247,147,26,0.07); }
+.term-unlike .tl { color: var(--orange); border-color: rgba(247,147,26,0.35); background: rgba(247,147,26,0.1); }
+.term-unlike p { font-size: 0.9rem; color: var(--text); font-weight: 500; }
+.term-more { margin-top: 12px; }
+.term-more summary { cursor: pointer; font-size: 0.78rem; color: var(--text-muted); padding: 6px 0; }
+.term-more summary:hover { color: var(--orange); }
+.term-views { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 8px; }
+.term-view { display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; line-height: 1.7; color: var(--text-secondary); }
+.term-view .vk { flex: 0 0 auto; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; margin-top: 2px; }
+.term-view.vk-反面 .vk { color: #C62828; border-color: rgba(198,40,40,0.35); }
+.term-view.vk-历史 .vk { color: var(--orange); border-color: rgba(247,147,26,0.3); }
+.term-links { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 0.8rem; }
+.term-links .tl { margin-bottom: 0; }
+.term-links a { color: var(--orange); text-decoration: none; border-bottom: 1px solid rgba(247,147,26,0.35); }
+.term-links a:hover { border-bottom-color: var(--orange); }
+@media (max-width: 720px) {
+  .term-pair { grid-template-columns: 1fr; }
+}
