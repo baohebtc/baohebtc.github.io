@@ -25,8 +25,14 @@ const GLOSSARY = [
       "反面：常见误解是「钱包里存着币」。钱包不存币，只存私钥；币始终在链上。"
     ],
     "links": [
-      { "href": "learning/02-basics/02-02-keys-ownership.html", "label": "私钥与所有权" },
-      { "href": "series/08-private-key-cliff.html", "label": "站8 · 私钥崖" }
+      {
+        "href": "learning/02-basics/02-02-keys-ownership.html",
+        "label": "私钥与所有权"
+      },
+      {
+        "href": "series/08-private-key-cliff.html",
+        "label": "站8 · 私钥崖"
+      }
     ],
     "source": "站8-私钥崖（素材 39 / 44）"
   },
@@ -43,8 +49,14 @@ const GLOSSARY = [
       "历史：早期 P2PK 直接把公钥写进脚本，后来改成更常见的 P2PKH（先对公钥做哈希），正是为了多出这一层缓冲。"
     ],
     "links": [
-      { "href": "learning/04-technology/04-02-keys-addresses.html", "label": "密钥与地址" },
-      { "href": "series/08-private-key-cliff.html", "label": "站8 · 私钥崖" }
+      {
+        "href": "learning/04-technology/04-02-keys-addresses.html",
+        "label": "密钥与地址"
+      },
+      {
+        "href": "series/08-private-key-cliff.html",
+        "label": "站8 · 私钥崖"
+      }
     ],
     "source": "站8-私钥崖（素材 4 / 43）"
   },
@@ -61,8 +73,14 @@ const GLOSSARY = [
       "反面：地址不等于身份，但链上所有交易永久公开——所以它是「假名」而不是「隐身」。"
     ],
     "links": [
-      { "href": "learning/04-technology/04-02-keys-addresses.html", "label": "密钥与地址" },
-      { "href": "series/04-ledger-sea.html", "label": "站4 · 账本海" }
+      {
+        "href": "learning/04-technology/04-02-keys-addresses.html",
+        "label": "密钥与地址"
+      },
+      {
+        "href": "series/04-ledger-sea.html",
+        "label": "站4 · 账本海"
+      }
     ],
     "source": "站4-账本海（素材 19）· 站1-现金湾（素材 4）"
   },
@@ -79,8 +97,14 @@ const GLOSSARY = [
       "反面：哈希不是加密。加密能解密，哈希只能正向算，不存在钥匙这回事。"
     ],
     "links": [
-      { "href": "learning/04-technology/04-01-cryptography.html", "label": "密码学基础" },
-      { "href": "series/05-hash-ridge.html", "label": "站5 · 哈希岭" }
+      {
+        "href": "learning/04-technology/04-01-cryptography.html",
+        "label": "密码学基础"
+      },
+      {
+        "href": "series/05-hash-ridge.html",
+        "label": "站5 · 哈希岭"
+      }
     ],
     "source": "站5-哈希岭（素材 22）"
   },
@@ -97,8 +121,14 @@ const GLOSSARY = [
       "历史：区块大小上限 1MB 是 2010 年由中本聪加上的，后来演变成一场持续数年的扩容之争。"
     ],
     "links": [
-      { "href": "learning/04-technology/04-04-blockchain-structure.html", "label": "区块链的数据结构" },
-      { "href": "series/04-ledger-sea.html", "label": "站4 · 账本海" }
+      {
+        "href": "learning/04-technology/04-04-blockchain-structure.html",
+        "label": "区块链的数据结构"
+      },
+      {
+        "href": "series/04-ledger-sea.html",
+        "label": "站4 · 账本海"
+      }
     ],
     "source": "站4-账本海（素材 21）"
   },
@@ -115,8 +145,14 @@ const GLOSSARY = [
       "反面：「不可篡改」不是物理定律，是经济结论。改动之所以不发生，是因为它太贵、且不划算。"
     ],
     "links": [
-      { "href": "learning/04-technology/04-04-blockchain-structure.html", "label": "区块链的数据结构" },
-      { "href": "series/04-ledger-sea.html", "label": "站4 · 账本海" }
+      {
+        "href": "learning/04-technology/04-04-blockchain-structure.html",
+        "label": "区块链的数据结构"
+      },
+      {
+        "href": "series/04-ledger-sea.html",
+        "label": "站4 · 账本海"
+      }
     ],
     "source": "站4-账本海（素材 18 / 21）"
   },
@@ -133,8 +169,14 @@ const GLOSSARY = [
       "反面：矿工不是管理员。他们不能改规则、不能动你的钱，只能选择打包哪些交易、以及跟随哪条链。"
     ],
     "links": [
-      { "href": "learning/02-basics/02-04-mining.html", "label": "挖矿入门" },
-      { "href": "series/07-miner-valley.html", "label": "站7 · 矿工谷" }
+      {
+        "href": "learning/02-basics/02-04-mining.html",
+        "label": "挖矿入门"
+      },
+      {
+        "href": "series/07-miner-valley.html",
+        "label": "站7 · 矿工谷"
+      }
     ],
     "source": "站7-矿工谷（素材 30）"
   },
@@ -151,8 +193,14 @@ const GLOSSARY = [
       "反面：常听人说「挖矿在算有用的题」。它不算任何有用的题，安全性恰恰来自这份无用——有用的计算可以造假，无用的不能。"
     ],
     "links": [
-      { "href": "learning/04-technology/04-05-mining-consensus.html", "label": "挖矿与共识" },
-      { "href": "series/07-miner-valley.html", "label": "站7 · 矿工谷" }
+      {
+        "href": "learning/04-technology/04-05-mining-consensus.html",
+        "label": "挖矿与共识"
+      },
+      {
+        "href": "series/07-miner-valley.html",
+        "label": "站7 · 矿工谷"
+      }
     ],
     "source": "站7-矿工谷（素材 32）· 站1-现金湾（素材 5）"
   },
@@ -169,8 +217,14 @@ const GLOSSARY = [
       "反面：它消耗能源是真的，但把它简单等同于「浪费」是断章取义——传统金融体系的安保、审计与清算同样耗能，只是不记作电费。"
     ],
     "links": [
-      { "href": "learning/04-technology/04-05-mining-consensus.html", "label": "挖矿与共识" },
-      { "href": "series/06-consensus-peak.html", "label": "站6 · 共识峰" }
+      {
+        "href": "learning/04-technology/04-05-mining-consensus.html",
+        "label": "挖矿与共识"
+      },
+      {
+        "href": "series/06-consensus-peak.html",
+        "label": "站6 · 共识峰"
+      }
     ],
     "source": "站6-共识峰（素材 27）· 站7-矿工谷（素材 36）"
   },
@@ -187,9 +241,159 @@ const GLOSSARY = [
       "历史：中本聪白皮书的第二节讲的就是交易与双花问题——比特币被发明出来，首要目的就是解决这一件事。"
     ],
     "links": [
-      { "href": "learning/04-technology/04-03-transactions.html", "label": "交易与 UTXO" },
-      { "href": "series/03-double-spend-gorge.html", "label": "站3 · 双花峡" }
+      {
+        "href": "learning/04-technology/04-03-transactions.html",
+        "label": "交易与 UTXO"
+      },
+      {
+        "href": "series/03-double-spend-gorge.html",
+        "label": "站3 · 双花峡"
+      }
     ],
     "source": "站3-双花峡（素材 14 / 15 / 20）"
+  },
+  {
+    "term": "UTXO",
+    "term_en": "Unspent Transaction Output",
+    "correct": "「未花费的交易输出」——比特币账本里记录钱的基本单位。账本不存「余额」，只存一枚枚还没被花掉的输出；你钱包里显示的余额，是钱包把属于你的 UTXO 加总出来的显示值。",
+    "metaphor": "一枚花掉即离手的整钞",
+    "like": "掏 50 元现金结一笔 30 元的账，递出整张、找回 20——花掉的那张即离手，找回的零钱成了你手里新的整钱。",
+    "unlike": "但现金谁捡到都能花；UTXO 必须有你的签名才能解锁，捡到也没用。一笔钱就是一枚硬币，花掉即销毁，不存在「同一笔同时付给两个人」——这正是它天然防住双花的机制。账本里也从来不存在「余额」这个字段，只有一枚枚未花费的整钱等你拆。",
+    "views": [
+      "机制：每笔交易消耗旧的 UTXO、生成新的 UTXO；花费 0.5 个币可能要把一整枚拆开，剩余部分作为找零回到你手里。",
+      "使用者：所以你常看到一笔交易有两个输出——一个付给对方，一个找零给自己；钱包余额变动看似奇怪，其实是在拆整钱。",
+      "反面：把「余额」当成账上存着一个数字是最常见误解；能花多少取决于手里有哪些未花费输出，而不是一个可以随意拆分的数字。"
+    ],
+    "links": [
+      {
+        "href": "learning/04-technology/04-03-transactions.html",
+        "label": "交易与 UTXO"
+      },
+      {
+        "href": "series/04-ledger-sea.html",
+        "label": "站4 · 账本海"
+      }
+    ],
+    "source": "站4-账本海（素材 20）"
+  },
+  {
+    "term": "全节点",
+    "term_en": "Full Node",
+    "correct": "下载并独立验证全部区块与交易数据的程序。它不挖矿、不产生收益，作用只有一个：从创世块开始逐笔核对账本，任何不合规则的交易或区块都会被它拒绝。",
+    "metaphor": "一份人人可得的公开菜谱",
+    "like": "谁都能照着做一道菜，做出来对不对，各家自己尝，不必请示任何人。",
+    "unlike": "但菜谱有「正不正宗」的争论，最后往往要靠名厨或机构认证；这里没有认证者，每个节点自己独立验证每一笔账，判断依据只有那份代码。跑一个全节点不需要谁批准，也不给你带来收入——它的意义是你亲手核对账本，从此不必相信任何人给你的版本。",
+    "views": [
+      "机制：全节点保存并验证整条链的全部历史数据；规则有没有被偷偷改掉，它一验便知。",
+      "使用者：对普通持有者，跑节点的回报是「自己验证」：不用相信交易所的余额截图，也不用相信「规则要改了」的小道消息。",
+      "反面：轻节点（SPV）只验证工作量、不验证每笔交易，轻便但信任假设更强——它不是全节点的替代品，而是省资源的折中。"
+    ],
+    "links": [
+      {
+        "href": "learning/04-technology/04-06-nodes-network.html",
+        "label": "节点与网络"
+      },
+      {
+        "href": "series/09-code-summit.html",
+        "label": "站9 · 代码之巅"
+      }
+    ],
+    "source": "站9-代码之巅（素材 46）"
+  },
+  {
+    "term": "减半",
+    "term_en": "Halving",
+    "correct": "新区块奖励每 210,000 个区块（约四年）自动减半一次的规则：从最初的 50 BTC 一路减到 2024 年第四次减半后的 3.125 BTC，直到 2140 年前后趋近于零，总量上限 2100 万由此而来。",
+    "metaphor": "一条既有通行费、又有定期补贴的高速公路",
+    "like": "公路维护费来自两部分——通行费和补贴，补贴按固定节奏递减，倒逼通行费慢慢顶上来。",
+    "unlike": "但公路的补贴可以随时开会调整；比特币这条递减曲线写死在代码里，大约每四年砍半一次，十四年从未变过。改它不是改一个参数，而是改协议本身——得全网节点一起同意，而同意改「给自己发钱规则」的动机，几乎不存在。",
+    "views": [
+      "机制：区块高度每满 210,000 块奖励自动减半，不靠任何会议或投票，写进创世规则。",
+      "使用者：矿工的收入因此逐年向手续费倾斜；「补贴减少」不等于「系统发不出钱」，而是收入来源在切换。",
+      "历史：这是中本聪写进创世区块的唯一「货币政策」；2100 万的总量上限就是这条递减曲线的极限和。"
+    ],
+    "links": [
+      {
+        "href": "learning/04-technology/04-05-mining-consensus.html",
+        "label": "挖矿与共识"
+      },
+      {
+        "href": "series/07-miner-valley.html",
+        "label": "站7 · 矿工谷"
+      }
+    ],
+    "source": "站7-矿工谷（素材 31）"
+  },
+  {
+    "term": "难度调整",
+    "term_en": "Difficulty Adjustment",
+    "correct": "全网每 2,016 个区块（约两周）自动校准一次挖矿目标：出快了就调高难度，出慢了就调低，始终把出块间隔锚定在约十分钟，不管接入多少算力。",
+    "metaphor": "一台会根据人数自动调坡度的跑步机",
+    "like": "上来的人多，坡度就变陡——不管多少人一起跑，配速都被拉回同一水平，谁也别想跑得更快。",
+    "unlike": "但跑步机的感应器可能失灵，也可以被人偷偷动手脚；这个校准器没有中心控制器——每 2,016 个区块，每个全节点各自算一遍新难度，必须算出同一个数，算错就被网络丢下。它校准的也不是「谁跑得快」，而是让出块速度永远稳定在十分钟附近，算力再翻倍也一样。",
+    "views": [
+      "机制：按前 2,016 块的实际耗时对比期望值（两周），等比例放大或缩小目标难度，全体节点独立重复同一计算。",
+      "使用者：对矿工，「算力涨」并不带来「出块更快」——难度跟着涨，单个矿工的期望收益占比分毫不变。",
+      "反面：难度上调常被误读成「比特币更值钱了」；它调节的只是出块节奏，与价格没有任何联动。"
+    ],
+    "links": [
+      {
+        "href": "learning/02-basics/02-04-mining.html",
+        "label": "挖矿原理"
+      },
+      {
+        "href": "series/07-miner-valley.html",
+        "label": "站7 · 矿工谷"
+      }
+    ],
+    "source": "站7-矿工谷（素材 32）"
+  },
+  {
+    "term": "助记词",
+    "term_en": "Seed Phrase / Mnemonic",
+    "correct": "由随机数按 BIP-39 标准编码成的 12 或 24 个英文单词，是整棵密钥树的「母码」：用它能在任何合规钱包里确定性地重新派生全部私钥与地址。",
+    "metaphor": "一串能重配整串钥匙的母码",
+    "like": "像你配了一串钥匙、每开一把新锁就再配一把挂上去，钥匙串越来越长；丢了钥匙串，凭母码能把每一把重新配出来。",
+    "unlike": "但现实里你随时能补配一把新钥匙；钱包里超出备份范围的新钥匙，是生成之后就再也无法复原的随机数——它们不在任何服务器上，只在那块坏掉的硬盘里。所以助记词必须在生成当天就抄下来，而且每换一个新钱包、每新增一个地址，都要重新确认这份备份仍然覆盖得住。",
+    "views": [
+      "机制：随机熵 → 12/24 个单词 → 确定性派生整棵密钥树；单词的顺序和拼写缺一不可，抄错一个词整串作废。",
+      "使用者：它是钱包的全部家当——抄在纸上离线保存；截图、云盘、聊天记录都等于把家当交到别人手里。",
+      "反面：助记词不区分钱包品牌，按同一标准任何合规钱包都能恢复；「把钱包 app 删了钱就没了」是误解——丢的从来不是钱，是没备份的钥匙。"
+    ],
+    "links": [
+      {
+        "href": "learning/02-basics/02-02-keys-ownership.html",
+        "label": "私钥与所有权"
+      },
+      {
+        "href": "series/08-private-key-cliff.html",
+        "label": "站8 · 私钥崖"
+      }
+    ],
+    "source": "站8-私钥崖（素材 41）"
+  },
+  {
+    "term": "算力",
+    "term_en": "Hashrate",
+    "correct": "全网每秒尝试哈希运算的总次数（以 EH/s 计），衡量挖矿竞争的规模。它只表示「猜测速度」，不代表解题进度——每一猜都独立，难度自动跟上算力增长。",
+    "metaphor": "一场永不停歇的全球竞猜",
+    "like": "全网每秒都在掷同一颗骰子，掷中特定点数的人拿走这一页的记账权和奖金；算力就是你每秒能掷多少次。",
+    "unlike": "但彩票中心可以印假票，这里的骰子是纯数学，出千的唯一办法是买下超过一半的骰子——而这场竞猜掷出的结果本身毫无用途，它就是故意「浪费」的。可恰恰是这种浪费构成了安全：想篡改账本，你得赢过全网一半以上的算力，成本高到不如老实记账。「浪费」，其实是「没有老板也能安全」的代价。",
+    "views": [
+      "机制：每一猜独立、无记忆，猜中概率只取决于自己的算力占全网比例——不存在「快猜中了」的说法。",
+      "使用者：矿工关心的是自己的算力占比而非全网总量；占比决定期望收益份额，电费决定这套生意的生死。",
+      "反面：算力上涨不等于比特币「更贵」或「转账更快」；它唯一改变的是篡改历史账本的成本曲线。"
+    ],
+    "links": [
+      {
+        "href": "learning/02-basics/02-04-mining.html",
+        "label": "挖矿原理"
+      },
+      {
+        "href": "series/05-hash-ridge.html",
+        "label": "站5 · 哈希岭"
+      }
+    ],
+    "source": "站1-现金湾（素材 5）· 站5-哈希岭（素材 23）"
   }
 ];
