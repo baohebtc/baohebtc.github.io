@@ -27,6 +27,23 @@
 .glossary-table td:first-child { font-family: var(--font-mono); color: var(--text); font-weight: 600; white-space: nowrap; }
 .glossary-table td:nth-child(2) { color: var(--text-secondary); }
 </style>
+<!-- F46 SEO/OG -->
+  <meta name="description" content="每个概念分六层：先给硬定义，再借一个已知物打比方，然后说清「像在哪」——更要紧的是「不像在哪」。比喻是桥不是等号，拆桥比搭桥重要，「不一样的地方」才是真正理解的关键。">
+  <link rel="canonical" href="https://baohebtc.github.io/reference/">
+  <meta property="og:title" content="参考资料 · 比特币学习地图">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://baohebtc.github.io/reference/">
+  <meta property="og:image" content="https://baohebtc.github.io/assets/brand/og-site-1200x630.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="比特币学习地图">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:description" content="每个概念分六层：先给硬定义，再借一个已知物打比方，然后说清「像在哪」——更要紧的是「不像在哪」。比喻是桥不是等号，拆桥比搭桥重要，「不一样的地方」才是真正理解的关键。">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="参考资料 · 比特币学习地图">
+  <meta name="twitter:description" content="每个概念分六层：先给硬定义，再借一个已知物打比方，然后说清「像在哪」——更要紧的是「不像在哪」。比喻是桥不是等号，拆桥比搭桥重要，「不一样的地方」才是真正理解的关键。">
+  <meta name="twitter:image" content="https://baohebtc.github.io/assets/brand/og-site-1200x630.png">
+<!-- /F46 -->
 </head>
 <body>
 
@@ -189,7 +206,7 @@
 </div>
 
 <!-- 术语六层卡片（F45 · ADR-0026） -->
-    <h2>🔬 <span id="glossary-count">10</span> 个核心概念的拆解</h2>
+    <h2>🔬 <span id="glossary-count">16</span> 个核心概念的拆解</h2>
     <p class="glossary-lead">每个概念分六层：先给硬定义，再借一个已知物打比方，然后说清「像在哪」——更要紧的是「不像在哪」。比喻是桥不是等号，拆桥比搭桥重要，「不一样的地方」才是真正理解的关键。</p>
     <noscript><p class="glossary-noscript">下面的深度卡由脚本渲染，请开启 JavaScript；页面下方的简明速查表不受影响。</p></noscript>
     <div id="glossary-cards" class="term-cards"></div>
@@ -199,21 +216,15 @@
     <div class="table-wrap">
       <table class="glossary-table">
         <tr><th>中文</th><th>English</th><th>简明解释</th></tr>
-        <tr><td>UTXO</td><td>Unspent Transaction Output</td><td>未花费交易输出。比特币账本的基本单位，类似支票——只花未兑现的</td></tr>
-        <tr><td>全节点</td><td>Full Node</td><td>下载并验证全部比特币交易历史的独立程序，真正实现自我验证</td></tr>
         <tr><td>SPV</td><td>Simplified Payment Verification</td><td>轻节点。只下载区块头，不下载完整账本，但仍然可以验证支付</td></tr>
-        <tr><td>减半</td><td>Halving</td><td>每21万个区块（约4年），挖矿奖励自动减半，比特币通胀率下降</td></tr>
         <tr><td>闪电网络</td><td>Lightning Network</td><td>比特币的Layer 2扩容方案，在链下实现近乎即时的低费用支付</td></tr>
         <tr><td>BIP</td><td>Bitcoin Improvement Proposal</td><td>比特币改进提案。任何人可以提出，通过社区讨论决定是否实施</td></tr>
         <tr><td>隔离见证</td><td>SegWit (Segregated Witness)</td><td>将签名数据从交易中分离，增加区块容量，解决交易延展性问题</td></tr>
         <tr><td>Taproot</td><td>Taproot</td><td>2021年比特币升级，增强隐私性和灵活性，降低复杂交易费用</td></tr>
         <tr><td>热钱包</td><td>Hot Wallet</td><td>联网的钱包，用于日常交易，方便但风险较高</td></tr>
         <tr><td>冷钱包</td><td>Cold Wallet</td><td>不联网的钱包，用于长期存储，安全级别最高</td></tr>
-        <tr><td>助记词</td><td>Mnemonic Phrase / Seed Phrase</td><td>由12或24个英文单词组成的备份短语，可恢复全部私钥</td></tr>
         <tr><td>硬件钱包</td><td>Hardware Wallet</td><td>专用硬件设备，安全存储私钥，永不联网</td></tr>
         <tr><td>哈希率</td><td>Hash Rate</td><td>全网总算力。哈希率越高，网络越安全</td></tr>
-        <tr><td>难度调整</td><td>Difficulty Adjustment</td><td>每2016个区块（约2周）调整一次挖矿难度，保持出块时间约10分钟</td></tr>
-        <tr><td>算力</td><td>Hashrate / Computing Power</td><td>矿机每秒能做多少次哈希运算，决定获得区块奖励的概率</td></tr>
       </table>
     </div>
 

@@ -64,6 +64,9 @@ def main():
     elif len(terms) == 0:
         fail("T0", "glossary-data.js 为空数组（P1 试点 10 条尚未填充）")
     else:
+        # T9 规模断言：试点 10 条 + F47 第二批 6 条 = 至少 16 条（F47 · 2026-10-03）
+        if len(terms) < 16:
+            fail("T9", f"条目数 {len(terms)} < 16（F47 第二批 6 条：UTXO/全节点/减半/难度调整/助记词/算力 未就位）")
         # 抽取的素材库，用来校验比喻出处（比喻不现编）
         meta_path = os.path.join(ROOT, "tools", "dev", "series-metaphors.json")
         metaphors = []
